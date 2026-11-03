@@ -26,7 +26,7 @@ python3 -m unittest discover -s tests -q
 python3 scripts/maintenance/check_rules.py
 python3 scripts/maintenance/check_rules.py --rule G3 --rule D5
 
-# Enable the report-only pre-commit hook
+# Enable the blocking pre-commit hook (refuses commits with violations)
 git config core.hooksPath scripts/maintenance/hooks
 ```
 
