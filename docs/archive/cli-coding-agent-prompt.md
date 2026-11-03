@@ -14,7 +14,7 @@ Follow its read-first source list and verify the current baseline before editing
 This is an implementation task. The preceding design session changed only
 documentation and added an offline verification record; no product CLI exists
 yet. Its baseline was 147 passing tests on Python 3.14.8 / NumPy 2.4.6, recorded
-in `reports/cli-design-baseline-20261028-t2qr8gbm/`. Rerun
+in `reports/cli-design-baseline-20261028-t2qr8gbm/` (not retained). Rerun
 `python3 -m unittest discover -s tests -v` and inspect the current files before
 using that result. It does not establish the proposed minimum Python version
 or clean-wheel support. If Git metadata is unavailable, record source hashes;

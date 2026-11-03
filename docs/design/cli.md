@@ -136,8 +136,9 @@ must not replace the newer recorded baseline.
 
 On the design date, `python3 -m unittest discover -s tests -v` passed all 147
 tests in 9.884 seconds, using Python 3.14.8 and NumPy 2.4.6. Evidence is saved in
-[verification.json](../reports/cli-design-baseline-20261028-t2qr8gbm/verification.json)
-and [tests.log](../reports/cli-design-baseline-20261028-t2qr8gbm/tests.log).
+`reports/cli-design-baseline-20261028-t2qr8gbm/verification.json`
+and `tests.log` (not retained: removed in the
+[2026-10-28 cleanup](../records/20261028-directory-cleanup.md)).
 This establishes the existing offline regression baseline only. It does not
 verify Python 3.9 compatibility, wheel installation, a product CLI, or live
 model behavior. No live inference or fresh collection was performed.
