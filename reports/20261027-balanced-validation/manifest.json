@@ -31,7 +31,7 @@
     ]
   },
   "run_manifest": "full-pipeline-final/manifest.json",
-  "record": "docs/reviews/latest-balanced-validation.md",
+  "record": "docs/records/20261027-balanced-validation.md",
   "dataset": "data/raw/feedback/20261027-balanced/screened/records.jsonl",
   "code_version": {
     "git_commit": null,

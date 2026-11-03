@@ -48,7 +48,7 @@
     "review": "Entry reviews and all new per-alias reviewer, decision and notes fields remain blank. Candidate status is not approval.",
     "critical_art_normalization": "In Chinese community comments, normalize bare CA to the SA3 family. Preserve raw wording. Infer an enhanced Critical Art variant only when the comment explicitly supplies variant or low-vitality context.",
     "normal_move_resolution": "Normal-move names and notation are universal vocabulary. Character identity is a separate field inferred from the comment context; no Ryu default is applied.",
-    "editing_authority": "Use docs/glossary.md as the human-edited alias selection. The separate Super Art section supplies level and CA-family mappings.",
+    "editing_authority": "Use docs/reference/glossary.md as the human-edited alias selection. The separate Super Art section supplies level and CA-family mappings.",
     "short_aliases": "Short or overloaded user aliases require the stored context conditions. Do not use unrestricted substring replacement.",
     "character_state": "Character State entries hold subject-specific resources, modes, or triggered states. They are distinct from universal Mechanic vocabulary.",
     "alias_candidates": "New candidate_only aliases have per-alias blank review fields. community_attested_candidate records a source-observed term but does not certify the mapping. legacy_community_candidate needs historical-to-SF6 validation. editorial_* variants are generated spelling/notation candidates, not independent community attestations."
@@ -112,7 +112,7 @@
     "project_glossary_edit": {
       "title": "User-edited project glossary",
       "kind": "user_provided",
-      "path": "docs/glossary.md",
+      "path": "docs/reference/glossary.md",
       "notes": "Current user-edited glossary controls alias selection. Newly supplied aliases are project vocabulary, not independently verified official names."
     },
     "community_move_reference": {

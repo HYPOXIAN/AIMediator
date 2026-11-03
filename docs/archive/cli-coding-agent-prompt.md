@@ -3,7 +3,7 @@
 Work in `<project root>`. The final deliverable is an
 installable CLI named `aimediator`, not a web interface or another collection
 of research commands. Read applicable `AGENTS.md` instructions and then read
-`docs/cli-design-handoff.md` completely; it is the implementation specification.
+`docs/design/cli.md` completely; it is the implementation specification.
 Follow its read-first source list and verify the current baseline before editing.
 
 This is an implementation task. The preceding design session changed only
@@ -61,7 +61,7 @@ live diagnostic in a new directory; otherwise complete offline engineering and
 report the unavailable live checks. Never present mock tests or agent silver
 labels as independently measured semantic accuracy.
 
-Create and maintain `docs/cli-implementation-status.md` with each milestone's
+Create and maintain `docs/plans/cli-implementation-status.md` with each milestone's
 status, actual validation command/result, artifact path, and remaining work.
 Start with the package/resource extraction and its outside-checkout import
 gate; proceed through operations, review/report/demo, and clean-install

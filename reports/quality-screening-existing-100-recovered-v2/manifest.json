@@ -13,7 +13,7 @@
     ]
   },
   "run_manifest": "manifest.json",
-  "record": "docs/reviews/directory-cleanup.md",
+  "record": "docs/records/20261028-directory-cleanup.md",
   "dataset": "Parent run quality-screening-existing-100-v1",
   "code_version": {
     "git_commit": null,

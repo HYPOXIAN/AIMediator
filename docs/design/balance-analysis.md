@@ -184,7 +184,7 @@ to one fighter. These are labeled as agent additions, never counted as successfu
 Qwen/Llama outputs. The official identity and patch applicability of names outside
 the glossary remain unverified; nationality-only nicknames are not normalized.
 
-The current runner includes the [v2 review policy](balance-review-v2.md). Its
+The current runner includes the [v2 review policy](../records/20261022-balance-review-v2.md). Its
 retrieval review queue can rescue vector-negative candidates only after an
 affirmative retrieval-topic review and separate relevance agreement. The
 original v1 experiment remains historical and cannot resume under changed code.

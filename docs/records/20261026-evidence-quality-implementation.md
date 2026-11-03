@@ -1,6 +1,6 @@
 # 评论证据质量模块：实现与验证
 
-日期：2026-10-26（America/Los_Angeles）。工程规格见 `evidence-quality-handoff.md`。
+日期：2026-10-26（America/Los_Angeles）。工程规格见 `docs/design/evidence-quality.md`。
 本次交付 CLI 工程能力；尚未获得独立人工效果验证，推荐先运行 shadow。
 
 ## 实现文件

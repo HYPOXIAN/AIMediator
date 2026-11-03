@@ -222,4 +222,4 @@ The offline engineering gates do not establish semantic accuracy, absence of
 emotion bias, community-wide consensus, patch truth or release-ready balance
 values. Independent human double annotation/adjudication, held-out semantic
 validation and versioned game-mechanic/engineering checks remain outstanding.
-See [implementation status](cli-implementation-status.md) for actual results.
+See [implementation status](../plans/cli-implementation-status.md) for actual results.

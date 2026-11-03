@@ -13,7 +13,7 @@
     ]
   },
   "run_manifest": "manifest.json",
-  "record": "docs/reviews/balance-analysis.md",
+  "record": "docs/design/balance-analysis.md",
   "dataset": "data/raw/feedback/20261015-expanded/screened/records.jsonl",
   "code_version": {
     "git_commit": null,

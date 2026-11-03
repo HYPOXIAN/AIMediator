@@ -21,7 +21,7 @@
     ]
   },
   "run_manifest": "examples/manifest.json",
-  "record": "docs/reviews/evidence-quality-implementation.md",
+  "record": "docs/records/20261026-evidence-quality-implementation.md",
   "dataset": "Synthetic evidence-quality cases (cases_sha256 in the run manifest).",
   "code_version": {
     "git_commit": null,

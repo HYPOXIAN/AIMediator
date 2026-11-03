@@ -7,7 +7,7 @@ the 2026-10-22 v1 experiment as a historical record.
 
 ## Review provenance and decisions
 
-`docs/review-todo.md` records decisions and unavailable inputs. The 100-comment
+`docs/plans/review-follow-ups.md` records decisions and unavailable inputs. The 100-comment
 set in `data/evaluation/balance-silver-v1/` is **agent silver**, not independent
 human gold. It has 50 English/50 Chinese comments, 70 development/30 holdout,
 written reasons, original-text hashes and selected character/direction/numeric

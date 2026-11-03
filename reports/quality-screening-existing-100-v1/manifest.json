@@ -18,7 +18,7 @@
     ]
   },
   "run_manifest": "manifest.json",
-  "record": "docs/reviews/directory-cleanup.md",
+  "record": "docs/records/20261028-directory-cleanup.md",
   "dataset": "data/evaluation/balance-silver-v1/labels.jsonl with balance-review-v2/relevance",
   "code_version": {
     "git_commit": null,

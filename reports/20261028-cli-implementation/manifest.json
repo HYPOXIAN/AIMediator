@@ -13,7 +13,7 @@
     ]
   },
   "run_manifest": "live-diagnostic/run/manifest.json",
-  "record": "docs/reviews/cli-implementation-status.md",
+  "record": "docs/plans/cli-implementation-status.md",
   "dataset": "Packaged fixtures (release demo) and the live diagnostic input live-diagnostic/input.jsonl in the archive.",
   "code_version": {
     "git_commit": null,

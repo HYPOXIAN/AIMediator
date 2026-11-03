@@ -17,15 +17,15 @@ python3 -m venv .venv
 .venv/bin/aimediator report --run ./demo-001/enforce --out ./example-report-001
 ```
 
-See [CLI installation and operations](docs/cli-usage.md),
-[implementation status and verification](docs/cli-implementation-status.md), and
-[the implementation specification](docs/cli-design-handoff.md). The sections
+See [CLI installation and operations](docs/guides/cli-usage.md),
+[implementation status and verification](docs/plans/cli-implementation-status.md), and
+[the implementation specification](docs/design/cli.md). The sections
 below retain the research history and compatibility commands.
 
 Directory cleanup on 2026-10-28 removed superseded experiments, intermediate
 datasets, build caches and obsolete logs. Current validation results, release
 archives, active tests and datasets required by compatibility commands remain.
-See [the cleanup record](docs/directory-cleanup.md) for deleted paths and retained
+See [the cleanup record](docs/records/20261028-directory-cleanup.md) for deleted paths and retained
 dependencies; historical references below do not imply every old run is on disk.
 
 ## Scope
@@ -76,7 +76,7 @@ standard-library debugging runner remains in `scripts/run_smoke_test.py`.
 
 ## Bilingual glossary
 
-`data/glossary.json` contains universal Street Fighter 6 vocabulary plus character-specific names for all 31 playable characters available at the target patch, including Yasmine. System, Mechanic, Tactic, Input, and Normal Move categories apply to all characters. Normal-move labels never imply Ryu by default. `docs/glossary.md` provides a readable collection, source notes, integration guidance, and review status. English canonical names and notes are used; Chinese terms are language data. Future Arjun, Tifa, and Bosch are excluded from this experiment version. The original ten-case debugging suite remains Ryu-only and cannot establish extraction quality for the expanded roster.
+`data/glossary.json` contains universal Street Fighter 6 vocabulary plus character-specific names for all 31 playable characters available at the target patch, including Yasmine. System, Mechanic, Tactic, Input, and Normal Move categories apply to all characters. Normal-move labels never imply Ryu by default. `docs/reference/glossary.md` provides a readable collection, source notes, integration guidance, and review status. English canonical names and notes are used; Chinese terms are language data. Future Arjun, Tifa, and Bosch are excluded from this experiment version. The original ten-case debugging suite remains Ryu-only and cannot establish extraction quality for the expanded roster.
 
 The collection has 849 concepts, 3822 alias mappings, and 82 ambiguous alias records. All human review fields remain blank. `docs/records/20261022-alias-review.md` groups the 1582 retained new mappings (775 distinct text/language pairs) with sources and context restrictions: 225 observed community candidates, 174 historical candidates, and 1183 generated spelling/notation variants. `data/raw/glossary/20261008-glossary-sources/community-aliases.json` preserves the original collection snapshot. User exclusions are recorded in `data/glossary.json`; removed aliases are absent from the active glossary and review sheet. The smoke-test runner supplies these as candidates with `--glossary`; pending nicknames do not establish hard character scope. It preserves ambiguity and does not replace the original comment.
 
@@ -115,7 +115,7 @@ Keep a separate held-out evaluation set for later assessment. Do not reuse these
 ## Deferred work
 
 The proposed next development sequence and acceptance criteria are in
-[the next development plan](docs/next-development-plan.md), dated October 23, 2026.
+[the next development plan](docs/archive/next-development-plan.md), dated October 23, 2026.
 
 Large-scale or recurring scraping, a web interface, fine-tuning, complex retrieval, multiple games, and automatic numerical balance changes are outside the initial prototype scope. A bounded official-API feedback collector was added at the user's request; see Public feedback collection below.
 
@@ -147,7 +147,7 @@ and API key in `.env`. Pending aliases retain their review and context metadata;
 indexing does not approve them. The separate low-alias review proposals are not
 imported. Build with `python scripts/glossary_vectors.py build`; query with
 `python scripts/glossary_vectors.py search '隆的波掌击' --scope Ryu`.
-See [index documentation](docs/glossary-vector-index.md) for storage, resumability,
+See [index documentation](docs/reference/glossary-vector-index.md) for storage, resumability,
 configuration and downstream RAG restrictions. The existing smoke-test runner is
 unchanged and does not automatically use this vector index.
 
@@ -162,7 +162,7 @@ Every admitted comment receives a coverage record. Source-bound quotations,
 number checks and a separate-context semantic audit check generated details,
 but semantic errors remain possible. Exact frame/damage targets are retained only
 when the source actually requests them; otherwise quantities remain unspecified.
-See [the pipeline documentation](docs/balance-analysis.md) for schemas,
+See [the pipeline documentation](docs/design/balance-analysis.md) for schemas,
 reproduction, resume behavior, report files and evaluation limits.
 
 The 2026-10-22 experiment admitted 197 comments, with two generation failures.
@@ -175,8 +175,8 @@ reviewed engineering opinions alongside the unchanged raw model results.
 
 The next review iteration adds a frozen 100-comment agent silver set, versioned
 identity policy, retrieval review queue, actual-error regressions and separate
-engineering-design prerequisites. See [review v2](docs/balance-review-v2.md) and
-[decisions and follow-ups](docs/review-todo.md). The v2 evaluation uses full-corpus
+engineering-design prerequisites. See [review v2](docs/records/20261022-balance-review-v2.md) and
+[decisions and follow-ups](docs/plans/review-follow-ups.md). The v2 evaluation uses full-corpus
 retrieval/relevance and selected live extraction regressions; it does not claim
 a full rerun of v1 generation or independent human accuracy.
 
@@ -201,7 +201,7 @@ interrupted v2.1 run was removed during directory cleanup.
 `python3 scripts/run_balance_analysis.py --evidence-quality shadow --out reports/quality-shadow-new`；
 回滚改为 `--evidence-quality off --out reports/quality-rollback-new`。
 无模型可运行 `python3 scripts/experiments/demo_evidence_quality.py --mock-pipeline --out reports/quality-demo-new`。
-详见 [实现、命令、产物及未验证事项](docs/evidence-quality-implementation.md)。
+详见 [实现、命令、产物及未验证事项](docs/records/20261026-evidence-quality-implementation.md)。
 独立人工效果验证尚未完成，当前推荐 shadow；合成测试与小规模真实诊断不代表准确率。
 
 ## Fresh balanced validation (October 27, 2026)
@@ -215,7 +215,7 @@ to December 2025 for English and August 2026 for Chinese. It is not a set of 600
 posts published today. Existing raw evidence and provisional selections remain
 available.
 
-See [collection, full-run commands and diagnostic scope](docs/latest-balanced-validation.md).
+See [collection, full-run commands and diagnostic scope](docs/records/20261027-balanced-validation.md).
 The active bilingual extraction and source-verification prompts now require a
 complete subject/action recommendation, preserve conditional and negated intent,
 keep clause-local subjects, and reject unrelated numbers as tuning targets.

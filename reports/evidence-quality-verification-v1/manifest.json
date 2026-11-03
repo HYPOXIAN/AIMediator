@@ -11,7 +11,7 @@
     "provenance_files": []
   },
   "run_manifest": null,
-  "record": "docs/reviews/evidence-quality-implementation.md",
+  "record": "docs/records/20261026-evidence-quality-implementation.md",
   "dataset": "Synthetic cases and fixed admissions, as listed in verification.json.",
   "code_version": {
     "git_commit": null,

@@ -1,10 +1,10 @@
 # CLI implementation status
 
-Specification: [cli-design-handoff.md](cli-design-handoff.md).
+Specification: [design/cli.md](../design/cli.md).
 Engineering acceptance completed 2026-10-28. Semantic/human/patch validation
 remains separate and is not declared complete.
 
-The 2026-10-28 [directory cleanup](directory-cleanup.md) removed intermediate
+The 2026-10-28 [directory cleanup](../records/20261028-directory-cleanup.md) removed intermediate
 demo output, superseded install checks and development/build logs mentioned in
 this historical acceptance record. Final verification JSON, `all-tests-final.log`,
 `release-demo/`, the live diagnostic and release archives remain available.
@@ -90,7 +90,7 @@ python3 -c "import setuptools.build_meta as b; b.build_wheel('dist'); b.build_sd
 Artifacts: `dist/aimediator-0.1.0-py3-none-any.whl` and
 `dist/aimediator-0.1.0.tar.gz`. Inventory verifies packaged resources and excludes
 raw community datasets, historical/private reports and credential files.
-Operating instructions are [cli-usage.md](cli-usage.md); they are also included
+Operating instructions are [cli-usage.md](../guides/cli-usage.md); they are also included
 in the source distribution. No system models were downloaded or substituted.
 
 Three clean venvs, all without system site packages, installed the wheel outside

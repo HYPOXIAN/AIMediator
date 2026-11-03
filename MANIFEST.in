@@ -1,4 +1,2 @@
-include docs/cli-usage.md
-include docs/cli-implementation-status.md
-include docs/cli-design-handoff.md
-include docs/cli-coding-agent-prompt.md
+include docs/guides/cli-usage.md
+include docs/design/cli.md

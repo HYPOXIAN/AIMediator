@@ -20,7 +20,7 @@ Intended implementer: the next coding agent working in this project.
 - **Current state:** design only; product commands remain unimplemented.
   The design-session offline baseline is 147 passing tests.
 - **Next action:** give the next agent
-  [the implementation prompt](cli-coding-agent-prompt.md). It should verify the
+  [the implementation prompt](../archive/cli-coding-agent-prompt.md). It should verify the
   baseline, then implement P0-P4 in section 9 and report each acceptance gate.
 
 Sections 3, 4, 6, 7, and 8 define behavior; section 5 permits module-layout
@@ -122,9 +122,9 @@ Latest recorded reference, not a release acceptance threshold:
   `target_patch_context` establishes patch applicability.
 
 Read before implementing: `README.md`, this file,
-`docs/evidence-quality-implementation.md`, `docs/latest-balanced-validation.md`,
-`docs/balance-analysis.md`, and the source modules listed above. The earlier
-`docs/next-development-plan.md` remains historical context; its dataset counts
+`docs/records/20261026-evidence-quality-implementation.md`, `docs/records/20261027-balanced-validation.md`,
+`docs/design/balance-analysis.md`, and the source modules listed above. The earlier
+`docs/archive/next-development-plan.md` remains historical context; its dataset counts
 must not replace the newer recorded baseline.
 
 ### Design-session verification
@@ -659,7 +659,7 @@ this workspace currently does not expose usable Git metadata to the design
 session, use file hashes when revision identity is unavailable; do not assume
 the next agent has a usable commit ID either.
 
-Create `docs/cli-implementation-status.md` during implementation. For each P0-P4
+Create `docs/plans/cli-implementation-status.md` during implementation. For each P0-P4
 gate, record pending/in-progress/passed/blocked, the actual verification command,
 result/artifact path, and remaining requirements. Update it at each completed
 gate so another agent can continue from the last verified state. This design
@@ -747,4 +747,4 @@ The CLI must not claim community-wide consensus, independently verified model
 accuracy, eliminated emotional bias, or release-ready numerical balance changes.
 
 For a ready-to-use instruction to the next agent, see
-`cli-coding-agent-prompt.md` in this directory.
+`cli-coding-agent-prompt.md` in `docs/archive/`.

@@ -11,7 +11,7 @@
     "provenance_files": []
   },
   "run_manifest": "live-regressions/manifest.json",
-  "record": "docs/reviews/balance-review-v2.md",
+  "record": "docs/records/20261022-balance-review-v2.md",
   "dataset": "data/raw/feedback/20261015-expanded/screened/records.jsonl (through balance-review-v2/relevance)",
   "code_version": {
     "git_commit": null,
