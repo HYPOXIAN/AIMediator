@@ -248,3 +248,9 @@ README "Layout" section.
   coding-agent harness recreates it in every session and a blocking
   pre-commit hook would otherwise refuse every commit made from a session.
   It is listed in `.gitignore`.
+- 2026-11-03 — Reorganization complete. All four batches of the
+  reorganization plan are done (plan archived as
+  `docs/archive/reorganization.md`; change record
+  `docs/records/20261103-reorganization.md`, frozen). The rule check reports
+  0 violations and the pre-commit hook now blocks commits with violations
+  (G10). No rule changed; the version stays 1.2.
