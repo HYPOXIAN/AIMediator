@@ -843,3 +843,224 @@ after each:
 Rule check after the review: 84 violations (G7 6 → 5, the wrapper's dated
 default is gone). The P3-D01 and P3-D10 exceptions listed under Results no
 longer apply.
+
+## P4 Documentation reorganization and P5 acceptance (batch 4, 2026-11-03)
+
+Entry check: tag `reorg-p3` present, `HEAD` at `fba7b5f` (= `reorg-p3`),
+working tree clean, no P3 decision `pending`, 222 tests passing, rule check
+84 violations. Batch 4 runs under post-implementation review (plan section
+7, decision 13). The working migration list is in the ignored
+`runs/reorg-p4-migration.md`.
+
+### Decisions pending owner review
+
+Registered before any document is moved or changed. Same meaning of
+"implemented" and "bypassed" as in P3.
+
+#### P4-D01 Module report next to the evidence-quality design
+
+- **Question**: `docs/module-reports/emotion-quantification-and-evidence-isolation.md`
+  is not in the plan's mapping table; the plan leaves open whether the
+  evidence-quality handoff (to become `design/evidence-quality.md`) is
+  merged with it or placed alongside. Options: (a) move it to
+  `docs/design/` under its own name, alongside; (b) merge it into
+  `design/evidence-quality.md`; (c) make it a record
+  (`records/20261029-...`).
+- **Recommendation**: (a). The two documents differ in kind: the handoff is
+  the pre-implementation specification (2026-10-26), the module report a
+  short description of the implemented module (2026-10-29). A merge would
+  rewrite both texts; a record would suggest a frozen result, while the
+  report describes current design.
+- **Handling**: `implemented` (`git mv`; each document's header names the
+  other).
+- **Effect on the batch**: D1 directory `module-reports/` disappears; both
+  documents appear in the index under Design.
+- **Rollback**: `git revert` of the move commit (and of the header line).
+- **Status**: pending
+- **Commits**: (after implementation)
+
+#### P4-D02 Destinations of the README research history
+
+- **Question**: the README slim-down (plan P4) moves research history "into
+  the corresponding records or the archive". Options: (a) per section:
+  sections whose topic has a record are appended verbatim to that record
+  (balance v2/v2.2 to `20261022-balance-review-v2`, evidence quality to
+  `20261026-evidence-quality-implementation`, balanced validation to
+  `20261027-balanced-validation`, glossary and Unique Move aliases to the
+  new `20261022-alias-review`); the rest (smoke test, original milestone,
+  deferred work, collection, screening, expansion, grounded pilot, vector
+  retrieval, balance summaries and 2026-10-22 results) go verbatim into one
+  new archive document `docs/archive/readme-research-history.md`; the
+  cleanup note is dropped as a pointer to its record; (b) everything into
+  the archive document; (c) new records per topic.
+- **Recommendation**: (a). It keeps every sentence, puts results next to
+  the record they belong to, and creates no record with an invented date.
+  The section table is in the migration list, section 6.
+- **Handling**: `implemented`.
+- **Effect on the batch**: three records and the new alias record gain an
+  appended section headed "Moved from the root README"; the archive gets
+  one new document; the README falls to the outline in the migration list.
+- **Rollback**: `git revert` of the commit restores the README sections and
+  removes the appended text.
+- **Status**: pending
+- **Commits**: (after implementation)
+
+#### P4-D03 What counts as corpus content (D8 allowlist)
+
+- **Question**: which Chinese text may stay. Cases beyond the plan's
+  criterion (glossary documents and quotation blocks): Chinese aliases in
+  running text (`阿俊`, `阿利克斯`; batch 1 deferred item 7); the twelve
+  authored bilingual case inputs in the evidence-quality specification
+  (section 7.2), given there in Chinese only; Chinese move labels and
+  candidate strings in the new alias record. Options: (a) keep them as
+  corpus inside code spans, each authored case followed by an English
+  rendering; (b) translate them and drop the Chinese.
+- **Recommendation**: (a). They are model inputs or glossary aliases, which
+  D8 names as corpus; translating a test input or an alias changes what it
+  is. The allowlist per document is in the migration list, section 3.
+- **Handling**: `implemented`.
+- **Effect on the batch**: D8 reaches 0 with Chinese only in code spans,
+  code blocks, quotations and glossary-type files.
+- **Rollback**: `git revert` of the alias-span commit; for the case inputs,
+  replace the code spans with their English renderings.
+- **Status**: pending
+- **Commits**: (after implementation)
+
+#### P4-D04 ADR boundary
+
+- **Question**: plan P4 rewrites `refactoring.md` as
+  `decisions/0001-package-as-single-runtime.md`. Open: what the ADR keeps,
+  and whether other trade-offs become ADRs now. Options: (a) one ADR with
+  Context / Decision / Consequences taken only from `refactoring.md`, its
+  two command blocks dropped (they are in the README and `CLAUDE.md`); no
+  further ADRs, since the reorganization's own trade-offs are recorded as
+  plan decisions; (b) keep the full text and add ADR headings; (c) also
+  write ADRs for other past trade-offs (evidence-quality default, archive
+  policy).
+- **Recommendation**: (a). An ADR records one decision; new ADRs for past
+  trade-offs would mean writing rationale nobody recorded.
+- **Handling**: `implemented`.
+- **Effect on the batch**: `docs/decisions/` holds one ADR; the dropped
+  command blocks stay in git history.
+- **Rollback**: `git revert` of the rewrite commit restores the original
+  text under the new name.
+- **Status**: pending
+- **Commits**: (after implementation)
+
+#### P4-D05 Historical commands in records
+
+- **Question**: records name archived scripts (`*latest*`,
+  `run_smoke_test.py`), old report paths (`reports/latest-balanced-20261027/...`)
+  and commands that relied on removed defaults. Options: (a) keep the
+  commands verbatim and add one dated note under the header saying what has
+  moved and where (archive paths, new report names with links); (b) rewrite
+  the commands to current paths and arguments.
+- **Recommendation**: (a). The commands document what was run; rewritten
+  ones were never run and would change the record.
+- **Handling**: `implemented`.
+- **Effect on the batch**: records stay faithful; the notes carry the links
+  that P4 requires.
+- **Rollback**: `git revert` of the notes commit.
+- **Status**: pending
+- **Commits**: (after implementation)
+
+#### P4-D06 Commands in living documents
+
+- **Question**: living documents (guides, design, plans) show example
+  commands that write new output under `reports/` (for example
+  `--out reports/balance-v2-full`) or read archived runs under their old
+  names. Options: (a) new output under `runs/`; reads of an archived run use
+  the new report name, with a link to its manifest; (b) leave them.
+- **Recommendation**: (a). P2 reserves `reports/` for curated results, and
+  living documents follow the implementation (D3).
+- **Handling**: `implemented`.
+- **Effect on the batch**: `design/balance-analysis.md` and
+  `design/cli.md` change their example paths only.
+- **Rollback**: `git revert` of the commit.
+- **Status**: pending
+- **Commits**: (after implementation)
+
+#### P4-D07 Link target for files kept in `summary/`
+
+- **Question**: plan P4 points references to moved-out reports at
+  `reports/<name>/manifest.json`. Some cited files are kept in the project
+  as `reports/<name>/summary/<file>` (batch 2). Options: (a) link the
+  summary copy when the cited file is kept, the manifest otherwise; (b)
+  always the manifest.
+- **Recommendation**: (a). The summary copy is the cited content itself,
+  inside the project; the manifest is the fallback for archive-only files
+  and names the archive path.
+- **Handling**: `implemented`.
+- **Effect on the batch**: none beyond the link targets.
+- **Rollback**: `git revert` of the commit, or repoint the summary links at
+  the manifests.
+- **Status**: pending
+- **Commits**: (after implementation)
+
+#### P4-D08 References to content that exists nowhere
+
+- **Question**: some references point at files that are in neither the
+  project, the external archive nor the baseline backup:
+  `reports/cli-design-baseline-20261028-t2qr8gbm/` (two broken links in the
+  CLI design, one mention in the CLI agent prompt), and in the README
+  `docs/feedback-collector.md`, `docs/feedback-screening.md`,
+  `docs/feedback-expansion.md`, `docs/grounded-feedback-test.md`,
+  `reports/grounded-20261015-pilot/`, `reports/model-smoke-test.md`.
+  Options: (a) keep the path as plain text in a code span with "(not
+  retained)"; (b) delete the sentences.
+- **Recommendation**: (a). It removes the broken links without removing what
+  the text says existed.
+- **Handling**: `implemented`.
+- **Effect on the batch**: removes 2 D5 violations.
+- **Rollback**: `git revert` of the commit.
+- **Status**: pending
+- **Commits**: (after implementation)
+
+#### P4-D09 Collector output names a missing document
+
+- **Question**: `scripts/collect/collect_feedback.py` writes "See
+  docs/feedback-collector.md for provenance and retention limits" into the
+  generated dataset summary; that document does not exist (P4-D08). Options:
+  (a) point the sentence at the dataset `manifest.json`; (b) remove the
+  sentence; (c) keep it.
+- **Recommendation**: (a).
+- **Handling**: `bypassed`. It changes program output.
+- **Effect on the batch**: none; the string stays. The check tool does not
+  report it (not a Markdown link).
+- **Rollback**: none needed.
+- **Status**: pending
+- **Commits**: none
+
+#### P4-D10 Hand-entered decisions in the low-alias review
+
+- **Question**: the low-alias review Markdown has 9 filled decision fields
+  (6 `p`, 3 `np`; Ryu and Luke) that its JSON records do not have (all 594
+  JSON decisions are empty), while its header says all decisions are blank.
+  The dump moves to the external archive (decision 5). Options: (a) list
+  the 9 entries verbatim in the conclusion record, without interpreting the
+  values, and leave the JSON unchanged; (b) interpret them and apply them to
+  the JSON or the glossary; (c) mention only the count.
+- **Recommendation**: (a). They look like human annotations (not
+  reproducible); their meaning is not recorded anywhere.
+- **Handling**: `implemented` (in the conclusion record).
+- **Effect on the batch**: none on the glossary or runtime data.
+- **Rollback**: `git revert` of the record commit, or remove the list.
+- **Status**: pending
+- **Commits**: (after implementation)
+
+#### P4-D11 Blocking hook and the deferred `.claude/`
+
+- **Question**: P5 switches the hook to blocking. G3 reports `.claude/`
+  (P3-D08, deferred), which the agent harness recreates in every session,
+  so a blocking hook would refuse every commit made from an agent session.
+  Options: (a) amend G3 to allow `.claude/` as local agent state (and
+  ignore it in `.gitignore`); (b) make the G3 check skip ignored entries;
+  (c) keep G3 and remove `.claude/` before every commit.
+- **Recommendation**: (a), decided together with P3-D08 before C2.
+- **Handling**: `bypassed`. (a) amends `RULES.md`; (b) changes what the
+  check tool reports; (c) cannot hold while a session runs.
+- **Effect on the batch**: C1 lists G3 `.claude` as the one remaining
+  exception; C2 (blocking hook) waits for the owner's choice.
+- **Rollback**: none needed.
+- **Status**: pending
+- **Commits**: none
