@@ -97,3 +97,7 @@ implementation.
   `data/evaluation/evidence-quality-synthetic-v1/cases.json`, which replaced a
   byte-identical copy of the packaged fixture (plan section 7, decision 9).
   The register now lists 19 symlinks and 7 forwarding scripts.
+- 2026-11-03 (batch 3 review, P3-D01): `scripts/run_local_direction_comparison.py`
+  writes to `runs/<run name>` instead of `reports/<run name>`, and its
+  `--run-name` default is `local-direction-comparison` instead of the dated
+  `balance-evidence-20261022` (G7). The layer stays registered under R3.

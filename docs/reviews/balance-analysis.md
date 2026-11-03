@@ -38,7 +38,8 @@ The separate control command tests two requested numerical changes and two
 numerical coincidences in English/Chinese. Its synthetic sources are explicitly
 labeled and never included in community counts or the engineering report.
 The compatibility command `run_local_direction_comparison.py` now invokes this
-full pipeline, with `--run-name` selecting a new report directory.
+full pipeline, with `--run-name` selecting a new run directory under `runs/`
+(default `local-direction-comparison`).
 
 ## Admission before judgment
 
