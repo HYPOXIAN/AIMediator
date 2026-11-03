@@ -52,8 +52,8 @@ class CheckRulesTestCase(unittest.TestCase):
 
 class TestGlobalRules(CheckRulesTestCase):
     def test_g3_flags_entries_outside_allowlist(self):
-        for name in ('README.md', 'src', 'docs', 'prompts', '.env', 'notes',
-                     'stray.txt'):
+        for name in ('README.md', 'src', 'docs', 'prompts', '.env', '.claude',
+                     'notes', 'stray.txt'):
             if '.' in name:
                 self.write(name)
             else:

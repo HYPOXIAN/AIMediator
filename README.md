@@ -109,7 +109,8 @@ AIMediator/
 - `data/raw/` is read-only source data; each dataset has a `manifest.json`.
 - `reports/<name>/` keeps a `manifest.json` and a curated `summary/`; full run
   contents are in the external archive named by the manifest.
-- `.env` (local only) holds credentials and is never committed.
+- `.env` (local only) holds credentials and is never committed; `.claude/`
+  is ignored local state of the coding-agent harness.
 
 ## Documentation
 

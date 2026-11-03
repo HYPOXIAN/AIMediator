@@ -48,6 +48,8 @@ G3_ALLOWED = frozenset({
     'build', 'dist', '.venv',
     # RULES.md v1.1: registered compatibility links only (checked by G2).
     'prompts',
+    # RULES.md v1.2: ignored local state of the coding-agent harness.
+    '.claude',
     # The repository itself; required by G5.
     '.git',
 })

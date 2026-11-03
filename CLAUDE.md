@@ -3,7 +3,7 @@
 - Type: Reference
 - Status: Active
 - Updated: 2026-11-03
-- Applies to: `RULES.md` v1.1
+- Applies to: `RULES.md` v1.2
 
 ## Rules
 

@@ -38,3 +38,6 @@ reports/**
 
 # Run output (RULES.md P2); safe to empty.
 runs/
+
+# Local coding-agent harness state (RULES.md G3, v1.2).
+.claude/

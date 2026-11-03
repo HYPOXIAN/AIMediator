@@ -1,6 +1,6 @@
 # AIMediator Project Rules
 
-Version 1.1 · Effective 2026-11-03 · Approved by the project owner.
+Version 1.2 · Effective 2026-11-03 · Approved by the project owner.
 
 This file is the highest-level convention for the project's structure. Every
 rule has a **Check**: the way compliance is verified. Rule IDs are stable; cite
@@ -29,8 +29,9 @@ the register.
 `tests/`, `scripts/`, `configs/`, `data/`, `docs/`, `examples/`, `reports/`,
 `runs/`, plus the ignored `build/`, `dist/` and `.venv/`. `prompts/` is also
 allowed, but only for compatibility links listed in the G2 register; it is
-removed once it is empty. Adding a top-level entry requires amending this
-rule first.
+removed once it is empty. `.claude/` is also allowed as ignored local state of
+the coding-agent harness; it holds no project content. Adding a top-level
+entry requires amending this rule first.
 *Check:* `ls -A` matches the allowlist.
 
 **G4 Sources and generated output are separate.** Anything reproducible from
@@ -241,3 +242,9 @@ README "Layout" section.
   links there and v1.0 did not list the directory. D2: scope limited to
   documents under `docs/`, with the listed exemptions, because those files
   already carry their own identification or belong to manifests.
+- 2026-11-03 v1.2 — Owner decision in the batch 4 review (reorganization
+  plan, section 7, decision 33; change record P4-D11 with P3-D08). G3:
+  `.claude/` is allowed as ignored local agent state, because the
+  coding-agent harness recreates it in every session and a blocking
+  pre-commit hook would otherwise refuse every commit made from a session.
+  It is listed in `.gitignore`.
