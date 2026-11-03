@@ -9,6 +9,8 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
 sys.path.insert(0, str(ROOT / 'scripts'))
+sys.path.insert(0, str(ROOT / 'scripts/collect'))
+sys.path.insert(0, str(ROOT / 'scripts/experiments'))
 from aimediator import engine
 from aimediator.config import defaults, embedding_endpoint, env_values
 from aimediator.inference import Transport

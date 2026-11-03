@@ -6,6 +6,8 @@ import sys
 import unittest
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts/collect'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts/experiments'))
 import run_balance_analysis as m
 from balance_policy import numeric_request_supported,triage_retrieval,direction_action_conflicts,attributed_candidates
 from evaluate_balance_review import read_labels,calibrate,relevance_metrics

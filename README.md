@@ -125,11 +125,11 @@ All 244 Unique Move entries across the 31 target-patch characters have overhead 
 
 ## Public feedback collection
 
-Run `python3 scripts/collect_feedback.py` with Python 3.9 or later. Settings are in `configs/feedback-collection.json`; instructions, source access dependencies, rate controls, and data-retention limits are in `docs/feedback-collector.md`. The local dataset is in `data/raw/feedback/20261015-initial/`: 850 Steam reviews and 702 YouTube comments, with original text and blank review fields. Combined provisional language counts are 1,173 English and 352 Chinese, plus 27 undetermined. No content or patch filtering was performed. Bluesky anonymous search returned 403 and was stopped. YouTube collection succeeded using the user-specified `YOUTUBE_API_KEY` in the project `.env`; `--env-file .env` supports that file without global environment initialization. Bluesky collection is still incomplete. New records have unreviewed patch applicability and are not a historical August 2026 dataset. `python3 -m unittest discover -s tests -v` runs the collector checks.
+Run `python3 scripts/collect/collect_feedback.py` with Python 3.9 or later. Settings are in `configs/feedback-collection.json`; instructions, source access dependencies, rate controls, and data-retention limits are in `docs/feedback-collector.md`. The local dataset is in `data/raw/feedback/20261015-initial/`: 850 Steam reviews and 702 YouTube comments, with original text and blank review fields. Combined provisional language counts are 1,173 English and 352 Chinese, plus 27 undetermined. No content or patch filtering was performed. Bluesky anonymous search returned 403 and was stopped. YouTube collection succeeded using the user-specified `YOUTUBE_API_KEY` in the project `.env`; `--env-file .env` supports that file without global environment initialization. Bluesky collection is still incomplete. New records have unreviewed patch applicability and are not a historical August 2026 dataset. `python3 -m unittest discover -s tests -v` runs the collector checks.
 
 ## Coarse feedback screening
 
-`python3 scripts/screen_feedback.py` produces retained counterparts of every JSONL view in `data/raw/feedback/20261015-initial/screened/` while preserving the original files. The current coarse pass retains 166 of 1,552 unique records, excludes 1,358, and separates 28 uncertain records for review. Use `screened/records.jsonl` as the canonical retained set; do not sum overlapping views. See `docs/feedback-screening.md` for criteria, reversible exclusion reasons, boundary corrections, and limitations. This is relevance screening only; patch applicability and factual correctness remain unverified.
+`python3 scripts/collect/screen_feedback.py` produces retained counterparts of every JSONL view in `data/raw/feedback/20261015-initial/screened/` while preserving the original files. The current coarse pass retains 166 of 1,552 unique records, excludes 1,358, and separates 28 uncertain records for review. Use `screened/records.jsonl` as the canonical retained set; do not sum overlapping views. See `docs/feedback-screening.md` for criteria, reversible exclusion reasons, boundary corrections, and limitations. This is relevance screening only; patch applicability and factual correctness remain unverified.
 
 ## Expanded balance-feedback dataset
 
@@ -137,7 +137,7 @@ The current expanded result is `data/raw/feedback/20261015-expanded/screened/`: 
 
 ## Grounded real-feedback pilot
 
-`python3 scripts/test_grounded_feedback.py` tests local Qwen/Llama on ten real retained reviews plus two separately labeled empty controls per model. JSON Schema constrains identity and reference values; exact quotes are reconstructed from source spans. Invalid responses are quarantined and accepted outputs remain pending human semantic review. The initial run is in `reports/grounded-20261015-pilot/`; see `docs/grounded-feedback-test.md` for the schema, source-binding checks, reproducibility, and limitations. The existing free-form synthetic smoke runner remains unchanged.
+`python3 scripts/experiments/test_grounded_feedback.py` tests local Qwen/Llama on ten real retained reviews plus two separately labeled empty controls per model. JSON Schema constrains identity and reference values; exact quotes are reconstructed from source spans. Invalid responses are quarantined and accepted outputs remain pending human semantic review. The initial run is in `reports/grounded-20261015-pilot/`; see `docs/grounded-feedback-test.md` for the schema, source-binding checks, reproducibility, and limitations. The existing free-form synthetic smoke runner remains unchanged.
 
 ## Glossary vector retrieval
 
@@ -200,7 +200,7 @@ interrupted v2.1 run was removed during directory cleanup.
 运行与回滚均使用新目录，例如：
 `python3 scripts/run_balance_analysis.py --evidence-quality shadow --out reports/quality-shadow-new`；
 回滚改为 `--evidence-quality off --out reports/quality-rollback-new`。
-无模型可运行 `python3 scripts/demo_evidence_quality.py --mock-pipeline --out reports/quality-demo-new`。
+无模型可运行 `python3 scripts/experiments/demo_evidence_quality.py --mock-pipeline --out reports/quality-demo-new`。
 详见 [实现、命令、产物及未验证事项](docs/evidence-quality-implementation.md)。
 独立人工效果验证尚未完成，当前推荐 shadow；合成测试与小规模真实诊断不代表准确率。
 

@@ -5,6 +5,8 @@ import sys
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts/collect'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts/experiments'))
 import review_balance_sources as r
 
 

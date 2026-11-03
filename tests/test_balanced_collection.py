@@ -7,6 +7,8 @@ import unittest
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts/collect'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts/experiments'))
 import collect_balanced_feedback as b
 import run_balance_analysis as m
 import numpy as np

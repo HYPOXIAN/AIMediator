@@ -11,7 +11,7 @@ import re
 import time
 import urllib.request
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=Path(__file__).resolve().parents[2]
 FIELDS={'comment_id','language','claims','emotional_tone'}
 CLAIM_FIELDS={'character','mechanic','direction','reason','evidence_id','uncertain'}
 CASE_SPECS=[

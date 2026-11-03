@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-SPEC=importlib.util.spec_from_file_location('screen',Path(__file__).resolve().parents[1]/'scripts/screen_feedback.py')
+SPEC=importlib.util.spec_from_file_location('screen',Path(__file__).resolve().parents[1]/'scripts/collect/screen_feedback.py')
 m=importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(m)
 

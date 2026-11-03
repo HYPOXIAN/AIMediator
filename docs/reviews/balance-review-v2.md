@@ -75,13 +75,13 @@ inputs are missing.
 
 ```sh
 python3 -m unittest discover -s tests -v
-python3 scripts/evaluate_balance_review.py --out reports/balance-review-v2/evaluation
-python3 scripts/replay_balance_admission.py --from-run reports/balance-review-v2/relevance --out reports/balance-review-v22/admission-replay
-python3 scripts/evaluate_balance_review.py --candidate reports/balance-review-v2/relevance --out reports/balance-review-v2/evaluation
-python3 scripts/check_balance_regressions.py --out reports/balance-review-v2/regression-replay.json
-python3 scripts/run_balance_regression_live.py --admission-run reports/balance-review-v2/relevance --out reports/balance-review-v22/live-regressions
-python3 scripts/test_balance_controls.py --out reports/balance-review-v22/numeric-controls
-python3 scripts/prepare_balance_design.py --claims reports/balance-engineering-20261022-final-review/source-reviewed-claims.json --out reports/balance-review-v2/design-briefs.json
+python3 scripts/experiments/evaluate_balance_review.py --out reports/balance-review-v2/evaluation
+python3 scripts/experiments/replay_balance_admission.py --from-run reports/balance-review-v2/relevance --out reports/balance-review-v22/admission-replay
+python3 scripts/experiments/evaluate_balance_review.py --candidate reports/balance-review-v2/relevance --out reports/balance-review-v2/evaluation
+python3 scripts/experiments/check_balance_regressions.py --out reports/balance-review-v2/regression-replay.json
+python3 scripts/experiments/run_balance_regression_live.py --admission-run reports/balance-review-v2/relevance --out reports/balance-review-v22/live-regressions
+python3 scripts/experiments/test_balance_controls.py --out reports/balance-review-v22/numeric-controls
+python3 scripts/experiments/prepare_balance_design.py --claims reports/balance-engineering-20261022-final-review/source-reviewed-claims.json --out reports/balance-review-v2/design-briefs.json
 ```
 
 For a new full-generation experiment, omit `--relevance-only` and choose a new
@@ -117,8 +117,8 @@ from the proposed attack-subject enum. It does not resolve arbitrary sarcasm or
 comparisons. Attribute exclusions are exported with full source text.
 
 ```sh
-python3 scripts/test_balance_numeric_extraction.py --out reports/balance-review-v22/numeric-extraction
-python3 scripts/review_balance_live.py --live-run reports/balance-review-v22/live-regressions --admission-run reports/balance-review-v2/relevance --decisions reports/balance-review-v22/source-review-decisions.json --out reports/balance-review-v22/source-review
+python3 scripts/experiments/test_balance_numeric_extraction.py --out reports/balance-review-v22/numeric-extraction
+python3 scripts/experiments/review_balance_live.py --live-run reports/balance-review-v22/live-regressions --admission-run reports/balance-review-v2/relevance --decisions reports/balance-review-v22/source-review-decisions.json --out reports/balance-review-v22/source-review
 ```
 
 The 275-source admission result stays frozen; all 161 saved admission requests

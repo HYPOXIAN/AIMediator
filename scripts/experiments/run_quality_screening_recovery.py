@@ -12,6 +12,8 @@ import json
 from pathlib import Path
 import time
 
+import sys
+sys.path.insert(1, str(Path(__file__).resolve().parents[1]))  # scripts/ holds the registered forwarding shells
 import evidence_quality as q
 import run_balance_analysis as m
 import run_quality_screening_experiment as experiment

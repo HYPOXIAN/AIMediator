@@ -4,6 +4,8 @@ Keeps the raw model results unchanged and never substitutes review for model sco
 """
 import argparse
 from pathlib import Path
+import sys
+sys.path.insert(1, str(Path(__file__).resolve().parents[1]))  # scripts/ holds the registered forwarding shells
 from run_balance_analysis import strict_json,write_json,character_reference,aggregate,digest
 from review_balance_sources import apply_review
 from prepare_balance_design import prepare_briefs

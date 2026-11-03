@@ -75,14 +75,14 @@ Current implementation:
 - `scripts/review_balance_sources.py` applies fingerprinted agent/human decisions
   to all complete proposals, including quarantined proposals. Its current CLI
   writes derived review files into the run directory.
-- `scripts/prepare_balance_design.py` separates evidence from engineering readiness.
+- `scripts/experiments/prepare_balance_design.py` separates evidence from engineering readiness.
 - `scripts/evaluate_evidence_quality.py` supplies annotation preparation and quality
-  scoring. `scripts/evaluate_balance_review.py` is a different, frozen-silver
+  scoring. `scripts/experiments/evaluate_balance_review.py` is a different, frozen-silver
   retrieval experiment; it is not an arbitrary-dataset evaluator.
 - `scripts/glossary_vectors.py` supplies a separate glossary index and configured
   embedding transport. The main runner performs topic-prototype retrieval; the
   existence of a glossary index does not mean that index powers this stage.
-- `scripts/demo_evidence_quality.py` has authored annotation replay and mocked
+- `scripts/experiments/demo_evidence_quality.py` has authored annotation replay and mocked
   end-to-end examples, currently using monkeypatches.
 
 Migration hazards verified in the code:

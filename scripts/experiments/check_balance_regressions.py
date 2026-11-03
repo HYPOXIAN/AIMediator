@@ -5,6 +5,8 @@ This is regression replay of old proposals, not a fresh model accuracy benchmark
 import argparse
 from collections import Counter
 from pathlib import Path
+import sys
+sys.path.insert(1, str(Path(__file__).resolve().parents[1]))  # scripts/ holds the registered forwarding shells
 from run_balance_analysis import ROOT,strict_json,write_json,ground_claim,character_reference,digest
 from prepare_balance_design import prepare_briefs
 from review_balance_sources import proposal_hash, apply_review

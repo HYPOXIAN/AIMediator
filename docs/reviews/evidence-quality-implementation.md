@@ -11,9 +11,9 @@
 - `prompts/quality-extract.{en,zh}.txt`、`prompts/quality-verify.{en,zh}.txt`：只在 enforce 追加到当前主流程提示词，保留 off/shadow 原提示词。
 - `scripts/run_balance_analysis.py`：相关性放行后进入质量阶段；独立解析与 schema；三种模式、quality-only、缓存、快照、覆盖、报告出口。
 - `scripts/review_balance_sources.py`：来源复核保留并重新校验资格；提案指纹包括资格。修改过的主张不能沿用修改前的自动语义审查。
-- `scripts/prepare_balance_design.py`：新版输入还需机制资格、选定片段引用、语义审查和官方身份；继续要求来源 accept、明确目标、数值意图和匹配的版本数据。
-- `scripts/demo_evidence_quality.py`：合成标注重放及三种模式 mock 端到端示例，不连接模型、不产生真实准确率。
-- `scripts/diagnose_evidence_quality_live.py`：显式选定冻结 admission 中的评论，在新目录做真实 quality 与 shadow/enforce 提取、审查对照；不重跑检索。
+- `scripts/experiments/prepare_balance_design.py`：新版输入还需机制资格、选定片段引用、语义审查和官方身份；继续要求来源 accept、明确目标、数值意图和匹配的版本数据。
+- `scripts/experiments/demo_evidence_quality.py`：合成标注重放及三种模式 mock 端到端示例，不连接模型、不产生真实准确率。
+- `scripts/experiments/diagnose_evidence_quality_live.py`：显式选定冻结 admission 中的评论，在新目录做真实 quality 与 shadow/enforce 提取、审查对照；不重跑检索。
 - `scripts/evaluate_evidence_quality.py`：新建待标注集与效果计分，分来源、语言、开发/测试及固定 admission 条件；不自动把模型输出当标签。
 - `tests/test_evidence_quality.py`、`tests/test_evidence_quality_evaluation.py`：双语纯逻辑、mock 全流程、失败/恢复与评估边界测试。
 
@@ -56,13 +56,13 @@ python3 scripts/run_balance_analysis.py --evidence-quality shadow --quality-only
 python3 scripts/run_balance_analysis.py --evidence-quality enforce --out reports/quality-enforce-new
 
 # 来源复核后的新版列表仍须显式使用 enforce 设计门槛
-python3 scripts/prepare_balance_design.py --claims reports/quality-enforce-new/source-reviewed-claims.json --quality-mode enforce --out reports/quality-enforce-new/design-briefs.json
+python3 scripts/experiments/prepare_balance_design.py --claims reports/quality-enforce-new/source-reviewed-claims.json --quality-mode enforce --out reports/quality-enforce-new/design-briefs.json
 
 # 回滚运行行为：off + 新目录，不改写历史输出
 python3 scripts/run_balance_analysis.py --evidence-quality off --out reports/quality-rollback-new
 
 # 无模型服务也能重放合成混合路由和 mock 三模式端到端示例
-python3 scripts/demo_evidence_quality.py --mock-pipeline --out reports/quality-demo-new
+python3 scripts/experiments/demo_evidence_quality.py --mock-pipeline --out reports/quality-demo-new
 ```
 
 `--relevance-only` 仅允许 off；`--quality-only` 必须配 shadow/enforce，不能与 relevance-only 同用。参数错误在模型调用前报告。

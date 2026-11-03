@@ -6,6 +6,8 @@ import argparse
 from collections import Counter
 import json
 from pathlib import Path
+import sys
+sys.path.insert(1, str(Path(__file__).resolve().parents[1]))  # scripts/ holds the registered forwarding shells
 from run_balance_analysis import ROOT, digest, strict_json, write_json
 from balance_policy import triage_retrieval
 

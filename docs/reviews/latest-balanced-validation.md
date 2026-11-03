@@ -11,7 +11,7 @@ screened summary and must be retained when describing recency.
 ## Reproduce collection
 
 ```sh
-python3 scripts/collect_balanced_feedback.py \
+python3 scripts/collect/collect_balanced_feedback.py \
   --out data/raw/feedback/20261027-latest-balanced \
   --review-decisions configs/feedback-latest-20261027-source-reviews-v2.json
 ```
@@ -86,7 +86,7 @@ reduction in emotion bias.
 
 ```sh
 python3 -m unittest discover -s tests -v
-python3 scripts/test_balance_semantic_controls.py \
+python3 scripts/experiments/test_balance_semantic_controls.py \
   --out reports/latest-balanced-20261027/semantic-controls
 python3 scripts/recover_latest_failures.py \
   --run reports/latest-balanced-20261027/full-pipeline \

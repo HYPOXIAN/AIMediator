@@ -7,6 +7,8 @@ import tempfile
 import unittest
 from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts/collect'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts/experiments'))
 import run_balance_analysis as m
 import resume_quality_screening_local as recovery
 

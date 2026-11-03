@@ -15,7 +15,7 @@ import urllib.parse
 import urllib.request
 from zoneinfo import ZoneInfo
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 HOSTS = {"api.steampowered.com", "public.api.bsky.app", "bsky.social", "www.googleapis.com"}
 
 

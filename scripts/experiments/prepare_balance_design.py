@@ -7,6 +7,8 @@ import argparse
 import json
 import re
 from pathlib import Path
+import sys
+sys.path.insert(1, str(Path(__file__).resolve().parents[1]))  # scripts/ holds the registered forwarding shells
 
 
 def validate_move_data(rows):

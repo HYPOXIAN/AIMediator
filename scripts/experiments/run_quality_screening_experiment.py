@@ -11,6 +11,8 @@ import json
 from pathlib import Path
 import time
 
+import sys
+sys.path.insert(1, str(Path(__file__).resolve().parents[1]))  # scripts/ holds the registered forwarding shells
 import evidence_quality as q
 import run_balance_analysis as m
 
@@ -126,7 +128,7 @@ def main():
     policy=q.load_policy()
     prompts={'quality':{lang:(m.ROOT/f'prompts/evidence-quality.{lang}.txt').read_text() for lang in ('en','zh')}}
     files=['scripts/run_balance_analysis.py','scripts/evidence_quality.py','scripts/balance_policy.py',
-           'scripts/run_quality_screening_experiment.py','configs/evidence-quality-policy.json','configs/balance-review-policy.json','data/glossary.json']
+           'scripts/experiments/run_quality_screening_experiment.py','configs/evidence-quality-policy.json','configs/balance-review-policy.json','data/glossary.json']
     identity={'version':'existing-group-quality-screen-v1','group_sha256':m.digest(group_bytes),
         'source_sha256':m.digest(source_bytes),'relevance_sha256':m.digest(relevance_bytes),
         'comment_ids':ids,'policy':policy,'prompts':prompts,

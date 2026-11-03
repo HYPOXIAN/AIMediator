@@ -10,6 +10,8 @@ import unittest
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts/collect'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts/experiments'))
 import evidence_quality as q
 import run_balance_analysis as m
 from prepare_balance_design import prepare_briefs

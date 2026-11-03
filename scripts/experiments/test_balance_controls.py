@@ -1,6 +1,8 @@
 """Separate synthetic numeric-entailment controls; never community evidence."""
 import argparse
 from pathlib import Path
+import sys
+sys.path.insert(1, str(Path(__file__).resolve().parents[1]))  # scripts/ holds the registered forwarding shells
 from run_balance_analysis import ROOT, Runner, ground_claim, write_json
 
 

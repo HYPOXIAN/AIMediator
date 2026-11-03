@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import unittest
 
-SPEC=importlib.util.spec_from_file_location('grounded',Path(__file__).resolve().parents[1]/'scripts/test_grounded_feedback.py')
+SPEC=importlib.util.spec_from_file_location('grounded',Path(__file__).resolve().parents[1]/'scripts/experiments/test_grounded_feedback.py')
 m=importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(m)
 

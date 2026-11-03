@@ -1,6 +1,6 @@
 import json,re
 from pathlib import Path
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=Path(__file__).resolve().parents[2]
 G=json.loads((ROOT/'data/glossary.json').read_text())
 NAMES=[e['canonical_name'] for e in G['entries'] if e['category']=='character']+['Arjun','Viper','Bison','Akuma','Gouki','Gief','Honda','Deejay','Chun','Luke','Guile','Cammy']
 CHAR_EN=re.compile(r'\b(?:'+ '|'.join(re.escape(x) for x in NAMES)+r')\b',re.I)

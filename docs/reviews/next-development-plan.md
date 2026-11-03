@@ -113,4 +113,4 @@ This is a proposed capacity allocation, not a promise of completion. Independent
 
 ## First implementation task
 
-Extend `scripts/run_balance_regression_live.py` and its offline tests with a versioned multi-dimensional extraction assessment. Start with the existing Manon addressee-only output, the explicit Arjun nerf request, disputed sarcasm and the Drive-system source. Preserve the historical 4/6 diagnostic unchanged and emit new quality dimensions separately. This gives the next prompt experiment a meaningful success criterion before spending time on another full run.
+Extend `scripts/experiments/run_balance_regression_live.py` and its offline tests with a versioned multi-dimensional extraction assessment. Start with the existing Manon addressee-only output, the explicit Arjun nerf request, disputed sarcasm and the Drive-system source. Preserve the historical 4/6 diagnostic unchanged and emit new quality dimensions separately. This gives the next prompt experiment a meaningful success criterion before spending time on another full run.

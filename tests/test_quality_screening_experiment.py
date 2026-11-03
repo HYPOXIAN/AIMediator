@@ -5,6 +5,8 @@ import sys
 import tempfile
 import unittest
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts/collect'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts/experiments'))
 import evidence_quality as q
 import run_balance_analysis as m
 from run_quality_screening_experiment import classify,export_results

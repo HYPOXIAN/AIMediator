@@ -1,6 +1,8 @@
 """End-to-end positive numeric extraction controls; never real community evidence."""
 import argparse
 from pathlib import Path
+import sys
+sys.path.insert(1, str(Path(__file__).resolve().parents[1]))  # scripts/ holds the registered forwarding shells
 from run_balance_analysis import (ROOT,Runner,strict_json,write_json,digest,api,
     evidence_units,character_reference,ground_claim)
 

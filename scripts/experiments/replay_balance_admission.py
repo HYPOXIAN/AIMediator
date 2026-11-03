@@ -8,6 +8,8 @@ import json
 from pathlib import Path
 import shutil
 from unittest.mock import patch
+import sys
+sys.path.insert(1, str(Path(__file__).resolve().parents[1]))  # scripts/ holds the registered forwarding shells
 import run_balance_analysis as m
 from balance_policy import triage_retrieval,load_policy
 

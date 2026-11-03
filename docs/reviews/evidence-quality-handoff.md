@@ -31,7 +31,7 @@
 - 当前完整流程使用 `prompts/summarize-balance.{zh,en}.txt`，不是旧的 `prompts/extract-grounded-feedback.txt`。不要只修改旧提示词后宣称主流程已接入。
 - 当前 extraction 的 `character` 是必填字符串；中文提示词将纯系统意见返回为空。新增系统出口应独立实现，不假装现有角色 schema 已支持系统证据。
 - `aggregate()` 当前按角色与 buff/nerf 分组，使用唯一 comment ID 计数，但尚未区分一般意见与机制证据，也不汇总 keep/unclear。不得把现有计数描述为独立玩家人数或总体共识。
-- `scripts/prepare_balance_design.py` 已要求来源审查、身份、明确目标、版本数据等。新增资格判断只能补充这些门槛，不能替代它们。
+- `scripts/experiments/prepare_balance_design.py` 已要求来源审查、身份、明确目标、版本数据等。新增资格判断只能补充这些门槛，不能替代它们。
 - `scripts/balance_policy.py` 和 `configs/balance-review-policy.json` 包含现有身份、检索和数值规则。保留其语义。
 - `docs/next-development-plan.md`、`docs/balance-review-v2.md` 描述已有局限；冻结的 silver 标签和 admission 实验不得覆盖。
 

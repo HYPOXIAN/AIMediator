@@ -5,6 +5,8 @@ This export never overrides agreement or sends unresolved comments to extraction
 import argparse
 from collections import Counter
 from pathlib import Path
+import sys
+sys.path.insert(1, str(Path(__file__).resolve().parents[1]))  # scripts/ holds the registered forwarding shells
 from balance_policy import load_policy,term_matches,attributed_candidates
 from run_balance_analysis import strict_json,write_json,character_reference,character_candidates,digest
 

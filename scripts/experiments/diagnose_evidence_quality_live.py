@@ -7,6 +7,8 @@ import argparse
 import json
 from pathlib import Path
 
+import sys
+sys.path.insert(1, str(Path(__file__).resolve().parents[1]))  # scripts/ holds the registered forwarding shells
 import evidence_quality as q
 import run_balance_analysis as m
 
@@ -31,7 +33,7 @@ def main():
     prompts={stage:{lang:(m.ROOT/f'prompts/{name}.{lang}.txt').read_text() for lang in ('en','zh')}
         for stage,name in [('quality','evidence-quality'),('extract','summarize-balance'),('verify','verify-balance')]}
     code_paths=['scripts/evidence_quality.py','scripts/run_balance_analysis.py',
-                'scripts/balance_policy.py','scripts/diagnose_evidence_quality_live.py']
+                'scripts/balance_policy.py','scripts/experiments/diagnose_evidence_quality_live.py']
     identity={'version':'fixed-admission-quality-live-v1',
         'source_sha256':m.digest(source_bytes),'admission_sha256':m.digest(admission_bytes),
         'comment_ids':args.comment_id,'policy':policy,

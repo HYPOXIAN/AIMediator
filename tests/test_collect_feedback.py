@@ -7,7 +7,7 @@ import unittest
 from unittest.mock import patch
 import urllib.error
 
-SPEC = importlib.util.spec_from_file_location("collector", Path(__file__).resolve().parents[1] / "scripts/collect_feedback.py")
+SPEC = importlib.util.spec_from_file_location("collector", Path(__file__).resolve().parents[1] / "scripts/collect/collect_feedback.py")
 m = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(m)
 
