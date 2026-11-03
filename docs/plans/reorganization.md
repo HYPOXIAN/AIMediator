@@ -274,3 +274,18 @@ Decisions taken in the batch 3 review (2026-11-03), on the decisions registered 
 20. **Check tool and `reports/`** (P3-D07): the tool reads `reports/*/manifest.json` and `reports/*/summary/` for the G7 and G9 scans; implemented in batch 4 before the hook becomes blocking.
 21. **Project-root constant** (P3-D09): the package's `cwd`-based root and the scripts' `__file__`-based roots both stay for now; the choice between one package constant and a shared helper is made with the CLI work.
 22. **Collection defaults** (P3-D10): `--output` of `expand_feedback.py` and `--input` of `screen_feedback.py` are required, so a bare run cannot write into a frozen raw dataset.
+
+Decisions taken in the batch 4 review (2026-11-03), on the decisions registered in the change record (P4 section). The owner adopted every recommendation, including those for the bypassed P4-D09, P4-D11 and P4-D12 and for the deferred P3-D08.
+
+23. **Module report** (P4-D01): `emotion-quantification-and-evidence-isolation.md` sits in `docs/design/` next to `evidence-quality.md`; the two are not merged.
+24. **README research history** (P4-D02): sections whose topic has a record are appended verbatim to that record; the rest are kept verbatim in `docs/archive/readme-research-history.md`.
+25. **Corpus content** (P4-D03): Chinese aliases and authored model-input cases stay in code spans as corpus (D8); authored cases carry an English rendering.
+26. **ADR boundary** (P4-D04): one ADR, `0001-package-as-single-runtime.md`, written only from the refactoring note; no ADRs are written after the fact for other trade-offs.
+27. **Historical commands in records** (P4-D05): kept verbatim, with a dated note on what moved.
+28. **Commands in living documents** (P4-D06): new output under `runs/`; a command reading an archived run uses a `runs/<run>` placeholder and links the report manifest.
+29. **Links to moved-out reports** (P4-D07): to the kept `summary/` copy when there is one, otherwise to `reports/<name>/manifest.json`.
+30. **References to content that exists nowhere** (P4-D08): kept as code spans marked "(not retained)".
+31. **Collector output** (P4-D09): the generated review sheet points at the dataset `manifest.json`.
+32. **Hand-entered low-alias decisions** (P4-D10): listed verbatim in `records/20261022-alias-review.md`, not interpreted or applied.
+33. **`.claude/` and the blocking hook** (P4-D11 with P3-D08): RULES.md v1.2 allows `.claude/` at the root as ignored local agent state.
+34. **Reports without a result record** (P4-D12): the screening audit gets `records/20261027-screening-audit.md`, translated from its summary; the two quality-screening reports keep the cleanup record.
