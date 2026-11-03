@@ -12,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts/collect'))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts/experiments'))
 import run_balance_analysis as m
+from aimediator.resources import asset_path
 
 
 def claim():
@@ -191,7 +192,7 @@ class BalanceEvidenceTests(unittest.TestCase):
         # Matching quantities alone now fail the conservative request-intent gate.
         errors, _ = m.ground_claim(claim(), row('Ryu did 600 damage; Ken did 500.'), {'Ryu'})
         self.assertTrue(any('intent' in error for error in errors))
-        self.assertIn('past patch', (m.ROOT / 'prompts/verify-balance.en.txt').read_text())
+        self.assertIn('past patch', asset_path('prompts/verify-balance.en.txt').read_text(encoding='utf-8'))
 
 
 if __name__ == '__main__':

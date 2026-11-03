@@ -34,6 +34,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | Step | Status | Tests | Lock | Notes |
 | ---- | ------ | ----- | ---- | ----- |
 | B0.1 | done | 222 | — | Change record opened; index row added. The lock does not exist before B0.3 |
+| B0.2 | done | 222 | — | F-04 fixed: the test reads the prompt through `asset_path`. Plan 8.5 from a foreign directory: 222 pass, no error |
 
 ## Baseline measurements (B0.4)
 
