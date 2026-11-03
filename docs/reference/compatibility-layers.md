@@ -46,6 +46,7 @@ arguments rather than a pure forwarder (see its row).
 | `configs/evidence-quality-policy.json` | `../src/aimediator/assets/configs/evidence-quality-policy.json` | scripts: `build_screening_audit.py`, `run_quality_screening_experiment.py`; docs: `evidence-quality-handoff.md`, `evidence-quality-implementation.md` | R1 |
 | `configs/local-language-routing.json` | `../src/aimediator/assets/configs/local-language-routing.json` | scripts: `diagnose_evidence_quality_live.py`, `run_quality_screening_experiment.py`, `run_quality_screening_recovery.py`; docs: `balance-analysis.md` | R1 |
 | `data/glossary.json` | `../src/aimediator/assets/data/glossary.json` | scripts: `run_quality_screening_experiment.py`, `run_smoke_test.py`, `screen_feedback.py`; docs: `README.md`, `alias-review.md`, `glossary.md`, `glossary-vector-index.md` | R1 |
+| `data/evaluation/evidence-quality-synthetic-v1/cases.json` | `../../../src/aimediator/assets/fixtures/cases.json` | scripts: `experiments/demo_evidence_quality.py`; tests: `test_evidence_quality.py`; `tests/test_evaluation_sets.py` checks it against `cases_sha256` in the set's `manifest.json`; docs: `evidence-quality-implementation.md` | R1 |
 
 ## Symlinks to packaged prompts
 
@@ -86,3 +87,7 @@ implementation.
 ## Change log
 
 - 2026-11-03: register created with 18 symlinks and 7 forwarding scripts.
+- 2026-11-03 (batch 3): added the symlink
+  `data/evaluation/evidence-quality-synthetic-v1/cases.json`, which replaced a
+  byte-identical copy of the packaged fixture (plan section 7, decision 9).
+  The register now lists 19 symlinks and 7 forwarding scripts.
