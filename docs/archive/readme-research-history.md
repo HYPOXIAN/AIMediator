@@ -109,6 +109,6 @@ The 2026-10-22 experiment admitted 197 comments, with two generation failures.
 All 122 complete proposals received a separate agent source review, retaining
 47 qualitative claims with explicitly labeled corrections. Local numeric
 entailment controls passed 3/4; automatic output still requires source review.
-The generated `reports/balance-engineering-20261022-final-review/evaluation.md`
+The generated [`reports/20261022-balance-engineering-review/summary/evaluation.md`](../../reports/20261022-balance-engineering-review/summary/evaluation.md)
 records results and limitations; `source-reviewed-report.json` preserves the
 reviewed engineering opinions alongside the unchanged raw model results.

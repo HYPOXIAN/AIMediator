@@ -99,7 +99,7 @@ python3 scripts/recover_latest_failures.py \
 python3 scripts/render_latest_validation_report.py
 ```
 
-The final report is `reports/latest-balanced-20261027/evaluation.md`. Review
+The final report is [`reports/20261027-balanced-validation/summary/evaluation.md`](../../reports/20261027-balanced-validation/summary/evaluation.md). Review
 `full-pipeline/quarantined-claims.json` and final-generation failures as well as
 accepted outputs. Automatic completion does not establish semantic accuracy,
 patch applicability, mechanic truth, population consensus or optimal tuning.
@@ -182,7 +182,7 @@ complete subject/action recommendation, preserve conditional and negated intent,
 keep clause-local subjects, and reject unrelated numbers as tuning targets.
 `--embedding-provider configured` supports the already configured embedding
 service; `--num-gpu` records explicit placement. The full default run and its
-separate controls live under `reports/latest-balanced-20261027/`. Completion,
+separate controls live under `reports/latest-balanced-20261027/` (archived; [manifest](../../reports/20261027-balanced-validation/manifest.json)). Completion,
 quarantine and failure counts are read from the resulting reports, never assumed
 from an in-progress run. The 600-comment default run uses evidence-quality=off;
 quality integration has separate live diagnostics and offline tests.

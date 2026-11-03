@@ -151,7 +151,7 @@ retrieval/relevance and selected live extraction regressions; it does not claim
 a full rerun of v1 generation or independent human accuracy.
 
 The latest targeted generation follow-up is recorded in
-`reports/balance-review-v22/review-summary.md`: 94 code checks pass, numeric
+[`reports/balance-review-v22/summary/review-summary.md`](../../reports/balance-review-v22/summary/review-summary.md): 94 code checks pass, numeric
 extraction controls pass 2/2, and numeric entailment controls pass 4/4. Six real
 regressions meet the frozen diagnostic expectation in 4/6 cases and still need
 source review; malformed recommendation text is separately repaired or blocked.

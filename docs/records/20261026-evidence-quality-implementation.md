@@ -81,7 +81,7 @@ Outputs include `evidence-quality.json`, `quality-routing.json`, `quality-summar
 
 `data/evaluation/evidence-quality-synthetic-v1/` has 38 agent-authored Chinese and English synthetic cases, all development, covering the 12 boundary kinds required by the handoff plus additional historical/comparison/sarcasm/unknown-identity/emotion-equivalent variants. They are not community evidence or human ground truth.
 
-`reports/evidence-quality-v1-delivery/examples/mixed-comment-examples.json` shows multi-route output for price plus a general request, system plus cosmetics, and heavy venting plus a concrete mechanism; `mock-pipeline/{off,shadow,enforce}/` runs the complete pipeline with mock models and retrieval, all inputs are passed by the mock, and `execution-provenance.json` states the simulated source explicitly.
+`reports/evidence-quality-v1-delivery/examples/mixed-comment-examples.json` (archived; [manifest](../../reports/evidence-quality-delivery-v1/manifest.json)) shows multi-route output for price plus a general request, system plus cosmetics, and heavy venting plus a concrete mechanism; `mock-pipeline/{off,shadow,enforce}/` runs the complete pipeline with mock models and retrieval, all inputs are passed by the mock, and `execution-provenance.json` states the simulated source explicitly.
 
 `data/evaluation/evidence-quality-real-v1/` draws 300 records deterministically by duplicate cluster from the existing **pre-screening** corpus: 198 en, 101 zh, 1 und; all labels are null/unlabeled, and there is no human accuracy. Sources that appeared in the historical admission are forced into development; normalized duplicate content does not cross splits. Equivalent clusters still need to be merged by humans, the language/source stratification checked and the split frozen before double annotation and adjudication; the current provisional test cannot be claimed directly as an independent blind test.
 
@@ -98,10 +98,10 @@ The report gives at the same time mechanism precision/recall, the false-exclusio
 
 ## Verification status
 
-See `reports/evidence-quality-v1-verification/verification.json` and `tests.log`.
+See [`reports/evidence-quality-verification-v1/summary/verification.json`](../../reports/evidence-quality-verification-v1/summary/verification.json) and `tests.log` (archived; [manifest](../../reports/evidence-quality-verification-v1/manifest.json)).
 The existing frozen silver-v1, admission, original comments and historical reports were not overwritten. New code requires a new directory and does not continue old results directly.
 
-The real diagnostic uses the original-language models and two sources from the fixed historical admission, saving all raw responses and the shadow/enforce audit records. The English Drive Rush input was labeled exclude by the model; the coarse annotation and extraction of the Chinese sample still need human checking, and the enforce semantic audit once returned uncertain. All of these are observations awaiting review, not conclusions about correctness. The final diagnostic status is given by `reports/evidence-quality-v1-live-verified/diagnostic-summary.json`.
+The real diagnostic uses the original-language models and two sources from the fixed historical admission, saving all raw responses and the shadow/enforce audit records. The English Drive Rush input was labeled exclude by the model; the coarse annotation and extraction of the Chinese sample still need human checking, and the enforce semantic audit once returned uncertain. All of these are observations awaiting review, not conclusions about correctness. The final diagnostic status is given by [`reports/evidence-quality-live-verified-v1/summary/diagnostic-summary.json`](../../reports/evidence-quality-live-verified-v1/summary/diagnostic-summary.json).
 
 The current local model list lacks `qwen3-embedding:8b`, so the complete online run of fresh retrieval + relevance + quality + extraction was not completed; the fixed-admission diagnostic did not bypass or forge that model's digest. The complete run commands above can be executed only after the original embedding model is restored. This delivery does not download or replace models automatically.
 

@@ -113,11 +113,11 @@ Latest recorded reference, not a release acceptance threshold:
   300 English and 300 simplified Chinese, all retained Steam reviews.
 - Selected full run:
   `reports/latest-balanced-20261027/full-pipeline-final`, as selected by
-  `reports/latest-balanced-20261027/full-selected-run.json`.
+  `reports/latest-balanced-20261027/full-selected-run.json` (both archived; see the report [manifest](../../reports/20261027-balanced-validation/manifest.json)).
 - Its recorded result: 525 relevance admissions, 52 rejections, 23 unresolved;
   404 generated claims, 187 automatically accepted, 217 quarantined, and two
   comments with generation failure. The 600-comment run uses quality=off.
-- `reports/latest-balanced-20261027/summary.zh.md` records 147 code tests and 20
+- `reports/latest-balanced-20261027/summary.zh.md` (archived; [manifest](../../reports/20261027-balanced-validation/manifest.json)) records 147 code tests and 20
   integrity checks passing on October 27. The code tests were rerun for this
   design as described below; the historical 20 integrity checks were not rerun.
 - A separate recovery produced ten automatically accepted claims that source

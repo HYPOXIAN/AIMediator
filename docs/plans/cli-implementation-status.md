@@ -21,7 +21,7 @@ production modules. No applicable AGENTS.md was present. Git metadata was empty;
 it was not initialized or reconstructed.
 
 `python3 -m unittest discover -s tests -v`: original 147 tests passed (11.396 s).
-The saved repeat baseline is `reports/cli-implementation-20261028/baseline-tests.log`.
+The saved repeat baseline is `reports/cli-implementation-20261028/baseline-tests.log` (archived; [manifest](../../reports/20261028-cli-implementation/manifest.json)).
 Source hashes/runtime are in `source-baseline.json` in that directory. Existing
 prompt/config bytes were rechecked after migration: 26 files unchanged, recorded
 in `resource-preservation.json`. Historical data, frozen labels, decisions,
@@ -56,7 +56,7 @@ structured errors/progress. No implicit global config or unrelated .env read.
 
 The final full suite command is `python3 -m unittest discover -s tests -v`:
 182 tests passed (147 existing and 35 product tests), 39.921 s;
-`reports/cli-implementation-20261028/all-tests-final.log`.
+`reports/cli-implementation-20261028/all-tests-final.log` (archived; [manifest](../../reports/20261028-cli-implementation/manifest.json)).
 Product checks cover no-call invalid preflight, unsupported languages, Unicode,
 relocation, complete replay, model/code/config/resource/byte mismatch before
 mutation, competing writers, crash consumption, exhausted repeated resume,
@@ -81,7 +81,7 @@ The final suite tests these evidence boundaries and no-mutation contracts.
 The packaged demo runs 38 authored bilingual cases through the actual pipeline
 in all three modes using injected fixture transports, without monkeypatches or
 network/model/credential requirements. Durable release examples are under
-`reports/cli-implementation-20261028/release-demo/`; its `example-report/` and
+`reports/cli-implementation-20261028/release-demo/` (archived; [manifest](../../reports/20261028-cli-implementation/manifest.json)); its `example-report/` and
 `review-template/` are the delivered sample report and review artifact.
 
 ## P4 — passed: clean delivery and diagnostics
@@ -128,7 +128,7 @@ live diagnostic then completed two authored numeric-request sources with real
 local Llama/Qwen, shadow, configured remote embeddings and num_gpu=99, taking
 approximately 84.1 seconds after preflight, with zero technical failure units. Raw inputs,
 resolved settings, model digests, requests/responses and agent source review are
-in `reports/cli-implementation-20261028/live-diagnostic/`.
+in `reports/cli-implementation-20261028/live-diagnostic/` (archived; [manifest](../../reports/20261028-cli-implementation/manifest.json)).
 
 Both generated proposals preserve the explicit synthetic 600-to-500 request.
 The Chinese quality annotation routes that concrete numerical request to

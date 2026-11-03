@@ -23,7 +23,7 @@ Deliver a reproducible bilingual CLI that turns a bounded feedback dataset into 
 - Application logic lives primarily in `scripts/`; `src/aimediator/` is a placeholder and there is no packaging manifest.
 - All 94 unit tests passed again on the planning date. This validates existing code checks, not model accuracy. No fresh model inference was run for this plan.
 
-Sources: `README.md`, `docs/meetings/20261022-work-summary.md`, `docs/plans/review-follow-ups.md`, `docs/records/20261022-balance-review-v2.md`, `reports/balance-review-v22/review-summary.md`, and the current runner/tests.
+Sources: `README.md`, `docs/meetings/20261022-work-summary.md`, `docs/plans/review-follow-ups.md`, `docs/records/20261022-balance-review-v2.md`, [`reports/balance-review-v22/summary/review-summary.md`](../../reports/balance-review-v22/summary/review-summary.md), and the current runner/tests.
 
 ## Priority 0: define the dataset and evaluation contract
 
