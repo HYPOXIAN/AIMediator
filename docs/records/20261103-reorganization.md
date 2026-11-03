@@ -398,3 +398,196 @@ Nothing here was changed in batch 2.
 6. **`dist/` contents are stale**: the kept wheel and sdist were built on
    2026-10-28, before the CLI documents moved into `docs/reviews/`. They
    are rebuilt and checked in P5 (batch 4).
+
+## P3 Code, scripts and resources in place (batch 3, 2026-11-03)
+
+Entry check: tag `reorg-p2` present, `HEAD` at `f1609fc` (= `reorg-p2`),
+working tree clean, 221 tests passing, rule check 160 violations (159 at the
+end of batch 2, plus the G3 entry `.claude`, see P3-D08). No collection or
+analysis process was running.
+
+Batch 3 runs under post-implementation review (plan section 7, decision 13,
+commit `e3ae36a`). The working migration list is in the ignored
+`runs/reorg-p3-migration.md`.
+
+### Decisions pending owner review
+
+Registered before any code or data change. "Implemented" means done as
+recommended and undone by reverting the listed commit (and, where stated,
+restoring from the archive); "bypassed" means the current state is kept and
+the rest of the batch proceeds from it.
+
+#### P3-D01 The seventh forwarding script
+
+- **Question**: `scripts/run_local_direction_comparison.py` (batch 1
+  deferred item 2) is a registered wrapper (R3) with a G7 problem: default
+  run name `balance-evidence-20261022` and output hard-coded to
+  `ROOT/'reports'/<run name>`. Options: (a) keep it unchanged as a
+  registered layer; (b) keep it registered but change the output to
+  `runs/<run name>` and drop the dated default; (c) archive it as a
+  one-off script.
+- **Recommendation**: (b). The command is still documented in
+  `docs/reviews/balance-analysis.md`, so R3 is not met and archiving would
+  break a documented command; the output path is the only problem.
+- **Handling**: `bypassed`. Both (b) and (c) alter a registered
+  compatibility layer, which this batch must not do (Q4).
+- **Effect on the batch**: the script stays at its path unchanged; its G7
+  violation remains and is listed as an exception at the end of the batch.
+- **Rollback**: none needed (nothing changed).
+- **Status**: pending
+- **Commits**: none
+
+#### P3-D02 One-off scripts archived with their runs
+
+- **Question**: which scripts count as one-off scripts bound to a single run
+  (P3; plan P3 names `finish_`, `finalize_`, `complete_`,
+  `recover_latest_*`, `replay_latest_*`, `rerun_latest_*` "and so on").
+  Proposed set: `complete_latest_validation.py`, `finalize_latest_rerun.py`,
+  `finish_latest_validation.py`, `recover_latest_failures.py`,
+  `recover_latest_quality.py`, `render_latest_validation_report.py`,
+  `replay_latest_accepted_contract.py`, `rerun_latest_exact_requests.py`,
+  `validate_latest_run.py` (all bound to `latest-balanced-20261027`) and
+  `build_screening_audit.py` (bound to `screening-audit-20261027`).
+  Options: (a) archive the set; (b) keep some (for example
+  `validate_latest_run.py`, `recover_latest_failures.py`) under new names in
+  `experiments/`.
+- **Recommendation**: (a). Each one names its run in a default or
+  hard-coded path, asserts that run's exact sizes (600 records, 321 rows),
+  or is byte-identical to a snapshot in that run's `provenance/`; both runs
+  are archived (batch 2). No test imports any of them.
+- **Handling**: `implemented`. Copies go to `~/Archives/AIMediator/scripts/`
+  with `SHA256SUMS` before `git rm`.
+- **Effect on the batch**: removes 10 P3, 9 G8 and 5 G7 violations, and the
+  only code users of `data/raw/feedback/20261027-latest-balanced`, so the
+  dataset rename touches no code. Documents that name these scripts keep
+  the bare names (batch 4).
+- **Rollback**: `git revert` of the commit restores the files at their
+  original paths; the archive copy is a second source.
+- **Status**: pending
+- **Commits**: (filled in after implementation)
+
+#### P3-D03 Smoke-test scripts with missing inputs
+
+- **Question**: `run_smoke_test.py` writes to `reports/smoke-<stamp>` and,
+  for a fresh run, reads `data/raw/debug/smoke-cases.json` and
+  `patch-context.json`, which exist neither in the project nor in the
+  baseline backup; `render_test_results.py` only reads `reports/smoke-*`,
+  which also does not exist. Options: (a) archive both; (b) move both to
+  `experiments/` with output under `runs/`.
+- **Recommendation**: (a). Neither can run on any existing input, and the
+  smoke runs they served are gone; keeping them would carry dead code
+  under a new path.
+- **Handling**: `implemented` (archive copy first, as in P3-D02).
+- **Effect on the batch**: removes 2 P3 violations. `prompts/extract-feedback.txt`
+  loses its only code user; the README still names it (P3-D04).
+- **Rollback**: `git revert` of the commit.
+- **Status**: pending
+- **Commits**: (filled in after implementation)
+
+#### P3-D04 Legacy prompts in `prompts/`
+
+- **Question**: P7 archives legacy prompts "once confirmed unreferenced",
+  and G3 v1.1 allows `prompts/` only for registered links. Both legacy
+  prompts are still referenced: `extract-feedback.txt` by `README.md`
+  (manual procedure, step 4) and, until P3-D03, `run_smoke_test.py`;
+  `extract-grounded-feedback.txt` by the kept
+  `test_grounded_feedback.py` (to become `run_grounded_feedback_live.py`),
+  which `tests/test_grounded_validation.py` imports. Options for
+  `extract-grounded-feedback.txt`: (a) move it to
+  `src/aimediator/assets/prompts/` (single source per P7, but ships a
+  prompt the package does not use); (b) amend G3 to allow it; (c) archive
+  it together with the live script and drop or rewrite the validation
+  test.
+- **Recommendation**: archive `extract-feedback.txt` in batch 4 once the
+  README rewrite drops step 4; for `extract-grounded-feedback.txt`, (a).
+- **Handling**: `bypassed`. Neither prompt is unreferenced, and the options
+  for the second one amend a rule, change the package contents, or remove
+  a tested script, with quite different consequences.
+- **Effect on the batch**: both files stay in `prompts/`; the moved
+  `run_grounded_feedback_live.py` keeps reading `prompts/extract-grounded-feedback.txt`
+  (its `ROOT` is fixed for the new depth).
+- **Rollback**: none needed.
+- **Status**: pending
+- **Commits**: none
+
+#### P3-D05 Track dataset manifests under ignored `data/`
+
+- **Question**: `data/raw/*` and `data/processed/*` are ignored, so the new
+  dataset manifests (P1) would exist only on this machine. Options: (a)
+  track `manifest.json` files only, through `.gitignore` exceptions;
+  (b) leave them ignored, backed up with the data.
+- **Recommendation**: (a). Manifests are small, hold no record text or
+  URLs (G9), and record provenance that should survive a lost data
+  directory; a clean clone then shows which datasets the code expects.
+- **Handling**: `implemented`.
+- **Effect on the batch**: none on other steps; manifests are written in
+  their own routine commit first and become tracked in the decision commit.
+- **Rollback**: `git revert` of the commit untracks the manifests and
+  removes them from the working tree; restore the files with
+  `git show <commit>:<path>` (or regenerate them) if they should stay as
+  ignored local files.
+- **Status**: pending
+- **Commits**: (filled in after implementation)
+
+#### P3-D06 Loose annotation file `pending-character-candidates.json`
+
+- **Question**: `data/evaluation/pending-character-candidates.json` (one
+  agent-reviewed alias candidate, unreferenced, not in the plan) is a P1
+  violation: an annotation file outside a versioned set, with a status word
+  in its name. Options: (a) move it into a versioned set
+  `data/evaluation/character-alias-candidates-v1/candidates.json` with a
+  manifest that records `pending` as a status; (b) archive and remove it.
+- **Recommendation**: (a). It keeps the content in the project, unchanged,
+  and matches how decision 11 treats `evidence-quality-real-v1-pending`.
+- **Handling**: `implemented` (`git mv` plus a new manifest).
+- **Effect on the batch**: removes 1 P1 violation.
+- **Rollback**: `git revert` of the commit.
+- **Status**: pending
+- **Commits**: (filled in after implementation)
+
+#### P3-D07 Check tool coverage of `reports/`
+
+- **Question**: batch 2 deferred item 5: the tool never opens files under
+  `reports/`, so its G7 and G9 scans miss the 26 tracked manifest and
+  summary files. Options: (a) let the tool read `reports/*/manifest.json`
+  and `summary/`; (b) keep the current design and check by hand.
+- **Recommendation**: (a), in batch 4, before the hook becomes blocking.
+- **Handling**: `bypassed`. It changes what the tool reports (output
+  meaning) and is not needed for P3.
+- **Effect on the batch**: none; the tracked report files are again checked
+  by hand at the end of the batch.
+- **Rollback**: none needed.
+- **Status**: pending
+- **Commits**: none
+
+#### P3-D08 Top-level `.claude/`
+
+- **Question**: since batch 2 a `.claude/` directory has appeared at the
+  root (ignored, one `scheduled_tasks.lock` written by the Claude Code
+  harness at session start). G3 reports it. Options: (a) remove it after
+  agent sessions end; (b) amend G3 to allow ignored agent tool state
+  directories; (c) leave it.
+- **Recommendation**: (a) for now; (b) only if it keeps returning.
+- **Handling**: `bypassed`. It is live state of the running harness, not
+  project content, and (b) amends `RULES.md`.
+- **Effect on the batch**: G3 stays at 2 (`notes` is batch 4).
+- **Rollback**: none needed.
+- **Status**: pending
+- **Commits**: none
+
+#### P3-D09 One project-root constant (G7)
+
+- **Question**: G7 asks code to resolve resources "through one project-root
+  constant". Today there are two notions: the package uses
+  `ROOT = Path.cwd()` (`engine.py`, `glossary_vectors.py`), while scripts
+  use `Path(__file__)`-based roots. Moving scripts keeps the second notion
+  (`parents[1]` becomes `parents[2]`). Options: (a) keep both; (b) make
+  scripts use the package constant (changes behavior when run from another
+  directory); (c) add a shared root helper.
+- **Recommendation**: (a) in this batch; decide (b) or (c) together with
+  the CLI work, since `cwd` is part of the CLI contract.
+- **Handling**: `bypassed`. Options (b) and (c) change how paths resolve.
+- **Effect on the batch**: moved scripts get `parents[2]`; no other change.
+- **Rollback**: none needed.
+- **Status**: pending
+- **Commits**: none
