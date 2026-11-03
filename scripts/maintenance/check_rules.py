@@ -15,8 +15,11 @@ Scope and limits:
 - "Source files" are tracked files plus untracked files that git does not
   ignore. Outside a git checkout the tree is walked instead, skipping the
   usual generated and data directories.
-- The contents of ``reports/`` are never read. For P2 and G8 only directory
-  and file names below ``reports/`` are listed.
+- Below ``reports/`` only the curated files are read: each
+  ``reports/<name>/manifest.json`` and everything under
+  ``reports/<name>/summary/``, for the G7 and G9 scans (reorganization plan,
+  section 7, decision 20). Other report files are never read; for P2 and G8
+  only their names are listed. Documentation checks skip ``reports/``.
 - ``.env`` files are never opened. Credential findings report the file, line
   and pattern name only, never the matched text.
 - Package listings (G9) read archive member names only.
@@ -103,6 +106,35 @@ SECRET_PATTERNS = (
 )
 
 
+def is_curated_report(rel):
+    """True for reports/<name>/manifest.json and files under
+    reports/<name>/summary/, the report files the checks may read."""
+    parts = PurePosixPath(rel).parts
+    if len(parts) < 3 or parts[0] != 'reports':
+        return False
+    return (parts[2] == 'manifest.json' and len(parts) == 3
+            or parts[2] == 'summary' and len(parts) > 3)
+
+
+def curated_report_files(root):
+    """Curated report files found by walking, for trees without git."""
+    found = []
+    base = Path(root) / 'reports'
+    if not base.is_dir() or base.is_symlink():
+        return found
+    for report in sorted(base.iterdir()):
+        if not report.is_dir() or report.is_symlink():
+            continue
+        if (report / 'manifest.json').is_file():
+            found.append('reports/%s/manifest.json' % report.name)
+        summary = report / 'summary'
+        if summary.is_dir() and not summary.is_symlink():
+            for current, dirs, files in os.walk(str(summary)):
+                rel = Path(current).relative_to(root).as_posix()
+                found.extend(rel + '/' + f for f in files)
+    return found
+
+
 class Project:
     """File access for one project root, with per-run caches."""
 
@@ -145,6 +177,8 @@ class Project:
                 path = rel + d
                 if (d in WALK_SKIP or d.endswith('.egg-info')
                         or path in ('data/raw', 'data/processed')):
+                    if path == 'reports':
+                        found.extend(curated_report_files(self.root))
                     continue
                 if os.path.islink(os.path.join(current, d)):
                     found.append(path)
@@ -162,13 +196,15 @@ class Project:
         return os.path.islink(str(self.root / rel))
 
     def text(self, rel):
-        """File text, or None for binaries, symlinks, large files, reports/
-        and .env files, which are never read."""
+        """File text, or None for binaries, symlinks, large files, .env
+        files and report files other than the curated ones, which are
+        never read."""
         if rel in self._text:
             return self._text[rel]
         result = None
         name = PurePosixPath(rel).name
-        protected = (rel.startswith('reports/') or name == '.env'
+        protected = ((rel.startswith('reports/')
+                      and not is_curated_report(rel)) or name == '.env'
                      or (name.startswith('.env.') and name != '.env.example'))
         path = self.root / rel
         if not protected and not path.is_symlink() and path.is_file():

@@ -303,15 +303,24 @@ class TestProjectRules(CheckRulesTestCase):
             ('reports/raw/', 'report has no manifest.json'),
         ])
 
-    def test_reports_contents_are_never_read(self):
+    def test_reports_curated_files_are_scanned_for_g7_and_g9_only(self):
         self.write('.env.example', 'A=\n')
         self.write('reports/run/manifest.json', '{"p": "%s", "k": "%s"}'
                    % (HOME, FAKE_KEY))
-        self.write('reports/run/notes.md', '中文 [x](missing.md)\n')
+        self.write('reports/run/summary/notes.md',
+                   '中文 [x](missing.md) %s\n' % HOME)
+        self.write('reports/run/notes.md', '%s %s\n' % (HOME, FAKE_KEY))
+        self.write('reports/run/provenance/tool.py', 'P = "%s"\n' % HOME)
         project = check_rules.Project(self.root)
-        self.assertIsNone(project.text('reports/run/manifest.json'))
+        self.assertIsNone(project.text('reports/run/notes.md'))
+        self.assertIsNone(project.text('reports/run/provenance/tool.py'))
         results = check_rules.run(project, ['G7', 'G9', 'D5', 'D8'])
-        self.assertEqual({rule: v for rule, v in results.items() if v}, {})
+        found = {rule: sorted(v.path for v in vs)
+                 for rule, vs in results.items() if vs}
+        self.assertEqual(found, {
+            'G7': ['reports/run/manifest.json',
+                   'reports/run/summary/notes.md'],
+            'G9': ['reports/run/manifest.json']})
 
     def test_p3_scripts(self):
         self.write(check_rules.REGISTER, '| `scripts/shim.py` | x |\n')
