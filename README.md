@@ -207,7 +207,7 @@ interrupted v2.1 run was removed during directory cleanup.
 ## Fresh balanced validation (October 27, 2026)
 
 The new canonical dataset is
-`data/raw/feedback/20261027-latest-balanced/screened/records.jsonl`: 600 retained
+`data/raw/feedback/20261027-balanced/screened/records.jsonl`: 600 retained
 Steam reviews, with 300 English and 300 simplified-Chinese records after
 fingerprinted language corrections. Collection restarted from latest-sorted
 streams without seeding old files, but meeting the retained quota reaches back

@@ -32,7 +32,7 @@
   },
   "run_manifest": "full-pipeline-final/manifest.json",
   "record": "docs/reviews/latest-balanced-validation.md",
-  "dataset": "data/raw/feedback/20261027-latest-balanced/screened/records.jsonl",
+  "dataset": "data/raw/feedback/20261027-balanced/screened/records.jsonl",
   "code_version": {
     "git_commit": null,
     "note": "Produced before the git baseline 0d390c4 (2026-11-03); identified by the run identity hashes below and the code snapshots under provenance/ in the archive.",

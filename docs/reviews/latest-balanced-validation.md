@@ -12,7 +12,7 @@ screened summary and must be retained when describing recency.
 
 ```sh
 python3 scripts/collect/collect_balanced_feedback.py \
-  --out data/raw/feedback/20261027-latest-balanced \
+  --out data/raw/feedback/20261027-balanced \
   --review-decisions configs/20261027-feedback-source-reviews-v2.json
 ```
 
@@ -36,11 +36,11 @@ overlapping language or platform views.
 
 ```sh
 python3 scripts/run_balance_analysis.py \
-  --dataset data/raw/feedback/20261027-latest-balanced/screened/records.jsonl \
+  --dataset data/raw/feedback/20261027-balanced/screened/records.jsonl \
   --embedding-provider configured --num-gpu 99 --evidence-quality off \
   --out reports/latest-balanced-20261027/full-pipeline
 python3 scripts/validate_latest_run.py \
-  --data data/raw/feedback/20261027-latest-balanced \
+  --data data/raw/feedback/20261027-balanced \
   --run reports/latest-balanced-20261027/full-pipeline \
   --out reports/latest-balanced-20261027/integrity-checks.json
 ```
@@ -145,7 +145,7 @@ optimal prompts nor emotion-bias reduction was established.
 python3 scripts/rerun_latest_exact_requests.py \
   --from-run reports/latest-balanced-20261027/full-pipeline \
   --out reports/latest-balanced-20261027/full-pipeline-final \
-  --dataset data/raw/feedback/20261027-latest-balanced/screened/records.jsonl
+  --dataset data/raw/feedback/20261027-balanced/screened/records.jsonl
 ```
 
 The parent dataset hash and local model weight digests must match. Reuse compares

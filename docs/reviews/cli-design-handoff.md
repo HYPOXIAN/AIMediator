@@ -104,7 +104,7 @@ Migration hazards verified in the code:
 Latest recorded reference, not a release acceptance threshold:
 
 - Canonical local dataset:
-  `data/raw/feedback/20261027-latest-balanced/screened/records.jsonl`, 600 records,
+  `data/raw/feedback/20261027-balanced/screened/records.jsonl`, 600 records,
   300 English and 300 simplified Chinese, all retained Steam reviews.
 - Selected full run:
   `reports/latest-balanced-20261027/full-pipeline-final`, as selected by
