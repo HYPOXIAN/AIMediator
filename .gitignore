@@ -24,3 +24,6 @@ data/processed/*
 !data/processed/.gitkeep
 reports/*
 !reports/.gitkeep
+
+# Run output (RULES.md P2); safe to empty.
+runs/
