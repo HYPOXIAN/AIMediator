@@ -8,7 +8,7 @@
 ## Decisions recorded before implementation
 
 - [x] Independent human annotations are unavailable. Build a 100-comment **agent-reviewed silver** set with source hashes, written reasons, uncertainty and a frozen development/holdout split. Do not call it gold or report human accuracy. Independent double annotation remains an external follow-up.
-- [x] The glossary targets an older patch. Preserve that glossary; add a separate source-literal candidate registry with provenance for Arjun/阿俊. Its official roster identity stays unverified. Nationality-only aliases cannot establish identity.
+- [x] The glossary targets an older patch. Preserve that glossary; add a separate source-literal candidate registry with provenance for Arjun/`阿俊`. Its official roster identity stays unverified. Nationality-only aliases cannot establish identity.
 - [x] Preserve the previous experiment unchanged. Evaluate frozen previous outputs and new gates separately; new prompt/model tests use new report directories.
 - [x] Retain retrieval/model agreement before extraction. Borderline or explicitly quantitative vector-negative comments go to a review queue, not directly to extraction.
 - [x] Numeric intent rules are conservative safety checks, not a proof of entailment. Ambiguous requests require review rather than invented values.
@@ -33,7 +33,7 @@
 
 - [x] Local single-source review was slow. Reuse completed single checks; batch remaining candidates, individually recheck batch rejections/uncertainty, and preserve both verdicts. No nomination bypasses the final relevance gate.
 
-- [x] The spelling 阿利克斯 in `steam:237633927` is not matched by the older Alex aliases. Decision: do not silently assert that canonical mapping from transliteration alone. Preserve this explicit source name in a pending candidate record; require identity/alias confirmation before a future registry version. This does not change the frozen relevance experiment or its thresholds.
+- [x] The spelling `阿利克斯` in `steam:237633927` is not matched by the older Alex aliases. Decision: do not silently assert that canonical mapping from transliteration alone. Preserve this explicit source name in a pending candidate record; require identity/alias confirmation before a future registry version. This does not change the frozen relevance experiment or its thresholds.
 
 - [x] A vector-positive/model-negative disagreement is not necessarily a genuinely unrelated source. Decision: export a separate follow-up queue for all such disagreements, plus unverified source-only identities. The export preserves the original text and never changes admission by itself.
 

@@ -27,7 +27,7 @@ Corrections to frozen labels require a new version.
 `configs/balance-review-policy.json` is separate from the original patch-specific
 glossary. Nationality and selected derogatory aliases cannot establish Dhalsim.
 Explicit canonical names and other candidate aliases still require context and
-semantic review. The policy registry maps Arjun/阿俊 only as a source-local name
+semantic review. The policy registry maps Arjun/`阿俊` only as a source-local name
 correspondence, based on both spellings in `steam:237730282`. It does not assert
 an official roster fact. Each grounded claim records the source literal,
 normalization status and glossary patch. Source-only identities have canonical

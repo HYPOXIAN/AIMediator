@@ -183,7 +183,7 @@ wording revisions are labeled, and unassigned admitted comments retain their
 complete original text. An agent review is not human ground truth.
 
 The completed experiment also saves `source-review-supplement.json`. It separately
-records source-only agent reviews of explicitly named Arjun/阿俊 feedback omitted
+records source-only agent reviews of explicitly named Arjun/`阿俊` feedback omitted
 by the older glossary, and numerical system requests that must not be assigned
 to one fighter. These are labeled as agent additions, never counted as successful
 Qwen/Llama outputs. The official identity and patch applicability of names outside
