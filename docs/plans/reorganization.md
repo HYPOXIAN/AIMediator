@@ -18,7 +18,7 @@
 
 1. **Entry condition**: before each phase starts, the working tree must be clean and all offline tests must pass.
 2. **One kind of operation per commit** (G5): for example, "move reports out" and "rename datasets" must not share a commit. Commit messages cite the relevant rule IDs and carry no agent attribution of any kind (P5, P6).
-3. **List first, then execute**: every phase that moves, deletes or renames anything first produces a migration list (object → action → reason → referenced by → destination). Execution starts only after the owner has reviewed it.
+3. **List first, then execute**: every phase that moves, deletes or renames anything first produces a migration list (object → action → reason → referenced by → destination). In batches 1 and 2, execution starts only after the owner has reviewed it. From batch 3 on, the list is a working document and the owner reviews after implementation (section 2; section 7, decision 13).
 4. **Fixed order for deleting non-reproducible content**: copy to the archive first, then verify SHA256, then delete, and enter it in the change record (G6). The whole reorganization shares one change record: `docs/records/20261103-reorganization.md`.
 5. **Phase exit**: at the end of each phase, run the rule-check tool (implemented in phase 1). Violations of the rules that phase is responsible for must reach 0; otherwise the next phase does not start. After the check passes, tag `reorg-pN`.
 6. **Rollback**: tracked files with `git revert` or by returning to the previous tag; ignored data is restored from the backup or the archive.
@@ -41,17 +41,18 @@ Documentation comes last because the script paths, dataset names and report loca
 ## 2. Implementation batches
 
 The work is executed in 4 batches. The split rests on three considerations:
-- **Review points must come one after another**: P2, P3 and P4 each have a migration list to review, and each list depends on the result of the previous phase.
+- **Review points must come one after another**: P2, P3 and P4 each have a migration list, and each list depends on the result of the previous phase.
 - **Work with different kinds of risk is kept apart**: P2 contains irreversible deletions, P3 changes code, P4 touches only documents.
 - **Every batch ends in a stable state**: tests pass and a tag is set, so pausing midway leaves nothing half-done.
 
-| Batch | Phases | Review point (stop and wait for approval before executing) | Start | Exit tag |
+| Batch | Phases | Review point | Start | Exit tag |
 |------|----------|----------------------------|------|----------|
 | 1 | P1 | None (only adds files; no moves, no deletions) | `0d390c4` | `reorg-p1` |
-| 2 | P2 | Move-out and deletion list | `reorg-p1` | `reorg-p2` |
-| 3 | P3 | Rename and archive list | `reorg-p2` | `reorg-p3` |
-| 4 | P4 + P5 | Document destination list | `reorg-p3` | `reorg-done` |
+| 2 | P2 | Before execution: move-out and deletion list | `reorg-p1` | `reorg-p2` |
+| 3 | P3 | After implementation: decisions and rename and archive results (decision 13) | `reorg-p2` | `reorg-p3-review`, then `reorg-p3` |
+| 4 | P4 + P5 | After implementation: decisions and document destination results (decision 13) | `reorg-p3` | a review tag, then `reorg-done` |
 
+- **Post-implementation review (batches 3 and 4, decision 13)**: the batch does not stop for approval of its migration list. Before changing code or data, it enters every choice that needs the owner in the change record under "Decisions pending owner review" and commits that on its own. A decision is implemented as recommended only if reverting its commit (and, where needed, restoring from the archive) fully undoes it; otherwise the batch bypasses it and keeps the current state. Each implemented decision is a commit of its own whose message body names it (`Decision: P3-Dnn`). The batch ends with a `-review` tag; after the owner's review, rejected decisions are reverted or redone, bypassed ones are implemented or deferred, and the final tag is set.
 - P5 only verifies and does not change structure, so it is merged into batch 4.
 - If batch 4 turns out too large, "add headers, translate, slim down the README, final acceptance" can be split off as batch 5, with the completion of batch 4's moves as the dividing line.
 - **The pre-commit hook is enabled in two steps**: batch 1 installs it in report-only mode, without blocking commits (violations are certain to exist during the reorganization, and blocking would stop every commit); batch 4 switches it to blocking mode once violations reach zero.
@@ -255,3 +256,7 @@ Decisions taken after batch 1 (2026-11-03), on items recorded under "Deferred" i
 10. **`MANIFEST.in`**: fixed in batch 4 together with the document moves; ships `docs/guides/cli-usage.md` and `docs/design/cli.md` only (P4).
 11. **Naming beyond the original list**: the renames listed in P2 and P3 (reports in batch 2; raw glossary sources, configuration files, evaluation set and raw feedback dataset in batch 3). `20261028-cli-unfiltered` keeps its name. `glossary.json` is changed twice: provenance paths in batch 3, `review_file` in batch 4.
 12. **D2 scope**: D2 applies to every document under `docs/`. Exempt: the root `README.md` (it is the package long description), `RULES.md` (it carries its own version line and revision log), agent entry files, and README files inside `data/` (dataset descriptions belong to manifests). Executed with decision 8 in the v1.1 amendment; the check tool already uses this scope.
+
+Decision taken before batch 3 (2026-11-03):
+
+13. **Post-implementation review for batches 3 and 4**: the owner no longer approves the migration list before execution. Each batch first registers every decision that needs the owner (number, question and options, recommendation and reason, handling `implemented` or `bypassed`, effect on the rest of the batch, rollback, status, commits) in the change record and commits it; it then implements the decisions that a revert fully undoes and bypasses those that would amend `RULES.md`, change program behavior or output meaning (changing only a default path does not count), alter a registered compatibility layer, delete content without an archive copy, or rest on thin evidence or on two defensible options with very different consequences. Bypassed items do not block other work, which proceeds from the current state. Routine work that the rules and this plan already specify is not a decision. The batch sets a review tag (`reorg-p3-review` for batch 3) and stops; after the owner's review, decisions are marked `approved`, `reverted` or `deferred`, resolved ones are appended here as numbered decisions, and the final tag is set. Section 0, item 3 and section 2 are updated to match.
