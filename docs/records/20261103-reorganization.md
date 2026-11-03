@@ -297,3 +297,17 @@ documents (see the batch 1 correction above); it is rebuilt in batch 4.
   `test_evaluation_preserves_unlabeled_status_and_preparation_is_silent`;
   the unused `subprocess` import and `ROOT` constant were removed. Suite:
   221 tests, unchanged (plan, section 7, decision 1).
+
+### Empty tool directories and runtime state files
+
+- `.agents/`, `.codex/`, `.aws/`: empty and untracked (checked with
+  `ls -la`); removed with `rmdir` (P6). Nothing to archive.
+- `data/raw/feedback-collector.lock` (0 bytes) and
+  `data/raw/feedback-http-state.json` (346 bytes): archived to
+  `~/Archives/AIMediator/runtime-state/` with `SHA256SUMS`, verified against
+  the source (both also match the baseline backup), then deleted (P1: no
+  runtime state under `data/`). No process held them. The values in the
+  state file were not printed. `scripts/collect_feedback.py`,
+  `scripts/collect_balanced_feedback.py` and `scripts/expand_feedback.py`
+  still write them under `data/raw/` and recreate them on the next run;
+  their paths move in batch 3.
