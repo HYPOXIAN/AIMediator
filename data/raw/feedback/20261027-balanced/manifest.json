@@ -1,0 +1,70 @@
+{
+  "dataset": "20261027-balanced",
+  "type": "raw",
+  "source": {
+    "kind": "public player feedback (Steam reviews, YouTube comments, Bluesky posts where collected)",
+    "app_id": 1364780,
+    "config_snapshot": "config-snapshot.json",
+    "note": "Records hold public authors' URLs; never distributed in release packages or examples (G9)."
+  },
+  "records": [
+    {
+      "file": "records.jsonl",
+      "count": 6376,
+      "by_platform": {
+        "steam": 6150,
+        "youtube": 226
+      },
+      "by_language": {
+        "en": 3801,
+        "und": 25,
+        "zh": 2550
+      }
+    },
+    {
+      "file": "screened/records.jsonl",
+      "count": 600,
+      "by_platform": {
+        "steam": 600
+      },
+      "by_language": {
+        "en": 300,
+        "zh": 300
+      }
+    }
+  ],
+  "former_name": "20261027-latest-balanced (renamed 2026-11-03, G8)",
+  "producing_script": {
+    "collection_and_screening": "scripts/collect/collect_balanced_feedback.py"
+  },
+  "configuration": [
+    "configs/feedback-collection-balanced.json (named feedback-collection-latest-balanced.json when used)",
+    "configs/20261027-feedback-source-reviews-v2.json (named feedback-latest-20261027-source-reviews-v2.json when used)"
+  ],
+  "consumers": [
+    "reports/20261027-balanced-validation (archived run)"
+  ],
+  "manifest_written": "2026-11-03 (batch 3, RULES.md P1); dataset files unchanged",
+  "files_sha256": {
+    "checkpoint.json": "b2d6762f6b693a6385c1c616d6f6c571e13b49be9defe157ebf6a401a536bb3e",
+    "chinese.jsonl": "511f253a14bbd1aa514a188bd9c0a9616844acb592bce45d015cd8291f54f6d9",
+    "config-snapshot.json": "55db0b8ee630b420e984e477e8d9d6594f97b64c76651ae794d5b0e83dd86930",
+    "english.jsonl": "e553552a46a1f8f70dda6b4a68eb26efc9bd360f7aca4e6ca99bf216ada878f0",
+    "records.jsonl": "791987c7b784cb3e9f40c23a7bc7f80f7fb11a2417be337c5fb7c29ef7fe966e",
+    "request-log.json": "c11e0e9558c9682c0f63b99fa8edd33917b961c885066bac063093fb5ca89c8f",
+    "review.md": "900511af11afb9be8f599314e56cff96917b6648a47414a57fed5adbd1a03ded",
+    "screened/chinese.jsonl": "909172c64a333a569ec69b42757b291a0e55f461ca34b2de953029323767d803",
+    "screened/decisions.jsonl": "b429356d633b3da563e5b419c104ad1f8f1a181721076b5b6ca73cdf941a1395",
+    "screened/english.jsonl": "d5cee3caf48147af55f8e5401eae71691b21079b8b628845d5d53214bbcffdf0",
+    "screened/excluded.jsonl": "f9989530b62ee5c0e3c4dbd872fdee1732e89d419e1cb3a00a5b01ff9688ca1f",
+    "screened/needs-review.jsonl": "178c7333c6bf1aec4a9165a54a1d1adb9e38dc89dddd81ab25dac4f85623e5ac",
+    "screened/records.jsonl": "3eb87a7561b41ff31cef3e7035f0a25353adbe1999e023ff5e46b1bcf4852e3f",
+    "screened/retained-reserve.jsonl": "736d468334cc5653c1c5667c9153c1851121a678b9892883cd926706bbf92421",
+    "screened/summary.json": "437fa0281c16f123aec874d24cff1d010152462662ed3bc4a5d42f8063c4f637",
+    "source-status.json": "f86cc152fd37f31d281a2be5c48c2aca2acfea105f7aa8598dcf28ad4556e747",
+    "steam.jsonl": "86f070b426167a3864f6f21932eb66f47d1b842ecf495cfc04b0b3a7b8276db3",
+    "summary.json": "6475cbfb60387a7347994fcf82485403d61f5bebf0c634bf9682d9fea0d12d25",
+    "youtube.jsonl": "20e2e01ffbfefc08c60217a17f0098840118d0425b6aa6f7d122b08bad2e3c84"
+  },
+  "file_count": 19
+}

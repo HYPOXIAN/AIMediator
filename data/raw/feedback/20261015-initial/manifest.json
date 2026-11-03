@@ -1,0 +1,69 @@
+{
+  "dataset": "20261015-initial",
+  "type": "raw",
+  "source": {
+    "kind": "public player feedback (Steam reviews, YouTube comments, Bluesky posts where collected)",
+    "app_id": null,
+    "config_snapshot": null,
+    "note": "Records hold public authors' URLs; never distributed in release packages or examples (G9)."
+  },
+  "records": [
+    {
+      "file": "records.jsonl",
+      "count": 1552,
+      "by_platform": {
+        "steam": 850,
+        "youtube": 702
+      },
+      "by_language": {
+        "en": 1173,
+        "und": 27,
+        "zh": 352
+      }
+    },
+    {
+      "file": "screened/records.jsonl",
+      "count": 166,
+      "by_platform": {
+        "steam": 153,
+        "youtube": 13
+      },
+      "by_language": {
+        "en": 104,
+        "zh": 62
+      }
+    }
+  ],
+  "producing_script": {
+    "collection": "scripts/collect/collect_feedback.py",
+    "screening": "scripts/collect/screen_feedback.py (writes screened/)"
+  },
+  "configuration": [
+    "configs/feedback-collection.json",
+    "configs/feedback-screening-overrides.json"
+  ],
+  "consumers": [
+    "scripts/collect/screen_feedback.py (--input default)",
+    "scripts/collect/expand_feedback.py (--base default)"
+  ],
+  "manifest_written": "2026-11-03 (batch 3, RULES.md P1); dataset files unchanged",
+  "files_sha256": {
+    "chinese.jsonl": "bfe88661f33c490df94d386c59ed4daffbead38e167f011d2bd00f69ead02e8e",
+    "english.jsonl": "83493110777291218100858155bfb2a7b11b5268005b25b271f2c5a23f70bd11",
+    "records.jsonl": "f5722857365b9a8c3c1b4dc45d773f21cccf2a45924035fb8e0ffd992a2290d0",
+    "screened/chinese.jsonl": "000bc15c40b4178a479289f855da17be63d9dbe179dd665252780aedd5a1ec46",
+    "screened/decisions.jsonl": "b166bc01e26a547923ee1560cb831fae86aa33ebfd5cb16da8826d19ce99edc4",
+    "screened/english.jsonl": "02fb88eb67d299e3a83fccef4accf69061eca194843959040b331bb533a0ca0a",
+    "screened/excluded.jsonl": "262e0cdbe9603cd7377939970355ba409a6cfe70d41108d23b2b508137666674",
+    "screened/needs-review.jsonl": "dc058ab79d0d9f21e4a8d489253899c9a750a25d41dc35e6eea336ed2ed115aa",
+    "screened/records.jsonl": "9e818ffe6f836a45cd26da26afed16f1dfd7abaa6c80971054802726867614d1",
+    "screened/review.md": "013f78f8889055bb114735d560666806437bb5cce87d919b641bc73ac8545584",
+    "screened/steam.jsonl": "62bf94d02cdf4707d242e2297dadd975e205bc179c86be564c5def15590e3b10",
+    "screened/summary.json": "fc124c69ae1158dbc96729fcd9c86c772812d57f544cc4a8eedb4470376b8a24",
+    "screened/validation.json": "d56812e3c22599695663897dfc62bbfd498f3a34cac2a368395e0856423c8cfa",
+    "screened/youtube.jsonl": "eb1bdfafcf2539612c1cbff2c4603eb92bdab1dae4aa6bda28b95023bc9d2712",
+    "steam.jsonl": "4e84bf222e9678b425d60ac7153755429a3df2b11365ffe171025475687729ee",
+    "youtube.jsonl": "d36165b23ba6828c6e3db114f9ecb8ca377f90d58fcc957447f35e520735f907"
+  },
+  "file_count": 16
+}

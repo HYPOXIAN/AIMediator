@@ -1,0 +1,23 @@
+{
+  "dataset": "glossary-vectors",
+  "type": "processed (reproducible)",
+  "generating_command": "python3 scripts/glossary_vectors.py build",
+  "needs": "an embedding endpoint configured in .env (key names in .env.example)",
+  "source": "src/aimediator/assets/data/glossary.json (through the data/glossary.json link)",
+  "current_identity": "b24f264326f371c891f313e67196e211f311e978035fec42f2d811104eb7fe3d",
+  "built_from_source_sha256": "5d2eca7b1ca6a32ecddc9fb78a84baffad8a408bb04cae1965963069e2f25d90",
+  "source_note": "Built before batch 3 changed two evidence_file paths in glossary.json; concept and alias texts are unchanged, but a rebuild gets a new identity because the identity includes the source hash.",
+  "consumers": [
+    "scripts/glossary_vectors.py search",
+    "src/aimediator/glossary_vectors.py (DEFAULT_INDEX)"
+  ],
+  "manifest_written": "2026-11-03 (batch 3, RULES.md P1)",
+  "files_sha256": {
+    "current.json": "aafa14ae3348aa8b4d6edb75c8c6fe8141f7ff3aa108d4897b7e329909e40e98",
+    "versions/b24f264326f371c891f313e67196e211f311e978035fec42f2d811104eb7fe3d/context.json": "820355678f04567ac4695a27b6a6bb39cd2e0e6986980aa76c7115810e1a6b50",
+    "versions/b24f264326f371c891f313e67196e211f311e978035fec42f2d811104eb7fe3d/records.json": "b21068f6afafaf385888ce85bd4c1949df8cd76b58eb919908a2bbb0ae27bfaa",
+    "versions/b24f264326f371c891f313e67196e211f311e978035fec42f2d811104eb7fe3d/validation.json": "0321335ff6e68d1abad7e13c362a7a340e43b8d3bfd66712a071ac7f0dc34d2b",
+    "versions/b24f264326f371c891f313e67196e211f311e978035fec42f2d811104eb7fe3d/vectors.npy": "682d6db52fd6fd36390c9d16ea16027a90a182d3f1aa7562f0ee4e9edba26b14"
+  },
+  "file_count": 5
+}

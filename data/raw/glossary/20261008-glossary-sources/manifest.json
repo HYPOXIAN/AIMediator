@@ -1,0 +1,34 @@
+{
+  "dataset": "20261008-glossary-sources",
+  "type": "raw",
+  "source": {
+    "kind": "glossary evidence: official move lists, community aliases, alias validation and name pairing",
+    "note": "Collected 2026-10-08, before version control; the producing step is not recorded."
+  },
+  "original_names": {
+    "alias-validation.json": "data/raw/glossary/alias-validation-20261008.json",
+    "community-aliases.json": "data/raw/glossary/community-aliases-20261008.json",
+    "name-pairing.json": "data/raw/glossary/name-pairing-20261008.json",
+    "official-moves.json": "data/raw/glossary/official-moves-20261008.json",
+    "unique-move-alias-validation.json": "data/raw/glossary/unique-move-alias-validation-20261008.json",
+    "unique-move-aliases.json": "data/raw/glossary/unique-move-aliases-20261008.json",
+    "unique-move-reference.json": "data/raw/glossary/unique-move-reference-20261008.json"
+  },
+  "moved": "2026-11-03 (batch 3, plan decision 11); contents unchanged, SHA256 compared before and after",
+  "producing_script": null,
+  "consumers": [
+    "src/aimediator/assets/data/glossary.json (evidence_file: community-aliases.json, unique-move-reference.json)",
+    "README.md (glossary section)"
+  ],
+  "manifest_written": "2026-11-03 (batch 3, RULES.md P1)",
+  "files_sha256": {
+    "alias-validation.json": "90bfe74ba34de33c56bca58b235a875fd6d26da76bacaa2e1f4c54abf8d51719",
+    "community-aliases.json": "7c163aa37490ef3f8e3d7c0f293c57d95c8ef51f91341c7395064be53a9b6639",
+    "name-pairing.json": "10c37eb156dd2027ea60531b7307ebafc2b54958f4118532c0ef80f0f4dbad78",
+    "official-moves.json": "d7d9274a3c78be846d8f75040bab9522b99050120a8ec4ba60c0dd72b5ca4657",
+    "unique-move-alias-validation.json": "b8802e771dd8f3c5da2ddc68ae24b4d367aa1f3974602493e897a6a73cc31c4c",
+    "unique-move-aliases.json": "b62d384c295cf36776164d02509d1e948ef62776755dfe9404dba5fce4fb87be",
+    "unique-move-reference.json": "6ec981e01720db29800f5af007d8ace7f1fa94da41b65094227469991dd04a4a"
+  },
+  "file_count": 7
+}

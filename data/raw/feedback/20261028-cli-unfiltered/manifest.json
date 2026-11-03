@@ -1,0 +1,54 @@
+{
+  "dataset": "20261028-cli-unfiltered",
+  "type": "raw",
+  "source": {
+    "kind": "public player feedback (Steam reviews, YouTube comments, Bluesky posts where collected)",
+    "app_id": 1364780,
+    "config_snapshot": "config-snapshot.json",
+    "note": "Records hold public authors' URLs; never distributed in release packages or examples (G9)."
+  },
+  "records": [
+    {
+      "file": "records.jsonl",
+      "count": 150,
+      "by_platform": {
+        "steam": 150
+      },
+      "by_language": {
+        "brazilian": 8,
+        "en": 36,
+        "french": 4,
+        "german": 1,
+        "italian": 1,
+        "japanese": 5,
+        "koreana": 9,
+        "russian": 5,
+        "spanish": 8,
+        "thai": 1,
+        "turkish": 2,
+        "zh": 70
+      }
+    }
+  ],
+  "producing_script": {
+    "collection": "provenance/collect.py in ~/Archives/AIMediator/reports/cli-real-unfiltered-20261028/ (archived; removed with cli-demo/ in batch 2)"
+  },
+  "configuration": [
+    "config-snapshot.json (in this dataset)"
+  ],
+  "consumers": [
+    "~/Archives/AIMediator/reports/cli-real-unfiltered-20261028/ (archived run)"
+  ],
+  "manifest_written": "2026-11-03 (batch 3, RULES.md P1); dataset files unchanged",
+  "files_sha256": {
+    "api-parameters-1.json": "940bb49bb1aa9046f5115912af782f54085dd40f1ac5d146bdb54e98018a2342",
+    "api-parameters-2.json": "fe06da6488935ca6096578697922fd2d348b5f1ca78d5e1cdf0ed6917a828f2d",
+    "api-response-1.json": "56298ed692d0b0c0109d377da9498cca22ca2f46fee634f48e1e4f34a00aaad7",
+    "api-response-2.json": "41ddd93b86e7e26aff2472a3c67b26b551df1eef915f7854f4806d8cc41d99d0",
+    "checkpoint.json": "2afd1279212f5c8eddb79877ccd2277842e3c5103d3bb2f52bcde76509e19ab1",
+    "config-snapshot.json": "45876189b59a6a2601d89e94785aca6f7d0598e799f8f753984f15e9fd39fb42",
+    "records.jsonl": "5583da3e129af332281768df02d9e554144941287dcbd839beec9d0324e3c623",
+    "summary.json": "a2a0df93b9883fa5d1b4d6dfa12dd4143231c762bca4aec1ffa2729aae67394b"
+  },
+  "file_count": 8
+}

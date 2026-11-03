@@ -17,11 +17,18 @@ dist/
 *~
 
 # Keep local datasets and generated reports out of version control by default.
-data/raw/*
+# Dataset manifests are tracked (RULES.md P1; batch 3 decision P3-D05).
+data/raw/**
 !data/raw/.gitkeep
 !data/raw/debug/
-data/processed/*
+!data/raw/debug/**
+!data/raw/*/
+!data/raw/*/*/
+!data/raw/*/*/manifest.json
+data/processed/**
 !data/processed/.gitkeep
+!data/processed/*/
+!data/processed/*/manifest.json
 # reports/ (RULES.md P2): only manifests and curated summaries are tracked.
 reports/**
 !reports/*/
