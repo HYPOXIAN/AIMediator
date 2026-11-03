@@ -72,3 +72,94 @@ docstring "Compatibility entry point":
   seven are registered, so the register covers 25 layers, not 24.
 
 All layers are registered only; none was removed (decision Q4).
+
+### Rule check tool and hook
+
+- `scripts/maintenance/check_rules.py`: read-only, standard library only,
+  output grouped by rule ID, non-zero exit on violations, `--rule` to select
+  rules. It never opens files under `reports/` or `.env` files and never
+  prints matched credential text. Checks: G2, G3, G7, G8, G9, D1, D2, D4,
+  D5, D6, D7, D8, P1, P2, P3, P4.
+- `tests/test_check_rules.py`: 29 offline tests. Suite: 221 tests
+  (192 + 29), all passing.
+- `scripts/maintenance/hooks/pre-commit`: runs the tool, prints violations,
+  always exits 0. Enabled with
+  `git config core.hooksPath scripts/maintenance/hooks`. Verified on the
+  commit that added it: 205 violations printed, commit not blocked.
+  `core.hooksPath` is local git configuration, so each clone has to enable
+  it (the command is in `CLAUDE.md`).
+
+### Violation baseline
+
+Full run after the batch 1 commits, saved (ignored) to
+`runs/reorg-p1-violations.txt`. These counts are the progress table for
+later phases.
+
+| Rule | Count | Main sources | Phase |
+| ---- | ----: | ------------ | ----- |
+| G2 | 1 | duplicate file (see Deferred) | P3 |
+| G3 | 6 | `.agents`, `.aws`, `.codex`, `cli-demo`, `notes`, `prompts` | P2, P4, see Deferred |
+| G7 | 17 | 8 absolute user paths (5 documents, 2 `cli-demo` files); 9 defaults naming `reports/` or a dated run | P2, P3, P4 |
+| G8 | 32 | `latest`/`final` in names, dates not used as prefix, `-vN` not at the end | P2, P3, P4 |
+| G9 | 1 | `dist/aimediator-refactored-workspace.zip` lists 66 `data/raw` entries (0 `.env`) | P2 |
+| D1 | 2 | `docs/module-reports/`, `docs/reviews/` | P4 |
+| D2 | 20 | existing documents without the header | P4 |
+| D4 | 24 | no `docs/README.md`; 23 unindexed documents | P4 |
+| D5 | 17 | 13 broken document links (as in the plan); 4 missing `MANIFEST.in` paths | P4 |
+| D6 | 0 | — | — |
+| D7 | 3 | `low-alias-review.json`; two alias reviews over 100 KB | P4 |
+| D8 | 10 | Chinese outside corpus content | P4 |
+| P1 | 9 | 4 raw datasets without manifest; loose glossary files; `-v1-pending` set name; loose annotation file; 2 runtime state files | P2, P3 |
+| P2 | 24 | 10 report directories without manifest; 12 with code or archive files outside `provenance/`; 2 extra `dist/` entries | P2 |
+| P3 | 39 | 35 scripts outside the three subdirectories (4 of them `test_*`, which also count for the prefix) | P3 |
+| P4 | 0 | static count 221 ≥ baseline 192 | — |
+| **Total** | **205** | | |
+
+### Deferred
+
+Issues found in batch 1 that belong to later batches or need an owner
+decision. Nothing here was changed.
+
+1. **G3 and P7 conflict.** P7 keeps a root `prompts/` for compatibility
+   links, but G3 does not list `prompts/`, so the G3 check reports it. Needs
+   an amendment to G3 or relocating the 14 prompt links (batch 3).
+2. **Seven forwarding scripts, not six.** The plan's P3 says "the 6
+   forwarding shells stay". `scripts/run_local_direction_comparison.py` is
+   the seventh; it also has a G7 default (`balance-evidence-20261022` run
+   name, output under `reports/`). Batch 3 decides whether it stays as a
+   registered layer or is archived as a one-off script.
+3. **Duplicate file (G2), not in the plan.**
+   `data/evaluation/evidence-quality-synthetic-v1/cases.json` is identical
+   to `src/aimediator/assets/fixtures/cases.json`. Batch 3 picks the single
+   source.
+4. **`MANIFEST.in` points to missing files.** Its four `include docs/cli-*.md`
+   lines name paths that do not exist (the files are in `docs/reviews/`), so
+   the current sdist cannot contain them. Beyond the 13 broken links the
+   plan counted; batch 4.
+5. **Naming beyond the plan's list.** G8 also reports dates used as a suffix
+   (`cli-implementation-20261028`, `screening-audit-20261027`,
+   `cli-walkthrough-16-20261029`, seven `data/raw/glossary/*-20261008.json`
+   files) and `-v1-` in the middle of names (`evidence-quality-v1-delivery`
+   and two siblings). The batch 2 and batch 3 migration lists should include
+   them.
+6. **Loose raw glossary files (P1).** `data/raw/glossary/` holds seven files
+   directly instead of a `YYYYMMDD-slug` dataset directory with a manifest.
+   The plan's P3 covers manifests but not this restructuring.
+7. **Chinese aliases in prose (D8).** `balance-analysis.md`,
+   `balance-review-v2.md` and `review-todo.md` each have one or two lines
+   with a Chinese alias in running text. Per the P4 allowlist they need to
+   become code spans or quotations (batch 4).
+8. **Scope of the D2 check.** The tool applies D2 to `docs/` only. The root
+   `README.md` and `RULES.md` have no D2 header; `RULES.md` was copied
+   verbatim as instructed. Owner to decide whether D2 covers root files.
+9. **D7 justification.** RULES.md allows a justified Markdown file over
+   100 KB but defines no form for the justification; the tool reports every
+   such file.
+10. **Report code count.** The tool counts 59 code or archive files outside
+    `provenance/` in `reports/`; the plan says 58. The batch 2 migration list
+    enumerates them exactly.
+11. **Checks that are not automated**: G1, G4, G6, D3, D9, P6, P7 and the
+    live-service test separation in P4 are verified manually (P5). The P4
+    test count is static (test methods counted with `ast`), which matched
+    the 192 measured at baseline. `data/processed/` "generating command
+    recorded" is not checked.
