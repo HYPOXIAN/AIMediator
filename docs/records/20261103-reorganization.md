@@ -877,7 +877,7 @@ Registered before any document is moved or changed. Same meaning of
   documents appear in the index under Design.
 - **Rollback**: `git revert` of the move commit (and of the header line).
 - **Status**: pending
-- **Commits**: (after implementation)
+- **Commits**: `3e32750` (move); `3ceb123` (Related lines)
 
 #### P4-D02 Destinations of the README research history
 
@@ -903,7 +903,7 @@ Registered before any document is moved or changed. Same meaning of
 - **Rollback**: `git revert` of the commit restores the README sections and
   removes the appended text.
 - **Status**: pending
-- **Commits**: (after implementation)
+- **Commits**: `8f376e3`
 
 #### P4-D03 What counts as corpus content (D8 allowlist)
 
@@ -924,7 +924,7 @@ Registered before any document is moved or changed. Same meaning of
 - **Rollback**: `git revert` of the alias-span commit; for the case inputs,
   replace the code spans with their English renderings.
 - **Status**: pending
-- **Commits**: (after implementation)
+- **Commits**: `31aa556` (alias spans); case inputs kept in the translation commit `f33eb23`
 
 #### P4-D04 ADR boundary
 
@@ -945,7 +945,7 @@ Registered before any document is moved or changed. Same meaning of
 - **Rollback**: `git revert` of the rewrite commit restores the original
   text under the new name.
 - **Status**: pending
-- **Commits**: (after implementation)
+- **Commits**: `2c01c7b`
 
 #### P4-D05 Historical commands in records
 
@@ -962,7 +962,7 @@ Registered before any document is moved or changed. Same meaning of
   that P4 requires.
 - **Rollback**: `git revert` of the notes commit.
 - **Status**: pending
-- **Commits**: (after implementation)
+- **Commits**: `1af0118`
 
 #### P4-D06 Commands in living documents
 
@@ -982,7 +982,7 @@ Registered before any document is moved or changed. Same meaning of
   prose references only (P4-D07).
 - **Rollback**: `git revert` of the commit.
 - **Status**: pending
-- **Commits**: (after implementation)
+- **Commits**: `09ab0f9`
 
 #### P4-D07 Link target for files kept in `summary/`
 
@@ -999,7 +999,7 @@ Registered before any document is moved or changed. Same meaning of
 - **Rollback**: `git revert` of the commit, or repoint the summary links at
   the manifests.
 - **Status**: pending
-- **Commits**: (after implementation)
+- **Commits**: `3bbc39e`
 
 #### P4-D08 References to content that exists nowhere
 
@@ -1018,7 +1018,7 @@ Registered before any document is moved or changed. Same meaning of
 - **Effect on the batch**: removes 2 D5 violations.
 - **Rollback**: `git revert` of the commit.
 - **Status**: pending
-- **Commits**: (after implementation)
+- **Commits**: `8361845`
 
 #### P4-D09 Collector output names a missing document
 
@@ -1050,7 +1050,7 @@ Registered before any document is moved or changed. Same meaning of
 - **Effect on the batch**: none on the glossary or runtime data.
 - **Rollback**: `git revert` of the record commit, or remove the list.
 - **Status**: pending
-- **Commits**: (after implementation)
+- **Commits**: `b9366e0`
 
 #### P4-D11 Blocking hook and the deferred `.claude/`
 
@@ -1065,6 +1065,30 @@ Registered before any document is moved or changed. Same meaning of
   check tool reports; (c) cannot hold while a session runs.
 - **Effect on the batch**: C1 lists G3 `.claude` as the one remaining
   exception; C2 (blocking hook) waits for the owner's choice.
+- **Rollback**: none needed.
+- **Status**: pending
+- **Commits**: none
+
+#### P4-D12 Reports without a result record
+
+Found during execution, registered before any change to these manifests.
+
+- **Question**: batch 2 deferred item 3: P2 expects each kept report to name
+  its record document. `reports/20261027-screening-audit/` has
+  `record: null`; the two `quality-screening-existing-100-*` reports name only
+  the cleanup record, which lists them as retained. Their manifests say "no
+  result record yet (batch 4)". Options: (a) write records from the kept
+  summaries (`summary/report.zh.md`, translated; `summary/recovery.md`);
+  (b) keep the manifests as they are and accept the retention-only status;
+  (c) archive the reports out of `reports/`.
+- **Recommendation**: (a) for the screening audit, whose summary is a full
+  report; (b) for the two quality-screening reports, which the cleanup record
+  already retains.
+- **Handling**: `bypassed`. (a) means writing conclusions into a new record,
+  and whether these runs deserve a record is the owner's call; (c) deletes
+  project content.
+- **Effect on the batch**: none; the three manifests keep their `record` and
+  `record_note` values.
 - **Rollback**: none needed.
 - **Status**: pending
 - **Commits**: none
