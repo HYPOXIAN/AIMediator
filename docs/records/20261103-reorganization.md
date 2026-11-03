@@ -969,13 +969,17 @@ Registered before any document is moved or changed. Same meaning of
 - **Question**: living documents (guides, design, plans) show example
   commands that write new output under `reports/` (for example
   `--out reports/balance-v2-full`) or read archived runs under their old
-  names. Options: (a) new output under `runs/`; reads of an archived run use
-  the new report name, with a link to its manifest; (b) leave them.
+  names. Options: (a) new output under `runs/`; a command that reads an
+  archived run takes a `runs/<run>` placeholder, followed by a sentence that
+  names the archived run and links its manifest (refined during
+  implementation: the project copy of a report holds no run contents, so a
+  command naming it could not run); (b) leave them.
 - **Recommendation**: (a). P2 reserves `reports/` for curated results, and
   living documents follow the implementation (D3).
 - **Handling**: `implemented`.
-- **Effect on the batch**: `design/balance-analysis.md` and
-  `design/cli.md` change their example paths only.
+- **Effect on the batch**: only `design/balance-analysis.md` has such
+  commands (two outputs, one source-review command); `design/cli.md` has
+  prose references only (P4-D07).
 - **Rollback**: `git revert` of the commit.
 - **Status**: pending
 - **Commits**: (after implementation)

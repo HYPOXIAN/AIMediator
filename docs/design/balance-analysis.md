@@ -26,9 +26,9 @@ those experiments; they are not used by the new batch pipeline.
 ## Run and resume
 
 ```sh
-python3 scripts/run_balance_analysis.py --out reports/balance-v2-full
+python3 scripts/run_balance_analysis.py --out runs/balance-v2-full
 python3 -m unittest discover -s tests -v
-python3 scripts/experiments/run_balance_controls_live.py --out reports/balance-v2-full/synthetic-controls
+python3 scripts/experiments/run_balance_controls_live.py --out runs/balance-v2-full/synthetic-controls
 ```
 
 Run the same command again to resume. Completed requests are content-addressed
@@ -166,9 +166,14 @@ full original comment and save fingerprinted decisions in
 
 ```sh
 python3 scripts/review_balance_sources.py \
-  --run reports/balance-engineering-20261022-final-review \
-  --decisions reports/balance-engineering-20261022-final-review/source-review-decisions.json
+  --run runs/<run> \
+  --decisions runs/<run>/source-review-decisions.json
 ```
+
+The 2026-10-22 engineering review ran this command on
+`reports/balance-engineering-20261022-final-review`, now archived as
+`20261022-balance-engineering-review`
+([manifest](../../reports/20261022-balance-engineering-review/manifest.json)).
 
 The review must cover every complete proposal. It can add exact original context
 or clarify action wording. Character identity cannot change. A direction repair
