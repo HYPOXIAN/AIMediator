@@ -358,7 +358,7 @@ def export(store, statuses, client):
     lines = ["# Feedback Collection Run", "", "Original text retained; no semantic, sentiment, patch, or character filtering performed.", "", f"Total records: {len(store.rows)}. Provisional English: {totals.get('en', 0)}. Provisional Chinese: {totals.get('zh', 0)}.", ""]
     for platform, status in statuses.items():
         lines += [f"## {platform}", "", f"Status: {status}", f"Language counts: {json.dumps(counts[platform], ensure_ascii=False)}", ""]
-    lines += ["## Human review", "", "Reviewer:", "Decision:", "Language count verification:", "Patch applicability:", "Notes:", "", "API access and conservative rate limits do not guarantee complete coverage or prevent all network restrictions. No claim is made that all records are substantive game reviews. Source URLs can identify their original public authors. See docs/feedback-collector.md for provenance and retention limits."]
+    lines += ["## Human review", "", "Reviewer:", "Decision:", "Language count verification:", "Patch applicability:", "Notes:", "", "API access and conservative rate limits do not guarantee complete coverage or prevent all network restrictions. No claim is made that all records are substantive game reviews. Source URLs can identify their original public authors. Record provenance and retention limits in the dataset's manifest.json (RULES.md P1)."]
     (store.directory / "review.md").write_text("\n".join(lines) + "\n")
     print(json.dumps(summary, ensure_ascii=False, indent=2), flush=True)
 
