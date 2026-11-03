@@ -1,0 +1,22 @@
+{
+  "version": "balance-regressions-v1",
+  "reviewer_type": "agent",
+  "cases": 12,
+  "cases_sha256": "69b5c34c1c5f1c77866fd6a485f4beebf92377e921392ab4bdcb5f66604878ff",
+  "source_rule": "Full original text is copied exactly from the prior source snapshot; original proposals are preserved without repair.",
+  "purpose": "Known-error regression set; not independent gold or a random test set.",
+  "source_hashes": {
+    "steam:236856267:1": "5a54e2edfd1a0758c410e78b2e5f4015f815b9aa2619dd7af1a406b6ef36ba2f",
+    "steam:233481207:1": "18dd65d1a1ce64258390fc34e21feca1f895723e6e1e898d9e297e4fc96443aa",
+    "steam:232777804:2": "0c9dd8bf21a0de4a23690ed7530e32baf554f0fadd5de83d96c9252edc959fb5",
+    "steam:237696056:1": "8d498616fbaeb407b50fb9f73352631e85746f20caa6ec7af03fb6e6fc079066",
+    "steam:237689306:2": "a9ebf2cee63ed1d8373079668c3e31916e87b0c34bc11b9c8f5774a46abcfeb6",
+    "steam:237710193:1": "e2d784efb8b24134b675cef821dc147acd4cdc555e10fa5d7005e07ec5d5cfc3",
+    "steam:237619085:1": "f89d0f4bf5ab779c695e2a49d2eda4facf2629b50988c111226cf50de309fd98",
+    "steam:237633927:1": "44ebefd6210e702f707c1a8b23a7360ccd7cd0ec95ee70f30db0c52379cdbe74",
+    "steam:235001445:2": "eb788407cad4884874f740d0b035d951f3b195853a746926f00508b957e24d69",
+    "steam:236320005:1": "b5bcd29b941714d2b41fd509f6205f399e8a59125cf367d8a91e25cb610a9678",
+    "steam:229292137:2": "18a19fc1c751ff9aa0d55599b651ea6ca4df84d848d6dc317271a7a7eb141b18",
+    "steam:232527507:1": "d177598d8957430f193830fb706501a15be00dc0135c70edaf87969ae0983242"
+  }
+}

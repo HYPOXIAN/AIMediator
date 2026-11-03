@@ -1,0 +1,1 @@
+提供 selected_source_segments 与 selected_source_points 时，只有其中精确原文可支撑提案，original_evidence 仅帮助理解上下文。所选片段必须支持主体、机制、条件、方向、动作、数值角色以及请求/观察的区别；不能从同评论其他一般意见或其他信息点借用证据。观察不能变成编造的调整诉求。既往资格判定与情绪都不能作为支持证据。归属或含义不明用 uncertain，不修复提案。

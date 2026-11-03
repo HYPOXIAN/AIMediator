@@ -1,0 +1,13 @@
+{
+  "models": {
+    "llama3.1:latest": {
+      "language": "en",
+      "prompt": "prompts/summarize-balance.en.txt"
+    },
+    "qwen2.5:7b": {
+      "language": "zh",
+      "prompt": "prompts/summarize-balance.zh.txt"
+    }
+  },
+  "policy": "Route English comments and English instructions only to Llama, Chinese comments and Chinese instructions only to Qwen. Unsupported languages are recorded and not sent. Admit comments to extraction only when vector retrieval and relevance review agree; audit every generated claim against original evidence before aggregation."
+}

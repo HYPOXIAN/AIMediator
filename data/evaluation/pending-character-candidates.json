@@ -1,0 +1,15 @@
+{
+  "reviewer_type": "agent",
+  "candidates": [
+    {
+      "source_literal": "阿利克斯",
+      "canonical_character": null,
+      "possible_canonical_candidate": "Alex",
+      "status": "pending_alias_confirmation_not_normalized",
+      "source_comment_id": "steam:237633927",
+      "source_sha256": "44ebefd6210e702f707c1a8b23a7360ccd7cd0ec95ee70f30db0c52379cdbe74",
+      "original_text": "感觉新角色机动性一个比一个强至少像肯，特瑞，沙加特这样的仔细盯都能反应。这新出的英格丽德，阿利克斯，阿俊都能直接四处乱飞上蹿下跳，一下直接飞我脸上，我这老年人反应根本反应不过来至少给我感觉是这样的。",
+      "decision": "Keep source literal and original mobility criticism; do not assert a canonical mapping from transliteration alone."
+    }
+  ]
+}

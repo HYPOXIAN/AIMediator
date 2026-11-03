@@ -1,0 +1,47 @@
+{
+  "version": "latest-source-reviews-v2",
+  "entries": [
+    {
+      "record_id": "steam:236320005",
+      "text_sha256": "b5bcd29b941714d2b41fd509f6205f399e8a59125cf367d8a91e25cb610a9678",
+      "reviewer_type": "agent",
+      "language": "zh",
+      "reason": "Original is entirely simplified Chinese despite the Steam English label."
+    },
+    {
+      "record_id": "steam:235469922",
+      "text_sha256": "04ec1ad8d10101f3a3c26110a79a5d9ec0405f612a7ec810befa98e49806848e",
+      "reviewer_type": "agent",
+      "language": "zh",
+      "reason": "Original is an explicit simplified-Chinese buff request despite the Steam English label."
+    },
+    {
+      "record_id": "steam:236076330",
+      "text_sha256": "7032dcbc123cc01c353adc613ed1c726700c8cc14206f87cdc157bcc862fd7c0",
+      "reviewer_type": "agent",
+      "exclude": true,
+      "reason": "Mixed Cantonese/traditional Chinese and English duplicate text; outside the simplified-Chinese/English-only sample definition."
+    },
+    {
+      "record_id": "steam:230247047",
+      "text_sha256": "0e1c3921e82a7b68a66f3b701097824a5997e3ed1720a3a3492900f643107819",
+      "reviewer_type": "agent",
+      "language": "pt",
+      "reason": "Portuguese original despite the Steam English label; retained raw, excluded from bilingual test."
+    },
+    {
+      "record_id": "youtube:UgwYs7e0Oo833f58mbh4AaABAg",
+      "text_sha256": "d225d63d47c23739c9c4bb727e14bc143e974a44b3093f601e3960f31a4fbd44",
+      "reviewer_type": "agent",
+      "exclude": true,
+      "reason": "Traditional-Chinese discussion of a film adaptation, not competitive game balance."
+    },
+    {
+      "record_id": "steam:235148585",
+      "text_sha256": "7a725b3540708b25d12a5e947321eccb7d700751941cf2de072e4cedca70d95f",
+      "reviewer_type": "agent",
+      "language": "en",
+      "reason": "Entire original is an English buff request (buff GOUKI plz) despite the Steam simplified-Chinese label."
+    }
+  ]
+}

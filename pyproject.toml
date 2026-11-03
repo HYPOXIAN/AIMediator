@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aimediator"
+version = "0.1.0"
+description = "Evidence-linked bilingual SF6 sample-feedback analysis CLI"
+requires-python = ">=3.9"
+dependencies = ["numpy>=1.23.5,<3"]
+readme = "README.md"
+
+[project.scripts]
+aimediator = "aimediator.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+aimediator = ["assets/*.json", "assets/prompts/*.txt", "assets/configs/*.json", "assets/data/*.json", "assets/fixtures/*.json"]

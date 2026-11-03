@@ -1,0 +1,26 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+.env
+.env.*
+!.env.example
+.DS_Store
+*.log
+*.tmp
+*.bak
+*~
+
+# Keep local datasets and generated reports out of version control by default.
+data/raw/*
+!data/raw/.gitkeep
+!data/raw/debug/
+data/processed/*
+!data/processed/.gitkeep
+reports/*
+!reports/.gitkeep

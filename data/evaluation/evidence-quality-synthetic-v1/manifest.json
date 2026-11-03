@@ -1,0 +1,9 @@
+{
+  "version": "evidence-quality-synthetic-v1",
+  "cases": 38,
+  "cases_sha256": "dbdf53633ad05c2626229d7740d81c0e77e1302796a6d6275ed78a65e5039d30",
+  "independent_human_gold": false,
+  "source_type": "agent_authored_synthetic",
+  "all_development": true,
+  "purpose": "Deterministic contract regression; no model accuracy or population estimate."
+}

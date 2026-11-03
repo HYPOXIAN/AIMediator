@@ -1,0 +1,10 @@
+{
+  "app_id": 1364780,
+  "target_patch_context": "2026-08-03 (context only; applicability not verified)",
+  "content_filtering": false,
+  "date_start": null,
+  "date_end": null,
+  "steam": {"enabled": true, "targets": {"en": 600, "zh": 250}, "languages": {"en": "english", "zh": "schinese"}, "interval_seconds": 5, "max_requests": 20},
+  "bluesky": {"enabled": true, "targets": {"en": 100, "zh": 50}, "queries": {"en": ["\"Street Fighter 6\"", "SF6"], "zh": ["街霸6", "街头霸王6"]}, "interval_seconds": 6, "max_requests": 12},
+  "youtube": {"enabled": true, "targets": {"en": 100, "zh": 50}, "queries": [{"q": "Street Fighter 6 review", "relevanceLanguage": "en"}, {"q": "街霸6 评测", "relevanceLanguage": "zh-Hans"}], "video_ids": [], "max_videos": 10, "interval_seconds": 3, "max_requests": 25, "quota_budget": 500}
+}

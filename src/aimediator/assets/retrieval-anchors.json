@@ -1,0 +1,26 @@
+{
+  "POS": [
+    "角色太强或太弱，招式伤害、距离、帧数、判定影响角色强度，需要加强或削弱。",
+    "角色之间的对局不公平，某些角色超模，另一些角色性能不足，角色平衡需要调整。",
+    "对战系统的绿冲、迸发、招架、投循环和白血机制回报过高或风险不合理，影响角色对战平衡。",
+    "现代操作一键超杀和对空太容易，和经典操作相比有不公平的竞争优势。",
+    "游戏角色整体平衡很好，所有角色都有竞争力；也可以批评平衡补丁和强度调整。",
+    "A character is overpowered or underpowered. Their damage, range, frame advantage, hitboxes or matchup performance need buffs or nerfs.",
+    "The roster is well balanced, all characters are viable, or the balance patch unfairly favors certain fighters.",
+    "Drive Rush, Drive Impact, parry, chip damage and throw loops are too rewarding, oppressive or unfair in competitive matches.",
+    "Modern one-button supers or anti-airs give players an unfair competitive advantage over Classic controls.",
+    "Power creep makes new DLC characters stronger than the rest of the cast, with excessive damage and safe pressure."
+  ],
+  "NEG": [
+    "服务器掉线、匹配太慢、外挂和作弊破坏游戏体验，与角色本身的强弱无关。",
+    "游戏售价、DLC收费、皮肤数量和更新速度令人不满，没有评价角色强弱。",
+    "角色外观、身材、音乐、剧情、世界巡游和阵容选择喜好，与对战强度无关。",
+    "新手搓不出招，连招练习困难，键盘或手柄操作难，学习门槛高。",
+    "游戏很好玩，推荐购买；现代操作适合入门，经典操作需要练习，没有竞争优势评价。",
+    "Servers disconnect, matchmaking is slow and cheaters use scripts; this is not a claim about character balance.",
+    "The game is expensive, cosmetics are overpriced, content releases are slow and the DLC character lineup is disappointing.",
+    "I like the graphics, music, story mode, outfits, training mode or character appearance, without discussing fighter strength.",
+    "I am a beginner struggling with inputs, combos and learning the controls. I need practice or advice.",
+    "Modern controls make the game accessible to newcomers. I recommend buying it; this is not a competitive balance complaint."
+  ]
+}

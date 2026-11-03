@@ -1,0 +1,1 @@
+../src/aimediator/assets/prompts/verify-balance.en.txt

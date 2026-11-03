@@ -1,0 +1,22 @@
+{
+  "version": "balance-silver-v1",
+  "reviewer_type": "agent",
+  "independent_human_gold": false,
+  "source_dataset": "data/raw/feedback/20261015-expanded/screened/records.jsonl",
+  "source_dataset_sha256": "3cde410dff38bfd162037d76314ce6df0b6761e4283f455a022e375d0706bdf5",
+  "labels_sha256": "1113d14062fb16464df2a0429e3b025e0c4071b0097782a7a59d098cd3cdfe89",
+  "comments": 100,
+  "languages": {
+    "en": 50,
+    "zh": 50
+  },
+  "splits": {
+    "development": 70,
+    "holdout": 30
+  },
+  "selection": "50 English and 50 Chinese, stratified by previous admission plus known errors. Not representative prevalence. Previously inspected forced failures stay in development.",
+  "split_seed": 7349,
+  "holdout_policy": "Calibration reads development only. This within-project holdout is silver and not independent/blind human evaluation.",
+  "identity_policy": "source:Arjun means source literal only; not verified official roster identity.",
+  "claim_label_policy": "Only selected clear character expectations are annotated; never treat unlisted characters as false positives."
+}

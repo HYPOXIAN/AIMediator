@@ -1,0 +1,1 @@
+../src/aimediator/assets/prompts/summarize-balance.zh.txt

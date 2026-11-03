@@ -1,0 +1,29 @@
+{
+  "changes_frozen_labels": false,
+  "reviewer_type": "agent",
+  "entries": [
+    {
+      "comment_id": "steam:237633927",
+      "field": "character_direction_expectations",
+      "issue": "Alex was assigned to the source spelling 阿利克斯. The old glossary does not establish this spelling and this comment does not contain the English name.",
+      "decision": "Treat the Alex pair as pending identity confirmation; do not use it for canonical-identity scoring. Preserve source:阿利克斯 for a future label-set version.",
+      "relevance_label_affected": false
+    },
+    {
+      "comment_id": "steam:232743520",
+      "field": "relevance",
+      "issue": "The frozen unrelated label may be too strict: the original includes a high/pro-level inconsistency/randomness assertion inside a predominantly content-focused review.",
+      "decision": "Send to independent adjudication; preserve the frozen label and reported metrics. Do not retune the threshold or silently reclassify the held-out result.",
+      "relevance_label_affected": true,
+      "label_changed": false
+    },
+    {
+      "comment_id": "steam:235001445",
+      "field": "character_direction_expectations",
+      "issue": "The next-Jamie-buff sentence is hostile figurative wording. A literal buff interpretation versus sarcasm opposing another buff needs adjudication; it is not a plain imperative.",
+      "decision": "Preserve frozen expectations and regression history, but do not present this direction as independently established ground truth. Review before any engineering use.",
+      "relevance_label_affected": false,
+      "label_changed": false
+    }
+  ]
+}

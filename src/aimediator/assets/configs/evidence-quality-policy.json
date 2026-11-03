@@ -1,0 +1,12 @@
+{
+  "version": "evidence-quality-policy-v1",
+  "schema_version": "evidence-quality-v1",
+  "measurement_version": "unicode-LNMS-codepoint-v1",
+  "high_emotion_threshold": 0.70,
+  "threshold_status": "uncalibrated_diagnostic_only",
+  "num_predict": 8192,
+  "num_ctx": 16384,
+  "max_attempts": 2,
+  "request_batch_size": 1,
+  "weight_rule": "One unique comment ID per character/topic/direction; emotional tone and ratio never change weight"
+}

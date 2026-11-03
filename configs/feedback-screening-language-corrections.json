@@ -1,0 +1,29 @@
+{
+  "scope": "Record-specific source-language label corrections after inspecting original text; no translation or language-based content exclusion.",
+  "entries": [
+    {
+      "record_id": "steam:236320005",
+      "language": "zh",
+      "reason": "The original text is Chinese despite the Steam English label.",
+      "text_sha256": "b5bcd29b941714d2b41fd509f6205f399e8a59125cf367d8a91e25cb610a9678"
+    },
+    {
+      "record_id": "steam:235469922",
+      "language": "zh",
+      "reason": "The original request is Chinese despite the Steam English label.",
+      "text_sha256": "04ec1ad8d10101f3a3c26110a79a5d9ec0405f612a7ec810befa98e49806848e"
+    },
+    {
+      "record_id": "steam:230247047",
+      "language": "pt",
+      "reason": "The review is Portuguese despite the Steam English label; retain it without counting it as English.",
+      "text_sha256": "0e1c3921e82a7b68a66f3b701097824a5997e3ed1720a3a3492900f643107819"
+    },
+    {
+      "record_id": "steam:235148585",
+      "language": "en",
+      "reason": "The short buff request is English despite the Steam simplified-Chinese label.",
+      "text_sha256": "7a725b3540708b25d12a5e947321eccb7d700751941cf2de072e4cedca70d95f"
+    }
+  ]
+}

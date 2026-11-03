@@ -1,0 +1,39 @@
+{
+  "version": "balance-review-policy-v2",
+  "retrieval_borderline_margin": 0.08,
+  "blocked_identity_only_aliases": [
+    "阿三",
+    "印度人",
+    "印度佬",
+    "老印度",
+    "印度阿三",
+    "三哥",
+    "Indian",
+    "Indian guy"
+  ],
+  "source_literal_characters": [
+    {
+      "canonical_name": "Arjun",
+      "chinese_label": "阿俊",
+      "aliases": [
+        {
+          "text": "arjun"
+        },
+        {
+          "text": "阿俊"
+        }
+      ],
+      "normalization_status": "source_literal_unverified",
+      "official_canonical_name": null,
+      "provenance_comment_id": "steam:237730282",
+      "provenance_note": "Both spellings occur in the same supplied original comment. This establishes a source-local name correspondence, not an official roster or patch fact."
+    }
+  ],
+  "design_policy": "Player requests and source statistics are evidence, not numerical engineering designs. Require explicit reviewed evidence, a verified identity, an exact move/metric, matching versioned move data, and separately identified design assumptions before proposing tuning experiments.",
+  "calibration": {
+    "label_set": "balance-silver-v1",
+    "split": "development",
+    "holdout_used": false,
+    "calibration_sha256": "5a2e4226a94b28f980d821784b8fe06c6a6fceb6a632af3cd00cdd768cf93595"
+  }
+}

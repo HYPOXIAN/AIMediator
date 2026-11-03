@@ -1,0 +1,1059 @@
+{
+  "version": "coarse-v1",
+  "scope": "Record-specific corrections after inspecting candidate, rejected-near-boundary, and long-record text. These are agent judgments, not human gold labels. Expanded batch corrections use the same balance relevance criteria.",
+  "entries": [
+    {
+      "record_id": "steam:237627172",
+      "text_sha256": "6454227bb6838e4f9689c253edd734aff0e26c48a10fcfaea8aa24c5a5446cc1",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237331797",
+      "text_sha256": "d8d391e12fbdd5da1e29f487f50200895ffb9af0605ac1fc0ff79d6e56238c6a",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237064581",
+      "text_sha256": "e4afb2f7b8aec389e1e383c5c757f5a3663456f446d802a7b8d86417675fbb32",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:236856267",
+      "text_sha256": "5a54e2edfd1a0758c410e78b2e5f4015f815b9aa2619dd7af1a406b6ef36ba2f",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:236708438",
+      "text_sha256": "7e5ddb4640f9853dca80d462956965f7ae1648d44e85ac3bf37c9364066e7a4b",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:236693643",
+      "text_sha256": "6abfa50360e134acc83486a2948d5a9e584145d335925f21a14a7808f5d5ac15",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:236222206",
+      "text_sha256": "43df92c7c44065a5fe12193c5c590581e651339212e8e0c1b26cdda1c6bfa94f",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:236037313",
+      "text_sha256": "6d364120a3963b6f65e8a06fdf470a1942920e1052425e90cb69bd75252e0f03",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:235665198",
+      "text_sha256": "3c0148a83f5bd8ff56e8603401b7270a2509dbbc8892035db91c28dd93e22997",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:234955889",
+      "text_sha256": "34283f5da36fb6b88c3adb17fc5074b6f2c74e22e9cacbd23015e337a9eac9b9",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:234870060",
+      "text_sha256": "3e762bdded3f0e3fd2802a6be0d8765c005fbe876ada484a1311f6ab2727a21b",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:234287294",
+      "text_sha256": "f25ec6b79188c6fcfc35601da6f3fd3eab6e68ac13e40442d54262038d02945b",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:233893934",
+      "text_sha256": "203905f37da5e4eeae461dd75788b2f7b98cb5dac67233b30d8387562f8a2474",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:233770285",
+      "text_sha256": "d45371a377047bdf1a88419feb6ab8fd9104cdc90502d20e71b0f1860c981366",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:233440237",
+      "text_sha256": "1d46ca5e767b9bf16425edd858eba4a06610cbbf4df997f5195c3a7d22a180cd",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:233408964",
+      "text_sha256": "69406d6a85ca5615dde5b5c68a3df3b6f1606ff4b59c6a03d2af5cf87032c03a",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:233285598",
+      "text_sha256": "0847279a1faef5a7150f5319744ccf81973071810025ec7e10e9bd4beeef4a89",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:233110946",
+      "text_sha256": "58432fd4b62cddcdf13715c85f225d49c2aeabd8d35408cca34207caef037f62",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:232955319",
+      "text_sha256": "1790dbf845cd1b6a122176b99ad71ef1d0db357ffe1ad7bf0fbad0520caee02e",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:232854123",
+      "text_sha256": "e43b7dec155c46535c5f101594fb79192d6deecc8fdef35102048daa8ee53ab7",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:232783770",
+      "text_sha256": "9716152ad0ae67ab2802fc247f1482951ea7c64fa7495b6b7ce5bca01f5a8dee",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:232604874",
+      "text_sha256": "0986e3e67846a0ad521468f124b0490775436f73275644b3caf387a2c9ff7a52",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:232596437",
+      "text_sha256": "2905171d56690ed32426971052cb1ec1f46a42ffc80fef6729c91aeb14328df7",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:232591567",
+      "text_sha256": "5cef2343fb4fd9e64b3dad12c7db59d0b05de2d14e3c916678701f6de12f9066",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:232539615",
+      "text_sha256": "b7d8eff513742f76458d8d217bbe5042a51a132ce95cba8b0f238e74e9198246",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:232476806",
+      "text_sha256": "d390a9d74bde96dc74aa0abfa7cbffeaf6e28565c9e014e2d3f7dfca88c6b07c",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237708277",
+      "text_sha256": "ab5bc1630bcb02bcb1ee346d168efa5d68c18873eb9e7ff2ad22ed22882e1bdc",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237701592",
+      "text_sha256": "a519268aa3185f8225effefb5eff2fb3a4bab719ef9c84a1761ab24e1ffd434f",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237695320",
+      "text_sha256": "c3260d59d7a2c54cdb901c9fa75234051ab5d3a8ecfb96bc4160830e1dd3fe49",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237693936",
+      "text_sha256": "50dad7ef3734879b65003d7b76e7cec769034402ca05ff5cb8e8cb359bce32c0",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237686719",
+      "text_sha256": "6e8a6dc5794faa0f2625a2f71d4ef5c36691d02e8627ff27f40aad403c0a9c96",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237685225",
+      "text_sha256": "d43da5aef9221fde2778741e110fb5b669c045a71c0d194fd5bd51d761d1011d",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237669405",
+      "text_sha256": "8f8380b73e2c5a79a169c8d2a83d407c305a54a11cd0bd406ea5e7251284ae65",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237651256",
+      "text_sha256": "7aa0dc704bde1ef3f43ae8b383da3f68225a713fa3db109a5cba5c4179cd9532",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237644312",
+      "text_sha256": "039930416bb31d688a6cb595cc1d526f4ff1621560ecf828c9c926c04f477340",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237612149",
+      "text_sha256": "ac5a3adf4a1de7ce247423312a21f32e62982c3c82634116339a9dc305a6aff2",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "youtube:Ugz3iWzHarOZi58KFMZ4AaABAg",
+      "text_sha256": "cf2bc017ff2f727d6596970c0be7127738fb992581172b313f3126b9c579d5d2",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "youtube:Ugx6Bmazz_7k2p4c52V4AaABAg",
+      "text_sha256": "e0f5e56bd1b277438f16eb57c383ed02971b2dcfd0a3bba52fb19e14d27fa26d",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "youtube:UgxyiB64AKAKMpfSKkV4AaABAg",
+      "text_sha256": "b7d5d3d146f4dbdbc26482cefeb8fc09071efcc330b3467f093ba29fe3299ef0",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "youtube:Ugyl6p4JH1D_pDX6hQB4AaABAg",
+      "text_sha256": "09a2af0fb31366f2d6fe4b3c30c4781f374a90161f381aa2ab86335a536c7e7b",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "youtube:UgyOJRC6CZZVMTa5Zp94AaABAg",
+      "text_sha256": "4986efdb7a4ba388146b3ccaeba280d385d6db8444fec4f1a342769933d464b0",
+      "decision": "keep",
+      "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237554554",
+      "text_sha256": "43cf8d7c2ed45ed616828525fd9045ac24a48899e805afcc1150be1e2621b26d",
+      "decision": "keep",
+      "reason": "Modern-versus-Classic competitive fairness, one-button advantage, or a concrete requested change to the control mechanic is discussed.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:236883290",
+      "text_sha256": "560cb3fc8d6f61c3828ac1fb43e9bb1cce4c3b11dcc5e3b5213e6d8d9666e81b",
+      "decision": "keep",
+      "reason": "Modern-versus-Classic competitive fairness, one-button advantage, or a concrete requested change to the control mechanic is discussed.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:236310123",
+      "text_sha256": "e6e2f176c45790d3e130dc01ee575e382d7a799ce18da0561f519feae0f9e658",
+      "decision": "keep",
+      "reason": "Modern-versus-Classic competitive fairness, one-button advantage, or a concrete requested change to the control mechanic is discussed.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:235493837",
+      "text_sha256": "60d1e3adbfb7c1d815ffc72e66e0e82fb10793c7918fbd8294cb36c48a33af56",
+      "decision": "keep",
+      "reason": "Modern-versus-Classic competitive fairness, one-button advantage, or a concrete requested change to the control mechanic is discussed.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:234913182",
+      "text_sha256": "a3f24cc8502e7f1e770d171ea542425b1e5ab9d14ebd22fa2fc28ec38f47e4fa",
+      "decision": "keep",
+      "reason": "Modern-versus-Classic competitive fairness, one-button advantage, or a concrete requested change to the control mechanic is discussed.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:234595352",
+      "text_sha256": "1408e28f7916f2a0a1df3db31fb5e09f7fdd611d2c5e55d08961519b981d3583",
+      "decision": "keep",
+      "reason": "Modern-versus-Classic competitive fairness, one-button advantage, or a concrete requested change to the control mechanic is discussed.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:233833801",
+      "text_sha256": "7af896ba9dc95630621bb5b4f5004381adb0458073e9d807c91592838f0c27ae",
+      "decision": "keep",
+      "reason": "Modern-versus-Classic competitive fairness, one-button advantage, or a concrete requested change to the control mechanic is discussed.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237438503",
+      "text_sha256": "41b1bd36bfdc0288065b5fcf0790981b1150e490861d2ac4df0d86f030ef45f8",
+      "decision": "keep",
+      "reason": "Modern-versus-Classic competitive fairness, one-button advantage, or a concrete requested change to the control mechanic is discussed.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "youtube:UgwPVOXrEgFCeOGkgex4AaABAg",
+      "text_sha256": "8fb1d2e18a044f5b03f4720a756d7215b948dedfd66e9ea92cb42047b641603c",
+      "decision": "keep",
+      "reason": "Modern-versus-Classic competitive fairness, one-button advantage, or a concrete requested change to the control mechanic is discussed.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:232594571",
+      "text_sha256": "58045751b42c7a738a8f77f6c2a00e467048c1ff4924d757e147b1934876b8f0",
+      "decision": "keep",
+      "reason": "The text includes a concrete character-strength, numeric-balance, DLC power-ceiling, or nerf claim.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:232525157",
+      "text_sha256": "a64f97312df84e5c46afa23ee762ece6d7948a476dd986ba0ceaf9fc7f30068e",
+      "decision": "keep",
+      "reason": "The text includes a concrete character-strength, numeric-balance, DLC power-ceiling, or nerf claim.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237745501",
+      "text_sha256": "20103d86aae1b7ace51da9dddb7651639937085adeb02e256aac63895eb15c25",
+      "decision": "keep",
+      "reason": "The text includes a concrete character-strength, numeric-balance, DLC power-ceiling, or nerf claim.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237728767",
+      "text_sha256": "876fa65b9064feb296c371ba0a6e35865bec5eb05be57d0937b0a586f48b5a61",
+      "decision": "keep",
+      "reason": "The text includes a concrete character-strength, numeric-balance, DLC power-ceiling, or nerf claim.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237702839",
+      "text_sha256": "adb814665e6a5cb6d2efcb6107dd1e6a67b8ade42200032344b6940e8ba71ff3",
+      "decision": "keep",
+      "reason": "The text includes a concrete character-strength, numeric-balance, DLC power-ceiling, or nerf claim.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237678988",
+      "text_sha256": "f4c82b594e8b3c5a5a09d40c41a3df4f8f3b6c025cc79fec8241432c984697c9",
+      "decision": "keep",
+      "reason": "The text includes a concrete character-strength, numeric-balance, DLC power-ceiling, or nerf claim.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237663463",
+      "text_sha256": "667cfd9425f0c40db848c06336e7efaa18cc039797f4b9a37dc0b25de528615e",
+      "decision": "keep",
+      "reason": "The text includes a concrete character-strength, numeric-balance, DLC power-ceiling, or nerf claim.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237428820",
+      "text_sha256": "cc3ff5aeff8c02c35a06c9612de67744b3315d583ab9470c1474decb7f7c19c7",
+      "decision": "keep",
+      "reason": "The text includes a concrete character-strength, numeric-balance, DLC power-ceiling, or nerf claim.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:232895469",
+      "text_sha256": "d56d8b937db417922e44c790f86c8672619e76322b2d1eae2b48944b81dffc84",
+      "decision": "keep",
+      "reason": "The text makes an explicit favorable statement about competitive balance; presentation or monetization criticism does not cancel it.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:232688865",
+      "text_sha256": "a869943ed5b5d12e68e0f29547c115b4a03b32a06441fdf80e443371c274a0ef",
+      "decision": "keep",
+      "reason": "The text makes an explicit favorable statement about competitive balance; presentation or monetization criticism does not cancel it.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:232743520",
+      "text_sha256": "ac77e3053989e580285076a482891ae3204f3d67fa4166ceb21939d35eefcd5e",
+      "decision": "keep",
+      "reason": "Competitive play is described as excessively random or volatile, which is relevant to system balance.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "youtube:Ugx4wl1nl9uJnazgRlJ4AaABAg",
+      "text_sha256": "b535754fe5d64b00a63cc59ffb4b983b46d099a20c10457f4c136e4b4e4b24c8",
+      "decision": "keep",
+      "reason": "Relative importance of Drive Impact, Drive Rush, and parrying is evaluated, beyond a bare review-score comment.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "youtube:UgzJYtb-vEd9Z3T9GQh4AaABAg",
+      "text_sha256": "da30db65fcf732e6c6da02a6e418320b2b82121207024a616b5ba8c6f9b1b9f0",
+      "decision": "keep",
+      "reason": "The full final paragraph identifies a 100-percent throw-tech input bug affecting competition; introductory accessibility anecdotes must not hide it.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "youtube:UgyFLymm__gPy5y-V4V4AaABAg",
+      "text_sha256": "a92245c8a3e6d15bd7cc0314ed361aadf162d400ca9ad540ff26dda5b64cd1bc",
+      "decision": "keep",
+      "reason": "Modern control competitive viability is compared with Classic, including ranked versus tournament performance.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "youtube:Ugzhjq4GYPVCaFl90tB4AaABAg",
+      "text_sha256": "f59d5b9c9b7f6a45e01bbf78114c3f1aba4313006f6a6d7c87508cb426740748",
+      "decision": "keep",
+      "reason": "Modern control competitive viability is compared with Classic, including ranked versus tournament performance.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237398943",
+      "text_sha256": "aae48b409682f8ef906c450e1106942b671e7e549851a79a4a6de7315fa1e9e0",
+      "decision": "review",
+      "reason": "The text could imply character or control-system strength but lacks an unambiguous combat attribute or change request.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:236095601",
+      "text_sha256": "4e16a196489ca6ec0696cd45736a419f46c7361348303ae7a61f3d35abeba488",
+      "decision": "review",
+      "reason": "The text could imply character or control-system strength but lacks an unambiguous combat attribute or change request.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:234513584",
+      "text_sha256": "7f48571dafaf91617e11882baa7d0ee6425082650e4bf8770ec57cc5b7358d74",
+      "decision": "review",
+      "reason": "The text could imply character or control-system strength but lacks an unambiguous combat attribute or change request.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:233244141",
+      "text_sha256": "7397cba929ebf8cf9ac720053baa78bbb843a1376114ac869eaf9dd451f22e65",
+      "decision": "review",
+      "reason": "The text could imply character or control-system strength but lacks an unambiguous combat attribute or change request.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237730687",
+      "text_sha256": "88c9523d5f749e3b266c78ad4f720cb3f623e4c17a8772830d1372ec8708b14e",
+      "decision": "review",
+      "reason": "The text could imply character or control-system strength but lacks an unambiguous combat attribute or change request.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237701890",
+      "text_sha256": "d1431dbd2d3f54fe2a7aaaac5114edc57df574c044f272e6a967851d18007310",
+      "decision": "review",
+      "reason": "The text could imply character or control-system strength but lacks an unambiguous combat attribute or change request.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237686140",
+      "text_sha256": "37e2b552d5876956330437ac34d66f081c99209c7806c5be0803b1b1cb50761e",
+      "decision": "review",
+      "reason": "The text could imply character or control-system strength but lacks an unambiguous combat attribute or change request.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237683279",
+      "text_sha256": "7c729d3b590d32ffc544b30357e4d7035a0ac939b3ec145d38240b5d955cf4d1",
+      "decision": "review",
+      "reason": "The text could imply character or control-system strength but lacks an unambiguous combat attribute or change request.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237681706",
+      "text_sha256": "f988807be19de8d94c85b86f6d9c23344dcde1a5155140b03f045275671da62d",
+      "decision": "review",
+      "reason": "The text could imply character or control-system strength but lacks an unambiguous combat attribute or change request.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237677763",
+      "text_sha256": "9e1dfcf654ef117589974d670b5d5ef0d64094528ceff6982d9980fd2caa1f74",
+      "decision": "review",
+      "reason": "The text could imply character or control-system strength but lacks an unambiguous combat attribute or change request.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237624209",
+      "text_sha256": "e51e55077363b1013bd2ada758495155b39d1f63999ee3a69d7227f9f37a4d3a",
+      "decision": "review",
+      "reason": "The text could imply character or control-system strength but lacks an unambiguous combat attribute or change request.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237616186",
+      "text_sha256": "191e478425286f8b7750973dad9f1a22d0765deb4bf3428ba8e227a8cc5b53e4",
+      "decision": "review",
+      "reason": "The text could imply character or control-system strength but lacks an unambiguous combat attribute or change request.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237616128",
+      "text_sha256": "eaa84222b84eb14a1a2279f89a831e00f06e32cfdafe032b40af6959e4eb1d86",
+      "decision": "review",
+      "reason": "The text could imply character or control-system strength but lacks an unambiguous combat attribute or change request.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237556145",
+      "text_sha256": "ffe4db3990b63dc9d5003cc16ce54bec05892a17417a8d8f98f7b3125be7af22",
+      "decision": "review",
+      "reason": "The text could imply character or control-system strength but lacks an unambiguous combat attribute or change request.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "youtube:UgynMrF-5TZt0WergB94AaABAg",
+      "text_sha256": "27290eaeea6e1c2d80675fd45521ccec0d8c97075d31477684f9fb788d53d4f8",
+      "decision": "review",
+      "reason": "The text could imply character or control-system strength but lacks an unambiguous combat attribute or change request.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "youtube:UgxW8jllW1nE72L71AV4AaABAg",
+      "text_sha256": "9a7e08c5b5cfe2995c7a10f6cf87060680b844ecc75de280d5e262aaa893a528",
+      "decision": "review",
+      "reason": "The text could imply character or control-system strength but lacks an unambiguous combat attribute or change request.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "youtube:UgxrUr8A7aR6euo38L14AaABAg",
+      "text_sha256": "b05fff031ecee2383edc64e9013d20f5bd1dda0dcc5c28cbcf6c8a0c4f12d3da",
+      "decision": "review",
+      "reason": "The text could imply character or control-system strength but lacks an unambiguous combat attribute or change request.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "youtube:UgwS63SKLfUTx6UcK-l4AaABAg",
+      "text_sha256": "2a6d011b47346814fdb72436b5672c6764acf4d59de3ea29d2e921ee160a47ee",
+      "decision": "review",
+      "reason": "The text could imply character or control-system strength but lacks an unambiguous combat attribute or change request.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:232647671",
+      "text_sha256": "04ae431e0b08ce79774c59812acd63fe97db725a054836901f8e149fa4a953c6",
+      "decision": "review",
+      "reason": "HITBOX may mean a leverless input device rather than an attack collision box; the short text does not establish a balance claim.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "youtube:UgwI8ovIMYYfWD3c_jZ4AaABAg",
+      "text_sha256": "623a4e9f3c706e26fb36348abe171b7c1906080b073655cc27521ecf9ebffd37",
+      "decision": "exclude",
+      "reason": "Praise for video editing uses top tier; no character-strength claim is made.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "youtube:UgxiWUMRFsYKgG9qjYp4AaABAg",
+      "text_sha256": "820aac850df94dc04fe41b3f20f017ea31a6edaf8bb35e713dbc5a574b15188e",
+      "decision": "exclude",
+      "reason": "Balance refers to visual nostalgia and graphical modernization, not competitive strength.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "youtube:UgxskqbWb0ACrvBOgTJ4AaABAg",
+      "text_sha256": "67b1723ae969c29d5c3169cea49be44e9cf5334b4d820f1d1b154596ac861db8",
+      "decision": "exclude",
+      "reason": "The record describes downloads, device compatibility, or software versions, without a combat-balance claim.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "youtube:UgzDZrPkVyZXDRrXKJ54AaABAg",
+      "text_sha256": "d6818ba582aae69b4f22898aa0fadbfabbb00cfe7c94ed369c6a3addb5d743ea",
+      "decision": "exclude",
+      "reason": "The comment only welcomes easier inputs or provides general fighting-game advice, without a competitive-balance judgment.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "youtube:UgxYv1vvPGzSIFCLtgZ4AaABAg",
+      "text_sha256": "e7e1c8221869a789ae44d51def5b87d379a7324f7675007a2d34d9978f8a4ed5",
+      "decision": "exclude",
+      "reason": "The comment only welcomes easier inputs or provides general fighting-game advice, without a competitive-balance judgment.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "youtube:UgwysT4Rtllh0bhsdnl4AaABAg",
+      "text_sha256": "09feab3ecd520e0e3aa0a50edffa0b1da8556e9aca521fa25140abff3ba572a0",
+      "decision": "exclude",
+      "reason": "The comment only welcomes easier inputs or provides general fighting-game advice, without a competitive-balance judgment.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "youtube:UgztllPYS-rrMWjeZiZ4AaABAg",
+      "text_sha256": "3bf3573137348eb15f14571e585618eff2f7564059ed32bdacd2083c87247a6c",
+      "decision": "exclude",
+      "reason": "The comment only welcomes easier inputs or provides general fighting-game advice, without a competitive-balance judgment.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:235468770",
+      "text_sha256": "c79c0420db8a039f85a21709cec020aa5e782cfcabeb09634e8343fcab3ceede",
+      "decision": "exclude",
+      "reason": "Generic dissatisfaction or player-behavior dislike does not establish a character-balance issue.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:234881073",
+      "text_sha256": "6124bf659df51841205f0cbaeb322b645ddd85dbcc67ffbe22e75a59a42b7d11",
+      "decision": "exclude",
+      "reason": "Generic dissatisfaction or player-behavior dislike does not establish a character-balance issue.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237671656",
+      "text_sha256": "a27689905cefafbe194aadc53962ab9badeb18c5eb3b5200487e7fcbf3d488f5",
+      "decision": "exclude",
+      "reason": "Generic dissatisfaction or player-behavior dislike does not establish a character-balance issue.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237389425",
+      "text_sha256": "d4f8cde3b2f6586671703f7669be40f724716bcbf1370d5995042f4eb040569f",
+      "decision": "exclude",
+      "reason": "The player is complaining about an unexpected control-setting default rather than the strength of the control scheme.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:231339353",
+      "text_sha256": "1f9d519b30a5917a943213cbc7aa28d205dd3f0b44a16684f87ef19b2be4f5a4",
+      "decision": "exclude",
+      "reason": "Matchmaking or emotional balance is not a combat-strength claim.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:230028848",
+      "text_sha256": "94105b165281a91056e212c9a3dd6f0345393039d8b4d2df4138496abb7f096f",
+      "decision": "exclude",
+      "reason": "Matchmaking or emotional balance is not a combat-strength claim.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:228907116",
+      "text_sha256": "33f4c2aed1ac6e7c61ba8d904f4f0d71d2c0ff189eb8050253c6d3b0efb7a865",
+      "decision": "exclude",
+      "reason": "Top-tier is an overall game-quality rating, not a character-strength judgment.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:228516310",
+      "text_sha256": "3a7de2e7eae21ace1dfdd9e845dca9a7a83c8e64b5da8e55af11c62e1ffdc07a",
+      "decision": "exclude",
+      "reason": "Personal learning progress or win rate does not by itself assert an imbalance.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:230206787",
+      "text_sha256": "c13017d912fda035d889f76a34ccb3307c417aba1f929b08816561d00b013497",
+      "decision": "exclude",
+      "reason": "Personal learning progress or win rate does not by itself assert an imbalance.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:231483830",
+      "text_sha256": "a4e1dbcaa6ed3b8c58e92da8327124d93f1e556e607b71ce198ace5b03e48aa0",
+      "decision": "exclude",
+      "reason": "Outdated tutorials or onboarding explanations are not a judgment of combat balance.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:228455078",
+      "text_sha256": "6affa0907dc255a9a1ce0d14ccde6f54fc891b2bb56623646d20d594bf341f13",
+      "decision": "exclude",
+      "reason": "The comment concerns single-player/PvE difficulty and progression only.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237294956",
+      "text_sha256": "1c8087af4b2d54411cc5cac07de6016db457c0f5f9918abe8db552808d7f9c7a",
+      "decision": "exclude",
+      "reason": "The comment concerns single-player/PvE difficulty and progression only.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:228353333",
+      "text_sha256": "58aa14f563aac31f30a718935111b11c171330c3476961cc565fe15cd891d6fa",
+      "decision": "exclude",
+      "reason": "Pricing, presentation, generic Drive-system praise, or a metaphorical hitbox reference does not establish a balance claim.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:227510300",
+      "text_sha256": "1b8c56d1b84f0068e587d90b40e902784afde5ccb9554215ca73556f0ce8933f",
+      "decision": "exclude",
+      "reason": "Pricing, presentation, generic Drive-system praise, or a metaphorical hitbox reference does not establish a balance claim.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:228997728",
+      "text_sha256": "fa65f8460559f3ce6fc6b58368d1696bbededb743ccd8ad8036aebf0cb0bfc5d",
+      "decision": "exclude",
+      "reason": "General accessibility, learning difficulty, enjoyment of inputs, or newcomer experience is not competitive balance.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:237047862",
+      "text_sha256": "160bf5636e0a374bebf24c8e7f4a775410de3c7648077dec6594c16013959a8e",
+      "decision": "exclude",
+      "reason": "General accessibility, learning difficulty, enjoyment of inputs, or newcomer experience is not competitive balance.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:236285352",
+      "text_sha256": "0aff887257bdc2d1d779096737228d24b9cff2a5f866481f56237911ac329842",
+      "decision": "exclude",
+      "reason": "General accessibility, learning difficulty, enjoyment of inputs, or newcomer experience is not competitive balance.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:235775499",
+      "text_sha256": "2d9921c5aa0921202b107eb6c087d374a4c92c29f16b58e3341399000ec85789",
+      "decision": "exclude",
+      "reason": "General accessibility, learning difficulty, enjoyment of inputs, or newcomer experience is not competitive balance.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:235378871",
+      "text_sha256": "6e6bc4e5107c4f3c2421f4e6538e18bfa5853a6bbe722ede2ee07d0b2bc827f9",
+      "decision": "exclude",
+      "reason": "General accessibility, learning difficulty, enjoyment of inputs, or newcomer experience is not competitive balance.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:235750399",
+      "text_sha256": "961a1197693e99b31876dbf110cc69a4f38833a0a2d85e4ded0e0260eec6756b",
+      "decision": "exclude",
+      "reason": "General accessibility, learning difficulty, enjoyment of inputs, or newcomer experience is not competitive balance.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:235535419",
+      "text_sha256": "075acd40b2e8f7ab078b2e1bdc20f29b409ed98306e17bd25fd0ab19ff22ec23",
+      "decision": "exclude",
+      "reason": "General accessibility, learning difficulty, enjoyment of inputs, or newcomer experience is not competitive balance.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:234988283",
+      "text_sha256": "03954751f991d360d8aeda42fb6feb99cf917e3478a136ce445f03716fc31966",
+      "decision": "exclude",
+      "reason": "General accessibility, learning difficulty, enjoyment of inputs, or newcomer experience is not competitive balance.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:235165474",
+      "text_sha256": "ad8b8795387a5401c7286c060e5af52f9a92e4336424c5eff3b7819abc6ffac9",
+      "decision": "exclude",
+      "reason": "General accessibility, learning difficulty, enjoyment of inputs, or newcomer experience is not competitive balance.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:228146094",
+      "text_sha256": "4272f91d18ff3c9b3ef01a6853cfcee3814271caeef35fc38f50b6d793c30540",
+      "decision": "review",
+      "reason": "A pay-to-win grinding assertion lacks an identifiable competitive mechanic or character-strength claim.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:236675392",
+      "text_sha256": "40ffe805ea642df6bd0c8b8327ca517d691f5b5ac27601f538f882d72527d8e3",
+      "decision": "review",
+      "reason": "The character input/auto-combo usability complaint lacks a clear competitive-strength judgment.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    },
+    {
+      "record_id": "steam:226399902",
+      "text_sha256": "ee3909961d315f9e0a2bcc549ef1b955862a229fd4d1bf6053e88f32b4b3ae7a",
+      "decision": "keep",
+      "reason": "The full review explicitly calls Chun-Li powerful but fair; visual-presentation praise does not negate that claim.",
+      "review_method": "agent_boundary_review",
+      "reviewer": "",
+      "human_decision": ""
+    }
+  ]
+}
