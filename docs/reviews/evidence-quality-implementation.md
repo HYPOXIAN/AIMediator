@@ -77,7 +77,7 @@ python3 scripts/experiments/demo_evidence_quality.py --mock-pipeline --out repor
 
 `reports/evidence-quality-v1-delivery/examples/mixed-comment-examples.json` 展示价格+一般诉求、系统+外观、高发泄+具体机制的多路输出；`mock-pipeline/{off,shadow,enforce}/` 使用 mock 模型与检索跑完整管道，所有输入由 mock 放行，`execution-provenance.json` 明确注明模拟来源。
 
-`data/evaluation/evidence-quality-real-v1-pending/` 从已有**粗筛前**语料按重复簇确定性抽取 300 条：198 en、101 zh、1 und；标签全为 null/unlabeled，没有人工准确率。历史 admission 中已出现的来源强制 development；规范化重复内容不跨 split。尚需人工合并等义簇、检查语言/来源分层、冻结拆分，再做双标和裁决，不能直接将当前 provisional test 宣称为独立盲测。
+`data/evaluation/evidence-quality-real-v1/` 从已有**粗筛前**语料按重复簇确定性抽取 300 条：198 en、101 zh、1 und；标签全为 null/unlabeled，没有人工准确率。历史 admission 中已出现的来源强制 development；规范化重复内容不跨 split。尚需人工合并等义簇、检查语言/来源分层、冻结拆分，再做双标和裁决，不能直接将当前 provisional test 宣称为独立盲测。
 
 新建标注模板的命令（不会覆盖已有目录）：
 

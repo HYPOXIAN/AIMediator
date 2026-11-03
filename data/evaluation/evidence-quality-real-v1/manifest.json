@@ -1,6 +1,9 @@
 {
   "version": "evidence-quality-evaluation-v1",
   "status": "unlabeled_not_ground_truth",
+  "set_status": "pending_annotation",
+  "set_status_note": "Labels not yet filled in. The set directory was named evidence-quality-real-v1-pending until 2026-11-03; the status moved here (G8, P1).",
+  "former_name": "evidence-quality-real-v1-pending",
   "sample_count": 300,
   "requested_count": 300,
   "input_comments": 3752,
