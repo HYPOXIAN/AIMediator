@@ -28,11 +28,11 @@ values, costs, or current balance recommendations were imported. Validate
 patch-sensitive behavior separately against the selected historical patch.
 
 Unique Move aliases now follow the requested overhead/input rules. See [Unique
-Move Alias Review](unique-move-alias-review.md) for all 244 entries, input
+Move Alias Review](../records/20261022-alias-review.md) for all 244 entries, input
 conditions, live properties, and blank historical-patch review fields.
 
 
-Low-alias moves: see [Low-alias Move Review](low-alias-review.md) for the
+Low-alias moves: see [Low-alias Move Review](../records/20261022-alias-review.md) for the
 2026-10-22 search and pending candidates. These proposals are staged only in
 docs and have not been applied to this glossary or runtime data.
 
@@ -1878,7 +1878,7 @@ establish the requested balance direction or prove patch facts.
 
 ## Community alias expansion and manual review
 
-The October 8 alias expansion is recorded in [alias-review.md](alias-review.md).
+The October 8 alias expansion is recorded in [20261022-alias-review.md](../records/20261022-alias-review.md).
 New aliases are candidates with blank per-alias review fields. Observed
 community words, historical nicknames, and generated notation/spelling variants
 are explicitly distinguished. The collection deliberately retains overloaded

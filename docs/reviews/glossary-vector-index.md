@@ -2,7 +2,7 @@
 
 The index uses every entry and every alias in `data/glossary.json`, including
 pending candidates. Index inclusion does not approve a candidate. The separate
-`docs/low-alias-review.*` proposals are not imported.
+`~/Archives/AIMediator/docs-data/low-alias-review.*` proposals are not imported.
 
 Each glossary entry is one retrieval document containing its identity, character,
 category, English and Chinese names, all alias objects and their restrictions,

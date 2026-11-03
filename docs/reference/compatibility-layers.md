@@ -48,7 +48,7 @@ listed by file name under
 | `configs/balance-review-policy.json` | `../src/aimediator/assets/configs/balance-review-policy.json` | scripts: `replay_balance_admission.py`, `run_balance_regression_live.py`, `run_quality_screening_experiment.py`; docs: `balance-review-v2.md`, `evidence-quality-handoff.md` | R1 |
 | `configs/evidence-quality-policy.json` | `../src/aimediator/assets/configs/evidence-quality-policy.json` | scripts: `run_quality_screening_experiment.py`; docs: `evidence-quality-handoff.md`, `evidence-quality-implementation.md` | R1 |
 | `configs/local-language-routing.json` | `../src/aimediator/assets/configs/local-language-routing.json` | scripts: `diagnose_evidence_quality_live.py`, `run_quality_screening_experiment.py`, `run_quality_screening_recovery.py`; docs: `balance-analysis.md` | R1 |
-| `data/glossary.json` | `../src/aimediator/assets/data/glossary.json` | scripts: `run_quality_screening_experiment.py`, `screen_feedback.py`; docs: `README.md`, `alias-review.md`, `glossary.md`, `glossary-vector-index.md` | R1 |
+| `data/glossary.json` | `../src/aimediator/assets/data/glossary.json` | scripts: `run_quality_screening_experiment.py`, `screen_feedback.py`; docs: `README.md`, `records/20261022-alias-review.md`, `glossary.md`, `glossary-vector-index.md` | R1 |
 | `data/evaluation/evidence-quality-synthetic-v1/cases.json` | `../../../src/aimediator/assets/fixtures/cases.json` | scripts: `experiments/demo_evidence_quality.py`; tests: `test_evidence_quality.py`; `tests/test_evaluation_sets.py` checks it against `cases_sha256` in the set's `manifest.json`; docs: `evidence-quality-implementation.md` | R1 |
 
 ## Symlinks to packaged prompts
