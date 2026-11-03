@@ -36,8 +36,69 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | B0.1 | done | 222 | — | Change record opened; index row added. The lock does not exist before B0.3 |
 | B0.2 | done | 222 | — | F-04 fixed: the test reads the prompt through `asset_path`. Plan 8.5 from a foreign directory: 222 pass, no error |
 | B0.3 | done | 223 | green (fixture created) | Behavior lock L1 to L4 and its self-test; see "Behavior lock (B0.3)". Suite 123 s, of which the lock takes about 51 s |
+| B0.4 | done | 223 | green | Baseline measured again, with the wheel acceptance and the foreign-directory run; see "Baseline measurements (B0.4)". Escalation E-1 (not blocking) |
 
 ## Baseline measurements (B0.4)
+
+Measured on 2026-11-03 at `3979a72` (B0.3 done), with Python 3.14.8 and
+NumPy 2.4.6, by the commands of plan section 8. B0 changed nothing under
+`src/` or `scripts/`, so the code figures equal those at `7282f49`.
+
+### Plan section 0 items
+
+| Item | Section 0 (at `7282f49`) | B0.4 (at `3979a72`) | Command |
+| ---- | ------------------------ | ------------------- | ------- |
+| Tracked files | 195 | 209: the plan, blueprint and 8 handoffs (10, `ab86db6`) and B0's change record, lock module, lock test and fixture (4) | count 1 |
+| Package `src/aimediator/` | 20 modules, 3,444 lines; `engine.py` 931 | 20 modules, 3,444 lines; `engine.py` 931 | count 2 |
+| `scripts/` | `collect/` 4 files (824 lines), `experiments/` 18 (1,764), root forwarders 7 (92), `maintenance/` 3 (1,093) | unchanged: 4 (824), 18 (1,764), 7 (92), 3 (1,093) | count 3 |
+| Offline tests | 222 pass in about 70 s | 223 pass in 118.8 s (wall 119.2 s); the lock adds 1 test and about 51 s | plan 8.1, 8.4 |
+| Rule check | 0 violations; the hook blocks | `Total: 0`; the hook ran on every B0 commit | plan 8.1 |
+| Compatibility layers | 19 symlinks, 7 forwarding scripts | 19 tracked symlinks (14 `prompts/`, 3 `configs/`, 1 `data/`, 1 evaluation set), 7 forwarding scripts in the register | count 4 |
+| Offline demo | 26.2 s; `engine.character_reference` 688 calls, 19.4 s cumulative (74 %) | 26.2 s; `engine.character_reference` 688 calls, 19.2 s cumulative (73 %) | plan 8.4 |
+| Slowest tests | presentation demo test 26.2 s; `test_cli_product` 31.1 s in total | behavior lock 51.2 s; presentation demo test 24.9 s; `test_cli_product` 35 tests in 28.8 s run alone | count 5 |
+| Working-directory dependence | 1 test errors from outside the checkout | none: 223 pass from a foreign directory (F-04 fixed in B0.2) | plan 8.5 |
+| Installed-wheel acceptance | passes offline (18 commands) | passes: `"passed": true`, `"commands": 18`, Python 3.14.8, NumPy 2.4.6 | plan 8.2 |
+| Interpreters | Python 3.14.8 with NumPy 2.4.6; no `.venv/`; system Python 3.10 to 3.12 without NumPy | unchanged | count 6 |
+
+The counts in the Command column:
+
+```sh
+git ls-files | wc -l                                              # count 1
+ls src/aimediator/*.py | wc -l; cat src/aimediator/*.py | wc -l   # count 2
+cat scripts/collect/*.py | wc -l                                  # count 3, per directory;
+git ls-files scripts/maintenance | xargs wc -l                    #   maintenance includes hooks/pre-commit
+git ls-files -s | grep -c '^120000'                               # count 4
+python3 -m unittest discover -s tests -q --durations 12           # count 5
+python3 -m unittest discover -s tests -p 'test_cli_product.py'    # count 5
+python3.12 -c 'import numpy'                                      # count 6, also 3.10 and 3.11
+```
+
+### Function-length metric (blueprint 7.3)
+
+8 functions over 60 lines, the same 8 as at `7282f49`:
+
+| Lines | Function |
+| ----- | -------- |
+| 259 | `engine.process` |
+| 136 | `review.load_run` |
+| 112 | `engine._generate` |
+| 111 | `operations.analyze` |
+| 105 | `reporting.export_report` |
+| 78 | `engine.run` |
+| 71 | `quality_scoring.score_group` |
+| 61 | `evidence_quality.qualify` |
+
+### Plan 8.7 greps
+
+Each must print nothing at the point stated in the plan; none is due yet.
+
+| Grep | Due | Lines printed now | Notes |
+| ---- | --- | ----------------- | ----- |
+| 1 Forwarder imports | after B3 | 42 lines in 25 files: 9 under `tests/`, 16 under `scripts/` | 9 test files also at `7282f49`; the blueprint baseline says 14 (escalation E-1) |
+| 2 `engine` imports inside the package | after B3.1 | 37 lines in 7 modules | blueprint baseline 7 |
+| 3 Users of the symlink paths | before B4.3 | 55 lines in 25 files: `src` 11 (6), `scripts` 7 (6), `tests` 2 (2), `README.md` 1, `docs/design` 5 (2), `docs/plans` 9 (5), `docs/reference` 20 (3) | the plan's own mentions are expected |
+| 4 `Path.cwd()` roots | after B6.1 | 2 | blueprint baseline 2 |
+| 5 Text I/O without encoding | after B1.3 | 129 | 130 at `7282f49`; B0.2 added the encoding to one test call |
 
 ## Behavior lock (B0.3): volatile keys, exclusions, self-test results
 
@@ -188,9 +249,37 @@ in the checkout, the lock was run, and the file was restored with
 
 ## Escalations
 
+### E-1 Baseline of "Test files importing forwarders" (B0.4)
+
+- **Question**: blueprint section 2 gives the metric "Test files importing
+  forwarders" a baseline of 14 and names plan 8.7, first grep, as its
+  measurement. That grep finds 9 test files, both at `7282f49` and at
+  `3979a72`. 14 is the plan's T-01 figure (section 3.6), which is defined
+  differently: test files that put `scripts/` directories on `sys.path`. A
+  plain search finds 11 such files now. Which baseline does the metric use?
+- **Options**: (a) correct the blueprint baseline to 9, the count of the
+  named command; (b) keep 14 and give the T-01 definition its own command.
+- **Recommendation**: (a). The target (0 after B3.3) and the command stay
+  the same; only the baseline figure changes. The B0 boundary does not
+  include the blueprint, so B0 does not correct it.
+- **Blocked**: nothing.
+
 ## Verification notes
 
 ## Session log
+
+### 2026-11-03 B0-1 (implementation)
+
+- Steps: B0.1, B0.2, B0.3, B0.4; none started and stashed.
+- State: HEAD is the B0.4 commit (parent `3979a72`); tests 223; lock green;
+  rule check 0.
+- Findings: escalation E-1 (blueprint metric baseline 14 versus 9 measured;
+  not blocking). Deviations, all recorded under "Behavior lock (B0.3)": the
+  discovery added an all-modules probe (C2) to the plan's `common.py` probe;
+  the self-test has one extra case, for L4; L4 uses `classify_rules`, as the
+  handoff says, where plan 5.2 names `classify()`. No decisions found during
+  execution.
+- Next: B0-V (verification of B0, sets `restructure-b0`); blockers: none.
 
 ## Batch results
 
