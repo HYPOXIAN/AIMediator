@@ -1092,3 +1092,169 @@ Found during execution, registered before any change to these manifests.
 - **Rollback**: none needed.
 - **Status**: pending
 - **Commits**: none
+
+### Decision summary
+
+| ID | Question | Recommendation | Handling | Status | Commit |
+| -- | -------- | -------------- | -------- | ------ | ------ |
+| P4-D01 | Module report and evidence-quality design | alongside in `design/`, not merged | implemented | pending | `3e32750`, `3ceb123` |
+| P4-D02 | README research history | append to the topic's record; the rest to `archive/readme-research-history.md` | implemented | pending | `8f376e3` |
+| P4-D03 | What counts as corpus (D8) | aliases and authored case inputs in code spans | implemented | pending | `31aa556`, `f33eb23` |
+| P4-D04 | ADR boundary | one ADR from `refactoring.md` only, command blocks dropped | implemented | pending | `2c01c7b` |
+| P4-D05 | Historical commands in records | keep verbatim, add a dated note | implemented | pending | `1af0118` |
+| P4-D06 | Commands in living documents | new output to `runs/`; archived run as placeholder plus manifest link | implemented | pending | `09ab0f9` |
+| P4-D07 | Link target for kept summaries | summary copy if kept, manifest otherwise | implemented | pending | `3bbc39e` |
+| P4-D08 | References to content that exists nowhere | code span plus "(not retained)" | implemented | pending | `8361845` |
+| P4-D09 | Collector output names a missing document | point it at the dataset manifest | bypassed | pending | — |
+| P4-D10 | Hand-entered low-alias decisions | list verbatim in the record, uninterpreted | implemented | pending | `b9366e0` |
+| P4-D11 | Blocking hook and `.claude/` | amend G3 to allow `.claude/`, with P3-D08 | bypassed | pending | — |
+| P4-D12 | Reports without a result record | record for the screening audit; keep the other two | bypassed | pending | — |
+
+### Changes
+
+Routine work (rules and plan), one kind of operation per commit; 222 tests
+passed after every commit.
+
+- `805d8c5` decisions registered (P4-D01 to P4-D11); `5759092` P4-D12,
+  found during execution, and the decision commits filled in.
+- Part A, moves and links only: `7869a68` alias review dumps archived
+  (decision 5); `4e2cccb` 17 documents moved into the D1 directories with
+  every inbound reference (README, documents, register, ten report
+  manifests' `record` fields, two `glossary.json` strings) and `MANIFEST.in`
+  (decision 10); `3e32750` module report (P4-D01). `docs/reviews/`,
+  `docs/module-reports/` and `notes/` removed.
+- Part B, bodies: `b9366e0` alias conclusion record; `8f376e3` README
+  research history moved out (P4-D02); `2adc7e0` README slimmed to 137 lines
+  (138 after `05b0937`); `958e12a` `prompts/extract-feedback.txt` archived
+  (decision 17); `3ceb123` D2 headers on 18 documents; `f33eb23` three
+  documents and the README section translated; `31aa556` alias spans;
+  `9c6587e` absolute paths (G7, 5 documents); `8361845` references to content
+  not retained; `3bbc39e` report references linked; `1af0118` notes in four
+  records; `09ab0f9` design commands to `runs/`; `2c01c7b` ADR 0001;
+  `0aae28b` index `docs/README.md`; `b3569ff` check tool reads curated
+  report files for G7 and G9 (decision 20); `d1cff6e` register "Used by"
+  and a glossary sentence updated after the moves; `05b0937` `.gitignore`
+  added to the README layout (found in the G10 check).
+- `glossary.json` changed twice in this batch (`7869a68` two `review_file`
+  fields, `4e2cccb` two `docs/glossary.md` strings); SHA256 now
+  `c6b9d8de…a05` (was `66f29236…2165` at `reorg-p3`).
+
+### Document moves
+
+| Original | New | Commit |
+| -------- | --- | ------ |
+| `docs/reviews/cli-usage.md` | `docs/guides/cli-usage.md` | `4e2cccb` |
+| `docs/reviews/cli-design-handoff.md` | `docs/design/cli.md` | `4e2cccb` |
+| `docs/reviews/balance-analysis.md` | `docs/design/balance-analysis.md` | `4e2cccb` |
+| `docs/reviews/evidence-quality-handoff.md` | `docs/design/evidence-quality.md` (translated `f33eb23`) | `4e2cccb` |
+| `docs/module-reports/emotion-quantification-and-evidence-isolation.md` | `docs/design/emotion-quantification-and-evidence-isolation.md` | `3e32750` |
+| `docs/reviews/refactoring.md` | `docs/decisions/0001-package-as-single-runtime.md` (ADR `2c01c7b`) | `4e2cccb` |
+| `docs/reviews/cli-implementation-status.md` | `docs/plans/cli-implementation-status.md` | `4e2cccb` |
+| `docs/reviews/review-todo.md` | `docs/plans/review-follow-ups.md` | `4e2cccb` |
+| `docs/reviews/balance-review-v2.md` | `docs/records/20261022-balance-review-v2.md` | `4e2cccb` |
+| `docs/reviews/evidence-quality-implementation.md` | `docs/records/20261026-evidence-quality-implementation.md` (translated `f33eb23`) | `4e2cccb` |
+| `docs/reviews/latest-balanced-validation.md` | `docs/records/20261027-balanced-validation.md` | `4e2cccb` |
+| `docs/reviews/directory-cleanup.md` | `docs/records/20261028-directory-cleanup.md` | `4e2cccb` |
+| `docs/reviews/glossary.md` | `docs/reference/glossary.md` | `4e2cccb` |
+| `docs/reviews/glossary-vector-index.md` | `docs/reference/glossary-vector-index.md` | `4e2cccb` |
+| `notes/10-22-meeting.md` | `docs/meetings/20261022-work-summary.md` | `4e2cccb` |
+| `docs/reviews/next-development-plan.md` | `docs/archive/next-development-plan.md` | `4e2cccb` |
+| `docs/reviews/cli-coding-agent-prompt.md` | `docs/archive/cli-coding-agent-prompt.md` | `4e2cccb` |
+| `docs/reviews/evidence-quality-coding-agent-prompt.md` | `docs/archive/evidence-quality-coding-agent-prompt.md` (translated `f33eb23`) | `4e2cccb` |
+| — | `docs/README.md`, `docs/records/20261022-alias-review.md`, `docs/archive/readme-research-history.md` (new) | `0aae28b`, `b9366e0`, `8f376e3` |
+
+Not updated on purpose: old paths in this record and the plan, the deletion
+list of the cleanup record, byte-copied report summaries, and the archived
+`low-alias-review.json`.
+
+### Archive
+
+| Path | Files | Bytes | Reason | Archive | Commit |
+| ---- | ----: | ----: | ------ | ------- | ------ |
+| `docs/reviews/alias-review.md`, `low-alias-review.md`, `low-alias-review.json`, `unique-move-alias-review.md` | 4 | 788,396 | review dumps, not documents (D7, decision 5) | `~/Archives/AIMediator/docs-data/` | `7869a68` |
+| `prompts/extract-feedback.txt` | 1 | 1,477 | legacy prompt, no longer referenced (P7, decision 17) | `~/Archives/AIMediator/prompts/` | `958e12a` |
+
+Order as before (G6): `cp -a --reflink=auto`, `SHA256SUMS` in the archive
+directory, `sha256sum -c` there and against the working files, comparison with
+the baseline backup's entries (all equal), then `git rm`.
+
+`dist/` (ignored) was replaced by a fresh build (P2; batch 2 deferred item
+6): the 2026-10-28 wheel and sdist (`cc068ed4…f847`, `b8f0d7a0…f428`) are in
+the baseline backup with the same hashes; the new files are
+`aimediator-0.1.0-py3-none-any.whl` (223,630 bytes, `0976ce4d…6a73`) and
+`aimediator-0.1.0.tar.gz` (259,238 bytes, `318ec3d5…9c24`), built from a clean
+clone of `d1cff6e`.
+
+### Results
+
+Full rule check saved (ignored) to `runs/reorg-p4-violations.txt`.
+
+| Rule | Batch 3 (after review) | Batch 4 | Change | Remaining |
+| ---- | ---------------------: | ------: | -----: | --------- |
+| G2 | 0 | 0 | 0 | — |
+| G3 | 2 | 1 | −1 | `.claude` (P3-D08 deferred; P4-D11) |
+| G7 | 5 | 0 | −5 | — |
+| G8 | 1 | 0 | −1 | — |
+| G9 | 0 | 0 | 0 | — (now also covers the 26 curated report files) |
+| D1 | 2 | 0 | −2 | — |
+| D2 | 20 | 0 | −20 | — |
+| D4 | 24 | 0 | −24 | — |
+| D5 | 17 | 0 | −17 | — |
+| D6 | 0 | 0 | 0 | — |
+| D7 | 3 | 0 | −3 | — |
+| D8 | 10 | 0 | −10 | — |
+| P1 | 0 | 0 | 0 | — |
+| P2 | 0 | 0 | 0 | — |
+| P3 | 0 | 0 | 0 | — |
+| P4 | 0 | 0 | 0 | static count 222 |
+| **Total** | **84** | **1** | **−83** | |
+
+### Acceptance checks before review (C1)
+
+- **Rule check**: 1 violation, G3 `.claude` (registered exception: P3-D08
+  deferred, P4-D11 bypassed). Everything else 0.
+- **Clean clone** of `d1cff6e` into a temporary directory (only tracked
+  files, so no ignored directory exists): `python3 -m venv`, `pip install .`
+  (Python 3.14.8, NumPy 2.5.4), 222 offline tests OK;
+  `aimediator doctor --offline` status `ok`, exit 0 (also with
+  `--config` after `init`); `aimediator demo` exit 0 (`off`, `shadow`,
+  `enforce`, `example-report`, `review-template`); `aimediator report` on
+  the demo run exit 0. This is also the G4 check.
+- **Packages**: wheel 46 members, sdist 86 members; neither has a `data/raw`
+  or `.env` entry (G9). The sdist contains `README.md`,
+  `docs/guides/cli-usage.md` and `docs/design/cli.md`, the two `MANIFEST.in`
+  paths (decision 10). The wheel ships
+  `assets/prompts/extract-grounded-feedback.txt` (decision 17). The tool's
+  G9 listing check of `dist/` reports 0.
+- **README layout** (G10): checked entry by entry against `ls -A` of the
+  root, `scripts/`, `data/` and `docs/`; matches after `05b0937`. Not drawn
+  in the tree: `.git`, the local `.env` (named in a bullet), ignored caches
+  and `.claude/` (P3-D08).
+- **Manual checks**: G1 (`CLAUDE.md` adds no rules), G6 (every deletion
+  above has an archive copy and an entry here), D3 (records changed only
+  under the one-off migration exception, plan section 0, item 7), D9
+  (`design/balance-analysis.md` documents the P3-D01 option change), P6 (no
+  attribution line in any commit since `0d390c4`), P7 (`prompts/` holds only
+  the 14 registered links; `src/aimediator/assets/` is the only prompt
+  source).
+- **Size**: project without `data/` 14 MB (`.git` 10 MB, `src/` 3.5 MB,
+  `scripts/` 948 KB, `tests/` 520 KB, `dist/` 476 KB, `docs/` 444 KB,
+  `reports/` 140 KB); `data/` 78 MB (ignored except manifests). README 138
+  lines (was 227).
+- **Tests**: 222 (baseline 192).
+
+Not done before review (C2): blocking hook, finalizing this record, the
+RULES.md revision entry, archiving the plan, tag `reorg-done`.
+
+### Deferred
+
+1. **Bypassed decisions** P4-D09, P4-D11, P4-D12 and the deferred P3-D08:
+   waiting for the owner. C2 needs P4-D11 (with P3-D08) decided first.
+2. **Glossary vector index**: built from `glossary.json` hash `5d2eca7b…`;
+   the file has changed in batches 3 and 4. Rebuild with
+   `python3 scripts/glossary_vectors.py build` when an embedding endpoint is
+   available (not needed for search).
+3. **Project-root constant** (plan section 7, decision 21): decided with the
+   CLI work.
+4. **Batch 2 deferred item 3** is P4-D12; items 1 and 6 were done in this
+   batch. Batch 3 deferred items 2 and 3 were done in this batch.
