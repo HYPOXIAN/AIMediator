@@ -84,6 +84,7 @@ AIMediator/
 ├── pyproject.toml       # Package metadata
 ├── MANIFEST.in          # Extra sdist files
 ├── .env.example         # Configuration key names, no values
+├── .gitignore           # Ignored locations (RULES.md G4)
 ├── src/aimediator/      # CLI, engine and packaged resources
 ├── tests/               # Offline automated tests
 ├── scripts/             # Compatibility entry points
