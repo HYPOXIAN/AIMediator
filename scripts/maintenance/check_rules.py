@@ -43,6 +43,8 @@ G3_ALLOWED = frozenset({
     '.env.example', '.env', 'CLAUDE.md', 'AGENTS.md', 'src', 'tests',
     'scripts', 'configs', 'data', 'docs', 'examples', 'reports', 'runs',
     'build', 'dist', '.venv',
+    # RULES.md v1.1: registered compatibility links only (checked by G2).
+    'prompts',
     # The repository itself; required by G5.
     '.git',
 })

@@ -1,6 +1,6 @@
 # AIMediator Project Rules
 
-Version 1.0 · Effective 2026-11-03 · Approved by the project owner.
+Version 1.1 · Effective 2026-11-03 · Approved by the project owner.
 
 This file is the highest-level convention for the project's structure. Every
 rule has a **Check**: the way compliance is verified. Rule IDs are stable; cite
@@ -27,8 +27,10 @@ the register.
 `RULES.md`, `pyproject.toml`, `MANIFEST.in`, `.gitignore`, `.env.example`,
 `.env` (local only), agent entry files (`CLAUDE.md`, `AGENTS.md`), `src/`,
 `tests/`, `scripts/`, `configs/`, `data/`, `docs/`, `examples/`, `reports/`,
-`runs/`, plus the ignored `build/`, `dist/` and `.venv/`. Adding a top-level
-entry requires amending this rule first.
+`runs/`, plus the ignored `build/`, `dist/` and `.venv/`. `prompts/` is also
+allowed, but only for compatibility links listed in the G2 register; it is
+removed once it is empty. Adding a top-level entry requires amending this
+rule first.
 *Check:* `ls -A` matches the allowlist.
 
 **G4 Sources and generated output are separate.** Anything reproducible from
@@ -98,10 +100,13 @@ passes.
 *Check:* `docs/` has no directory outside this table and no loose files at its
 root other than the index.
 
-**D2 Header.** Every document starts with `Type / Status / Updated / Applies to
-(version or dataset)`. Status is one of `Draft`, `Active`,
-`Superseded by <document>`, `Archived`.
-*Check:* script verifies every document has the header.
+**D2 Header.** Every document under `docs/` starts with `Type / Status /
+Updated / Applies to (version or dataset)`. Status is one of `Draft`,
+`Active`, `Superseded by <document>`, `Archived`. Exempt: the root
+`README.md` (it is the package long description), `RULES.md` (it carries its
+own version line and revision log), agent entry files, and README files
+inside `data/` (dataset descriptions belong to manifests).
+*Check:* script verifies every document under `docs/` has the header.
 
 **D3 Lifecycle.** Living documents (guides, design, plans) are updated with the
 implementation. Records, decisions and meeting notes are frozen once final: only
@@ -230,3 +235,9 @@ README "Layout" section.
   added with this version: `RULES.md` added to the G3 allowlist; register
   location (G2) and change record location (G6) fixed; P5 restated as a
   standing rule now that the baseline exists.
+- 2026-11-03 v1.1 — Owner decisions on the batch 1 deferred items
+  (reorganization plan, section 7, decisions 8 and 12). G3: `prompts/` is
+  allowed for registered compatibility links only, because P7 keeps those
+  links there and v1.0 did not list the directory. D2: scope limited to
+  documents under `docs/`, with the listed exemptions, because those files
+  already carry their own identification or belong to manifests.
