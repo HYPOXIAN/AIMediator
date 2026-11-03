@@ -21,7 +21,10 @@ forwarding scripts. The plan expected 6 forwarding scripts; the seventh,
 arguments rather than a pure forwarder (see its row).
 
 "Used by" lists tracked code and documents that name the path, found with
-`git grep` at commit `0d390c4`. Documents are listed by file name under
+`git grep` at commit `0d390c4` and updated in batch 3 for the scripts that
+were archived, moved into `scripts/collect/` or `scripts/experiments/`, or
+renamed (change record, P3). Scripts are listed by file name. Documents are
+listed by file name under
 `docs/reviews/` unless another directory is given.
 
 ## Removal conditions
@@ -42,17 +45,17 @@ arguments rather than a pure forwarder (see its row).
 
 | Path | Points to | Used by | Removal |
 | ---- | --------- | ------- | ------- |
-| `configs/balance-review-policy.json` | `../src/aimediator/assets/configs/balance-review-policy.json` | scripts: `build_screening_audit.py`, `replay_balance_admission.py`, `run_balance_regression_live.py`, `run_quality_screening_experiment.py`; docs: `balance-review-v2.md`, `evidence-quality-handoff.md` | R1 |
-| `configs/evidence-quality-policy.json` | `../src/aimediator/assets/configs/evidence-quality-policy.json` | scripts: `build_screening_audit.py`, `run_quality_screening_experiment.py`; docs: `evidence-quality-handoff.md`, `evidence-quality-implementation.md` | R1 |
+| `configs/balance-review-policy.json` | `../src/aimediator/assets/configs/balance-review-policy.json` | scripts: `replay_balance_admission.py`, `run_balance_regression_live.py`, `run_quality_screening_experiment.py`; docs: `balance-review-v2.md`, `evidence-quality-handoff.md` | R1 |
+| `configs/evidence-quality-policy.json` | `../src/aimediator/assets/configs/evidence-quality-policy.json` | scripts: `run_quality_screening_experiment.py`; docs: `evidence-quality-handoff.md`, `evidence-quality-implementation.md` | R1 |
 | `configs/local-language-routing.json` | `../src/aimediator/assets/configs/local-language-routing.json` | scripts: `diagnose_evidence_quality_live.py`, `run_quality_screening_experiment.py`, `run_quality_screening_recovery.py`; docs: `balance-analysis.md` | R1 |
-| `data/glossary.json` | `../src/aimediator/assets/data/glossary.json` | scripts: `run_quality_screening_experiment.py`, `run_smoke_test.py`, `screen_feedback.py`; docs: `README.md`, `alias-review.md`, `glossary.md`, `glossary-vector-index.md` | R1 |
+| `data/glossary.json` | `../src/aimediator/assets/data/glossary.json` | scripts: `run_quality_screening_experiment.py`, `screen_feedback.py`; docs: `README.md`, `alias-review.md`, `glossary.md`, `glossary-vector-index.md` | R1 |
 | `data/evaluation/evidence-quality-synthetic-v1/cases.json` | `../../../src/aimediator/assets/fixtures/cases.json` | scripts: `experiments/demo_evidence_quality.py`; tests: `test_evidence_quality.py`; `tests/test_evaluation_sets.py` checks it against `cases_sha256` in the set's `manifest.json`; docs: `evidence-quality-implementation.md` | R1 |
 
 ## Symlinks to packaged prompts
 
 | Path | Points to | Used by | Removal |
 | ---- | --------- | ------- | ------- |
-| `prompts/evidence-quality.en.txt` | `../src/aimediator/assets/prompts/evidence-quality.en.txt` | scripts: `build_screening_audit.py`, `diagnose_evidence_quality_live.py`, `recover_latest_quality.py`, `run_quality_screening_experiment.py`; docs: `evidence-quality-handoff.md`, `evidence-quality-implementation.md` | R1 |
+| `prompts/evidence-quality.en.txt` | `../src/aimediator/assets/prompts/evidence-quality.en.txt` | scripts: `diagnose_evidence_quality_live.py`, `run_quality_screening_experiment.py`; docs: `evidence-quality-handoff.md`, `evidence-quality-implementation.md` | R1 |
 | `prompts/evidence-quality.zh.txt` | `../src/aimediator/assets/prompts/evidence-quality.zh.txt` | same as `evidence-quality.en.txt` | R1 |
 | `prompts/quality-extract.en.txt` | `../src/aimediator/assets/prompts/quality-extract.en.txt` | scripts: `diagnose_evidence_quality_live.py`; docs: `evidence-quality-implementation.md` | R1 |
 | `prompts/quality-extract.zh.txt` | `../src/aimediator/assets/prompts/quality-extract.zh.txt` | same as `quality-extract.en.txt` | R1 |
@@ -62,9 +65,9 @@ arguments rather than a pure forwarder (see its row).
 | `prompts/relevance.zh.txt` | `../src/aimediator/assets/prompts/relevance.zh.txt` | same as `relevance.en.txt` | R1 |
 | `prompts/retrieval-review.en.txt` | `../src/aimediator/assets/prompts/retrieval-review.en.txt` | scripts: `replay_balance_admission.py`; docs: `evidence-quality-handoff.md` | R1 |
 | `prompts/retrieval-review.zh.txt` | `../src/aimediator/assets/prompts/retrieval-review.zh.txt` | same as `retrieval-review.en.txt` | R1 |
-| `prompts/summarize-balance.en.txt` | `../src/aimediator/assets/prompts/summarize-balance.en.txt` | scripts: `diagnose_evidence_quality_live.py`, `render_latest_validation_report.py`, `run_balance_regression_live.py` (default `--prompt-dir`), `test_balance_numeric_extraction.py`, `test_balance_semantic_controls.py`; `cli-demo/live-config.json`; docs: `balance-analysis.md`, `evidence-quality-handoff.md`, `latest-balanced-validation.md` | R1 |
+| `prompts/summarize-balance.en.txt` | `../src/aimediator/assets/prompts/summarize-balance.en.txt` | scripts: `diagnose_evidence_quality_live.py`, `run_balance_regression_live.py` (default `--prompt-dir`), `run_balance_numeric_extraction_live.py`, `run_balance_semantic_controls_live.py`; docs: `balance-analysis.md`, `evidence-quality-handoff.md`, `latest-balanced-validation.md` | R1 |
 | `prompts/summarize-balance.zh.txt` | `../src/aimediator/assets/prompts/summarize-balance.zh.txt` | same as `summarize-balance.en.txt` | R1 |
-| `prompts/verify-balance.en.txt` | `../src/aimediator/assets/prompts/verify-balance.en.txt` | tests: `test_balance_analysis.py`; scripts: `diagnose_evidence_quality_live.py`, `render_latest_validation_report.py`, `run_balance_regression_live.py` (default `--prompt-dir`), `test_balance_controls.py`, `test_balance_numeric_extraction.py`, `test_balance_semantic_controls.py`; docs: `balance-analysis.md`, `latest-balanced-validation.md` | R1 |
+| `prompts/verify-balance.en.txt` | `../src/aimediator/assets/prompts/verify-balance.en.txt` | tests: `test_balance_analysis.py`; scripts: `diagnose_evidence_quality_live.py`, `run_balance_regression_live.py` (default `--prompt-dir`), `run_balance_controls_live.py`, `run_balance_numeric_extraction_live.py`, `run_balance_semantic_controls_live.py`; docs: `balance-analysis.md`, `latest-balanced-validation.md` | R1 |
 | `prompts/verify-balance.zh.txt` | `../src/aimediator/assets/prompts/verify-balance.zh.txt` | scripts: same as `verify-balance.en.txt` (tests excepted) | R1 |
 
 ## Forwarding scripts
@@ -76,17 +79,20 @@ implementation.
 
 | Path | Points to | Used by | Removal |
 | ---- | --------- | ------- | ------- |
-| `scripts/balance_policy.py` | `aimediator.balance_policy` | tests: `test_balance_review_pipeline.py`; scripts: `evaluate_balance_review.py`, `export_balance_review_followups.py`, `replay_balance_admission.py`; file hashed into run identities by `build_screening_audit.py`, `diagnose_evidence_quality_live.py`, `run_balance_regression_live.py`, `run_quality_screening_experiment.py`, `test_balance_numeric_extraction.py`; docs: `cli-design-handoff.md`, `evidence-quality-handoff.md` | R2 |
+| `scripts/balance_policy.py` | `aimediator.balance_policy` | tests: `test_balance_review_pipeline.py`; scripts: `evaluate_balance_review.py`, `export_balance_review_followups.py`, `replay_balance_admission.py`; file hashed into run identities by `diagnose_evidence_quality_live.py`, `run_balance_regression_live.py`, `run_quality_screening_experiment.py`, `run_balance_numeric_extraction_live.py`; docs: `cli-design-handoff.md`, `evidence-quality-handoff.md` | R2 |
 | `scripts/evaluate_evidence_quality.py` | `aimediator.quality_scoring` (runs `main()` when executed) | tests: `test_evidence_quality_evaluation.py`; docs: `cli-design-handoff.md`, `cli-usage.md`, `evidence-quality-implementation.md` | R2 |
-| `scripts/evidence_quality.py` | `aimediator.evidence_quality` | tests: `test_evidence_quality.py`, `test_evidence_quality_evaluation.py`, `test_quality_screening_compact.py`, `test_quality_screening_experiment.py`; scripts: `build_screening_audit.py`, `demo_evidence_quality.py`, `diagnose_evidence_quality_live.py`, `present_quality_screening_results.py`, `recover_latest_quality.py`, `run_quality_screening_experiment.py`, `run_quality_screening_recovery.py` (several also hash the file); docs: `cli-design-handoff.md`, `evidence-quality-handoff.md`, `evidence-quality-implementation.md` | R2 |
+| `scripts/evidence_quality.py` | `aimediator.evidence_quality` | tests: `test_evidence_quality.py`, `test_evidence_quality_evaluation.py`, `test_quality_screening_compact.py`, `test_quality_screening_experiment.py`; scripts: `demo_evidence_quality.py`, `diagnose_evidence_quality_live.py`, `present_quality_screening_results.py`, `run_quality_screening_experiment.py`, `run_quality_screening_recovery.py` (several also hash the file); docs: `cli-design-handoff.md`, `evidence-quality-handoff.md`, `evidence-quality-implementation.md` | R2 |
 | `scripts/glossary_vectors.py` | `aimediator.glossary_vectors` (runs `main()` when executed) | docs: `README.md`, `cli-design-handoff.md`, `glossary-vector-index.md` (documented commands) | R2 |
 | `scripts/review_balance_sources.py` | `aimediator.legacy_review` (runs `main()` when executed) | tests: `test_balance_source_review.py`, `test_evidence_quality.py`; scripts: `check_balance_regressions.py`, `review_balance_live.py`; docs: `balance-analysis.md`, `cli-design-handoff.md`, `evidence-quality-implementation.md` | R2 |
-| `scripts/run_balance_analysis.py` | `aimediator.engine` (runs `main()` when executed) | tests: `test_balance_analysis.py`, `test_balance_review_pipeline.py`, `test_balanced_collection.py`, `test_evidence_quality.py`, `test_evidence_quality_evaluation.py`, `test_quality_screening_compact.py`, `test_quality_screening_experiment.py`, `test_quality_screening_recovery.py`; scripts (26): `build_screening_audit.py`, `check_balance_regressions.py`, `demo_evidence_quality.py`, `diagnose_evidence_quality_live.py`, `evaluate_balance_review.py`, `export_balance_review_followups.py`, `finalize_latest_rerun.py`, `finish_latest_validation.py`, `prepare_balance_design.py`, `present_quality_screening_results.py`, `recover_latest_failures.py`, `recover_latest_quality.py`, `render_latest_validation_report.py`, `replay_balance_admission.py`, `replay_latest_accepted_contract.py`, `rerun_latest_exact_requests.py`, `resume_quality_screening_local.py`, `review_balance_live.py`, `run_balance_regression_live.py`, `run_local_direction_comparison.py`, `run_quality_screening_experiment.py`, `run_quality_screening_recovery.py`, `test_balance_controls.py`, `test_balance_numeric_extraction.py`, `test_balance_semantic_controls.py`, `validate_latest_run.py`; docs: `README.md`, `balance-analysis.md`, `cli-design-handoff.md`, `evidence-quality-handoff.md`, `evidence-quality-implementation.md`, `latest-balanced-validation.md` | R2 |
+| `scripts/run_balance_analysis.py` | `aimediator.engine` (runs `main()` when executed) | tests: `test_balance_analysis.py`, `test_balance_review_pipeline.py`, `test_balanced_collection.py`, `test_evidence_quality.py`, `test_evidence_quality_evaluation.py`, `test_quality_screening_compact.py`, `test_quality_screening_experiment.py`, `test_quality_screening_recovery.py`; scripts (17): `check_balance_regressions.py`, `demo_evidence_quality.py`, `diagnose_evidence_quality_live.py`, `evaluate_balance_review.py`, `export_balance_review_followups.py`, `prepare_balance_design.py`, `present_quality_screening_results.py`, `replay_balance_admission.py`, `resume_quality_screening_local.py`, `review_balance_live.py`, `run_balance_regression_live.py`, `run_local_direction_comparison.py`, `run_quality_screening_experiment.py`, `run_quality_screening_recovery.py`, `run_balance_controls_live.py`, `run_balance_numeric_extraction_live.py`, `run_balance_semantic_controls_live.py`; docs: `README.md`, `balance-analysis.md`, `cli-design-handoff.md`, `evidence-quality-handoff.md`, `evidence-quality-implementation.md`, `latest-balanced-validation.md` | R2 |
 | `scripts/run_local_direction_comparison.py` | `run_balance_analysis.run` (that is, `aimediator.engine.run`), with its own arguments; replaces the historical 32-comment experiment command | docs: `balance-analysis.md` | R3 |
 
 ## Change log
 
 - 2026-11-03: register created with 18 symlinks and 7 forwarding scripts.
+- 2026-11-03 (batch 3): "Used by" updated: archived one-off and smoke-test
+  scripts dropped, the four `test_*` scripts renamed to `run_*_live`, and
+  the `cli-demo/` entry (removed in batch 2) dropped. No layer changed.
 - 2026-11-03 (batch 3): added the symlink
   `data/evaluation/evidence-quality-synthetic-v1/cases.json`, which replaced a
   byte-identical copy of the packaged fixture (plan section 7, decision 9).
