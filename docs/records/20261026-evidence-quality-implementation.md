@@ -1,127 +1,128 @@
-# 评论证据质量模块：实现与验证
+# Comment evidence-quality module: implementation and verification
 
 - Type: Record
 - Status: Active
 - Updated: 2026-11-03
 - Applies to: evidence-quality module v1; `data/evaluation/evidence-quality-synthetic-v1`, `data/evaluation/evidence-quality-real-v1`; reports `evidence-quality-*-v1`
+- Translated 2026-11 from the Chinese original (commit `3ceb123`); only the language changed.
 
-日期：2026-10-26（America/Los_Angeles）。工程规格见 `docs/design/evidence-quality.md`。
-本次交付 CLI 工程能力；尚未获得独立人工效果验证，推荐先运行 shadow。
+Date: 2026-10-26 (America/Los_Angeles). The engineering specification is `docs/design/evidence-quality.md`.
+This delivery provides the CLI engineering capability; independent human validation of effectiveness has not been obtained, and running shadow first is recommended.
 
-## 实现文件
+## Implementation files
 
-- `scripts/evidence_quality.py`：严格 schema、覆盖与原文校验、Unicode LNMS 篇幅比例、逐信息点路由、claim 资格绑定、独立意见统计。
-- `configs/evidence-quality-policy.json`：v1 策略，比例算法 `unicode-LNMS-codepoint-v1`；0.70 只作未校准告警，不能作删除阈值。每评论一次标注请求，8192 输出预算、16384 上下文，失败最多两次独立请求。
-- `prompts/evidence-quality.{en,zh}.txt`：双语标注；不输出最终路由、可信度或工程建议。
-- `prompts/quality-extract.{en,zh}.txt`、`prompts/quality-verify.{en,zh}.txt`：只在 enforce 追加到当前主流程提示词，保留 off/shadow 原提示词。
-- `scripts/run_balance_analysis.py`：相关性放行后进入质量阶段；独立解析与 schema；三种模式、quality-only、缓存、快照、覆盖、报告出口。
-- `scripts/review_balance_sources.py`：来源复核保留并重新校验资格；提案指纹包括资格。修改过的主张不能沿用修改前的自动语义审查。
-- `scripts/experiments/prepare_balance_design.py`：新版输入还需机制资格、选定片段引用、语义审查和官方身份；继续要求来源 accept、明确目标、数值意图和匹配的版本数据。
-- `scripts/experiments/demo_evidence_quality.py`：合成标注重放及三种模式 mock 端到端示例，不连接模型、不产生真实准确率。
-- `scripts/experiments/diagnose_evidence_quality_live.py`：显式选定冻结 admission 中的评论，在新目录做真实 quality 与 shadow/enforce 提取、审查对照；不重跑检索。
-- `scripts/evaluate_evidence_quality.py`：新建待标注集与效果计分，分来源、语言、开发/测试及固定 admission 条件；不自动把模型输出当标签。
-- `tests/test_evidence_quality.py`、`tests/test_evidence_quality_evaluation.py`：双语纯逻辑、mock 全流程、失败/恢复与评估边界测试。
+- `scripts/evidence_quality.py`: strict schema, coverage and source validation, Unicode LNMS length ratio, per-information-point routing, claim eligibility binding, separate opinion statistics.
+- `configs/evidence-quality-policy.json`: v1 policy, ratio algorithm `unicode-LNMS-codepoint-v1`; 0.70 is only an uncalibrated warning and cannot serve as a deletion threshold. One annotation request per comment, 8192 output budget, 16384 context, at most two separate requests on failure.
+- `prompts/evidence-quality.{en,zh}.txt`: bilingual annotation; outputs no final route, credibility or engineering recommendation.
+- `prompts/quality-extract.{en,zh}.txt`, `prompts/quality-verify.{en,zh}.txt`: appended to the current main-flow prompts only under enforce; the off/shadow prompts stay as they were.
+- `scripts/run_balance_analysis.py`: after relevance admission, comments enter the quality stage; separate parsing and schema; the three modes, quality-only, cache, snapshots, coverage and report outlets.
+- `scripts/review_balance_sources.py`: source review keeps and revalidates eligibility; the proposal fingerprint includes eligibility. A modified claim cannot keep the automatic semantic audit from before the modification.
+- `scripts/experiments/prepare_balance_design.py`: new-version input also requires mechanism eligibility, references to the selected segments, semantic audit and official identity; source accept, an explicit target, numerical intent and matching versioned data are still required.
+- `scripts/experiments/demo_evidence_quality.py`: replay of synthetic annotations and mock end-to-end examples of the three modes; connects to no model and produces no real accuracy.
+- `scripts/experiments/diagnose_evidence_quality_live.py`: explicitly selects comments from the frozen admission and runs real quality plus shadow/enforce extraction and audit comparisons in a new directory; does not rerun retrieval.
+- `scripts/evaluate_evidence_quality.py`: creates sets to be annotated and scores effectiveness, by source, language, development/test and fixed-admission condition; does not take model output as labels automatically.
+- `tests/test_evidence_quality.py`, `tests/test_evidence_quality_evaluation.py`: bilingual pure-logic, mock full-pipeline, failure/recovery and evaluation-boundary tests.
 
-## 行为与兼容
+## Behavior and compatibility
 
-默认 `--evidence-quality off` 不增加质量模型调用；旧 extraction、计数与报告主体语义保留，但新代码必须用新目录。默认输出改为 `runs/balance-quality-v1`，避免沿用历史实验目录。
+The default `--evidence-quality off` adds no quality model calls; the old extraction, counts and the main semantics of the report are kept, but new code must use a new directory. The default output changed to `runs/balance-quality-v1`, to avoid continuing in a historical experiment directory.
 
-shadow 标注与路由产物均为观察，原 extraction/aggregation 照旧；正式报告不混入这些观察结果。enforce 只有明确的角色机制信息点进入 extraction。完整原始 units 仍作上下文，原 E-ID 和 `[start,end)` 不改变，不用模型改写替代证据。
+Shadow annotations and routing outputs are observations only; the original extraction/aggregation runs as before, and the formal report does not mix in these observations. Under enforce only explicit character mechanism information points enter extraction. The complete original units still serve as context, the original E-IDs and `[start,end)` do not change, and model rewrites do not replace evidence.
 
-每条 claim 必须引用**一个**本评论合格 `quality_point_ids`，对应 evidence IDs 必须完整匹配所选点；角色、方向、目标与数值必须通过局部绑定检查。一个点涉及多个片段时，全部片段的来源保留。独立语义审查看完整原文作解释上下文，但只允许所选片段支撑主张，且保留请求/观察区别；不把资格标签、情绪占比或情绪强度当证据。局部数值检查不替代原有数值意图、身份、来源及版本规则。
+Every claim must reference **one** eligible `quality_point_ids` of its own comment, and the corresponding evidence IDs must exactly match the selected point; character, direction, target and numbers must pass local binding checks. When a point involves several segments, the sources of all segments are kept. The separate semantic audit sees the complete original text as interpretive context, but only the selected segments may support the claim, and the distinction between request and observation is kept; eligibility labels, emotion share or emotional intensity are not taken as evidence. The local numerical check does not replace the existing numerical intent, identity, source and version rules.
 
-程序不能证明模型提出的语义分段、主体、去重或具体性正确。当前 v1 对原文中出现的具体目标做保守字面约束，跨语言改写可能增加复核量。不要以复核为成功提取。缺少上下文、反讽、被引用的辱骂、结构错误或请求失败均可复核；确定的其他点仍可独立保留。
+The program cannot prove that the semantic segmentation, subject, deduplication or concreteness proposed by the model is correct. The current v1 applies a conservative literal constraint to concrete targets that appear in the original text; cross-language rewording may increase the review workload. Do not count review as successful extraction. Missing context, sarcasm, quoted abuse, structural errors or request failures can all go to review; other certain points can still be kept independently.
 
-`balance-report-v3` 的 enforce 出口包括：
+The enforce outlets of `balance-report-v3` include:
 
-- `opinion_summary`：一般意见，保留方向和 explicit_request / strength_assessment / observation 的分别来源数；不生成具体设计。
-- `character_adjustments`：仅后续审查支持的机制证据，按角色、字面主题、方向计数，保留 buff/nerf/keep/unclear。
-- `system_feedback`：系统反馈与一般/具体等级，独立保存；v1 无系统建议生成器。
-- `quality_review_queue` / `quality_exclusions`：片段、来源、原因、运行状态及可追溯请求。
+- `opinion_summary`: general opinions, keeping the direction and separate source counts for explicit_request / strength_assessment / observation; no concrete design is generated.
+- `character_adjustments`: only mechanism evidence supported by the later review, counted by character, literal topic and direction, keeping buff/nerf/keep/unclear.
+- `system_feedback`: system feedback with its general/concrete level, stored separately; v1 has no system recommendation generator.
+- `quality_review_queue` / `quality_exclusions`: segment, source, reason, run status and traceable requests.
 
-权重是同一角色/主题/方向的唯一 comment ID，不受情绪强度和重复发泄影响。意见的 stance 子计数可重叠，不能相加。`quality-summary.json` 另外提供一般意见与**审查通过机制证据**的来源集合并集和交集。分类、主题、方向之间均可重叠，不能把评论数说成独立玩家人数或总体共识。源内未验证名称继续隔离，不进入已验证角色组。
+The weight is unique comment IDs per character/topic/direction, unaffected by emotional intensity and repeated venting. The stance sub-counts of opinions can overlap and cannot be added up. `quality-summary.json` additionally provides the union and intersection of the source sets of general opinions and of **review-passed mechanism evidence**. Categories, topics and directions can all overlap; comment counts cannot be called numbers of independent players or overall consensus. Unverified names within a source stay isolated and do not enter verified character groups.
 
-设计入口的旧 claim 列表仍走 `legacy/quality_not_assessed` 分支。新版 `balance-report-v3` 报告自动强制资格；单独传新版 claim 列表时请显式加 `--quality-mode enforce`，防止遗漏资格字段被当作 legacy。缺失字段不能默认为新版通过。人工 accept 也不能把 opinion_only 升格为机制证据。
+The old claim lists of the design entry still take the `legacy/quality_not_assessed` branch. New-version `balance-report-v3` reports enforce eligibility automatically; when passing a new-version claim list on its own, add `--quality-mode enforce` explicitly, so that missing eligibility fields are not treated as legacy. Missing fields cannot default to passing the new version. A human accept cannot promote opinion_only to mechanism evidence either.
 
-## 运行、恢复和回滚
+## Running, recovery and rollback
 
-以下命令在仓库根目录执行，每种模式选独立新目录。依赖原有 numpy 和本地 Ollama，仍使用语言路由配置及 `qwen3-embedding:8b`；不读取 `.env`，不新增外部 API 或模型。
+Run the following commands from the repository root, with a separate new directory for each mode. They depend on the existing numpy and local Ollama, and still use the language routing configuration and `qwen3-embedding:8b`; they do not read `.env` and add no external API or model.
 
 ```sh
 cd <project root>
 python3 -m unittest discover -s tests -p 'test_*.py'
 
-# 推荐：先观察，不改变旧下游流向
+# Recommended: observe first, without changing the old downstream flow
 python3 scripts/run_balance_analysis.py --evidence-quality shadow --out reports/quality-shadow-new
 
-# 在检索、相关性、质量之后停止
+# Stop after retrieval, relevance and quality
 python3 scripts/run_balance_analysis.py --evidence-quality shadow --quality-only --out reports/quality-only-new
 
-# 使用资格闸门的完整流程
+# Full flow with the eligibility gate
 python3 scripts/run_balance_analysis.py --evidence-quality enforce --out reports/quality-enforce-new
 
-# 来源复核后的新版列表仍须显式使用 enforce 设计门槛
+# After source review, the new-version list must still use the enforce design gate explicitly
 python3 scripts/experiments/prepare_balance_design.py --claims reports/quality-enforce-new/source-reviewed-claims.json --quality-mode enforce --out reports/quality-enforce-new/design-briefs.json
 
-# 回滚运行行为：off + 新目录，不改写历史输出
+# Roll back run behavior: off plus a new directory, without rewriting historical output
 python3 scripts/run_balance_analysis.py --evidence-quality off --out reports/quality-rollback-new
 
-# 无模型服务也能重放合成混合路由和 mock 三模式端到端示例
+# Without a model service, replay the synthetic mixed routing and the mock three-mode end-to-end examples
 python3 scripts/experiments/demo_evidence_quality.py --mock-pipeline --out reports/quality-demo-new
 ```
 
-`--relevance-only` 仅允许 off；`--quality-only` 必须配 shadow/enforce，不能与 relevance-only 同用。参数错误在模型调用前报告。
+`--relevance-only` is allowed only with off; `--quality-only` requires shadow/enforce and cannot be used together with relevance-only. Argument errors are reported before any model call.
 
-恢复时重复**同一命令、同一目录**。manifest 比较模式、数据、模型 digest、代码、schema、策略、提示词、输出预算和测量版本；任一身份变化必须新目录。每个请求保存 request/response/validation 与原始流输出；quality attempt 1/2 使用独立身份，重试不是反复读取同一失败响应。两次失败持久化为 review，不算 exclude 或 generation_failed。缓存恢复不会增加信息点权重或重复计数；中断的原始流输出留作独立文件。
+To recover, repeat **the same command with the same directory**. The manifest compares mode, data, model digests, code, schema, policy, prompts, output budget and measurement version; any identity change requires a new directory. Each request stores request/response/validation and the raw streamed output; quality attempts 1/2 use separate identities, so a retry is not a repeated reading of the same failed response. Two failures are persisted as review, not counted as exclude or generation_failed. Cache recovery adds no information-point weight and no double counting; interrupted raw streamed output is kept as a separate file.
 
-产物包括 `evidence-quality.json`、`quality-routing.json`、`quality-summary.json`、`quality-review-queue.json`、`quality-exclusions.json`、`opinion-summary.json`、`system-feedback.json`、`full-pipeline-coverage.json`。既有 coverage 的字段含义保留，新 coverage 对每个输入只记一行，分别记录语言未支持/未选择、相关性拒绝/待定、质量待处理/完成/失败、提取完成/失败、审查与来源待复核状态。质量判断后的正常分流不算提取失败。
+Outputs include `evidence-quality.json`, `quality-routing.json`, `quality-summary.json`, `quality-review-queue.json`, `quality-exclusions.json`, `opinion-summary.json`, `system-feedback.json`, `full-pipeline-coverage.json`. The meaning of the existing coverage fields is kept; the new coverage records exactly one row per input, recording separately language unsupported/unselected, relevance rejected/pending, quality pending/complete/failed, extraction complete/failed, and review and source-review pending states. Normal routing after the quality decision does not count as extraction failure.
 
-## 样例与新标注集
+## Examples and the new annotation set
 
-`data/evaluation/evidence-quality-synthetic-v1/` 有 38 条 agent 编写的中英合成用例，全部 development，包含交接要求的 12 类边界及额外的历史/比较/反讽/未知身份/等义情绪变体。它们不是社区证据或人工真值。
+`data/evaluation/evidence-quality-synthetic-v1/` has 38 agent-authored Chinese and English synthetic cases, all development, covering the 12 boundary kinds required by the handoff plus additional historical/comparison/sarcasm/unknown-identity/emotion-equivalent variants. They are not community evidence or human ground truth.
 
-`reports/evidence-quality-v1-delivery/examples/mixed-comment-examples.json` 展示价格+一般诉求、系统+外观、高发泄+具体机制的多路输出；`mock-pipeline/{off,shadow,enforce}/` 使用 mock 模型与检索跑完整管道，所有输入由 mock 放行，`execution-provenance.json` 明确注明模拟来源。
+`reports/evidence-quality-v1-delivery/examples/mixed-comment-examples.json` shows multi-route output for price plus a general request, system plus cosmetics, and heavy venting plus a concrete mechanism; `mock-pipeline/{off,shadow,enforce}/` runs the complete pipeline with mock models and retrieval, all inputs are passed by the mock, and `execution-provenance.json` states the simulated source explicitly.
 
-`data/evaluation/evidence-quality-real-v1/` 从已有**粗筛前**语料按重复簇确定性抽取 300 条：198 en、101 zh、1 und；标签全为 null/unlabeled，没有人工准确率。历史 admission 中已出现的来源强制 development；规范化重复内容不跨 split。尚需人工合并等义簇、检查语言/来源分层、冻结拆分，再做双标和裁决，不能直接将当前 provisional test 宣称为独立盲测。
+`data/evaluation/evidence-quality-real-v1/` draws 300 records deterministically by duplicate cluster from the existing **pre-screening** corpus: 198 en, 101 zh, 1 und; all labels are null/unlabeled, and there is no human accuracy. Sources that appeared in the historical admission are forced into development; normalized duplicate content does not cross splits. Equivalent clusters still need to be merged by humans, the language/source stratification checked and the split frozen before double annotation and adjudication; the current provisional test cannot be claimed directly as an independent blind test.
 
-新建标注模板的命令（不会覆盖已有目录）：
+Commands to create a new annotation template (they do not overwrite an existing directory):
 
 ```sh
 python3 scripts/evaluate_evidence_quality.py prepare --dataset data/raw/feedback/20261015-expanded/records.jsonl --source-stage raw_pre_screen --inspected-labels data/evaluation/balance-silver-v1/labels.jsonl --limit 300 --out data/evaluation/quality-labels-new
 python3 scripts/evaluate_evidence_quality.py score --labels data/evaluation/quality-labels-new/annotation-template.json --run reports/quality-shadow-new --out reports/quality-score-new.json
 ```
 
-为了避免把分段 ID 相同冒充语义一致，计分要求人工/银标提供 `points`（含 point_id、route、segment_ids）和 `point_matches`（gold_point_id、predicted_point_id 的一对一裁决）。没有匹配记录的机制输出计入 precision 分母，缺失/复核计入 recall 损失。`segments` 沿用精确原文的 segment 格式；情绪 span precision/recall 和比例误差**仅**对 reviewer_type=human 且有 span 标签的记录计算。human / silver / agent_authored_synthetic 和 development/test 结果分开，不混成总准确率。所有比例保留分子分母与 Wilson 区间，零分母为 null；相关性 false acceptance 定义为已放行且有二元相关性标签中的无关占比。区间未校正评论内/字符间相关性，不能作小样本保证。
+So that identical segment IDs do not pass as semantic agreement, scoring requires human/silver labels to provide `points` (with point_id, route, segment_ids) and `point_matches` (a one-to-one adjudication of gold_point_id and predicted_point_id). Mechanism outputs without a match record count in the precision denominator; missing/review count as recall loss. `segments` keeps the exact-source segment format; emotion span precision/recall and the ratio error are computed **only** for records with reviewer_type=human and span labels. human / silver / agent_authored_synthetic and development/test results are kept separate and not merged into one overall accuracy. All ratios keep numerator and denominator with Wilson intervals, and a zero denominator is null; relevance false acceptance is defined as the unrelated share among admitted records that have a binary relevance label. The intervals are not corrected for within-comment/between-character correlation and cannot serve as small-sample guarantees.
 
-报告同时给机制 precision/recall、具体机制误排除率、一般意见升格率、系统误绑角色率、review/失败率、review 召回损失及等义资格/单位权重一致性。固定 admission 子集的结果是条件表现；只有覆盖粗筛前样本和上游放行状态的计分才可讨论端到端 recall。本模块无法找回根本没有进入它的评论。
+The report gives at the same time mechanism precision/recall, the false-exclusion rate of concrete mechanisms, the promotion rate of general opinions, the rate of system feedback wrongly bound to a character, review/failure rates, the recall loss from review, and equivalent eligibility/unit-weight agreement. Results on the fixed admission subset are conditional performance; only scoring that covers pre-screening samples and upstream admission status can discuss end-to-end recall. This module cannot recover comments that never entered it.
 
-## 验证状态
+## Verification status
 
-详见 `reports/evidence-quality-v1-verification/verification.json` 与 `tests.log`。
-既有冻结 silver-v1、admission、原始评论和历史报告未被覆盖。新代码要求使用新目录，不直接续写旧结果。
+See `reports/evidence-quality-v1-verification/verification.json` and `tests.log`.
+The existing frozen silver-v1, admission, original comments and historical reports were not overwritten. New code requires a new directory and does not continue old results directly.
 
-真实诊断使用原语言模型、固定历史 admission 的两条来源，保存全部原始响应与 shadow/enforce 审查记录。英文 Drive Rush 输入被模型标为排除；中文样本的粗粒度标注和提取仍需人工核查，enforce 的语义审查曾返回 uncertain。上述都是待复核观察，不是正确性结论。最终诊断状态以 `reports/evidence-quality-v1-live-verified/diagnostic-summary.json` 为准。
+The real diagnostic uses the original-language models and two sources from the fixed historical admission, saving all raw responses and the shadow/enforce audit records. The English Drive Rush input was labeled exclude by the model; the coarse annotation and extraction of the Chinese sample still need human checking, and the enforce semantic audit once returned uncertain. All of these are observations awaiting review, not conclusions about correctness. The final diagnostic status is given by `reports/evidence-quality-v1-live-verified/diagnostic-summary.json`.
 
-当前本地模型清单缺少 `qwen3-embedding:8b`，因此未完成新鲜检索+相关性+质量+提取的完整在线运行；固定 admission 诊断没有绕过或伪造该模型的 digest。恢复原嵌入模型后才能执行上面的完整运行命令。本交付不自动下载或替换模型。
+The current local model list lacks `qwen3-embedding:8b`, so the complete online run of fresh retrieval + relevance + quality + extraction was not completed; the fixed-admission diagnostic did not bypass or forge that model's digest. The complete run commands above can be executed only after the original embedding model is restored. This delivery does not download or replace models automatically.
 
-尚未验证：200–400 条双语独立双标与裁决、语义分段/去重的质量、span 标签准确性、情绪等义变体的真实推理一致性、独立测试集的各项效果指标、上游漏判后的全流程 recall，以及版本事实与实际平衡效果。规格中的 95%/5%/2%/95% 仍为候选目标，没有宣称达成。默认 off，当前推荐 shadow，完整 enforce 能力已具备。
+Not yet verified: independent bilingual double annotation and adjudication of 200–400 records, the quality of semantic segmentation/deduplication, span label accuracy, real-inference consistency of emotion-equivalent variants, the effectiveness metrics on an independent test set, full-pipeline recall after upstream misses, and versioned facts and actual balance effects. The 95%/5%/2%/95% in the specification remain candidate targets and are not claimed as achieved. The default is off, shadow is currently recommended, and the complete enforce capability is in place.
 
 ## Moved from the root README
 
 This section was moved from the root `README.md` on 2026-11-03 (change
-record, P4-D02).
+record, P4-D02), and translated with this record.
 
-### 评论证据质量与情绪干扰控制
+### Comment evidence quality and emotional-interference control
 
-新增 `--evidence-quality off|shadow|enforce`（默认 off）和 `--quality-only`。
-相关性放行后按原文片段与信息点分流为无关/纯发泄、一般意见、角色机制、
-系统反馈和待复核；纯情绪篇幅只作诊断，不改变有信息评论的资格或权重。
-一般意见不能支撑具体招式/数值设计。enforce 仍执行既有身份、原文、数值、
-来源复核及版本数据门槛，off/shadow 保留旧下游语义。
+New: `--evidence-quality off|shadow|enforce` (default off) and `--quality-only`.
+After relevance admission, comments are routed by original segment and information point into unrelated/pure venting, general opinion, character mechanism,
+system feedback and pending review; the pure-emotion length share is diagnostic only and does not change the eligibility or weight of comments that carry information.
+General opinions cannot support concrete move/numerical design. enforce still applies the existing identity, source, numerical,
+source-review and versioned-data gates; off/shadow keep the old downstream semantics.
 
-运行与回滚均使用新目录，例如：
-`python3 scripts/run_balance_analysis.py --evidence-quality shadow --out reports/quality-shadow-new`；
-回滚改为 `--evidence-quality off --out reports/quality-rollback-new`。
-无模型可运行 `python3 scripts/experiments/demo_evidence_quality.py --mock-pipeline --out reports/quality-demo-new`。
-详见 [实现、命令、产物及未验证事项](20261026-evidence-quality-implementation.md)。
-独立人工效果验证尚未完成，当前推荐 shadow；合成测试与小规模真实诊断不代表准确率。
+Both running and rollback use a new directory, for example:
+`python3 scripts/run_balance_analysis.py --evidence-quality shadow --out reports/quality-shadow-new`;
+for rollback use `--evidence-quality off --out reports/quality-rollback-new` instead.
+Without a model, run `python3 scripts/experiments/demo_evidence_quality.py --mock-pipeline --out reports/quality-demo-new`.
+See [implementation, commands, outputs and unverified items](20261026-evidence-quality-implementation.md).
+Independent human validation of effectiveness is not complete, and shadow is currently recommended; synthetic tests and small real diagnostics do not represent accuracy.

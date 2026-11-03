@@ -1,20 +1,21 @@
-# Coding agent 交接提示词
+# Coding agent handoff prompt
 
 - Type: Agent handoff
 - Status: Archived
 - Updated: 2026-11-03
 - Applies to: evidence-quality implementation task of 2026-10-26, completed (RULES.md P6)
+- Translated 2026-11 from the Chinese original (commit `3ceb123`); only the language changed.
 
-请在 `<project root>` 实现 RAG 评论证据质量与情绪干扰控制模块。先阅读适用的 AGENTS.md，再完整阅读 `docs/design/evidence-quality.md`，以该文件为本次工程规格；阅读其中列出的现有源码后开始实现，不要只给方案。
+Implement the RAG comment evidence-quality and emotional-interference control module in `<project root>`. First read the applicable AGENTS.md, then read `docs/design/evidence-quality.md` completely and take that file as the engineering specification for this task; start implementing after reading the existing source files it lists, and do not only give a plan.
 
-目标是把无关内容、一般强弱意见、具体角色机制证据、系统平衡反馈和待复核内容分流，同时量化纯情绪篇幅。保留有信息的情绪化批评，不能把情绪强度当可信度或证据权重，不能把一般抱怨升级为具体调整建议。
+The goal is to route unrelated content, general strength opinions, concrete character mechanism evidence, system balance feedback and content pending review separately, while quantifying the length of pure emotion. Keep emotional criticism that carries information; emotional intensity must not be treated as credibility or evidence weight, and general complaints must not be promoted to concrete adjustment recommendations.
 
-在现有相关性复核后、extraction 前加入独立 quality 阶段；实现 off/shadow/enforce 与 quality-only，默认 off。新增双语提示词、结构化片段与信息点标注、精确原文偏移校验、程序计算比例与路由、请求缓存和失败复核。注意 Runner.generate 的阶段解析和输出预算、原文 evidence_id 的稳定性、混合评论多路分流，以及 enforce 的程序性证据资格检查。
+Add a separate quality stage after the existing relevance review and before extraction; implement off/shadow/enforce and quality-only, with off as the default. Add bilingual prompts, structured segment and information-point annotation, exact source-offset validation, program-computed ratios and routes, request caching and failure review. Pay attention to the stage parsing and output budget of Runner.generate, the stability of the source evidence_id, multi-route splitting of mixed comments, and the programmatic evidence-eligibility checks of enforce.
 
-分别输出一般意见、通过后续审查的角色机制证据、系统反馈、排除与复核记录。保留现有身份、数值意图、原文审查和版本数据门槛；更新汇总与工程设计入口，禁止低信息意见借用同评论其他证据获得工程资格。新增全流程覆盖和版本化 manifest，保留旧格式的显式兼容策略。
+Output general opinions, character mechanism evidence that passed the later review, system feedback, and exclusion and review records separately. Keep the existing identity, numerical intent, source review and versioned-data gates; update the aggregation and the engineering-design entry, and forbid low-information opinions from gaining engineering eligibility by borrowing other evidence from the same comment. Add full-pipeline coverage and a versioned manifest, and keep an explicit compatibility policy for the old format.
 
-按交接文档的实施顺序完成纯逻辑测试、mock 集成测试和全部既有单元测试。建立新版本的双语边界案例和评估工具，不修改历史冻结 labels、admission、reports 或原始评论；所有新实验使用新目录。不要读取或输出无关凭据，不新增外部 API，不更换模型或检索策略，不搭建 UI。
+Following the implementation order of the handoff document, complete the pure-logic tests, mock integration tests and all existing unit tests. Build bilingual boundary cases of a new version and an evaluation tool; do not modify historical frozen labels, admission, reports or original comments; all new experiments use new directories. Do not read or output unrelated credentials, add no external API, change no model or retrieval strategy, and build no UI.
 
-本地模型可用时做小规模真实 shadow/enforce 对照；不可用或没有人工标注时继续完成离线工程，并明确列出未运行/未验证内容。合成用例、银标诊断和人工准确率必须分开报告，禁止声称已消除 emotional bias 或达到未经验证的效果指标。
+When local models are available, run a small real shadow/enforce comparison; when they are unavailable or there are no human annotations, continue to complete the offline engineering and list explicitly what was not run or verified. Synthetic cases, silver-label diagnostics and human accuracy must be reported separately; claiming that emotional bias has been eliminated, or that unverified effectiveness metrics have been reached, is forbidden.
 
-最终交付：实现文件清单、行为变化、测试结果、可复制的运行与回滚命令、示例输出位置、兼容性说明及尚未完成的效果验证。除真实阻塞外，自主完成规格内的实现与修复，不停留在计划阶段。
+Final delivery: a list of implementation files, behavior changes, test results, copyable run and rollback commands, the locations of example outputs, compatibility notes and the effectiveness validation not yet completed. Except for real blockers, complete the implementation and fixes within the specification autonomously, and do not stop at the planning stage.
