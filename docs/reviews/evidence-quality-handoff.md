@@ -28,7 +28,7 @@
 - `schema_for()` 和 `Runner.generate()` 当前只认识已有阶段。后者的兜底分支将结果作为 extraction assessments 处理；新增阶段必须有显式 schema 和解析分支。
 - `Runner.generate()` 非 extraction 阶段当前只有 256 的 `num_predict`，不适合完整片段标注；新增阶段单独配置输出预算、分批和截断处理。
 - `prompts/relevance.{zh,en}.txt` 与 `prompts/retrieval-review.{zh,en}.txt` 的范围包括角色和竞技系统，并明确保留有内容的情绪化意见。
-- 当前完整流程使用 `prompts/summarize-balance.{zh,en}.txt`，不是旧的 `prompts/extract-grounded-feedback.txt`。不要只修改旧提示词后宣称主流程已接入。
+- 当前完整流程使用 `prompts/summarize-balance.{zh,en}.txt`，不是旧的 `src/aimediator/assets/prompts/extract-grounded-feedback.txt`。不要只修改旧提示词后宣称主流程已接入。
 - 当前 extraction 的 `character` 是必填字符串；中文提示词将纯系统意见返回为空。新增系统出口应独立实现，不假装现有角色 schema 已支持系统证据。
 - `aggregate()` 当前按角色与 buff/nerf 分组，使用唯一 comment ID 计数，但尚未区分一般意见与机制证据，也不汇总 keep/unclear。不得把现有计数描述为独立玩家人数或总体共识。
 - `scripts/experiments/prepare_balance_design.py` 已要求来源审查、身份、明确目标、版本数据等。新增资格判断只能补充这些门槛，不能替代它们。
