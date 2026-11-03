@@ -52,7 +52,7 @@ def select_balanced(rows, per_language, reviews=None):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--config', type=Path, default=ROOT/'configs/feedback-collection-latest-balanced.json')
+    parser.add_argument('--config', type=Path, default=ROOT/'configs/feedback-collection-balanced.json')
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--per-language', type=int, default=300)
     parser.add_argument('--env-file', type=Path, default=ROOT/'.env')

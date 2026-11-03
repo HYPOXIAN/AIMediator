@@ -13,10 +13,10 @@ screened summary and must be retained when describing recency.
 ```sh
 python3 scripts/collect/collect_balanced_feedback.py \
   --out data/raw/feedback/20261027-latest-balanced \
-  --review-decisions configs/feedback-latest-20261027-source-reviews-v2.json
+  --review-decisions configs/20261027-feedback-source-reviews-v2.json
 ```
 
-`configs/feedback-collection-latest-balanced.json` copies the existing app,
+`configs/feedback-collection-balanced.json` copies the existing app,
 languages, sources, intervals, YouTube quota and queries. It requests latest
 YouTube video discovery, resets collection cursors in a new directory, and
 extends Steam collection in bounded 100-record pages until each language has
