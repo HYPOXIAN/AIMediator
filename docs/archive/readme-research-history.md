@@ -47,7 +47,7 @@ Official patch source: https://www.streetfighter.com/6/buckler/battle_change/202
 1. Choose one balance patch and record its exact date or version. Do not combine comments about different patches.
 2. Run `ollama list` locally and record the exact installed Qwen and Llama tags.
 3. Prepare ten manually reviewed debugging comments: five English and five Chinese. Include a clear buff request, a clear nerf request, slang or a nickname, an emotional but specific complaint, and an ambiguous or sarcastic statement. Label synthetic examples as synthetic; keep them separate from community evidence.
-4. Run both models on the same comments using `prompts/extract-feedback.txt`. Replace the input placeholders and use the exact installed model tag, for example `ollama run <model-tag>`.
+4. Run both models on the same comments using `prompts/extract-feedback.txt` (archived: `~/Archives/AIMediator/prompts/extract-feedback.txt`). Replace the input placeholders and use the exact installed model tag, for example `ollama run <model-tag>`.
 5. Check whether each output is valid JSON, identifies the correct character or mechanic, preserves the requested direction, and quotes evidence actually present in the input. Unknown patch details must not be invented.
 6. Record model tag, prompt version, comment ID, raw output, elapsed time, and observed errors in `reports/model-smoke-test.md`.
 7. Select the initial model based on observed extraction quality and acceptable runtime. Then implement the import and local inference pipeline.
