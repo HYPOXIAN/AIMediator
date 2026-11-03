@@ -39,7 +39,7 @@ conditions, live properties, and blank historical-patch review fields.
 
 Low-alias moves: see [Low-alias Move Review](../records/20261022-alias-review.md) for the
 2026-10-22 search and pending candidates. These proposals are staged only in
-docs and have not been applied to this glossary or runtime data.
+the archived review dump and have not been applied to this glossary or runtime data.
 
 ## Integration rules
 
