@@ -86334,7 +86334,7 @@
     "total_alias_count": 4332,
     "case_only_duplicates_generated": false,
     "review_file": "docs/alias-review.md",
-    "evidence_file": "data/raw/glossary/community-aliases-20261008.json",
+    "evidence_file": "data/raw/glossary/20261008-glossary-sources/community-aliases.json",
     "limitations": "Search-index excerpts are labeled as such. Not a complete corpus or frequency study; historical and generated variants remain candidates. Short aliases do not establish a hard subject before review.",
     "new_distinct_text_language_pairs": 775,
     "counts_by_kind": {
@@ -86363,7 +86363,7 @@
       "manual_markdown_aliases_synced": 0,
       "total_alias_count": 4332,
       "review_file": "docs/unique-move-alias-review.md",
-      "evidence_file": "data/raw/glossary/unique-move-reference-20261008.json"
+      "evidence_file": "data/raw/glossary/20261008-glossary-sources/unique-move-reference.json"
     }
   },
   "alias_exclusions": {
