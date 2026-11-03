@@ -72,7 +72,7 @@ def expand(annotation, row, units):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--from-run', type=Path, default=m.ROOT/'reports/quality-screening-existing-100-v1')
+    parser.add_argument('--from-run', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--base-url', default='http://127.0.0.1:11434')
     args = parser.parse_args()

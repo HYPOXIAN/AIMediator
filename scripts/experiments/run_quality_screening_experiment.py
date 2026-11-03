@@ -105,7 +105,7 @@ def export_results(folder, rows):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--group',type=Path,default=m.ROOT/'data/evaluation/balance-silver-v1/labels.jsonl')
-    p.add_argument('--from-run',type=Path,default=m.ROOT/'reports/balance-review-v2/relevance')
+    p.add_argument('--from-run',type=Path,required=True)
     p.add_argument('--out',type=Path,required=True)
     p.add_argument('--base-url',default='http://127.0.0.1:11434')
     p.add_argument('--workers',type=int,default=3)

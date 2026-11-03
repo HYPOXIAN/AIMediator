@@ -35,7 +35,7 @@ def replay(cases, prior_claims):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--baseline',type=Path,default=ROOT/'reports/balance-engineering-20261022-final-review')
+    p.add_argument('--baseline',type=Path,required=True)
     p.add_argument('--out',type=Path,required=True)
     args=p.parse_args();fixture=ROOT/'data/evaluation/balance-regressions-v1/cases.json'
     cases=strict_json(fixture.read_text());audit={r['claim_id']:r.get('audit') for r in strict_json((args.baseline/'audit-progress.json').read_text())}

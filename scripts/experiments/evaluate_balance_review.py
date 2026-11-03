@@ -81,7 +81,7 @@ def evaluate(labels, baseline, candidate, candidate_margin, retrieval, sources):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--labels',type=Path,default=ROOT/'data/evaluation/balance-silver-v1')
-    p.add_argument('--baseline',type=Path,default=ROOT/'reports/balance-engineering-20261022-final-review')
+    p.add_argument('--baseline',type=Path,required=True)
     p.add_argument('--candidate',type=Path)
     p.add_argument('--out',type=Path,required=True)
     args=p.parse_args();sources=strict_json((args.baseline/'source-snapshot.json').read_text())
