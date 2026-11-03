@@ -46,6 +46,7 @@ RULES.md D1. Records, decisions and meeting notes are frozen once final
 | [20261022-alias-review.md](records/20261022-alias-review.md) | Record | Active | Conclusion of the glossary alias reviews (2026-10-08 and 2026-10-22); the review dumps are archived. |
 | [20261022-balance-review-v2.md](records/20261022-balance-review-v2.md) | Record | Active | Balance review and evaluation v2 and the v2.2 targeted extraction follow-up. |
 | [20261026-evidence-quality-implementation.md](records/20261026-evidence-quality-implementation.md) | Record | Active | Implementation and verification of the evidence-quality module v1. |
+| [20261027-screening-audit.md](records/20261027-screening-audit.md) | Record | Active | Audit of the existing screening mechanism on all 321 retained records (agent silver), translated from the report summary. |
 | [20261027-balanced-validation.md](records/20261027-balanced-validation.md) | Record | Active | Fresh balanced 600-comment validation: collection, full run, controls and known limitations. |
 | [20261028-directory-cleanup.md](records/20261028-directory-cleanup.md) | Record | Active | The 2026-10-28 cleanup: deleted paths, retained dependencies and validation. |
 | [20261103-reorganization.md](records/20261103-reorganization.md) | Record | Draft | Change record of the 2026-11 reorganization, batch by batch, with decisions, archives and results. |

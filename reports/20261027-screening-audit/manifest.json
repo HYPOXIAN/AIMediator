@@ -16,7 +16,7 @@
     ]
   },
   "run_manifest": "manifest.json",
-  "record": null,
+  "record": "docs/records/20261027-screening-audit.md",
   "dataset": "data/raw/feedback/20261015-expanded/screened/records.jsonl with balance-review-v2/relevance and quality-screening-existing-100-recovered-v2",
   "code_version": {
     "git_commit": null,
@@ -60,5 +60,5 @@
     }
   ],
   "change_record": "docs/records/20261103-reorganization.md",
-  "record_note": "No record document names this report yet (batch 4)."
+  "record_note": "Record written from summary/report.zh.md in batch 4 (change record, P4-D12)."
 }
