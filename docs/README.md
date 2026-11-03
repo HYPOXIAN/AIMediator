@@ -60,6 +60,7 @@ RULES.md D1. Records, decisions and meeting notes are frozen once final
 | [20261028-directory-cleanup.md](records/20261028-directory-cleanup.md) | Record | Active | The 2026-10-28 cleanup: deleted paths, retained dependencies and validation. |
 | [20261103-reorganization.md](records/20261103-reorganization.md) | Record | Active | Change record of the 2026-11 reorganization, batch by batch, with decisions, archives and results. |
 | [20261103-dead-file-cleanup.md](records/20261103-dead-file-cleanup.md) | Record | Active | Workspace review for dead files after the reorganization: findings, the archived `runs/` output and what was kept. |
+| [20261103-code-restructuring.md](records/20261103-code-restructuring.md) | Record | Active | Change record of the code restructuring: decisions, progress, session log, verification notes and archives. |
 
 ## Reference
 
