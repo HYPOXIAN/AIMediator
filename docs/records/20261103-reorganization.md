@@ -184,3 +184,82 @@ fresh build would omit them, because `MANIFEST.in` names the old paths.
 
 Still open: deferred item 2 (the seventh forwarding script) is decided in
 the batch 3 migration list; items 7, 9, 10 and 11 stand as recorded.
+
+## P2 Moving generated output out (batch 2, 2026-11-03)
+
+Entry check: tag `reorg-p1` present, working tree clean at `eec9f41`,
+221 tests passing, rule check 205 violations (equal to the batch 1
+baseline). No collection or analysis process was running. The migration
+list was approved by the owner before execution (owner decisions: the
+RULES.md v1.1 commit first; `summary.zh.md` archive only; summaries in
+`summary/`; defaults accepted).
+
+### RULES.md v1.1
+
+First commit of the batch, as planned (plan section 2; decisions 8 and 12):
+G3 allows `prompts/` for registered compatibility links only; D2 covers
+documents under `docs/` with the listed exemptions. `check_rules.py`
+`G3_ALLOWED` and its test updated.
+
+### Archive procedure
+
+Every deletion below followed the same order (G6): copy with
+`cp -a --reflink=auto` into `~/Archives/AIMediator/<area>/`; inside the
+archive copy only, move code and archive files to `provenance/<original
+relative path>` (reports only); write `SHA256SUMS` in the archive directory;
+verify with `sha256sum -c --quiet`, then compare every entry with its source
+file (the `provenance/` prefix stripped) and check that entry and source
+file counts are equal; only then delete the source. No source contained a
+`.env` file (checked by name before copying).
+
+### Reports moved out
+
+Archive: `~/Archives/AIMediator/reports/<original name>/`, each with its
+own `SHA256SUMS`. All 15 verified; the source files were additionally
+compared with the baseline backup's `SHA256SUMS` (20,749 report entries):
+no difference. Reason: P2 (full run contents live in the external archive;
+the project keeps a manifest and a curated summary), G8 for the new names.
+
+| Original name | Project name | Files | Bytes | Provenance | Kept in `summary/` |
+| ------------- | ------------ | ----: | ----: | ---------: | ------------------ |
+| `balance-engineering-20261022-final-review` | `20261022-balance-engineering-review` | 996 | 34,766,612 | 1 | `evaluation.md`, `summary.json` |
+| `balance-review-v2` | `balance-review-v2` | 1290 | 61,138,316 | 3 | `review-summary.md` |
+| `balance-review-v22` | `balance-review-v22` | 732 | 1,817,270 | 0 | `review-summary.md` |
+| `cli-demo-backups` | — (archive only) | 4082 | 167,403,834 | 6 | — |
+| `cli-demo-monitoring` | — (archive only) | 2 | 49,325 | 0 | — |
+| `cli-implementation-20261028` | `20261028-cli-implementation` | 1084 | 23,542,532 | 1 | `verification.json` |
+| `cli-real-unfiltered-20261028` | — (archive only) | 1558 | 47,226,194 | 5 | — |
+| `cli-walkthrough-16-20261029` | — (archive only) | 1293 | 27,236,177 | 2 | — |
+| `evidence-quality-v1-delivery` | `evidence-quality-delivery-v1` | 661 | 5,666,121 | 9 | `examples-manifest.json` |
+| `evidence-quality-v1-live-verified` | `evidence-quality-live-verified-v1` | 38 | 230,260 | 4 | `diagnostic-summary.json` |
+| `evidence-quality-v1-verification` | `evidence-quality-verification-v1` | 4 | 7,082 | 0 | `verification.json` |
+| `latest-balanced-20261027` | `20261027-balanced-validation` | 8101 | 246,135,113 | 19 | `evaluation.md`, `integrity-checks.json` |
+| `quality-screening-existing-100-recovered-v2` | `quality-screening-existing-100-recovered-v2` | 142 | 1,885,355 | 1 | `recovery.md` |
+| `quality-screening-existing-100-v1` | `quality-screening-existing-100-v1` | 88 | 4,127,244 | 6 | `recovery.md` |
+| `screening-audit-20261027` | `20261027-screening-audit` | 678 | 10,202,389 | 4 | `summary.json`, `verification.json`, `report.zh.md` |
+| **Total** | 11 kept | **20749** | **631,433,824** | **61** | |
+
+- Each kept directory has a new `manifest.json`: original name, archive
+  path, file and byte counts, provenance list, record document, dataset,
+  code version (run identity hashes; no git commit, since every run predates
+  the baseline) and reason for retention. Where the report already had a
+  run manifest at its root, that original is in the archive and is named by
+  `run_manifest`.
+- Summaries are byte copies of archive files; upper-case names became
+  lower case (`RECOVERY.md` → `recovery.md`, `REPORT.zh.md` →
+  `report.zh.md`), `examples/manifest.json` became `examples-manifest.json`.
+  Before tracking, all 26 files were scanned: no `/home/` path, no URL, no
+  credential pattern.
+- `latest-balanced-20261027/summary.zh.md` (cited by
+  `docs/reviews/cli-design-handoff.md`) is in the archive only: it contains
+  absolute user paths (G7).
+- 61 provenance files: the 59 code or archive files the check tool counts
+  (the plan said 58) plus two extension-less bash scripts named `cli` in
+  `cli-demo-backups/`.
+- The four archive-only directories (`cli-demo-backups`,
+  `cli-demo-monitoring`, `cli-real-unfiltered-20261028`,
+  `cli-walkthrough-16-20261029`) had no references except
+  `cli-demo/dataset-provenance.json`, which is removed in this batch.
+  Interrupted runs and backups (`balance-review-v2/relevance-interrupted-singles/`,
+  `cli-demo-backups/run-interrupted-20261029-163607-579246/`) are in the
+  archive only.
