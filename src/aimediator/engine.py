@@ -909,7 +909,7 @@ def process(args, rows, routing, models, prompts, quality_identity, quality_poli
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--dataset', type=Path, default=ROOT / 'data/raw/feedback/20261015-expanded/screened/records.jsonl')
-    parser.add_argument('--out', type=Path, default=ROOT / 'reports/balance-quality-v1')
+    parser.add_argument('--out', type=Path, default=ROOT / 'runs/balance-quality-v1')
     parser.add_argument('--model', choices=['qwen2.5:7b', 'llama3.1:latest'])
     parser.add_argument('--embedding-model', default='qwen3-embedding:8b')
     parser.add_argument('--embedding-provider', choices=['ollama', 'configured'], default='ollama')

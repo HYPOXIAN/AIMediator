@@ -19,7 +19,7 @@
 
 ## 行为与兼容
 
-默认 `--evidence-quality off` 不增加质量模型调用；旧 extraction、计数与报告主体语义保留，但新代码必须用新目录。默认输出改为 `reports/balance-quality-v1`，避免沿用历史实验目录。
+默认 `--evidence-quality off` 不增加质量模型调用；旧 extraction、计数与报告主体语义保留，但新代码必须用新目录。默认输出改为 `runs/balance-quality-v1`，避免沿用历史实验目录。
 
 shadow 标注与路由产物均为观察，原 extraction/aggregation 照旧；正式报告不混入这些观察结果。enforce 只有明确的角色机制信息点进入 extraction。完整原始 units 仍作上下文，原 E-ID 和 `[start,end)` 不改变，不用模型改写替代证据。
 

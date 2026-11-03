@@ -180,7 +180,7 @@ def export(folder,results,cases,models):
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--dataset',type=Path,default=ROOT/'data/raw/feedback/20261015-expanded/screened/records.jsonl');parser.add_argument('--models',nargs='+',default=['qwen2.5:7b','llama3.1:latest']);parser.add_argument('--output',type=Path);parser.add_argument('--resume',type=Path);args=parser.parse_args()
-    folder=args.resume or args.output or ROOT/'reports'/('grounded-'+dt.datetime.now(dt.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ'))
+    folder=args.resume or args.output or ROOT/'runs'/('grounded-'+dt.datetime.now(dt.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ'))
     tags=local_request('/api/tags');digests={m['name']:m['digest'] for m in tags['models']}
     if any(model not in digests for model in args.models):
         raise ValueError('Requested installed model is missing; no model downloads are attempted')
