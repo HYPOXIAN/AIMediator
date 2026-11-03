@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-# Run the current checkout from this demonstration directory.
-set -eu
-demo_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-project_root="${AIMEDIATOR_PROJECT_ROOT:-$(dirname -- "$demo_dir")}"
-export PYTHONPATH="$project_root/src${PYTHONPATH:+:$PYTHONPATH}"
-exec python3 -m aimediator.presentation "$@"

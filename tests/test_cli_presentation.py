@@ -3,7 +3,6 @@ import contextlib
 import io
 import json
 from pathlib import Path
-import subprocess
 import sys
 import tempfile
 import unittest
@@ -14,9 +13,9 @@ from aimediator.common import canonical, read, write
 from aimediator.config import defaults
 from aimediator.demo import FixtureTransport
 from aimediator.presentation import main
+from aimediator.quality_scoring import prepare_dataset
 from aimediator.resources import asset_path
 
-ROOT = Path(__file__).resolve().parents[1]
 SECTIONS = {'提取结果', '相关性测试', '质量测试', '最终结论'}
 
 
@@ -72,12 +71,14 @@ class PresentationTests(unittest.TestCase):
         self.assertEqual(set(json.loads(output)), {'最终结论'})
         self.assertFalse(json.loads(output)['最终结论']['分析完成'])
 
-    def test_evaluation_preserves_unlabeled_status_and_helpers_are_silent(self):
+    def test_evaluation_preserves_unlabeled_status_and_preparation_is_silent(self):
         self.analyze()
-        labels = self.root / 'labels.json'
-        helper = subprocess.run([sys.executable, str(ROOT / 'cli-demo/prepare-labels.py'),
-                                 str(self.input), str(labels)], capture_output=True, text=True)
-        self.assertEqual((helper.returncode, helper.stdout, helper.stderr), (0, '', ''))
+        output, errors = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(output), contextlib.redirect_stderr(errors):
+            prepare_dataset(self.rows, 'raw_pre_screen', self.root / 'labels',
+                            limit=len(self.rows))
+        self.assertEqual((output.getvalue(), errors.getvalue()), ('', ''))
+        labels = self.root / 'labels' / 'annotation-template.json'
         code, output, errors = self.invoke(['evaluate', 'quality', '--run', str(self.run),
             '--labels', str(labels), '--out', str(self.root / 'evaluation'), '--json'])
         self.assertEqual((code, errors), (0, ''))

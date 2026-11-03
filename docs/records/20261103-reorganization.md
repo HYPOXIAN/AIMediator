@@ -279,3 +279,21 @@ matches the baseline backup. `dist/` keeps only the current wheel and sdist
 (`aimediator-0.1.0-py3-none-any.whl`, `aimediator-0.1.0.tar.gz`; version
 0.1.0 per `pyproject.toml`). The sdist predates the move of the CLI
 documents (see the batch 1 correction above); it is rebuilt in batch 4.
+
+### `cli-demo/` removed
+
+- `cli-demo/`: 11 tracked files, 162,855 bytes, plus the empty ignored
+  directory `sessions/20261029-170114-424313/`. Archived to
+  `~/Archives/AIMediator/cli-demo/` with `SHA256SUMS`, verified against the
+  source and the baseline backup (11 entries, no difference), then removed
+  with `git rm -r` (content also in git history). Reason: decision Q5 in
+  the RULES.md v1.0 revision log (removed, to be rebuilt later); it also
+  carried absolute user paths (G7) and non-snake_case modules (G8).
+- `tests/test_cli_presentation.py`: the test that ran
+  `cli-demo/prepare-labels.py` now builds the unlabeled label file with the
+  package's `aimediator.quality_scoring.prepare_dataset` and still asserts
+  that preparation prints nothing. Renamed from
+  `test_evaluation_preserves_unlabeled_status_and_helpers_are_silent` to
+  `test_evaluation_preserves_unlabeled_status_and_preparation_is_silent`;
+  the unused `subprocess` import and `ROOT` constant were removed. Suite:
+  221 tests, unchanged (plan, section 7, decision 1).
