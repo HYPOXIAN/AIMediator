@@ -95,7 +95,7 @@ def write_rows(path, rows):
 def main():
     import argparse,collections,datetime as dt,hashlib
     parser=argparse.ArgumentParser()
-    parser.add_argument('--input',type=Path,default=ROOT/'data/raw/feedback/20261015-initial')
+    parser.add_argument('--input',type=Path,required=True)
     parser.add_argument('--output',type=Path)
     parser.add_argument('--language-corrections',type=Path)
     parser.add_argument('--overrides',type=Path,default=ROOT/'configs/feedback-screening-overrides.json')

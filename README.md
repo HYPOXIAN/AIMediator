@@ -129,7 +129,7 @@ Run `python3 scripts/collect/collect_feedback.py` with Python 3.9 or later. Sett
 
 ## Coarse feedback screening
 
-`python3 scripts/collect/screen_feedback.py` produces retained counterparts of every JSONL view in `data/raw/feedback/20261015-initial/screened/` while preserving the original files. The current coarse pass retains 166 of 1,552 unique records, excludes 1,358, and separates 28 uncertain records for review. Use `screened/records.jsonl` as the canonical retained set; do not sum overlapping views. See `docs/feedback-screening.md` for criteria, reversible exclusion reasons, boundary corrections, and limitations. This is relevance screening only; patch applicability and factual correctness remain unverified.
+`python3 scripts/collect/screen_feedback.py --input data/raw/feedback/20261015-initial` produces retained counterparts of every JSONL view in `data/raw/feedback/20261015-initial/screened/` while preserving the original files. The current coarse pass retains 166 of 1,552 unique records, excludes 1,358, and separates 28 uncertain records for review. Use `screened/records.jsonl` as the canonical retained set; do not sum overlapping views. See `docs/feedback-screening.md` for criteria, reversible exclusion reasons, boundary corrections, and limitations. This is relevance screening only; patch applicability and factual correctness remain unverified.
 
 ## Expanded balance-feedback dataset
 

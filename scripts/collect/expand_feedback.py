@@ -24,7 +24,7 @@ def kept_counts(store, overrides):
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--base',type=Path,default=ROOT/'data/raw/feedback/20261015-initial')
-    parser.add_argument('--output',type=Path,default=ROOT/'data/raw/feedback/20261015-expanded')
+    parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--english',type=int,default=220)
     parser.add_argument('--chinese',type=int,default=120)
     args=parser.parse_args()

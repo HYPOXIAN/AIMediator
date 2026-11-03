@@ -43,7 +43,7 @@
     "configs/feedback-screening-overrides.json"
   ],
   "consumers": [
-    "scripts/collect/screen_feedback.py (--input default)",
+    "scripts/collect/screen_feedback.py (--input)",
     "scripts/collect/expand_feedback.py (--base default)"
   ],
   "manifest_written": "2026-11-03 (batch 3, RULES.md P1); dataset files unchanged",
