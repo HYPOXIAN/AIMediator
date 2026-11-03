@@ -131,3 +131,25 @@ raw texts and directions. Known silver-label disputes remain in errata and also
 block engineering readiness. For a new *fresh* relevance experiment, use a new
 output directory with `--relevance-only`; old manifests deliberately reject
 changed code or prompts.
+
+## Moved from the root README
+
+These paragraphs were moved verbatim from the root `README.md` (section
+"Bilingual evidence-grounded balance summaries") on 2026-11-03 (change
+record, P4-D02).
+
+The next review iteration adds a frozen 100-comment agent silver set, versioned
+identity policy, retrieval review queue, actual-error regressions and separate
+engineering-design prerequisites. See [review v2](20261022-balance-review-v2.md) and
+[decisions and follow-ups](../plans/review-follow-ups.md). The v2 evaluation uses full-corpus
+retrieval/relevance and selected live extraction regressions; it does not claim
+a full rerun of v1 generation or independent human accuracy.
+
+The latest targeted generation follow-up is recorded in
+`reports/balance-review-v22/review-summary.md`: 94 code checks pass, numeric
+extraction controls pass 2/2, and numeric entailment controls pass 4/4. Six real
+regressions meet the frozen diagnostic expectation in 4/6 cases and still need
+source review; malformed recommendation text is separately repaired or blocked.
+The frozen 275-comment admission decisions were replay-validated without fresh
+inference or holdout retuning. Failed v2 results remain available; the superseded
+interrupted v2.1 run was removed during directory cleanup.

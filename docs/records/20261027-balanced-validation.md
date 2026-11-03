@@ -155,3 +155,29 @@ pass a newer schema. All responses, replayed or fresh, pass the current pipeline
 validators. `transport-reuse-summary.json` separates fresh calls from replays;
 replayed response processing time is not a fresh-inference throughput measure.
 The initial run remains intact for before/after comparison.
+
+## Moved from the root README
+
+This section was moved verbatim from the root `README.md` (section "Fresh
+balanced validation (October 27, 2026)") on 2026-11-03 (change record,
+P4-D02).
+
+The new canonical dataset is
+`data/raw/feedback/20261027-balanced/screened/records.jsonl`: 600 retained
+Steam reviews, with 300 English and 300 simplified-Chinese records after
+fingerprinted language corrections. Collection restarted from latest-sorted
+streams without seeding old files, but meeting the retained quota reaches back
+to December 2025 for English and August 2026 for Chinese. It is not a set of 600
+posts published today. Existing raw evidence and provisional selections remain
+available.
+
+See [collection, full-run commands and diagnostic scope](20261027-balanced-validation.md).
+The active bilingual extraction and source-verification prompts now require a
+complete subject/action recommendation, preserve conditional and negated intent,
+keep clause-local subjects, and reject unrelated numbers as tuning targets.
+`--embedding-provider configured` supports the already configured embedding
+service; `--num-gpu` records explicit placement. The full default run and its
+separate controls live under `reports/latest-balanced-20261027/`. Completion,
+quarantine and failure counts are read from the resulting reports, never assumed
+from an in-progress run. The 600-comment default run uses evidence-quality=off;
+quality integration has separate live diagnostics and offline tests.

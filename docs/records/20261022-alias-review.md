@@ -92,3 +92,23 @@ the project (change record, P4).
 
 To continue a review, work on a copy of the archived dump and apply the
 decisions to the per-alias records in `glossary.json` in a separate change.
+
+## Moved from the root README
+
+These sections were moved verbatim from the root `README.md` on 2026-11-03
+(change record, P4-D02). Their counts are as written there; the current
+glossary counts are in [glossary.md](../reference/glossary.md).
+
+### Bilingual glossary
+
+`data/glossary.json` contains universal Street Fighter 6 vocabulary plus character-specific names for all 31 playable characters available at the target patch, including Yasmine. System, Mechanic, Tactic, Input, and Normal Move categories apply to all characters. Normal-move labels never imply Ryu by default. `docs/reference/glossary.md` provides a readable collection, source notes, integration guidance, and review status. English canonical names and notes are used; Chinese terms are language data. Future Arjun, Tifa, and Bosch are excluded from this experiment version. The original ten-case debugging suite remains Ryu-only and cannot establish extraction quality for the expanded roster.
+
+The collection has 849 concepts, 3822 alias mappings, and 82 ambiguous alias records. All human review fields remain blank. `docs/records/20261022-alias-review.md` groups the 1582 retained new mappings (775 distinct text/language pairs) with sources and context restrictions: 225 observed community candidates, 174 historical candidates, and 1183 generated spelling/notation variants. `data/raw/glossary/20261008-glossary-sources/community-aliases.json` preserves the original collection snapshot. User exclusions are recorded in `data/glossary.json`; removed aliases are absent from the active glossary and review sheet. The smoke-test runner supplies these as candidates with `--glossary`; pending nicknames do not establish hard character scope. It preserves ambiguity and does not replace the original comment.
+
+Chinese feedback scope is simplified Chinese only. Traditional Chinese aliases and community sources have been removed. For Chinese community comments, bare CA normalizes to the SA3 move family; an enhanced Critical Art variant is inferred only from explicit variant context. Original comment wording remains unchanged.
+
+The original ZH02 synthetic case conflated a collarbone move name with Solar Plexus Strike. The repeat run intentionally retains this conflict to inspect uncertainty handling. Its provisional expected label must not be treated as an unquestioned semantic answer; use a corrected dataset version for future accuracy evaluation.
+
+### Unique move alias review
+
+All 244 Unique Move entries across the 31 target-patch characters have overhead or direction/button aliases. Review `docs/records/20261022-alias-review.md` for inputs, conditions, and blank decisions. Capcom live properties were checked on October 8, 2026; historical August 3, 2026 behavior remains pending verification. Evidence and the change audit are saved in `data/raw/glossary/20261008-glossary-sources/unique-move-reference.json` and `data/raw/glossary/20261008-glossary-sources/unique-move-aliases.json`.

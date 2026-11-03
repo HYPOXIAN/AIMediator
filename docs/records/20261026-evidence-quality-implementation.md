@@ -100,3 +100,23 @@ python3 scripts/evaluate_evidence_quality.py score --labels data/evaluation/qual
 当前本地模型清单缺少 `qwen3-embedding:8b`，因此未完成新鲜检索+相关性+质量+提取的完整在线运行；固定 admission 诊断没有绕过或伪造该模型的 digest。恢复原嵌入模型后才能执行上面的完整运行命令。本交付不自动下载或替换模型。
 
 尚未验证：200–400 条双语独立双标与裁决、语义分段/去重的质量、span 标签准确性、情绪等义变体的真实推理一致性、独立测试集的各项效果指标、上游漏判后的全流程 recall，以及版本事实与实际平衡效果。规格中的 95%/5%/2%/95% 仍为候选目标，没有宣称达成。默认 off，当前推荐 shadow，完整 enforce 能力已具备。
+
+## Moved from the root README
+
+This section was moved from the root `README.md` on 2026-11-03 (change
+record, P4-D02).
+
+### 评论证据质量与情绪干扰控制
+
+新增 `--evidence-quality off|shadow|enforce`（默认 off）和 `--quality-only`。
+相关性放行后按原文片段与信息点分流为无关/纯发泄、一般意见、角色机制、
+系统反馈和待复核；纯情绪篇幅只作诊断，不改变有信息评论的资格或权重。
+一般意见不能支撑具体招式/数值设计。enforce 仍执行既有身份、原文、数值、
+来源复核及版本数据门槛，off/shadow 保留旧下游语义。
+
+运行与回滚均使用新目录，例如：
+`python3 scripts/run_balance_analysis.py --evidence-quality shadow --out reports/quality-shadow-new`；
+回滚改为 `--evidence-quality off --out reports/quality-rollback-new`。
+无模型可运行 `python3 scripts/experiments/demo_evidence_quality.py --mock-pipeline --out reports/quality-demo-new`。
+详见 [实现、命令、产物及未验证事项](20261026-evidence-quality-implementation.md)。
+独立人工效果验证尚未完成，当前推荐 shadow；合成测试与小规模真实诊断不代表准确率。
