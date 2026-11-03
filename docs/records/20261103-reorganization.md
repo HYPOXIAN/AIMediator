@@ -263,3 +263,19 @@ the project keeps a manifest and a curated summary), G8 for the new names.
   Interrupted runs and backups (`balance-review-v2/relevance-interrupted-singles/`,
   `cli-demo-backups/run-interrupted-20261029-163607-579246/`) are in the
   archive only.
+
+### `dist/` and reproducible products
+
+| Path | Files | Bytes | Action | Archive |
+| ---- | ----: | ----: | ------ | ------- |
+| `dist/aimediator-refactored-workspace.zip` | 1 | 112,139,600 | deleted (P2: no workspace packages; G9: listed 66 `data/raw` entries, 0 `.env`) | `~/Archives/AIMediator/dist/` |
+| `dist/refactored/` (`aimediator-0.1.0-py3-none-any.whl`) | 1 | 225,411 | deleted (duplicate wheel, P2) | same |
+| `build/` | — | about 3.1 MB | deleted (reproducible, G4) | none |
+| `src/aimediator.egg-info/` | — | small | deleted (reproducible, G4) | none |
+| `__pycache__/` in `scripts/`, `scripts/maintenance/`, `src/aimediator/`, `tests/` | — | small | deleted (reproducible, G4) | none |
+
+The archived `SHA256SUMS` (2 entries) was verified against the source and
+matches the baseline backup. `dist/` keeps only the current wheel and sdist
+(`aimediator-0.1.0-py3-none-any.whl`, `aimediator-0.1.0.tar.gz`; version
+0.1.0 per `pyproject.toml`). The sdist predates the move of the CLI
+documents (see the batch 1 correction above); it is rebuilt in batch 4.
