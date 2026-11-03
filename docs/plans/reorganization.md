@@ -103,7 +103,7 @@ The work is executed in 4 batches. The split rests on three considerations:
   - The hook runs the check tool and prints violations, but always exits 0.
 
 **How**
-- The check tool depends only on the standard library, does not read the contents of `reports/`, and never prints any credential value.
+- The check tool depends only on the standard library, does not read the contents of `reports/`, and never prints any credential value. Changed by section 7, decision 20: from batch 4 it reads `reports/*/manifest.json` and `reports/*/summary/` for the G7 and G9 scans.
 - The result of the first run is saved to `runs/` as the "violation baseline". Every later phase compares its progress against it.
 
 **Done when**
@@ -162,7 +162,7 @@ The work is executed in 4 batches. The split rests on three considerations:
   - Raw glossary sources (decision 11): the seven `data/raw/glossary/*-20261008.json` files move into `data/raw/glossary/20261008-glossary-sources/` without the date suffix in their names (for example `community-aliases.json`), with a `manifest.json` listing original names and SHA256 values. Contents do not change; hashes are compared before and after and entered in the change record. The two `evidence_file` paths inside `src/aimediator/assets/data/glossary.json` are updated in the same commit (D5); this changes `glossary_sha256` in run identities, as already accepted above.
   - Duplicate synthetic cases (decision 9): `src/aimediator/assets/fixtures/cases.json` stays the single file; `data/evaluation/evidence-quality-synthetic-v1/cases.json` becomes a symlink to it, registered in the compatibility register, and a new offline test checks that the file matches `cases_sha256` in that set's manifest (P1 freeze).
 - **Prompts and configuration** (P7):
-  - The two legacy prompts in the root `prompts/`: archived after confirming they are unreferenced. Found in batch 1: they are referenced (`extract-feedback.txt` by `scripts/run_smoke_test.py` and the README; `extract-grounded-feedback.txt` by `scripts/test_grounded_feedback.py`), so the migration list decides whether they are archived together with those scripts or kept.
+  - The two legacy prompts in the root `prompts/`: archived after confirming they are unreferenced. Found in batch 1: they are referenced (`extract-feedback.txt` by `scripts/run_smoke_test.py` and the README; `extract-grounded-feedback.txt` by `scripts/test_grounded_feedback.py`), so the migration list decides whether they are archived together with those scripts or kept. Decided in the batch 3 review (section 7, decision 17): `extract-grounded-feedback.txt` moves to `src/aimediator/assets/prompts/`; `extract-feedback.txt` is archived in batch 4.
   - The two files in `configs/` containing `latest` are renamed per G8, and their references are updated in step: `feedback-collection-latest-balanced.json` → `feedback-collection-balanced.json`; `feedback-latest-20261027-source-reviews-v2.json` → `20261027-feedback-source-reviews-v2.json`.
   - `src/aimediator/assets/` remains the only source; this does not change.
 
@@ -207,6 +207,8 @@ In addition:
 - Links pointing to moved-out reports are changed to point to `reports/<name>/manifest.json` inside the project, so the links keep working. Fix the absolute paths in 5 documents (G7).
 - D8 allowlist criteria: glossary-type documents and corpus quotation blocks may contain Chinese; Chinese anywhere else in a document is a violation.
 - `MANIFEST.in` (decision 10), changed in the same commit as the document moves: it includes only `docs/guides/cli-usage.md` and `docs/design/cli.md`. The implementation status and the archived coding-agent prompt are no longer shipped.
+- `prompts/extract-feedback.txt` (decision 17): archived (copy, verify, delete) once the README rewrite no longer names it; `prompts/` then holds only registered links.
+- Check tool (decision 20): reads `reports/*/manifest.json` and `reports/*/summary/` for the G7 and G9 scans, before the hook becomes blocking in P5.
 - `src/aimediator/assets/data/glossary.json`: its `review_file` field points to `docs/unique-move-alias-review.md`, which moves to the external archive; it is updated to the new conclusion record `records/20261022-alias-review.md` in the same commit (D5). This is the second change to `glossary.json` in the reorganization, after batch 3.
 
 **How**
@@ -260,3 +262,15 @@ Decisions taken after batch 1 (2026-11-03), on items recorded under "Deferred" i
 Decision taken before batch 3 (2026-11-03):
 
 13. **Post-implementation review for batches 3 and 4**: the owner no longer approves the migration list before execution. Each batch first registers every decision that needs the owner (number, question and options, recommendation and reason, handling `implemented` or `bypassed`, effect on the rest of the batch, rollback, status, commits) in the change record and commits it; it then implements the decisions that a revert fully undoes and bypasses those that would amend `RULES.md`, change program behavior or output meaning (changing only a default path does not count), alter a registered compatibility layer, delete content without an archive copy, or rest on thin evidence or on two defensible options with very different consequences. Bypassed items do not block other work, which proceeds from the current state. Routine work that the rules and this plan already specify is not a decision. The batch sets a review tag (`reorg-p3-review` for batch 3) and stops; after the owner's review, decisions are marked `approved`, `reverted` or `deferred`, resolved ones are appended here as numbered decisions, and the final tag is set. Section 0, item 3 and section 2 are updated to match.
+
+Decisions taken in the batch 3 review (2026-11-03), on the decisions registered in the change record (P3 section). The owner adopted every recommendation; P3-D08 (top-level `.claude/`) is deferred.
+
+14. **Seventh forwarding script** (P3-D01): `scripts/run_local_direction_comparison.py` stays a registered wrapper (R3); it writes to `runs/<run name>` and its `--run-name` default is the undated `local-direction-comparison`.
+15. **One-off scripts** (P3-D02): the nine `*latest*` scripts and `build_screening_audit.py` are archived in `~/Archives/AIMediator/scripts/` with their runs.
+16. **Smoke-test scripts** (P3-D03): `run_smoke_test.py` and `render_test_results.py` are archived; their inputs no longer exist.
+17. **Legacy prompts** (P3-D04): `extract-grounded-feedback.txt` moves to `src/aimediator/assets/prompts/` (single source, shipped though unused by the package); `extract-feedback.txt` is archived in batch 4 once the README rewrite drops the manual procedure step that names it.
+18. **Dataset manifests** (P3-D05): `manifest.json` files under the ignored `data/raw/` and `data/processed/` are tracked through `.gitignore` exceptions.
+19. **Loose alias candidate file** (P3-D06): it becomes the versioned set `data/evaluation/character-alias-candidates-v1/`, with `pending` as a status in its manifest.
+20. **Check tool and `reports/`** (P3-D07): the tool reads `reports/*/manifest.json` and `reports/*/summary/` for the G7 and G9 scans; implemented in batch 4 before the hook becomes blocking.
+21. **Project-root constant** (P3-D09): the package's `cwd`-based root and the scripts' `__file__`-based roots both stay for now; the choice between one package constant and a shared helper is made with the CLI work.
+22. **Collection defaults** (P3-D10): `--output` of `expand_feedback.py` and `--input` of `screen_feedback.py` are required, so a bare run cannot write into a frozen raw dataset.

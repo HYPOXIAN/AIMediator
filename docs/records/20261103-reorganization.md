@@ -434,8 +434,8 @@ the rest of the batch proceeds from it.
 - **Effect on the batch**: the script stays at its path unchanged; its G7
   violation remains and is listed as an exception at the end of the batch.
 - **Rollback**: none needed (nothing changed).
-- **Status**: pending
-- **Commits**: none
+- **Status**: approved
+- **Commits**: `5b78891` (implemented after review)
 
 #### P3-D02 One-off scripts archived with their runs
 
@@ -463,7 +463,7 @@ the rest of the batch proceeds from it.
   the bare names (batch 4).
 - **Rollback**: `git revert` of the commit restores the files at their
   original paths; the archive copy is a second source.
-- **Status**: pending
+- **Status**: approved
 - **Commits**: `ecb6c85`
 
 #### P3-D03 Smoke-test scripts with missing inputs
@@ -481,7 +481,7 @@ the rest of the batch proceeds from it.
 - **Effect on the batch**: removes 2 P3 violations. `prompts/extract-feedback.txt`
   loses its only code user; the README still names it (P3-D04).
 - **Rollback**: `git revert` of the commit.
-- **Status**: pending
+- **Status**: approved
 - **Commits**: `043a622`
 
 #### P3-D04 Legacy prompts in `prompts/`
@@ -507,8 +507,8 @@ the rest of the batch proceeds from it.
   `run_grounded_feedback_live.py` keeps reading `prompts/extract-grounded-feedback.txt`
   (its `ROOT` is fixed for the new depth).
 - **Rollback**: none needed.
-- **Status**: pending
-- **Commits**: none
+- **Status**: approved
+- **Commits**: `58f285c` (`extract-grounded-feedback.txt`, after review); `extract-feedback.txt` is archived in batch 4 with the README rewrite
 
 #### P3-D05 Track dataset manifests under ignored `data/`
 
@@ -528,7 +528,7 @@ the rest of the batch proceeds from it.
   removes them from the working tree; restore the files with
   `git show <commit>:<path>` (or regenerate them) if they should stay as
   ignored local files.
-- **Status**: pending
+- **Status**: approved
 - **Commits**: `c6ebca1`
 
 #### P3-D06 Loose annotation file `pending-character-candidates.json`
@@ -544,7 +544,7 @@ the rest of the batch proceeds from it.
 - **Handling**: `implemented` (`git mv` plus a new manifest).
 - **Effect on the batch**: removes 1 P1 violation.
 - **Rollback**: `git revert` of the commit.
-- **Status**: pending
+- **Status**: approved
 - **Commits**: `9ee0e72`
 
 #### P3-D07 Check tool coverage of `reports/`
@@ -559,8 +559,8 @@ the rest of the batch proceeds from it.
 - **Effect on the batch**: none; the tracked report files are again checked
   by hand at the end of the batch.
 - **Rollback**: none needed.
-- **Status**: pending
-- **Commits**: none
+- **Status**: approved
+- **Commits**: none in batch 3; implemented in batch 4 before the hook becomes blocking
 
 #### P3-D08 Top-level `.claude/`
 
@@ -574,7 +574,7 @@ the rest of the batch proceeds from it.
   project content, and (b) amends `RULES.md`.
 - **Effect on the batch**: G3 stays at 2 (`notes` is batch 4).
 - **Rollback**: none needed.
-- **Status**: pending
+- **Status**: deferred
 - **Commits**: none
 
 #### P3-D09 One project-root constant (G7)
@@ -591,8 +591,8 @@ the rest of the batch proceeds from it.
 - **Handling**: `bypassed`. Options (b) and (c) change how paths resolve.
 - **Effect on the batch**: moved scripts get `parents[2]`; no other change.
 - **Rollback**: none needed.
-- **Status**: pending
-- **Commits**: none
+- **Status**: approved
+- **Commits**: none (the recommendation keeps the current state)
 
 #### P3-D10 Collection defaults that write into existing raw datasets
 
@@ -620,23 +620,23 @@ any change to these scripts.
 - **Effect on the batch**: none; both scripts keep their defaults. Listed
   as a manual G7 exception at the end of the batch.
 - **Rollback**: none needed.
-- **Status**: pending
-- **Commits**: none
+- **Status**: approved
+- **Commits**: `0717f69` (implemented after review)
 
 ### Decision summary
 
-| ID | Question | Recommendation | Handling | Commit |
-| -- | -------- | -------------- | -------- | ------ |
-| P3-D01 | Seventh forwarding script | keep registered, output to `runs/`, no dated default | bypassed | — |
-| P3-D02 | One-off scripts | archive 10 scripts with their runs | implemented | `ecb6c85` |
-| P3-D03 | Smoke-test scripts without inputs | archive both | implemented | `043a622` |
-| P3-D04 | Legacy prompts | batch 4 archives `extract-feedback.txt`; move `extract-grounded-feedback.txt` to package assets | bypassed | — |
-| P3-D05 | Track dataset manifests | track `manifest.json` only | implemented | `c6ebca1` |
-| P3-D06 | Loose alias candidate file | versioned set `character-alias-candidates-v1` | implemented | `9ee0e72` |
-| P3-D07 | Check tool and `reports/` | read manifests and summaries, in batch 4 | bypassed | — |
-| P3-D08 | Top-level `.claude/` | remove after agent sessions | bypassed | — |
-| P3-D09 | One project-root constant | keep both notions for now | bypassed | — |
-| P3-D10 | Collection defaults writing into raw datasets | make `--output` / `--input` required | bypassed | — |
+| ID | Question | Recommendation | Handling | Status | Commit |
+| -- | -------- | -------------- | -------- | ------ | ------ |
+| P3-D01 | Seventh forwarding script | keep registered, output to `runs/`, no dated default | bypassed | approved | `5b78891` |
+| P3-D02 | One-off scripts | archive 10 scripts with their runs | implemented | approved | `ecb6c85` |
+| P3-D03 | Smoke-test scripts without inputs | archive both | implemented | approved | `043a622` |
+| P3-D04 | Legacy prompts | batch 4 archives `extract-feedback.txt`; move `extract-grounded-feedback.txt` to package assets | bypassed | approved | `58f285c`; rest in batch 4 |
+| P3-D05 | Track dataset manifests | track `manifest.json` only | implemented | approved | `c6ebca1` |
+| P3-D06 | Loose alias candidate file | versioned set `character-alias-candidates-v1` | implemented | approved | `9ee0e72` |
+| P3-D07 | Check tool and `reports/` | read manifests and summaries, in batch 4 | bypassed | approved | batch 4 |
+| P3-D08 | Top-level `.claude/` | remove after agent sessions | bypassed | deferred | — |
+| P3-D09 | One project-root constant | keep both notions for now | bypassed | approved | — (no change) |
+| P3-D10 | Collection defaults writing into raw datasets | make `--output` / `--input` required | bypassed | approved | `0717f69` |
 
 ### Changes
 
@@ -796,7 +796,8 @@ P3 "Done when", outside bypassed items:
 Nothing here was changed in batch 3.
 
 1. **Bypassed decisions** P3-D01, P3-D04, P3-D07, P3-D08, P3-D09,
-   P3-D10: waiting for the owner.
+   P3-D10: waiting for the owner. Resolved in the owner review below;
+   P3-D08 stays deferred.
 2. **Documents naming archived scripts or old commands** (batch 4):
    `docs/reviews/latest-balanced-validation.md` (archived `*latest*`
    scripts), `README.md` (`run_smoke_test.py` is gone; step 4 uses
@@ -810,3 +811,35 @@ Nothing here was changed in batch 3.
 5. **Batch 2 deferred items** 1 (document references to moved-out
    reports), 3 (reports without a result record) and 6 stand; items 2 and
    4 were done in this batch; item 5 became P3-D07.
+
+### Owner review (2026-11-03)
+
+The owner adopted every recommendation and deferred P3-D08. The resolved
+decisions are appended to the plan as section 7, decisions 14 to 22.
+
+Implemented after the review, one commit per decision, 222 tests passing
+after each:
+
+- `5b78891` P3-D01: `scripts/run_local_direction_comparison.py` writes to
+  `runs/<run name>`; the `--run-name` default is `local-direction-comparison`
+  instead of `balance-evidence-20261022`. The layer stays registered (R3);
+  the register change log and the documented command in
+  `docs/reviews/balance-analysis.md` are updated (D9).
+- `58f285c` P3-D04: `prompts/extract-grounded-feedback.txt` moved with
+  `git mv` to `src/aimediator/assets/prompts/`; its code user
+  `run_grounded_feedback_live.py` and the one document naming it are
+  updated. `prompts/extract-feedback.txt` stays until batch 4 rewrites the
+  README procedure that names it, and is then archived.
+- `0717f69` P3-D10: `--output` of `expand_feedback.py` and `--input` of
+  `screen_feedback.py` are required. The README command and the consumer
+  note in `data/raw/feedback/20261015-initial/manifest.json` name the
+  explicit argument.
+- P3-D07 is batch 4 work (before the hook becomes blocking). P3-D09 keeps
+  the current state; the choice between a package constant and a shared
+  helper goes with the CLI work.
+- P3-D08 (`.claude/`) is deferred; G3 keeps reporting it while an agent
+  session runs.
+
+Rule check after the review: 84 violations (G7 6 → 5, the wrapper's dated
+default is gone). The P3-D01 and P3-D10 exceptions listed under Results no
+longer apply.
