@@ -55,6 +55,7 @@ The work is executed in 4 batches. The split rests on three considerations:
 - P5 only verifies and does not change structure, so it is merged into batch 4.
 - If batch 4 turns out too large, "add headers, translate, slim down the README, final acceptance" can be split off as batch 5, with the completion of batch 4's moves as the dividing line.
 - **The pre-commit hook is enabled in two steps**: batch 1 installs it in report-only mode, without blocking commits (violations are certain to exist during the reorganization, and blocking would stop every commit); batch 4 switches it to blocking mode once violations reach zero.
+- **Rule amendment at the start of batch 2** (section 7, decisions 8 and 12): the first commit of batch 2 amends `RULES.md` to v1.1 (G3 and D2), records the date and reason in its revision log, and updates the G3 allowlist in `scripts/maintenance/check_rules.py` to match. The migration list follows that commit.
 
 ---
 
@@ -119,7 +120,8 @@ The work is executed in 4 batches. The split rests on three considerations:
 **What**
 - **`reports/`** (Q3, option b): the 15 directories are handled in two groups.
   - **The 11 directories referenced by documents or code** (`balance-engineering-20261022-final-review`, `balance-review-v2`, `balance-review-v22`, `cli-implementation-20261028`, `evidence-quality-v1-delivery`, `evidence-quality-v1-live-verified`, `evidence-quality-v1-verification`, `latest-balanced-20261027`, `quality-screening-existing-100-v1`, `quality-screening-existing-100-recovered-v2`, `screening-audit-20261027`): the full content moves to `~/Archives/AIMediator/reports/`. Only `manifest.json` and a curated summary (the existing `evaluation.md`, `review-summary.md` and similar) stay in the project. Directory names are renamed per G8 at the same time (removing `final`, `latest`). The manifest records the original name, the archive path, the corresponding record document, the dataset and the code version.
-  - **The 4 directories with no references at all** (`cli-demo-backups`, `cli-demo-monitoring`, `cli-real-unfiltered-20261028`, `cli-walkthrough-16-20261029`): archived only, nothing kept in the project.
+    - Renames (section 7, decision 11; pattern `[YYYYMMDD-]slug[-vN]`): `balance-engineering-20261022-final-review` → `20261022-balance-engineering-review`; `cli-implementation-20261028` → `20261028-cli-implementation`; `latest-balanced-20261027` → `20261027-balanced-validation`; `screening-audit-20261027` → `20261027-screening-audit`; `evidence-quality-v1-delivery` → `evidence-quality-delivery-v1`; `evidence-quality-v1-live-verified` → `evidence-quality-live-verified-v1`; `evidence-quality-v1-verification` → `evidence-quality-verification-v1`. `balance-review-v2`, `balance-review-v22`, `quality-screening-existing-100-v1` and `quality-screening-existing-100-recovered-v2` keep their names.
+  - **The 4 directories with no references at all** (`cli-demo-backups`, `cli-demo-monitoring`, `cli-real-unfiltered-20261028`, `cli-walkthrough-16-20261029`): archived only, nothing kept in the project. They keep their original names in the archive.
   - The 58 code files, zips and tsx files scattered through the reports go, together with their directories, into a `provenance/` subdirectory of the archive (P2).
 - **`.gitignore` adjustment**: the manifests and summaries under `reports/` become tracked (they are small). `runs/` was already ignored in P1.
 - **`dist/`**: delete the 112MB workspace zip and the duplicate wheel under `dist/refactored/` (both are in the backup), keeping only the current wheel and sdist.
@@ -153,12 +155,14 @@ The work is executed in 4 batches. The split rests on three considerations:
   - Code that references archived reports (15 files in total) is changed to receive its input through explicit arguments, or is archived together with the one-off scripts.
   - The paths of the lock files and HTTP state files used by the collection scripts move to a location such as `runs/state/` (P1).
 - **Data** (P1, G8):
-  - Dataset directory renames: directories containing forbidden words, such as `20261027-latest-balanced` and `20261028-cli-unfiltered`, get descriptive names, and the 9 code and configuration files that reference them are updated in step.
-  - The `pending` in `evidence-quality-real-v1-pending` is a status; it moves into the manifest.
+  - Dataset directory renames: `20261027-latest-balanced` becomes `20261027-balanced`, and the code and configuration files that reference it are updated in step. Correction (section 7, decision 11): `20261028-cli-unfiltered`, listed here originally, contains no forbidden word and keeps its name.
+  - The `pending` in `evidence-quality-real-v1-pending` is a status; it moves into the manifest and the set becomes `evidence-quality-real-v1`.
   - Every dataset gets a `manifest.json`.
+  - Raw glossary sources (decision 11): the seven `data/raw/glossary/*-20261008.json` files move into `data/raw/glossary/20261008-glossary-sources/` without the date suffix in their names (for example `community-aliases.json`), with a `manifest.json` listing original names and SHA256 values. Contents do not change; hashes are compared before and after and entered in the change record. The two `evidence_file` paths inside `src/aimediator/assets/data/glossary.json` are updated in the same commit (D5); this changes `glossary_sha256` in run identities, as already accepted above.
+  - Duplicate synthetic cases (decision 9): `src/aimediator/assets/fixtures/cases.json` stays the single file; `data/evaluation/evidence-quality-synthetic-v1/cases.json` becomes a symlink to it, registered in the compatibility register, and a new offline test checks that the file matches `cases_sha256` in that set's manifest (P1 freeze).
 - **Prompts and configuration** (P7):
-  - The two legacy prompts in the root `prompts/`: archived after confirming they are unreferenced.
-  - The two files in `configs/` containing `latest` are renamed per G8, and their references are updated in step.
+  - The two legacy prompts in the root `prompts/`: archived after confirming they are unreferenced. Found in batch 1: they are referenced (`extract-feedback.txt` by `scripts/run_smoke_test.py` and the README; `extract-grounded-feedback.txt` by `scripts/test_grounded_feedback.py`), so the migration list decides whether they are archived together with those scripts or kept.
+  - The two files in `configs/` containing `latest` are renamed per G8, and their references are updated in step: `feedback-collection-latest-balanced.json` → `feedback-collection-balanced.json`; `feedback-latest-20261027-source-reviews-v2.json` → `20261027-feedback-source-reviews-v2.json`.
   - `src/aimediator/assets/` remains the only source; this does not change.
 
 **How**
@@ -201,6 +205,8 @@ In addition:
 - Slim the root `README.md` down to an entry point: keep the introduction, installation, quick start, directory layout and the link to the index. The research-history parts move into the corresponding records or the archive; the Chinese sections in it are translated into English.
 - Links pointing to moved-out reports are changed to point to `reports/<name>/manifest.json` inside the project, so the links keep working. Fix the absolute paths in 5 documents (G7).
 - D8 allowlist criteria: glossary-type documents and corpus quotation blocks may contain Chinese; Chinese anywhere else in a document is a violation.
+- `MANIFEST.in` (decision 10), changed in the same commit as the document moves: it includes only `docs/guides/cli-usage.md` and `docs/design/cli.md`. The implementation status and the archived coding-agent prompt are no longer shipped.
+- `src/aimediator/assets/data/glossary.json`: its `review_file` field points to `docs/unique-move-alias-review.md`, which moves to the external archive; it is updated to the new conclusion record `records/20261022-alias-review.md` in the same commit (D5). This is the second change to `glossary.json` in the reorganization, after batch 3.
 
 **How**
 - Move first, rewrite afterwards, in separate commits: first `git mv` and fix links, then add headers and translate. This keeps git's rename tracking working.
@@ -241,3 +247,11 @@ In addition:
 5. The alias review dumps go only into the **external archive**; the project keeps only one conclusion record.
 6. The phase order is **agreed**; the pre-commit hook is **enabled**, in the two steps described in section 2.
 7. Execution is in **4 batches** as described in section 2.
+
+Decisions taken after batch 1 (2026-11-03), on items recorded under "Deferred" in the change record:
+
+8. **G3 amendment**: `prompts/` is added to the top-level allowlist, limited to compatibility links listed in the G2 register; the directory is removed once it is empty. Executed as the first commit of batch 2 (section 2).
+9. **Duplicate `cases.json`**: the packaged fixture is the single file; the evaluation set path becomes a registered symlink, guarded by a hash test (P3, batch 3).
+10. **`MANIFEST.in`**: fixed in batch 4 together with the document moves; ships `docs/guides/cli-usage.md` and `docs/design/cli.md` only (P4).
+11. **Naming beyond the original list**: the renames listed in P2 and P3 (reports in batch 2; raw glossary sources, configuration files, evaluation set and raw feedback dataset in batch 3). `20261028-cli-unfiltered` keeps its name. `glossary.json` is changed twice: provenance paths in batch 3, `review_file` in batch 4.
+12. **D2 scope**: D2 applies to every document under `docs/`. Exempt: the root `README.md` (it is the package long description), `RULES.md` (it carries its own version line and revision log), agent entry files, and README files inside `data/` (dataset descriptions belong to manifests). Executed with decision 8 in the v1.1 amendment; the check tool already uses this scope.

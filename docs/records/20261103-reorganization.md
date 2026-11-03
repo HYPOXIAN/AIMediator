@@ -163,3 +163,24 @@ decision. Nothing here was changed.
     test count is static (test methods counted with `ast`), which matched
     the 192 measured at baseline. `data/processed/` "generating command
     recorded" is not checked.
+
+### Owner decisions on deferred items (2026-11-03)
+
+The owner reviewed proposals for deferred items 1, 3, 4, 5 (with 6) and 8
+and adopted the recommended option for each. They are written into the plan
+as section 7, decisions 8 to 12, and into the affected phase sections.
+
+| Deferred item | Decision | Plan | Batch |
+| ------------- | -------- | ---- | ----- |
+| 1. G3 and P7 conflict | Amend G3: allow `prompts/` for registered compatibility links only; remove it once empty | decision 8 | 2 (first commit, RULES.md v1.1) |
+| 3. Duplicate `cases.json` | Packaged fixture is the single file; evaluation set path becomes a registered symlink; new hash test against the set manifest | decision 9 | 3 |
+| 4. `MANIFEST.in` | Fix with the document moves; ship `docs/guides/cli-usage.md` and `docs/design/cli.md` only | decision 10 | 4 |
+| 5 and 6. Naming and loose raw glossary files | Renames listed in plan P2 and P3; raw glossary files go into `20261008-glossary-sources/` without date suffixes; `20261028-cli-unfiltered` keeps its name; `glossary.json` changed in batch 3 and again in batch 4 | decision 11 | 2, 3, 4 |
+| 8. Scope of the D2 check | D2 covers documents under `docs/`; root `README.md`, `RULES.md`, agent entry files and README files in `data/` are exempt | decision 12 | 2 (with decision 8) |
+
+Correction to the batch 1 report: the sdist currently in `dist/` was built
+before the CLI documents moved into `docs/reviews/` and does contain them; a
+fresh build would omit them, because `MANIFEST.in` names the old paths.
+
+Still open: deferred item 2 (the seventh forwarding script) is decided in
+the batch 3 migration list; items 7, 9, 10 and 11 stand as recorded.
