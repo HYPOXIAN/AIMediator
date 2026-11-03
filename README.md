@@ -137,7 +137,7 @@ The current expanded result is `data/raw/feedback/20261015-expanded/screened/`: 
 
 ## Grounded real-feedback pilot
 
-`python3 scripts/experiments/test_grounded_feedback.py` tests local Qwen/Llama on ten real retained reviews plus two separately labeled empty controls per model. JSON Schema constrains identity and reference values; exact quotes are reconstructed from source spans. Invalid responses are quarantined and accepted outputs remain pending human semantic review. The initial run is in `reports/grounded-20261015-pilot/`; see `docs/grounded-feedback-test.md` for the schema, source-binding checks, reproducibility, and limitations. The existing free-form synthetic smoke runner remains unchanged.
+`python3 scripts/experiments/run_grounded_feedback_live.py` tests local Qwen/Llama on ten real retained reviews plus two separately labeled empty controls per model. JSON Schema constrains identity and reference values; exact quotes are reconstructed from source spans. Invalid responses are quarantined and accepted outputs remain pending human semantic review. The initial run is in `reports/grounded-20261015-pilot/`; see `docs/grounded-feedback-test.md` for the schema, source-binding checks, reproducibility, and limitations. The existing free-form synthetic smoke runner remains unchanged.
 
 ## Glossary vector retrieval
 

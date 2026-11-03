@@ -80,7 +80,7 @@ python3 scripts/experiments/replay_balance_admission.py --from-run reports/balan
 python3 scripts/experiments/evaluate_balance_review.py --candidate reports/balance-review-v2/relevance --out reports/balance-review-v2/evaluation
 python3 scripts/experiments/check_balance_regressions.py --out reports/balance-review-v2/regression-replay.json
 python3 scripts/experiments/run_balance_regression_live.py --admission-run reports/balance-review-v2/relevance --out reports/balance-review-v22/live-regressions
-python3 scripts/experiments/test_balance_controls.py --out reports/balance-review-v22/numeric-controls
+python3 scripts/experiments/run_balance_controls_live.py --out reports/balance-review-v22/numeric-controls
 python3 scripts/experiments/prepare_balance_design.py --claims reports/balance-engineering-20261022-final-review/source-reviewed-claims.json --out reports/balance-review-v2/design-briefs.json
 ```
 
@@ -117,7 +117,7 @@ from the proposed attack-subject enum. It does not resolve arbitrary sarcasm or
 comparisons. Attribute exclusions are exported with full source text.
 
 ```sh
-python3 scripts/experiments/test_balance_numeric_extraction.py --out reports/balance-review-v22/numeric-extraction
+python3 scripts/experiments/run_balance_numeric_extraction_live.py --out reports/balance-review-v22/numeric-extraction
 python3 scripts/experiments/review_balance_live.py --live-run reports/balance-review-v22/live-regressions --admission-run reports/balance-review-v2/relevance --decisions reports/balance-review-v22/source-review-decisions.json --out reports/balance-review-v22/source-review
 ```
 

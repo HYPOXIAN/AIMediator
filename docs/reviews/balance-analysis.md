@@ -23,7 +23,7 @@ those experiments; they are not used by the new batch pipeline.
 ```sh
 python3 scripts/run_balance_analysis.py --out reports/balance-v2-full
 python3 -m unittest discover -s tests -v
-python3 scripts/experiments/test_balance_controls.py --out reports/balance-v2-full/synthetic-controls
+python3 scripts/experiments/run_balance_controls_live.py --out reports/balance-v2-full/synthetic-controls
 ```
 
 Run the same command again to resume. Completed requests are content-addressed

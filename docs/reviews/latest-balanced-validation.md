@@ -86,7 +86,7 @@ reduction in emotion bias.
 
 ```sh
 python3 -m unittest discover -s tests -v
-python3 scripts/experiments/test_balance_semantic_controls.py \
+python3 scripts/experiments/run_balance_semantic_controls_live.py \
   --out reports/latest-balanced-20261027/semantic-controls
 python3 scripts/recover_latest_failures.py \
   --run reports/latest-balanced-20261027/full-pipeline \
