@@ -1,5 +1,10 @@
 # AI Mediator CLI: implementation design and agent handoff
 
+- Type: Design
+- Status: Active
+- Updated: 2026-11-03
+- Applies to: `aimediator` 0.1.0 CLI (V1); written 2026-10-28 as its implementation specification
+
 Design date: 2026-10-28, America/Los_Angeles.
 Status: proposed implementation specification; the CLI described below is not implemented by this document.
 Intended implementer: the next coding agent working in this project.

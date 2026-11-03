@@ -1,5 +1,10 @@
 # Next development plan
 
+- Type: Plan
+- Status: Archived
+- Updated: 2026-11-03
+- Applies to: project state on 2026-10-23; outdated (plan section 7, decision 4)
+
 Planning date: 2026-10-23. This is a proposed development sequence, not a record of completed implementation.
 
 ## Recommended outcome

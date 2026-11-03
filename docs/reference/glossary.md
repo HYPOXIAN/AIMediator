@@ -1,5 +1,10 @@
 # Street Fighter 6 bilingual glossary
 
+- Type: Reference
+- Status: Active
+- Updated: 2026-11-03
+- Applies to: `src/aimediator/assets/data/glossary.json`; target patch 08.03.2026 Update
+
 Collection: 849 entries, 4332 aliases, and 157 ambiguous alias records; 31
 target-patch characters.
 

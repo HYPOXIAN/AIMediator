@@ -1,5 +1,10 @@
 # CLI implementation status
 
+- Type: Plan (implementation status)
+- Status: Active
+- Updated: 2026-11-03
+- Applies to: `aimediator` 0.1.0; engineering acceptance of 2026-10-28
+
 Specification: [design/cli.md](../design/cli.md).
 Engineering acceptance completed 2026-10-28. Semantic/human/patch validation
 remains separate and is not declared complete.

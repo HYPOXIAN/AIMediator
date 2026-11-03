@@ -1,5 +1,10 @@
 # Coding agent 交接提示词
 
+- Type: Agent handoff
+- Status: Archived
+- Updated: 2026-11-03
+- Applies to: evidence-quality implementation task of 2026-10-26, completed (RULES.md P6)
+
 请在 `<project root>` 实现 RAG 评论证据质量与情绪干扰控制模块。先阅读适用的 AGENTS.md，再完整阅读 `docs/design/evidence-quality.md`，以该文件为本次工程规格；阅读其中列出的现有源码后开始实现，不要只给方案。
 
 目标是把无关内容、一般强弱意见、具体角色机制证据、系统平衡反馈和待复核内容分流，同时量化纯情绪篇幅。保留有信息的情绪化批评，不能把情绪强度当可信度或证据权重，不能把一般抱怨升级为具体调整建议。

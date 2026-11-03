@@ -1,5 +1,11 @@
 # Emotion Quantification and Evidence Isolation
 
+- Type: Design
+- Status: Active
+- Updated: 2026-11-03
+- Applies to: evidence-quality module v1 as implemented; written 2026-10-29
+- Related: [evidence-quality.md](evidence-quality.md), the pre-implementation specification
+
 **Project:** AI Mediator  
 **Module:** Evidence Quality  
 **Date:** October 29, 2026  

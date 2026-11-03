@@ -1,5 +1,10 @@
 # Senior review work log
 
+- Type: Plan (follow-up list)
+- Status: Active
+- Updated: 2026-11-03
+- Applies to: balance review v2 and v2.2; `data/evaluation/balance-silver-v1`
+
 ## Decisions recorded before implementation
 
 - [x] Independent human annotations are unavailable. Build a 100-comment **agent-reviewed silver** set with source hashes, written reasons, uncertainty and a frozen development/holdout split. Do not call it gold or report human accuracy. Independent double annotation remains an external follow-up.

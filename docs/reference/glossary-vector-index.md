@@ -1,5 +1,10 @@
 # Glossary vector index
 
+- Type: Reference
+- Status: Active
+- Updated: 2026-11-03
+- Applies to: `data/processed/glossary-vectors/`; `aimediator.glossary_vectors`
+
 The index uses every entry and every alias in `data/glossary.json`, including
 pending candidates. Index inclusion does not approve a candidate. The separate
 `~/Archives/AIMediator/docs-data/low-alias-review.*` proposals are not imported.

@@ -1,5 +1,10 @@
 # Install and operate AI Mediator
 
+- Type: Guide
+- Status: Active
+- Updated: 2026-11-03
+- Applies to: `aimediator` 0.1.0 (Linux, Python 3.9+)
+
 V1 supports Linux and Python 3.9+. Install the wheel into a virtual environment;
 NumPy is the only declared runtime dependency. Python 3.9.25 and 3.14.8 were
 used in separate clean-install acceptance checks. The CLI works outside the

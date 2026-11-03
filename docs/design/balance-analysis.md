@@ -1,5 +1,10 @@
 # Evidence-grounded bilingual balance analysis
 
+- Type: Design
+- Status: Active
+- Updated: 2026-11-03
+- Applies to: balance pipeline `aimediator.engine` (`scripts/run_balance_analysis.py`); dataset `data/raw/feedback/20261015-expanded`
+
 The current full-corpus test runner is `scripts/run_balance_analysis.py`. It uses
 all records in the expanded canonical screened dataset, not the historical
 50-comment retrieval sample or the 32-comment direction experiment.

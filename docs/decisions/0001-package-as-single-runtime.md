@@ -1,5 +1,10 @@
 # Workspace refactoring
 
+- Type: Decision
+- Status: Active
+- Updated: 2026-11-03
+- Applies to: `aimediator` 0.1.0 package layout
+
 The refactor preserves evidence schemas, bilingual routing, source binding,
 review gates, and bounded request journals. The package is the single runtime
 implementation; research entry points import it directly.

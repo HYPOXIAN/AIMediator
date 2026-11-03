@@ -1,5 +1,10 @@
 # Directory cleanup — 2026-10-28
 
+- Type: Record
+- Status: Active
+- Updated: 2026-11-03
+- Applies to: the workspace as of 2026-10-28, before the git baseline `0d390c4`
+
 Removed superseded generated content after checking current code references and
 running the full automated suite. Historical documents describe the experiments
 at the time they ran; paths listed below are intentionally no longer available.

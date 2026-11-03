@@ -1,5 +1,10 @@
 # Fresh balanced feedback validation (2026-10-27)
 
+- Type: Record
+- Status: Active
+- Updated: 2026-11-03
+- Applies to: dataset `data/raw/feedback/20261027-balanced`; report `20261027-balanced-validation`
+
 This bounded run uses the existing collection sources and coarse-v1 screening,
 then freezes 600 comments (300 English, 300 simplified Chinese). No previous
 raw file seeds the collection. Existing source IDs can reappear when fetched

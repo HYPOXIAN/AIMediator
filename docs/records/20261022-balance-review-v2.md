@@ -1,5 +1,10 @@
 # Review and evaluation v2
 
+- Type: Record
+- Status: Active
+- Updated: 2026-11-03
+- Applies to: reports `balance-review-v2` and `balance-review-v22`; `data/evaluation/balance-silver-v1`, `data/evaluation/balance-regressions-v1`
+
 This iteration implements a frozen evaluation set, explicit identity policy,
 retrieval review queue, conservative numerical-intent checks, known-error
 regressions and a separate engineering-design preparation contract. It preserves

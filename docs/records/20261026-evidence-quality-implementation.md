@@ -1,5 +1,10 @@
 # 评论证据质量模块：实现与验证
 
+- Type: Record
+- Status: Active
+- Updated: 2026-11-03
+- Applies to: evidence-quality module v1; `data/evaluation/evidence-quality-synthetic-v1`, `data/evaluation/evidence-quality-real-v1`; reports `evidence-quality-*-v1`
+
 日期：2026-10-26（America/Los_Angeles）。工程规格见 `docs/design/evidence-quality.md`。
 本次交付 CLI 工程能力；尚未获得独立人工效果验证，推荐先运行 shadow。
 

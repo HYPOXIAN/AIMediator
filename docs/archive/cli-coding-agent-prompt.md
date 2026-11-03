@@ -1,5 +1,10 @@
 # Coding-agent handoff: implement the AI Mediator CLI
 
+- Type: Agent handoff
+- Status: Archived
+- Updated: 2026-11-03
+- Applies to: CLI implementation task of 2026-10-28, completed (RULES.md P6)
+
 Work in `<project root>`. The final deliverable is an
 installable CLI named `aimediator`, not a web interface or another collection
 of research commands. Read applicable `AGENTS.md` instructions and then read

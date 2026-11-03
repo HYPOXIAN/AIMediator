@@ -1,5 +1,11 @@
 # RAG 评论证据质量与情绪干扰控制：工程交接
 
+- Type: Design
+- Status: Active
+- Updated: 2026-11-03
+- Applies to: evidence-quality module v1 (`evidence-quality-policy.json` v1); written 2026-10-26 as its pre-implementation specification
+- Related: [emotion-quantification-and-evidence-isolation.md](emotion-quantification-and-evidence-isolation.md), a description of the implemented module
+
 日期：2026-10-26（America/Los_Angeles）  
 状态：待实现的工程规格；本文件不代表功能已上线或准确率已验证。  
 适用仓库：`<project root>`
