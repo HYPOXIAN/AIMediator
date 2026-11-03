@@ -3,7 +3,7 @@
 - Type: Record
 - Status: Draft
 - Updated: 2026-11-03
-- Applies to: baseline commit `0d390c4` and later; `RULES.md` v1.0
+- Applies to: baseline commit `0d390c4` and later; `RULES.md` v1.0 and v1.1
 
 The single change record for the whole reorganization
 ([plan](../plans/reorganization.md), section 0, item 4). Every phase appends
@@ -311,3 +311,90 @@ documents (see the batch 1 correction above); it is rebuilt in batch 4.
   `scripts/collect_balanced_feedback.py` and `scripts/expand_feedback.py`
   still write them under `data/raw/` and recreate them on the next run;
   their paths move in batch 3.
+
+### Results
+
+Tracked state after the batch 2 commits (`c5704c2`..`205e910`).
+
+- **Size** of the project without `data/` (`du` per top-level entry,
+  including `.git`): 784.5 MB before, 13.6 MB after (`reports/` 661 MB →
+  140 KB, `dist/` 108 MB → 484 KB, `build/` 3.1 MB → 0, `cli-demo/` gone).
+  Target < 20 MB: met.
+- **Archives**: 18 archive directories, each `SHA256SUMS` re-verified with
+  `sha256sum -c` at the end of the batch: `reports/` (15 directories,
+  20,749 entries), `dist/` (2), `cli-demo/` (11), `runtime-state/` (2). No
+  `.env` file in any of them.
+- **`reports/`**: 11 directories, each with `manifest.json` and `summary/`
+  only; no code, archive, backup, checkpoint or interrupted-run entries.
+- **G4**: a `git clone` of `205e910` (only tracked files, so no ignored
+  directory exists) passes all 221 tests.
+- **Tests**: 221 after every commit of the batch.
+
+Violation counts (full run saved, ignored, to `runs/reorg-p2-violations.txt`):
+
+| Rule | Batch 1 | Batch 2 | Change | Cause |
+| ---- | ------: | ------: | -----: | ----- |
+| G2 | 1 | 1 | 0 | batch 3 |
+| G3 | 6 | 1 | −5 | `.agents`, `.aws`, `.codex`, `cli-demo` removed; `prompts` allowed by v1.1; `notes` left (batch 4) |
+| G7 | 17 | 14 | −3 | `cli-demo/README.md`, `cli-demo/run-location.json` (2 lines) |
+| G8 | 32 | 21 | −11 | 9 report names; 2 `cli-demo` modules |
+| G9 | 1 | 0 | −1 | workspace zip |
+| D1 | 2 | 2 | 0 | batch 4 |
+| D2 | 20 | 20 | 0 | batch 4 |
+| D4 | 24 | 24 | 0 | batch 4 |
+| D5 | 17 | 17 | 0 | batch 4 |
+| D6 | 0 | 0 | 0 | — |
+| D7 | 3 | 3 | 0 | batch 4 |
+| D8 | 10 | 10 | 0 | batch 4 |
+| P1 | 9 | 7 | −2 | runtime state files |
+| P2 | 24 | 0 | −24 | manifests, archive, `dist/` trimmed |
+| P3 | 39 | 39 | 0 | batch 3 |
+| P4 | 0 | 0 | 0 | — |
+| **Total** | **205** | **159** | **−46** | |
+
+The migration list estimated 160 (161 without the v1.1 commit); it counted
+two G7 entries for `cli-demo`, but there were three.
+
+Rules this phase is responsible for (plan section 1: G4, G6, G9, P2, and Q5
+for `cli-demo`): G9 and P2 are 0; G3 no longer lists `cli-demo` or the
+empty directories. G4 and G6 are verified manually as described above.
+
+### Deferred
+
+Nothing here was changed in batch 2.
+
+1. **Document references to moved-out reports** (batch 4). Documents name
+   `reports/<old name>/...` paths that are no longer in the project (all in
+   code spans or plain text, so D5 does not count them):
+   `README.md` (lines 172, 184, 224), `docs/reviews/balance-analysis.md`,
+   `balance-review-v2.md`, `cli-design-handoff.md` (including
+   `summary.zh.md`, now archive only), `cli-implementation-status.md`,
+   `directory-cleanup.md`, `evidence-quality-implementation.md`,
+   `latest-balanced-validation.md`, `next-development-plan.md`. Batch 4
+   repoints them to `reports/<new name>/manifest.json`. The manifests'
+   `record` fields name today's document paths and change with the moves.
+2. **Scripts referencing moved-out reports** (batch 3), which now fail with
+   their defaults: `build_screening_audit.py`, `check_balance_regressions.py`,
+   `evaluate_balance_review.py`, `finish_latest_validation.py`,
+   `run_quality_screening_experiment.py`, `run_quality_screening_recovery.py`,
+   `complete_latest_validation.py`, `finalize_latest_rerun.py`,
+   `render_latest_validation_report.py`, `replay_latest_accepted_contract.py`.
+   Scripts whose default output is under `reports/` (`run_smoke_test.py`,
+   `render_test_results.py`, `test_grounded_feedback.py`,
+   `run_local_direction_comparison.py`, `engine.py` `--out`) also move to
+   `runs/` in batch 3; until then their output is ignored unless it is a
+   top-level `manifest.json` or lies in `summary/`.
+3. **Reports without a result record** (batch 4): `20261027-screening-audit`
+   has `record: null`; the two `quality-screening-existing-100-*` reports
+   are named only in the retention list of `directory-cleanup.md`. P2
+   expects a record document for each; their manifests say so in
+   `record_note`.
+4. **Runtime state paths** (batch 3): the three collection scripts listed
+   above recreate the lock and HTTP state files under `data/raw/`.
+5. **The check tool does not open files under `reports/`** (by design from
+   batch 1), so its G7 and G9 scans do not cover the 26 tracked report
+   files. They were checked by hand in this batch. Whether the tool should
+   read `reports/*/manifest.json` and `summary/` is decided in batch 3 or 4.
+6. **`dist/` contents are stale**: the kept wheel and sdist were built on
+   2026-10-28, before the CLI documents moved into `docs/reviews/`. They
+   are rebuilt and checked in P5 (batch 4).
