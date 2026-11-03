@@ -10,7 +10,9 @@
 All project conventions are in [RULES.md](RULES.md). It takes precedence over
 this file (G1); this file only points to it and lists commands.
 
-The reorganization in progress follows [docs/plans/reorganization.md](docs/plans/reorganization.md).
+The completed 2026-11 reorganization is described in
+[docs/archive/reorganization.md](docs/archive/reorganization.md) and recorded in
+[docs/records/20261103-reorganization.md](docs/records/20261103-reorganization.md).
 
 ## Common commands
 

@@ -1,11 +1,12 @@
 # AIMediator Project Cleanup and Reorganization Plan
 
 - Type: Plan
-- Status: Active
+- Status: Archived
 - Updated: 2026-11-03
 - Applies to: baseline commit `0d390c4` and later; `RULES.md` v1.0
 - Translated 2026-11 from the approved Chinese plan (finalized 2026-11-03).
   Archive copy of the original: `~/Archives/AIMediator/planning/reorganization-plan.zh.md`.
+- Archived 2026-11-03 when the reorganization was completed (all four batches; tag `reorg-done`).
 
 > **Basis**: `RULES.md` v1.0 (rule IDs are cited directly below)
 > **Starting point**: baseline commit `0d390c4` (175 files, all 192 offline tests passing)

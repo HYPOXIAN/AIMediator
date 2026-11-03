@@ -6,7 +6,7 @@
 - Applies to: baseline commit `0d390c4` and later; `RULES.md` v1.0 and v1.1
 
 The single change record for the whole reorganization
-([plan](../plans/reorganization.md), section 0, item 4). Every phase appends
+([plan](../archive/reorganization.md), section 0, item 4). Every phase appends
 to it. Deletions of non-reproducible content are entered here (G6). The
 record is frozen when the reorganization is finished (P5).
 

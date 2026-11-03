@@ -37,7 +37,6 @@ RULES.md D1. Records, decisions and meeting notes are frozen once final
 | -------- | ---- | ------ | ----------- |
 | [cli-implementation-status.md](plans/cli-implementation-status.md) | Plan (implementation status) | Active | CLI V1 milestones P0–P4, their verification and the validation still open. |
 | [review-follow-ups.md](plans/review-follow-ups.md) | Plan (follow-up list) | Active | Senior review work log: decisions taken, delivery checklist and open external follow-ups. |
-| [reorganization.md](plans/reorganization.md) | Plan | Active | The 2026-11 project cleanup and reorganization plan, its batches and decisions. |
 
 ## Records
 
@@ -72,4 +71,5 @@ RULES.md D1. Records, decisions and meeting notes are frozen once final
 | [next-development-plan.md](archive/next-development-plan.md) | Plan | Archived | Development plan of 2026-10-23, outdated. |
 | [cli-coding-agent-prompt.md](archive/cli-coding-agent-prompt.md) | Agent handoff | Archived | Handoff prompt for the completed CLI implementation task. |
 | [evidence-quality-coding-agent-prompt.md](archive/evidence-quality-coding-agent-prompt.md) | Agent handoff | Archived | Handoff prompt for the completed evidence-quality implementation task. |
+| [reorganization.md](archive/reorganization.md) | Plan | Archived | The 2026-11 project cleanup and reorganization plan, its batches and decisions; completed. |
 | [readme-research-history.md](archive/readme-research-history.md) | Entry (excerpt of the root README) | Archived | Research-history sections removed from the root README in 2026-11. |
