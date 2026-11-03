@@ -1,0 +1,34 @@
+{
+  "source_comments": 321,
+  "audit_rows": 321,
+  "unique_ids": 321,
+  "audit_quotes_exact": 321,
+  "frozen_relevance_source_bindings": 320,
+  "quality_source_bindings": 38,
+  "revalidated_annotations": 15,
+  "revalidated_routing_segments": 146,
+  "reviewed_information_points": 16,
+  "all_existing_information_points_audited": true,
+  "saved_comment_classifications_recomputed": 38,
+  "all_input_and_historical_output_files_preserved": true,
+  "current_admission_replay_verified_requests": 161,
+  "quality_unit_tests": {
+    "count": 33,
+    "passed": true,
+    "command": "python3 -m unittest discover -s tests -p 'test_evidence_quality*.py'"
+  },
+  "canvas_typescript_check": "passed",
+  "browser_checks": {
+    "all_rows": 321,
+    "irrelevant_filter": 13,
+    "chinese_irrelevant_filter": 3,
+    "not_admitted_related_filter": 35,
+    "quality_attempted_filter": 22,
+    "exact_id_search_and_point_audit": true,
+    "original_quote_and_full_text_display": true
+  },
+  "embedded_artifacts_match_final_data": true,
+  "markdown_comment_headings": 321,
+  "markdown_model_point_headings": 16,
+  "historical_silver_disagreements": 3
+}

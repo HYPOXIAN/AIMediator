@@ -1,0 +1,128 @@
+{
+  "date": "2026-10-27",
+  "timezone": "America/Los_Angeles",
+  "input": 321,
+  "languages": {
+    "en": 207,
+    "zh": 113,
+    "pt": 1
+  },
+  "groups": {
+    "general": 147,
+    "candidate": 133,
+    "review": 27,
+    "exclude": 13,
+    "unsupported": 1
+  },
+  "routes_overlapping": {
+    "G": 192,
+    "M": 47,
+    "U": 30,
+    "X": 13,
+    "S": 102,
+    "L": 1
+  },
+  "relevance_outcomes": {
+    "kept_relevant": 264,
+    "missed_relevant": 35,
+    "accepted_irrelevant": 5,
+    "ambiguous_accepted": 6,
+    "ambiguous_held": 2,
+    "rejected_irrelevant": 8,
+    "language_isolation": 1
+  },
+  "binary_confusion": {
+    "tp": 264,
+    "fn": 35,
+    "fp": 5,
+    "tn": 8
+  },
+  "binary_denominator": 312,
+  "topic_relevance_labels": {
+    "related": 299,
+    "unrelated": 13,
+    "uncertain": 8
+  },
+  "relevance_precision": {
+    "numerator": 264,
+    "denominator": 269
+  },
+  "relevance_recall_within_screened": {
+    "numerator": 264,
+    "denominator": 299
+  },
+  "false_acceptance_among_labeled_admitted": {
+    "numerator": 5,
+    "denominator": 269
+  },
+  "quality_experiment_classified": 38,
+  "quality_attempted": 22,
+  "quality_completed": 15,
+  "quality_failed": 7,
+  "quality_not_run_among_admitted": 253,
+  "quality_attempted_by_language": {
+    "en": 22
+  },
+  "quality_points_reviewed": 16,
+  "retained_quality_points": 7,
+  "retained_quality_point_routes": {
+    "system_evidence": 5,
+    "mechanism_evidence": 2
+  },
+  "quality_point_verdicts": {
+    "error_review": 6,
+    "partial_error": 2,
+    "error": 5,
+    "review_reasonable": 1,
+    "blocked_general": 1,
+    "fragment_context_loss": 1
+  },
+  "by_language": {
+    "en": {
+      "groups": {
+        "general": 95,
+        "candidate": 92,
+        "review": 10,
+        "exclude": 10
+      },
+      "outcomes": {
+        "kept_relevant": 160,
+        "missed_relevant": 31,
+        "accepted_irrelevant": 4,
+        "ambiguous_accepted": 5,
+        "ambiguous_held": 1,
+        "rejected_irrelevant": 6
+      }
+    },
+    "zh": {
+      "groups": {
+        "candidate": 41,
+        "general": 52,
+        "review": 17,
+        "exclude": 3
+      },
+      "outcomes": {
+        "kept_relevant": 104,
+        "ambiguous_accepted": 1,
+        "missed_relevant": 4,
+        "accepted_irrelevant": 1,
+        "ambiguous_held": 1,
+        "rejected_irrelevant": 2
+      }
+    },
+    "pt": {
+      "groups": {
+        "unsupported": 1
+      },
+      "outcomes": {
+        "language_isolation": 1
+      }
+    }
+  },
+  "human_ground_truth": false,
+  "fresh_model_calls": 0,
+  "independent_test": false,
+  "all_quality_annotations_completed": false,
+  "emotion_causal_bias_measured": false,
+  "quality_model_success_rate_claimed": false
+}

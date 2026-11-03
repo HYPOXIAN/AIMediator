@@ -1,0 +1,64 @@
+{
+  "schema": "aimediator-report-manifest-v1",
+  "name": "20261027-screening-audit",
+  "original_name": "screening-audit-20261027",
+  "archive": {
+    "path": "~/Archives/AIMediator/reports/screening-audit-20261027/",
+    "checksums": "SHA256SUMS",
+    "files": 678,
+    "bytes": 10202389,
+    "archived_on": "2026-11-03",
+    "provenance_files": [
+      "provenance/audit-bundle.zip",
+      "provenance/audit-view.canvas.tsx",
+      "provenance/build_screening_audit.py",
+      "provenance/snapshots/current-evidence-quality.py"
+    ]
+  },
+  "run_manifest": "manifest.json",
+  "record": null,
+  "dataset": "data/raw/feedback/20261015-expanded/screened/records.jsonl with balance-review-v2/relevance and quality-screening-existing-100-recovered-v2",
+  "code_version": {
+    "git_commit": null,
+    "note": "Produced before the git baseline 0d390c4 (2026-11-03); identified by the run identity hashes below and the code snapshots under provenance/ in the archive.",
+    "run_identity": {
+      "source_files_sha256": {
+        "data/raw/feedback/20261015-expanded/screened/records.jsonl": "3cde410dff38bfd162037d76314ce6df0b6761e4283f455a022e375d0706bdf5",
+        "reports/balance-review-v2/relevance/relevance.json": "cff2227bad6c3249bf79325003e91b4ee803408fcc76e1fc6a31d1290b68a017",
+        "reports/quality-screening-existing-100-recovered-v2/screening-progress.json": "d16c7377dd50ebca45b6215079f7b593e400d7de8be8bc8098c97423438b054a",
+        "reports/quality-screening-existing-100-recovered-v2/manifest.json": "ab6fd6945546a94570118ee096011274a137a51024a6b4d6a618ea9d3384446e",
+        "configs/evidence-quality-policy.json": "496090a7296a3d8a739d8f3d87ea15b9e3a9a026fa2df8830661bf29aab3146e",
+        "configs/balance-review-policy.json": "b31a46b0ec590fc2c906a6874007bc6805575873f5e9975f2d01564525c242c5",
+        "scripts/evidence_quality.py": "73e353116eab5a192bfebac9da967ddac649f2671802d56cc51d877ebae32d13",
+        "prompts/evidence-quality.en.txt": "95e7004c6d78977444574e7a505d27d271cb17a3050c3c5ef4005e0e3bf97ced",
+        "prompts/evidence-quality.zh.txt": "390e6b7cd7cfbc3d36d2ec35edf6fb81d04cc6dace0cdde6d1ffca959d60a7bf",
+        "data/evaluation/balance-silver-v1/labels.jsonl": "1113d14062fb16464df2a0429e3b025e0c4071b0097782a7a59d098cd3cdfe89",
+        "data/evaluation/balance-silver-v1/errata.json": "ef2bdbae77cd89bd09bd7c0b463b0a6aa3920214d1a39320223b7031b955c615",
+        "reports/screening-audit-20261027/relevance-overrides.tsv": "5856442b82442154f2ca5eb48a331bcc0a5bedfe1ae98f238d5c9151169056d2",
+        "reports/screening-audit-20261027/review-labels.tsv": "2e989812329ddd99eaa608b01c4bfd95001f18debf50bd70a003e954b2c20919",
+        "reports/screening-audit-20261027/quality-point-reviews.tsv": "00ebca51ad9376e956ac14da1d0c5667b258a18b3dc19e3bb8ec630ba82211c6",
+        "reports/screening-audit-20261027/quality-comment-reviews.tsv": "50d482b68d3b542356f7e2c943b190790341925cf6c1db4e54af70de0a6cca70"
+      }
+    }
+  },
+  "retention_reason": "Full audit of the 321 retained coarse-screened records.",
+  "summary": [
+    {
+      "path": "summary/summary.json",
+      "original_path": "summary.json",
+      "sha256": "ac12bffba5fe7c0b91af81d279c81058418339e0c88147cce0be7b76b80ad813"
+    },
+    {
+      "path": "summary/verification.json",
+      "original_path": "verification.json",
+      "sha256": "bedca348b84eace0a2a121f9386367fd50d215c012136cc7a8484f2c09f377f8"
+    },
+    {
+      "path": "summary/report.zh.md",
+      "original_path": "REPORT.zh.md",
+      "sha256": "054e45e1eee82c94075f830f5ad4560da90ec7ed3e78742b8b92b8766260f411"
+    }
+  ],
+  "change_record": "docs/records/20261103-reorganization.md",
+  "record_note": "No record document names this report yet (batch 4)."
+}

@@ -1,0 +1,59 @@
+{
+  "schema": "aimediator-report-manifest-v1",
+  "name": "20261027-balanced-validation",
+  "original_name": "latest-balanced-20261027",
+  "archive": {
+    "path": "~/Archives/AIMediator/reports/latest-balanced-20261027/",
+    "checksums": "SHA256SUMS",
+    "files": 8101,
+    "bytes": 246135113,
+    "archived_on": "2026-11-03",
+    "provenance_files": [
+      "provenance/full-pipeline-final/policy-module-snapshot.py",
+      "provenance/full-pipeline-final/quality-module-snapshot.py",
+      "provenance/full-pipeline-final/runner-snapshot.py",
+      "provenance/full-pipeline-final/transport-snapshot.py",
+      "provenance/full-pipeline/policy-module-snapshot.py",
+      "provenance/full-pipeline/quality-module-snapshot.py",
+      "provenance/full-pipeline/runner-snapshot.py",
+      "provenance/generation-recovery-sampled/recover_latest_failures-snapshot.py",
+      "provenance/generation-recovery/recover_latest_failures-snapshot.py",
+      "provenance/quality-compact-recovery/recover_latest_quality-snapshot.py",
+      "provenance/quality-live-enforce-v3/policy-module-snapshot.py",
+      "provenance/quality-live-enforce-v3/quality-module-snapshot.py",
+      "provenance/quality-live-enforce-v3/runner-snapshot.py",
+      "provenance/quality-live-enforce-v4/policy-module-snapshot.py",
+      "provenance/quality-live-enforce-v4/quality-module-snapshot.py",
+      "provenance/quality-live-enforce-v4/runner-snapshot.py",
+      "provenance/quality-live-enforce/policy-module-snapshot.py",
+      "provenance/quality-live-enforce/quality-module-snapshot.py",
+      "provenance/quality-live-enforce/runner-snapshot.py"
+    ]
+  },
+  "run_manifest": "full-pipeline-final/manifest.json",
+  "record": "docs/reviews/latest-balanced-validation.md",
+  "dataset": "data/raw/feedback/20261027-latest-balanced/screened/records.jsonl",
+  "code_version": {
+    "git_commit": null,
+    "note": "Produced before the git baseline 0d390c4 (2026-11-03); identified by the run identity hashes below and the code snapshots under provenance/ in the archive.",
+    "run_identity": {
+      "version": "balance-evidence-v2",
+      "script_sha256": "6957772beebc2750a93ce55925c3eec08bbd4c30bfa7ada5fefcdbd6cd7dd84f",
+      "dataset_sha256": "3eb87a7561b41ff31cef3e7035f0a25353adbe1999e023ff5e46b1bcf4852e3f"
+    }
+  },
+  "retention_reason": "Validation of the 600-record balanced dataset; baseline of the CLI design. summary.zh.md stays in the archive only (absolute user paths, G7).",
+  "summary": [
+    {
+      "path": "summary/evaluation.md",
+      "original_path": "evaluation.md",
+      "sha256": "24eb9f043f41d4e0ecc6500e4f6d6b0eaa56c829e28b518c62c6955e7a68ad78"
+    },
+    {
+      "path": "summary/integrity-checks.json",
+      "original_path": "integrity-checks.json",
+      "sha256": "50698b06b2f6353b446abdf80e5c7d3e4c1cf24aa0cff89ed7111ed2733b3267"
+    }
+  ],
+  "change_record": "docs/records/20261103-reorganization.md"
+}

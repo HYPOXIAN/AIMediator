@@ -1,0 +1,65 @@
+{
+  "engineering_v1_complete": true,
+  "independent_semantic_accuracy_established": false,
+  "offline_tests": {
+    "passed": 182,
+    "preexisting": 147,
+    "product": 35,
+    "seconds": 39.921,
+    "command": "python3 -m unittest discover -s tests -v",
+    "log": "reports/cli-implementation-20261028/all-tests-final.log"
+  },
+  "clean_install_matrix": [
+    {
+      "runtime": "py314",
+      "python": "3.14.8 (main, Oct  1 2026, 00:00:00) [GCC 16.2.1 20260819 (Red Hat 16.2.1-2)]",
+      "numpy": "2.5.4",
+      "command_checks": 18,
+      "network_calls": 0,
+      "installed_code_and_resources_match_final_wheel": true,
+      "record": "reports/cli-implementation-20261028/clean-install-py314-final.json"
+    },
+    {
+      "runtime": "py39",
+      "python": "3.9.25 (main, Oct 31 2025, 23:00:23) \n[Clang 21.1.4 ]",
+      "numpy": "2.0.2",
+      "command_checks": 18,
+      "network_calls": 0,
+      "installed_code_and_resources_match_final_wheel": true,
+      "record": "reports/cli-implementation-20261028/clean-install-py39-final.json"
+    },
+    {
+      "runtime": "py39-min-numpy",
+      "python": "3.9.25 (main, Oct 31 2025, 23:00:23) \n[Clang 21.1.4 ]",
+      "numpy": "1.23.5",
+      "command_checks": 18,
+      "network_calls": 0,
+      "installed_code_and_resources_match_final_wheel": true,
+      "record": "reports/cli-implementation-20261028/clean-install-py39-min-numpy-final.json"
+    }
+  ],
+  "artifacts": {
+    "wheel": {
+      "path": "dist/aimediator-0.1.0-py3-none-any.whl",
+      "sha256": "cc068ed45448d355a24aff0e2742c0d4229a62a9b4a9a3bfe9124b6e9ac5f847"
+    },
+    "sdist": {
+      "path": "dist/aimediator-0.1.0.tar.gz",
+      "sha256": "b8f0d7a0c2585a72bc92ac42c4a363b13c47373c36210b38b2531e6e93a7f428"
+    }
+  },
+  "live_diagnostic": {
+    "record": "reports/cli-implementation-20261028/live-diagnostic/verification.json",
+    "source": "two_authored_bilingual_synthetic_development_sources",
+    "semantic_accuracy": null,
+    "known_concern": "Chinese explicit numeric request routed opinion_only in shadow diagnostic"
+  },
+  "sample_report": "reports/cli-implementation-20261028/release-demo/example-report/report.md",
+  "review_template": "reports/cli-implementation-20261028/release-demo/review-template/decisions.json",
+  "scope_limitations": [
+    "Linux support",
+    "Independent human and held-out semantic validation pending",
+    "Patch/game facts and engineering tuning pending",
+    "Live inference diagnostic used a preserved build before validation-only hardening; final release independently passes all offline/clean-install gates"
+  ]
+}

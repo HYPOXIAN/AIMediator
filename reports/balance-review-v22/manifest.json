@@ -1,0 +1,32 @@
+{
+  "schema": "aimediator-report-manifest-v1",
+  "name": "balance-review-v22",
+  "original_name": "balance-review-v22",
+  "archive": {
+    "path": "~/Archives/AIMediator/reports/balance-review-v22/",
+    "checksums": "SHA256SUMS",
+    "files": 732,
+    "bytes": 1817270,
+    "archived_on": "2026-11-03",
+    "provenance_files": []
+  },
+  "run_manifest": "live-regressions/manifest.json",
+  "record": "docs/reviews/balance-review-v2.md",
+  "dataset": "data/raw/feedback/20261015-expanded/screened/records.jsonl (through balance-review-v2/relevance)",
+  "code_version": {
+    "git_commit": null,
+    "note": "Produced before the git baseline 0d390c4 (2026-11-03); identified by the run identity hashes below and the code snapshots under provenance/ in the archive.",
+    "run_identity": {
+      "script_sha256": "1b1d84b0ca33135ebeaae3e44552314b652552be4845c6e934a8da4df6479b48"
+    }
+  },
+  "retention_reason": "Accepted v2.2 balance review; cited by README and the balance review record.",
+  "summary": [
+    {
+      "path": "summary/review-summary.md",
+      "original_path": "review-summary.md",
+      "sha256": "ec7f90fec43da0e9b39ed473720c0962ce31302cd75bbc279deeae4fe40b88c9"
+    }
+  ],
+  "change_record": "docs/records/20261103-reorganization.md"
+}

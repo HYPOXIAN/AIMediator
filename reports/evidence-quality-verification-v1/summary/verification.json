@@ -1,0 +1,124 @@
+{
+  "client_date": "2026-10-26",
+  "timezone": "America/Los_Angeles",
+  "engineering_status": "implemented_and_offline_verified",
+  "baseline_tests": {
+    "count": 94,
+    "passed": 94
+  },
+  "final_tests": {
+    "count": 127,
+    "passed": 127,
+    "command": "python3 -m unittest discover -s tests -p 'test_*.py'",
+    "log": "tests.log"
+  },
+  "synthetic_cases": {
+    "count": 38,
+    "languages": [
+      "zh",
+      "en"
+    ],
+    "provenance": "agent_authored_synthetic",
+    "accuracy": null
+  },
+  "mock_pipeline": {
+    "off_shadow_same_summary_and_character_adjustments": true,
+    "coverage_rows_per_mode": 38,
+    "output": "reports/evidence-quality-v1-delivery/examples/mock-pipeline",
+    "counts_are_not_accuracy": true,
+    "modes": {
+      "off": {
+        "input_comments": 38,
+        "assessed_comments": 38,
+        "generated_claims": 26,
+        "accepted_claims": 26,
+        "final_generation_failed_comments": 0
+      },
+      "shadow": {
+        "input_comments": 38,
+        "assessed_comments": 38,
+        "generated_claims": 26,
+        "accepted_claims": 26,
+        "final_generation_failed_comments": 0
+      },
+      "enforce": {
+        "input_comments": 38,
+        "assessed_comments": 18,
+        "generated_claims": 20,
+        "accepted_claims": 20,
+        "final_generation_failed_comments": 0
+      }
+    }
+  },
+  "live_fixed_admission": {
+    "scope": "Live models on selected fixed historical admissions; not a full fresh RAG run.",
+    "comments": 2,
+    "quality_completed": 2,
+    "quality_failed": 0,
+    "routes": {
+      "steam:237331797": [
+        "exclude"
+      ],
+      "steam:234374726": [
+        "mechanism_evidence"
+      ]
+    },
+    "effectiveness_metrics": null,
+    "independent_human_labels": false,
+    "limitations": [
+      "No fresh embedding/relevance run.",
+      "No semantic accuracy estimate.",
+      "Model-proposed spans/points need human review."
+    ],
+    "output": "reports/evidence-quality-v1-live-verified",
+    "audit_supported_claims_by_mode": {
+      "shadow": 1,
+      "enforce": 0
+    }
+  },
+  "new_real_annotation_set": {
+    "count": 300,
+    "labeled": 0,
+    "provenance": "raw_pre_screen",
+    "languages": {
+      "en": 198,
+      "zh": 101,
+      "und": 1
+    },
+    "split_status": "provisional_requires_semantic_cluster_review",
+    "path": "data/evaluation/evidence-quality-real-v1-pending"
+  },
+  "full_fresh_pipeline_online": "not_run_missing_qwen3-embedding:8b",
+  "unverified": [
+    "Independent human double annotation and adjudication",
+    "Semantic span/point attribution and deduplication",
+    "Held-out precision/recall and false-upgrade targets",
+    "Real-inference emotion-equivalence robustness",
+    "End-to-end upstream recall",
+    "Gameplay truth, official patch applicability and tuning outcomes"
+  ],
+  "recommended_mode": "shadow",
+  "cli_default_mode": "off",
+  "rollback": "--evidence-quality off with a new output directory",
+  "historical_data_policy": "No raw comments, frozen silver/admission labels or historical reports overwritten.",
+  "implementation_sha256": {
+    "scripts/evidence_quality.py": "73e353116eab5a192bfebac9da967ddac649f2671802d56cc51d877ebae32d13",
+    "scripts/run_balance_analysis.py": "544c29d4eb7f97f81b954cfc227e4482a0fbf1b8d6c143c1fe7f4c7c06afc9ca",
+    "scripts/prepare_balance_design.py": "28bb2d9b6b0fa0a9b54f36b553d29ad449ef9694aabd3fce2978fd257afee102",
+    "scripts/review_balance_sources.py": "5227e73388b268f740d3ce3b5fc571754cf7d8fb37da1334bf1c013ef82ec340",
+    "scripts/demo_evidence_quality.py": "ec92e8b0b82f50bd91378a5e516260f48c3859e723aa9cd86d1ee53b5228c574",
+    "scripts/diagnose_evidence_quality_live.py": "4bf5a9d29598ea9a7cfb731a92ad6e09ce3dafa4126e1ed6ae5c9fa16f4c5aab",
+    "scripts/evaluate_evidence_quality.py": "6caaae37b6576bf025e18493cbff4868f4467c35fa744776996e4ab229b2a793",
+    "configs/evidence-quality-policy.json": "496090a7296a3d8a739d8f3d87ea15b9e3a9a026fa2df8830661bf29aab3146e",
+    "tests/test_evidence_quality.py": "da0bfe716b0b21f1d974c01c0b5c8de6d47326aae7ed3ac4cdb1b692d5047947",
+    "tests/test_evidence_quality_evaluation.py": "6d5ae602805ba1d8c39f2d5bdbe697651843949843b112f3fe40a4a4ac0e342d",
+    "docs/evidence-quality-implementation.md": "2a12e28c97b635f4a23e39691fd05d6e38572401644bb411130994ccc905eabc",
+    "README.md": "7c0f37f2a32a25a65fd5458f1faca508a2c0404d2af1747b720c9c733ae80266",
+    "prompts/evidence-quality.en.txt": "95e7004c6d78977444574e7a505d27d271cb17a3050c3c5ef4005e0e3bf97ced",
+    "prompts/evidence-quality.zh.txt": "390e6b7cd7cfbc3d36d2ec35edf6fb81d04cc6dace0cdde6d1ffca959d60a7bf",
+    "prompts/quality-extract.en.txt": "345e69b92d2e56df87d52feb7ad67fe4bf2fd25e25783cad92ba2977a9629dc5",
+    "prompts/quality-extract.zh.txt": "d2fe70eb5fe38687ac774e097d5f66d8e0f123c47f69f33297f7a4a18985b978",
+    "prompts/quality-verify.en.txt": "62ff290408ef908f196cab1becf0d3637ce0cc5cf39b895773608137b4e4f894",
+    "prompts/quality-verify.zh.txt": "51c15dca06b25d7f912005cb6a8a459cd3d593d7d22b10ba0dea8655e484b0ad"
+  }
+}

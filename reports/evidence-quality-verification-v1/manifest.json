@@ -1,0 +1,30 @@
+{
+  "schema": "aimediator-report-manifest-v1",
+  "name": "evidence-quality-verification-v1",
+  "original_name": "evidence-quality-v1-verification",
+  "archive": {
+    "path": "~/Archives/AIMediator/reports/evidence-quality-v1-verification/",
+    "checksums": "SHA256SUMS",
+    "files": 4,
+    "bytes": 7082,
+    "archived_on": "2026-11-03",
+    "provenance_files": []
+  },
+  "run_manifest": null,
+  "record": "docs/reviews/evidence-quality-implementation.md",
+  "dataset": "Synthetic cases and fixed admissions, as listed in verification.json.",
+  "code_version": {
+    "git_commit": null,
+    "note": "Produced before the git baseline 0d390c4 (2026-11-03); identified by the run identity hashes below and the code snapshots under provenance/ in the archive.",
+    "run_identity": null
+  },
+  "retention_reason": "Verification status of evidence-quality v1, cited by the implementation record.",
+  "summary": [
+    {
+      "path": "summary/verification.json",
+      "original_path": "verification.json",
+      "sha256": "1738a3bc4ff8e2046a7a58671fc6b41bfc16f84c1254e84d29ef04927caee4f9"
+    }
+  ],
+  "change_record": "docs/records/20261103-reorganization.md"
+}

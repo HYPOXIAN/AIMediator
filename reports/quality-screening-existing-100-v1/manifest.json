@@ -1,0 +1,50 @@
+{
+  "schema": "aimediator-report-manifest-v1",
+  "name": "quality-screening-existing-100-v1",
+  "original_name": "quality-screening-existing-100-v1",
+  "archive": {
+    "path": "~/Archives/AIMediator/reports/quality-screening-existing-100-v1/",
+    "checksums": "SHA256SUMS",
+    "files": 88,
+    "bytes": 4127244,
+    "archived_on": "2026-11-03",
+    "provenance_files": [
+      "provenance/snapshot-balance_policy.py",
+      "provenance/snapshot-evidence_quality.py",
+      "provenance/snapshot-resume-cpu-before-ordering.py",
+      "provenance/snapshot-resume-gpu-adapter.py",
+      "provenance/snapshot-run_balance_analysis.py",
+      "provenance/snapshot-run_quality_screening_experiment.py"
+    ]
+  },
+  "run_manifest": "manifest.json",
+  "record": "docs/reviews/directory-cleanup.md",
+  "dataset": "data/evaluation/balance-silver-v1/labels.jsonl with balance-review-v2/relevance",
+  "code_version": {
+    "git_commit": null,
+    "note": "Produced before the git baseline 0d390c4 (2026-11-03); identified by the run identity hashes below and the code snapshots under provenance/ in the archive.",
+    "run_identity": {
+      "version": "existing-group-quality-screen-v1",
+      "code_and_data_sha256": {
+        "scripts/run_balance_analysis.py": "544c29d4eb7f97f81b954cfc227e4482a0fbf1b8d6c143c1fe7f4c7c06afc9ca",
+        "scripts/evidence_quality.py": "73e353116eab5a192bfebac9da967ddac649f2671802d56cc51d877ebae32d13",
+        "scripts/balance_policy.py": "be0333601262e3fda2edeb186380ecd4ebf9ed19e926b4e756be3995ad1db992",
+        "scripts/run_quality_screening_experiment.py": "f7b4d0163026b7a3b322e23fab765fd30fcc5d3c9a2cf75dc076402334310ea3",
+        "configs/evidence-quality-policy.json": "496090a7296a3d8a739d8f3d87ea15b9e3a9a026fa2df8830661bf29aab3146e",
+        "configs/balance-review-policy.json": "b31a46b0ec590fc2c906a6874007bc6805575873f5e9975f2d01564525c242c5",
+        "data/glossary.json": "5d2eca7b1ca6a32ecddc9fb78a84baffad8a408bb04cae1965963069e2f25d90"
+      },
+      "source_sha256": "59b673b522c4c9f2e9aa52e019e64e6b2704bafa8bc2644d6557abaa09b42f08"
+    }
+  },
+  "retention_reason": "Origin of the quality screening experiment; parent of recovered-v2.",
+  "summary": [
+    {
+      "path": "summary/recovery.md",
+      "original_path": "RECOVERY.md",
+      "sha256": "8c2dc720b4a807307705fa939b16b838b53c17a550e6366bf5841f0f99ed86b4"
+    }
+  ],
+  "change_record": "docs/records/20261103-reorganization.md",
+  "record_note": "Retention list only; no result record yet (batch 4)."
+}

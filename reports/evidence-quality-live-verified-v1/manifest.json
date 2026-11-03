@@ -1,0 +1,44 @@
+{
+  "schema": "aimediator-report-manifest-v1",
+  "name": "evidence-quality-live-verified-v1",
+  "original_name": "evidence-quality-v1-live-verified",
+  "archive": {
+    "path": "~/Archives/AIMediator/reports/evidence-quality-v1-live-verified/",
+    "checksums": "SHA256SUMS",
+    "files": 38,
+    "bytes": 230260,
+    "archived_on": "2026-11-03",
+    "provenance_files": [
+      "provenance/balance_policy.py",
+      "provenance/diagnose_evidence_quality_live.py",
+      "provenance/evidence_quality.py",
+      "provenance/run_balance_analysis.py"
+    ]
+  },
+  "run_manifest": "manifest.json",
+  "record": "docs/reviews/evidence-quality-implementation.md",
+  "dataset": "Fixed historical admissions from balance-review-v2/relevance (source_sha256 in the run manifest).",
+  "code_version": {
+    "git_commit": null,
+    "note": "Produced before the git baseline 0d390c4 (2026-11-03); identified by the run identity hashes below and the code snapshots under provenance/ in the archive.",
+    "run_identity": {
+      "version": "fixed-admission-quality-live-v1",
+      "code_sha256": {
+        "scripts/evidence_quality.py": "73e353116eab5a192bfebac9da967ddac649f2671802d56cc51d877ebae32d13",
+        "scripts/run_balance_analysis.py": "544c29d4eb7f97f81b954cfc227e4482a0fbf1b8d6c143c1fe7f4c7c06afc9ca",
+        "scripts/balance_policy.py": "be0333601262e3fda2edeb186380ecd4ebf9ed19e926b4e756be3995ad1db992",
+        "scripts/diagnose_evidence_quality_live.py": "4bf5a9d29598ea9a7cfb731a92ad6e09ce3dafa4126e1ed6ae5c9fa16f4c5aab"
+      },
+      "source_sha256": "59b673b522c4c9f2e9aa52e019e64e6b2704bafa8bc2644d6557abaa09b42f08"
+    }
+  },
+  "retention_reason": "Live diagnostic whose summary the record names as the authoritative diagnostic status.",
+  "summary": [
+    {
+      "path": "summary/diagnostic-summary.json",
+      "original_path": "diagnostic-summary.json",
+      "sha256": "86b5e7b5a1b0306577f7d3ffc5c960e97fa034cdca20a4c3d1f695d666cdebd9"
+    }
+  ],
+  "change_record": "docs/records/20261103-reorganization.md"
+}

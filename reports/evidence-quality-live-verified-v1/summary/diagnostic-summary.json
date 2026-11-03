@@ -1,0 +1,21 @@
+{
+  "scope": "Live models on selected fixed historical admissions; not a full fresh RAG run.",
+  "comments": 2,
+  "quality_completed": 2,
+  "quality_failed": 0,
+  "routes": {
+    "steam:237331797": [
+      "exclude"
+    ],
+    "steam:234374726": [
+      "mechanism_evidence"
+    ]
+  },
+  "effectiveness_metrics": null,
+  "independent_human_labels": false,
+  "limitations": [
+    "No fresh embedding/relevance run.",
+    "No semantic accuracy estimate.",
+    "Model-proposed spans/points need human review."
+  ]
+}

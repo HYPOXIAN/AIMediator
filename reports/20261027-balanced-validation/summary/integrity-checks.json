@@ -1,0 +1,90 @@
+{
+  "complete": true,
+  "checks": {
+    "six_hundred_comments": true,
+    "equal_languages": true,
+    "unique_ids": true,
+    "unique_normalized_text": true,
+    "original_text_preserved": true,
+    "all_coarse_kept": true,
+    "dataset_matches_run_manifest": true,
+    "exact_source_snapshot": true,
+    "all_input_coverage": true,
+    "every_admitted_comment_accounted_for": true,
+    "accepted_claim_count": true,
+    "quarantine_count": true,
+    "claim_accounting": true,
+    "accepted_sources_admitted": true,
+    "accepted_semantic_audit": true,
+    "exact_accepted_quotes": true,
+    "accepted_deterministic_checks": true,
+    "unverified_names_isolated": true,
+    "unique_source_counts_per_group": true,
+    "no_extraction_pending": true
+  },
+  "all_checks_pass": true,
+  "input_comments": 600,
+  "input_languages": {
+    "zh": 300,
+    "en": 300
+  },
+  "coverage_statuses": {
+    "extraction_completed": 524,
+    "relevance_rejected": 52,
+    "relevance_pending_or_failed": 23,
+    "extraction_failed": 1
+  },
+  "summary": {
+    "version": "balance-evidence-v2",
+    "input_comments": 600,
+    "mode": "full_pipeline",
+    "input_languages": {
+      "zh": 300,
+      "en": 300
+    },
+    "routed_comments": 600,
+    "unsupported_or_unselected_language": 0,
+    "retrieval_related": 402,
+    "retrieval_review_queued": 163,
+    "retrieval_review_rescues": 127,
+    "agreement_related": 525,
+    "relevance_refinements": 91,
+    "relevance_refinement_rescues": 73,
+    "assessed_comments": 525,
+    "generated_claims": 401,
+    "accepted_claims": 184,
+    "quarantined_claims": 217,
+    "source_numeric_accepted": 0,
+    "qualitative_only_accepted": 184,
+    "failed_requests": 4,
+    "final_generation_failed_comments": 1,
+    "by_language": {
+      "en": {
+        "input": 300,
+        "retrieval_related": 164,
+        "agreement_related": 244,
+        "accepted_claims": 86
+      },
+      "zh": {
+        "input": 300,
+        "retrieval_related": 238,
+        "agreement_related": 281,
+        "accepted_claims": 98
+      }
+    },
+    "limitations": [
+      "Automated semantic audit uses the same language-routed model in a separate context; not human ground truth.",
+      "Retrieval prototypes and threshold are reused from the earlier experiment; no held-out relevance labels exist for the full corpus.",
+      "Source binding proves quotation provenance, not gameplay truth or patch applicability.",
+      "Semantic audit reads the full original comment; selected citations can still need additional context.",
+      "Coverage accounts for every admitted comment; completeness of individual concerns still requires human review.",
+      "No numerical targets are invented; qualitative comments cannot supply exact engineering values."
+    ]
+  },
+  "evidence_quality_mode": "off",
+  "limitations": [
+    "Completion includes explicit failures and unresolved relevance, reported separately.",
+    "No independent semantic ground truth or population-representative accuracy is inferred.",
+    "The default full pipeline uses evidence-quality=off; shadow/enforce were covered by offline regression, not by 600 fresh quality annotations."
+  ]
+}

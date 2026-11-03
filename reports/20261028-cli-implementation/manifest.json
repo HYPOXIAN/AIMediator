@@ -1,0 +1,61 @@
+{
+  "schema": "aimediator-report-manifest-v1",
+  "name": "20261028-cli-implementation",
+  "original_name": "cli-implementation-20261028",
+  "archive": {
+    "path": "~/Archives/AIMediator/reports/cli-implementation-20261028/",
+    "checksums": "SHA256SUMS",
+    "files": 1084,
+    "bytes": 23542532,
+    "archived_on": "2026-11-03",
+    "provenance_files": [
+      "provenance/live-diagnostic/diagnostic-build.whl"
+    ]
+  },
+  "run_manifest": "live-diagnostic/run/manifest.json",
+  "record": "docs/reviews/cli-implementation-status.md",
+  "dataset": "Packaged fixtures (release demo) and the live diagnostic input live-diagnostic/input.jsonl in the archive.",
+  "code_version": {
+    "git_commit": null,
+    "note": "Produced before the git baseline 0d390c4 (2026-11-03); identified by the run identity hashes below and the code snapshots under provenance/ in the archive.",
+    "run_identity": {
+      "schema_version": "aimediator-run-v1",
+      "code": {
+        "package_version": "0.1.0",
+        "python": "3.14.8",
+        "numpy": "2.5.4",
+        "modules": {
+          "__init__.py": "42c025a0efe288ccfc9e72c5547768d0074688604db3e27055a8006c1e7e25c8",
+          "__main__.py": "79ee6f134c5c5193377cf9b189cbdcc3e2095e49ba9cec310114441c15a917c4",
+          "balance_policy.py": "766c8b77b01da025519d828866d53c1af180c61aaf950a45d4341c670fa1c149",
+          "cli.py": "d6e64b79765a81310ccc938ecce893a3dc13407790c04b138a27ded9db619253",
+          "common.py": "5e16354148d759a1181d5193d3d4bf4f82e6335c25ae78f5fd678a76ff98ffe0",
+          "config.py": "6c62660b1dd79ed4521fbfd7256ff5d9d0834ff9870a9b91add2543b722dbb69",
+          "demo.py": "82651c79927ea76b34517131b4ba6eb1bd470e4a3700bdb7eaf15dfbebfeb6a5",
+          "engine.py": "330d762ab489959e181f9ca96d0c89cef65d729ad71a98e020eabdacf3cb9ae7",
+          "evaluation.py": "ff20d509c42669c55798161bf48697c9233ff0ffd17bac9b0d133fdef6dd39c1",
+          "evidence_quality.py": "f2f94817a0b023ce9522d14bbc8ce1f3c0951c7ad221e96605b0249fa46aa6dd",
+          "glossary_vectors.py": "a7b336e145363f001bba7c8fadd727c6b04919a21a0a6f02cffcdaace81e8ee7",
+          "inference.py": "19c6f3fdddbdeaec0009e46fd5f9635059593452d755485be7aa0526df0a584c",
+          "legacy_review.py": "a0a8030e080a6be7731d4f0bb2b01b876143a5cc96b2bdb1235efd8bbf078928",
+          "operations.py": "59e91010b28e5e01a283598f0811ec3b1235ab21c9909a63299652fb79bc5a68",
+          "quality_scoring.py": "a7745ce2e0543a6d59f07cc94eb0fdfc2590f1502052bd18075d943c87c563ea",
+          "reporting.py": "cc6f6319c79c86afa46f468a34095843ab713da5e96a86c6a4654bf41387d524",
+          "resources.py": "610ae428362dc4c52e59d513dac9961acf83f7b779d40fcc999f7d89cd0950b6",
+          "review.py": "2ce8200b1de94b8932e6e3657b57e614accb3ae3629843985e3d82d0e8ad4256",
+          "run_store.py": "9d2d4d1cada05484a906add2ab88cb3bb9a61991f9b6ebfb2a1b1c2117b4731d"
+        }
+      },
+      "input_sha256": "d3c8d44440892ee3b45dfffe454c4b8fc56f4c5add28b313bb5362bd36295395"
+    }
+  },
+  "retention_reason": "CLI v1 acceptance evidence: test logs, clean-install matrix, release demo and live diagnostic.",
+  "summary": [
+    {
+      "path": "summary/verification.json",
+      "original_path": "verification.json",
+      "sha256": "1b36fa13f0f7c220d292b9d84edd1c7404d8718a78622f3cc260b4f2587d1569"
+    }
+  ],
+  "change_record": "docs/records/20261103-reorganization.md"
+}

@@ -1,0 +1,18 @@
+{
+  "mode": "synthetic_annotation_replay_no_inference",
+  "cases_sha256": "dbdf53633ad05c2626229d7740d81c0e77e1302796a6d6275ed78a65e5039d30",
+  "policy": {
+    "version": "evidence-quality-policy-v1",
+    "schema_version": "evidence-quality-v1",
+    "measurement_version": "unicode-LNMS-codepoint-v1",
+    "high_emotion_threshold": 0.7,
+    "threshold_status": "uncalibrated_diagnostic_only",
+    "num_predict": 8192,
+    "num_ctx": 16384,
+    "max_attempts": 2,
+    "request_batch_size": 1,
+    "weight_rule": "One unique comment ID per character/topic/direction; emotional tone and ratio never change weight"
+  },
+  "module_sha256": "73e353116eab5a192bfebac9da967ddac649f2671802d56cc51d877ebae32d13",
+  "accuracy_established": false
+}

@@ -1,0 +1,38 @@
+{
+  "schema": "aimediator-report-manifest-v1",
+  "name": "balance-review-v2",
+  "original_name": "balance-review-v2",
+  "archive": {
+    "path": "~/Archives/AIMediator/reports/balance-review-v2/",
+    "checksums": "SHA256SUMS",
+    "files": 1290,
+    "bytes": 61138316,
+    "archived_on": "2026-11-03",
+    "provenance_files": [
+      "provenance/relevance-interrupted-singles/runner-snapshot.py",
+      "provenance/relevance/policy-module-snapshot.py",
+      "provenance/relevance/runner-snapshot.py"
+    ]
+  },
+  "run_manifest": "relevance/manifest.json",
+  "record": "docs/reviews/balance-review-v2.md",
+  "dataset": "data/raw/feedback/20261015-expanded/screened/records.jsonl",
+  "code_version": {
+    "git_commit": null,
+    "note": "Produced before the git baseline 0d390c4 (2026-11-03); identified by the run identity hashes below and the code snapshots under provenance/ in the archive.",
+    "run_identity": {
+      "version": "balance-evidence-v2",
+      "script_sha256": "2f2e4c7533351771948ddbd47af677bebc231eaf69c3f332cc48e9164a8ff35c",
+      "dataset_sha256": "3cde410dff38bfd162037d76314ce6df0b6761e4283f455a022e375d0706bdf5"
+    }
+  },
+  "retention_reason": "Frozen relevance run used as the admission input of later reviews, quality screening, the screening audit and replays.",
+  "summary": [
+    {
+      "path": "summary/review-summary.md",
+      "original_path": "review-summary.md",
+      "sha256": "a896c9ebd816fd01686656c7171625b4826afa98277f9b4aaea750d058abb15f"
+    }
+  ],
+  "change_record": "docs/records/20261103-reorganization.md"
+}

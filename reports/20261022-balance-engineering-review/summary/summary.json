@@ -1,0 +1,45 @@
+{
+  "version": "balance-evidence-v1",
+  "input_comments": 321,
+  "input_languages": {
+    "en": 207,
+    "zh": 113,
+    "pt": 1
+  },
+  "routed_comments": 320,
+  "unsupported_or_unselected_language": 1,
+  "retrieval_related": 198,
+  "agreement_related": 197,
+  "relevance_refinements": 18,
+  "relevance_refinement_rescues": 17,
+  "assessed_comments": 197,
+  "generated_claims": 122,
+  "accepted_claims": 28,
+  "quarantined_claims": 94,
+  "source_numeric_accepted": 0,
+  "qualitative_only_accepted": 28,
+  "failed_requests": 7,
+  "final_generation_failed_comments": 2,
+  "by_language": {
+    "en": {
+      "input": 207,
+      "retrieval_related": 113,
+      "agreement_related": 112,
+      "accepted_claims": 10
+    },
+    "zh": {
+      "input": 113,
+      "retrieval_related": 85,
+      "agreement_related": 85,
+      "accepted_claims": 18
+    }
+  },
+  "limitations": [
+    "Automated semantic audit uses the same language-routed model in a separate context; not human ground truth.",
+    "Retrieval prototypes and threshold are reused from the earlier experiment; no held-out relevance labels exist for the full corpus.",
+    "Source binding proves quotation provenance, not gameplay truth or patch applicability.",
+    "Semantic audit reads the full original comment; selected citations can still need additional context.",
+    "Coverage accounts for every admitted comment; completeness of individual concerns still requires human review.",
+    "No numerical targets are invented; qualitative comments cannot supply exact engineering values."
+  ]
+}

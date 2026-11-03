@@ -1,0 +1,41 @@
+{
+  "schema": "aimediator-report-manifest-v1",
+  "name": "20261022-balance-engineering-review",
+  "original_name": "balance-engineering-20261022-final-review",
+  "archive": {
+    "path": "~/Archives/AIMediator/reports/balance-engineering-20261022-final-review/",
+    "checksums": "SHA256SUMS",
+    "files": 996,
+    "bytes": 34766612,
+    "archived_on": "2026-11-03",
+    "provenance_files": [
+      "provenance/runner-snapshot.py"
+    ]
+  },
+  "run_manifest": "manifest.json",
+  "record": "docs/reviews/balance-analysis.md",
+  "dataset": "data/raw/feedback/20261015-expanded/screened/records.jsonl",
+  "code_version": {
+    "git_commit": null,
+    "note": "Produced before the git baseline 0d390c4 (2026-11-03); identified by the run identity hashes below and the code snapshots under provenance/ in the archive.",
+    "run_identity": {
+      "version": "balance-evidence-v1",
+      "script_sha256": "c1b9a7be030d225be3200fff04e17a4d2e62217defb0015b876a05d0c28e77ec",
+      "dataset_sha256": "3cde410dff38bfd162037d76314ce6df0b6761e4283f455a022e375d0706bdf5"
+    }
+  },
+  "retention_reason": "Final engineering review of the 2026-10-22 balance analysis; cited by README and the balance documents; its source-reviewed-claims.json is the input of balance-review-v2 design briefs.",
+  "summary": [
+    {
+      "path": "summary/evaluation.md",
+      "original_path": "evaluation.md",
+      "sha256": "cc62967bec248217934eef20ca207fa620c8b3972b862232f0fd42052f01d131"
+    },
+    {
+      "path": "summary/summary.json",
+      "original_path": "summary.json",
+      "sha256": "758633848c6a82f488ace269f5670ee3be40d11f70f604e7f261f65571e505cf"
+    }
+  ],
+  "change_record": "docs/records/20261103-reorganization.md"
+}

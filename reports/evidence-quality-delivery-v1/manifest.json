@@ -1,0 +1,43 @@
+{
+  "schema": "aimediator-report-manifest-v1",
+  "name": "evidence-quality-delivery-v1",
+  "original_name": "evidence-quality-v1-delivery",
+  "archive": {
+    "path": "~/Archives/AIMediator/reports/evidence-quality-v1-delivery/",
+    "checksums": "SHA256SUMS",
+    "files": 661,
+    "bytes": 5666121,
+    "archived_on": "2026-11-03",
+    "provenance_files": [
+      "provenance/examples/mock-pipeline/enforce/policy-module-snapshot.py",
+      "provenance/examples/mock-pipeline/enforce/quality-module-snapshot.py",
+      "provenance/examples/mock-pipeline/enforce/runner-snapshot.py",
+      "provenance/examples/mock-pipeline/off/policy-module-snapshot.py",
+      "provenance/examples/mock-pipeline/off/quality-module-snapshot.py",
+      "provenance/examples/mock-pipeline/off/runner-snapshot.py",
+      "provenance/examples/mock-pipeline/shadow/policy-module-snapshot.py",
+      "provenance/examples/mock-pipeline/shadow/quality-module-snapshot.py",
+      "provenance/examples/mock-pipeline/shadow/runner-snapshot.py"
+    ]
+  },
+  "run_manifest": "examples/manifest.json",
+  "record": "docs/reviews/evidence-quality-implementation.md",
+  "dataset": "Synthetic evidence-quality cases (cases_sha256 in the run manifest).",
+  "code_version": {
+    "git_commit": null,
+    "note": "Produced before the git baseline 0d390c4 (2026-11-03); identified by the run identity hashes below and the code snapshots under provenance/ in the archive.",
+    "run_identity": {
+      "module_sha256": "73e353116eab5a192bfebac9da967ddac649f2671802d56cc51d877ebae32d13",
+      "cases_sha256": "dbdf53633ad05c2626229d7740d81c0e77e1302796a6d6275ed78a65e5039d30"
+    }
+  },
+  "retention_reason": "Delivered evidence-quality examples and the mock pipeline in off, shadow and enforce modes.",
+  "summary": [
+    {
+      "path": "summary/examples-manifest.json",
+      "original_path": "examples/manifest.json",
+      "sha256": "8b189dfcc0df603648606e1bd430db49957132f765b2e81a8a9d6e96f7feb1ec"
+    }
+  ],
+  "change_record": "docs/records/20261103-reorganization.md"
+}

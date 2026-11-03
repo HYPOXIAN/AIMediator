@@ -22,8 +22,12 @@ data/raw/*
 !data/raw/debug/
 data/processed/*
 !data/processed/.gitkeep
-reports/*
-!reports/.gitkeep
+# reports/ (RULES.md P2): only manifests and curated summaries are tracked.
+reports/**
+!reports/*/
+!reports/*/manifest.json
+!reports/*/summary/
+!reports/*/summary/**
 
 # Run output (RULES.md P2); safe to empty.
 runs/
