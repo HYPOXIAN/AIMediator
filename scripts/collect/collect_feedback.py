@@ -16,6 +16,7 @@ import urllib.request
 from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[2]
+STATE = ROOT / "runs/state"  # collector lock and HTTP state; runtime state stays out of data/ (RULES.md P1)
 HOSTS = {"api.steampowered.com", "public.api.bsky.app", "bsky.social", "www.googleapis.com"}
 
 
@@ -374,7 +375,8 @@ def main():
             load_youtube_key(args.env_file)
         except (OSError, ValueError):
             parser.error("Unable to load a valid YOUTUBE_API_KEY from the specified local file; no values displayed")
-    lock = (ROOT / "data/raw/feedback-collector.lock").open("a")
+    STATE.mkdir(parents=True, exist_ok=True)
+    lock = (STATE / "feedback-collector.lock").open("a")
     try:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except BlockingIOError:
@@ -382,7 +384,7 @@ def main():
     config = json.loads(args.config.read_text())
     output = args.output or ROOT / "data/raw/feedback" / dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     store = Store(output, config)
-    client = Client(ROOT / "data/raw/feedback-http-state.json")
+    client = Client(STATE / "feedback-http-state.json")
     statuses = {}
     interrupted = False
     try:

@@ -30,7 +30,8 @@ def main():
     args=parser.parse_args()
     if args.base.resolve()==args.output.resolve():
         parser.error('Expansion must use a separate directory')
-    lock=(ROOT/'data/raw/feedback-collector.lock').open('a')
+    collector.STATE.mkdir(parents=True,exist_ok=True)
+    lock=(collector.STATE/'feedback-collector.lock').open('a')
     try:
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     except BlockingIOError:
@@ -52,7 +53,7 @@ def main():
         store.state['seed_record_count']=len(store.rows)
         store.save()
     overrides={r['record_id']:r for r in json.loads((ROOT/'configs/feedback-screening-overrides.json').read_text())['entries']}
-    client=collector.Client(ROOT/'data/raw/feedback-http-state.json')
+    client=collector.Client(collector.STATE/'feedback-http-state.json')
     settings=config['steam']
     statuses={'steam':'not_started','youtube':'inherited_from_base; no new request','bluesky':'previous_access_denied; no request'}
     try:

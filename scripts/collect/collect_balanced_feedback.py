@@ -61,13 +61,14 @@ def main():
     args = parser.parse_args()
     if not 250 <= args.per_language <= 350:
         parser.error('Choose 250..350 per language (500..700 total)')
-    lock = (ROOT/'data/raw/feedback-collector.lock').open('a')
+    c.STATE.mkdir(parents=True, exist_ok=True)
+    lock = (c.STATE/'feedback-collector.lock').open('a')
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     config = json.loads(args.config.read_text())
     config['screening_keep_goals'] = {'en': args.per_language, 'zh': args.per_language}
     reviews = {r['record_id']: r for r in json.loads(args.review_decisions.read_text())['entries']} if args.review_decisions else {}
     store = c.Store(args.out, config)
-    client = c.Client(ROOT/'data/raw/feedback-http-state.json')
+    client = c.Client(c.STATE/'feedback-http-state.json')
     statuses = json.loads((args.out/'summary.json').read_text())['statuses'] if args.screen_only else {}
     # Existing source settings, official endpoints, intervals, quota and cooldown.
     for platform, function in ([] if args.screen_only else [('steam', c.steam), ('bluesky', c.bluesky), ('youtube', c.youtube)]):
