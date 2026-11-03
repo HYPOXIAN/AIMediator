@@ -48,7 +48,7 @@ RULES.md D1. Records, decisions and meeting notes are frozen once final
 | [20261027-screening-audit.md](records/20261027-screening-audit.md) | Record | Active | Audit of the existing screening mechanism on all 321 retained records (agent silver), translated from the report summary. |
 | [20261027-balanced-validation.md](records/20261027-balanced-validation.md) | Record | Active | Fresh balanced 600-comment validation: collection, full run, controls and known limitations. |
 | [20261028-directory-cleanup.md](records/20261028-directory-cleanup.md) | Record | Active | The 2026-10-28 cleanup: deleted paths, retained dependencies and validation. |
-| [20261103-reorganization.md](records/20261103-reorganization.md) | Record | Draft | Change record of the 2026-11 reorganization, batch by batch, with decisions, archives and results. |
+| [20261103-reorganization.md](records/20261103-reorganization.md) | Record | Active | Change record of the 2026-11 reorganization, batch by batch, with decisions, archives and results. |
 
 ## Reference
 

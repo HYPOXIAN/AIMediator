@@ -1,9 +1,10 @@
 # Reorganization Change Record
 
 - Type: Record
-- Status: Draft
+- Status: Active
 - Updated: 2026-11-03
-- Applies to: baseline commit `0d390c4` and later; `RULES.md` v1.0 and v1.1
+- Applies to: baseline commit `0d390c4` and later; `RULES.md` v1.0, v1.1 and v1.2
+- Final 2026-11-03 (tag `reorg-done`); frozen from then on (D3).
 
 The single change record for the whole reorganization
 ([plan](../archive/reorganization.md), section 0, item 4). Every phase appends
@@ -1308,3 +1309,80 @@ after each:
   record; its manifest names it, and the two `quality-screening-existing-100-*`
   manifests note that they keep the cleanup record by owner decision. The
   index lists the new record.
+
+## P5 Final acceptance and lock-in (batch 4, 2026-11-03)
+
+### Acceptance checks after the review
+
+Rerun of all C1 checks after the review commits (`c0de51c`..`ae5f854`):
+
+- **Rule check**: 0 violations, every rule (saved, ignored, to
+  `runs/reorg-p5-violations.txt`). The G3 exception of the review state is
+  gone (RULES.md v1.2).
+- **Clean clone** of `ae5f854`: `pip install .`, 222 offline tests OK;
+  `aimediator doctor --offline` status `ok`, exit 0; `aimediator demo` exit
+  0; `aimediator report` on the demo run exit 0 (G4).
+- **Packages** built from that clone: wheel 46 members, sdist 86 members, no
+  `data/raw` or `.env` entry (G9); the sdist contains the two `MANIFEST.in`
+  documents. `dist/` holds exactly these two files (the README changed, so
+  the build of `d1cff6e` was replaced): `aimediator-0.1.0-py3-none-any.whl`
+  (223,687 bytes, `24976cf3…bc6c`), `aimediator-0.1.0.tar.gz` (259,385
+  bytes, `a8d6d746…8e59`).
+- **README layout** (G10): matches `ls -A`; `.claude/` and `.env` are named
+  in the notes below the tree.
+
+### Lock-in (C2)
+
+- `f8b9716` the pre-commit hook blocks: it exits 1 when the rule check
+  reports a violation (plan section 2, second step). That commit passed the
+  blocking hook.
+- **Blocking verified**: a new root file `stray-violation.txt` was added and
+  `git commit` attempted. The hook printed `G3 stray-violation.txt` and
+  "commit refused", `git commit` exited 1, `HEAD` stayed at `f8b9716`. The
+  file was then unstaged and deleted; the rule check returned to 0.
+- `5e56c35` RULES.md revision log: "Reorganization complete" (no rule
+  change, v1.2).
+- `ec2dd02` plan archived: `docs/archive/reorganization.md`, status
+  Archived; index, `CLAUDE.md` and this record's link updated.
+- This commit: record finalized (status Active, final line in the header);
+  the index lists it as Active.
+
+### Final state
+
+| Item | Baseline (`0d390c4`) | Final |
+| ---- | -------------------- | ----- |
+| Rule check violations | 205 (first run, batch 1) | 0 |
+| Offline tests | 192 | 222 |
+| Project without `data/` | 784.5 MB (batch 2 start) | 14 MB (`.git` 11 MB) |
+| Root README | 227 lines | 139 lines |
+| Documents | 21 Markdown files and 1 JSON dump in `docs/reviews/`, `docs/module-reports/` and `notes/`, no index | 24 in the D1 directories plus the index `docs/README.md`; dumps in the external archive |
+| RULES.md | v1.0 | v1.2 |
+| Pre-commit hook | — | blocking |
+
+External archive (`~/Archives/AIMediator/`, each with `SHA256SUMS`, all
+verified when written): `20261103-baseline/`, `planning/`, `reports/`,
+`dist/`, `cli-demo/`, `runtime-state/`, `scripts/`, `docs-data/`,
+`prompts/`. No off-site copy (plan section 7, decision 3).
+
+### Remaining items
+
+Not part of the reorganization; nothing here blocks it.
+
+1. **Value of the archived content**: whether the external archive (reports,
+   scripts, review dumps, baseline backup) is still worth keeping is to be
+   investigated separately (plan section 7, decision 3). The archive is on
+   the same disk as the project.
+2. **Compatibility layers**: 19 symlinks and 7 forwarding scripts stay
+   registered (G2) until their removal conditions R1 to R3 hold; removing them
+   was out of scope (decision Q4).
+3. **Project-root constant** (plan section 7, decision 21): decided with the
+   CLI work.
+4. **Glossary vector index**: built from an older `glossary.json`; rebuild
+   when an embedding endpoint is available.
+5. **Hand-entered low-alias decisions** (P4-D10): their meaning is known only
+   to the owner.
+6. **Hook per clone**: `core.hooksPath` is local git configuration; each new
+   clone enables the hook with the command in `CLAUDE.md`.
+
+This record is final. From here on only its header may change (D3);
+corrections go in an erratum or a new record.
