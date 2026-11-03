@@ -1,0 +1,18 @@
+{
+  "version": "character-alias-candidates-v1",
+  "set_status": "pending_alias_confirmation",
+  "set_status_note": "Candidates are not normalized aliases; each keeps its source literal until an alias is confirmed.",
+  "former_path": "data/evaluation/pending-character-candidates.json",
+  "files": {
+    "candidates.json": {
+      "sha256": "015e67e2dc05bed19aeaaadfc0ac62c53fac8634536f023f672070cf0c5b7f98",
+      "candidates": 1
+    }
+  },
+  "reviewer_type": "agent",
+  "independent_human_gold": false,
+  "source_dataset": null,
+  "source_note": "Each candidate names its source comment (source_comment_id, source_sha256). The producing step is not recorded; the file predates the baseline commit 0d390c4.",
+  "consumers": [],
+  "created": "2026-11-03 (manifest; the candidates file is unchanged)"
+}
