@@ -37,6 +37,16 @@ RULES.md D1. Records, decisions and meeting notes are frozen once final
 | -------- | ---- | ------ | ----------- |
 | [cli-implementation-status.md](plans/cli-implementation-status.md) | Plan (implementation status) | Active | CLI V1 milestones P0–P4, their verification and the validation still open. |
 | [review-follow-ups.md](plans/review-follow-ups.md) | Plan (follow-up list) | Active | Senior review work log: decisions taken, delivery checklist and open external follow-ups. |
+| [code-restructuring.md](plans/code-restructuring.md) | Plan | Active | Code optimization and restructuring: diagnosis, target module layout, behavior lock, batches B0–B7 and owner decisions (all adopted 2026-11-03). |
+| [code-restructuring-blueprint.md](plans/code-restructuring-blueprint.md) | Plan (blueprint) | Active | Engineering blueprint of the code restructuring: approved scope, metrics, interface contracts, standards, roles and responsibilities, session protocol, quality system, milestones. |
+| [b0-safety-net.md](plans/code-restructuring-handoffs/b0-safety-net.md) | Agent handoff | Active | Work order B0: change record, working-directory fix, behavior lock, baseline measurements. |
+| [b1-defects-and-hot-spots.md](plans/code-restructuring-handoffs/b1-defects-and-hot-spots.md) | Agent handoff | Active | Work order B1: glossary cache, defect fixes, console-text test, archives; owner review. |
+| [b2-engine-split.md](plans/code-restructuring-handoffs/b2-engine-split.md) | Agent handoff | Active | Work order B2: injection seams, then pure moves out of `engine.py`, layering test. |
+| [b3-callers-and-tests.md](plans/code-restructuring-handoffs/b3-callers-and-tests.md) | Agent handoff | Active | Work order B3: callers, tests and experiment scripts import the new modules; facade removed. |
+| [b4-layer-removal-and-docs.md](plans/code-restructuring-handoffs/b4-layer-removal-and-docs.md) | Agent handoff | Active | Work order B4: forwarders and symlinks removed, documents updated, `RULES.md` v1.3, ADR 0002; owner review. |
+| [b5-internals-and-performance.md](plans/code-restructuring-handoffs/b5-internals-and-performance.md) | Agent handoff | Active | Work order B5: helper unification, stage split, callbacks, incremental run state, legacy code snapshots. |
+| [b6-research-code.md](plans/code-restructuring-handoffs/b6-research-code.md) | Agent handoff | Active | Work order B6: workspace root, collection subpackage, shared research helpers. |
+| [b7-readability-and-acceptance.md](plans/code-restructuring-handoffs/b7-readability-and-acceptance.md) | Agent handoff | Active | Work order B7: style normalization, documents, `RULES.md` v1.4, final acceptance and archiving. |
 
 ## Records
 
