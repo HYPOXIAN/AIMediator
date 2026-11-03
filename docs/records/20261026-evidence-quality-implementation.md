@@ -6,6 +6,18 @@
 - Applies to: evidence-quality module v1; `data/evaluation/evidence-quality-synthetic-v1`, `data/evaluation/evidence-quality-real-v1`; reports `evidence-quality-*-v1`
 - Translated 2026-11 from the Chinese original (commit `3ceb123`); only the language changed.
 
+> **Note (2026-11-03, reorganization).** The commands in this record are kept
+> as written on 2026-10-26 (change record, P4-D05), except that paths renamed
+> in batch 3 were updated then: experiment scripts moved to
+> `scripts/experiments/`, the default output became `runs/balance-quality-v1`
+> (originally `reports/balance-quality-v1`), and the evaluation set became
+> `data/evaluation/evidence-quality-real-v1/`. The `--out reports/...`
+> directories in the commands were new run directories; new run output now
+> belongs under `runs/` (RULES.md P2). The reports cited below were renamed in
+> batch 2: `evidence-quality-v1-delivery` to `evidence-quality-delivery-v1`,
+> `evidence-quality-v1-verification` to `evidence-quality-verification-v1`,
+> `evidence-quality-v1-live-verified` to `evidence-quality-live-verified-v1`.
+
 Date: 2026-10-26 (America/Los_Angeles). The engineering specification is `docs/design/evidence-quality.md`.
 This delivery provides the CLI engineering capability; independent human validation of effectiveness has not been obtained, and running shadow first is recommended.
 

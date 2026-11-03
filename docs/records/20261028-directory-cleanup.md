@@ -5,6 +5,12 @@
 - Updated: 2026-11-03
 - Applies to: the workspace as of 2026-10-28, before the git baseline `0d390c4`
 
+> **Note (2026-11-03, reorganization).** Paths in this record are as they
+> were on 2026-10-28. The report directories it lists as retained were moved
+> to the external archive and renamed in batch 2, and datasets and
+> configuration files were renamed in batch 3; see the
+> [change record](20261103-reorganization.md), sections P2 and P3.
+
 Removed superseded generated content after checking current code references and
 running the full automated suite. Historical documents describe the experiments
 at the time they ran; paths listed below are intentionally no longer available.

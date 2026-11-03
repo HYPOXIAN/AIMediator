@@ -5,6 +5,19 @@
 - Updated: 2026-11-03
 - Applies to: reports `balance-review-v2` and `balance-review-v22`; `data/evaluation/balance-silver-v1`, `data/evaluation/balance-regressions-v1`
 
+> **Note (2026-11-03, reorganization).** The commands in this record are kept
+> as they were run (change record, P4-D05), except that script paths renamed
+> in batch 3 were updated then. The reports they read and write are archived;
+> the project keeps their manifests and summaries: `reports/balance-review-v2/`
+> ([manifest](../../reports/balance-review-v2/manifest.json)), `reports/balance-review-v22/`
+> ([manifest](../../reports/balance-review-v22/manifest.json)) and
+> `reports/balance-engineering-20261022-final-review/`, now
+> `reports/20261022-balance-engineering-review/`
+> ([manifest](../../reports/20261022-balance-engineering-review/manifest.json)).
+> `evaluate_balance_review.py` and `check_balance_regressions.py` now require
+> `--baseline`; the three commands below that omit it relied on the old
+> default, which named the 2026-10-22 report. New run output goes to `runs/`.
+
 This iteration implements a frozen evaluation set, explicit identity policy,
 retrieval review queue, conservative numerical-intent checks, known-error
 regressions and a separate engineering-design preparation contract. It preserves

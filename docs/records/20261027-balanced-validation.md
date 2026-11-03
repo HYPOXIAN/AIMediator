@@ -5,6 +5,18 @@
 - Updated: 2026-11-03
 - Applies to: dataset `data/raw/feedback/20261027-balanced`; report `20261027-balanced-validation`
 
+> **Note (2026-11-03, reorganization).** The commands in this record are kept
+> as they were run (change record, P4-D05), except that the dataset,
+> configuration and script paths renamed in batch 3 were updated then
+> (`20261027-latest-balanced` became `20261027-balanced`). The one-off scripts
+> `validate_latest_run.py`, `finish_latest_validation.py`,
+> `recover_latest_failures.py`, `render_latest_validation_report.py` and
+> `rerun_latest_exact_requests.py` are archived in
+> `~/Archives/AIMediator/scripts/` (plan section 7, decision 15). The run
+> `reports/latest-balanced-20261027/` is archived under that name; the project
+> keeps `reports/20261027-balanced-validation/` with its
+> [manifest](../../reports/20261027-balanced-validation/manifest.json) and summaries.
+
 This bounded run uses the existing collection sources and coarse-v1 screening,
 then freezes 600 comments (300 English, 300 simplified Chinese). No previous
 raw file seeds the collection. Existing source IDs can reappear when fetched
