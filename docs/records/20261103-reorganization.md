@@ -591,3 +591,32 @@ the rest of the batch proceeds from it.
 - **Rollback**: none needed.
 - **Status**: pending
 - **Commits**: none
+
+#### P3-D10 Collection defaults that write into existing raw datasets
+
+Found during execution (after the code changes above), registered before
+any change to these scripts.
+
+- **Question**: two collection scripts default to writing inside an
+  existing dated raw dataset, which G7 ("default output paths never point
+  at a specific historical run") and P1 (raw data is never overwritten)
+  forbid. The check tool does not report them, because it exempts paths
+  under `data/`. `scripts/collect/expand_feedback.py`: `--output` default
+  `data/raw/feedback/20261015-expanded` (resumes into that dataset).
+  `scripts/collect/screen_feedback.py`: `--input` default
+  `data/raw/feedback/20261015-initial`, and the output defaults to
+  `<input>/screened`, so a bare run rewrites that dataset's `screened/`.
+  Options: (a) make `--output` (expand) and `--input` (screen) required;
+  (b) default to a new timestamped directory, as `collect_feedback.py`
+  does; (c) keep them.
+- **Recommendation**: (a). It matches how this batch treated inputs from
+  moved-out reports, and a bare run can no longer write into a frozen
+  dataset. (b) would turn a resume into a fresh network collection.
+- **Handling**: `bypassed`. (a) changes command-line behavior beyond a
+  default path, and (a) and (b) differ in effect (error versus new
+  collection).
+- **Effect on the batch**: none; both scripts keep their defaults. Listed
+  as a manual G7 exception at the end of the batch.
+- **Rollback**: none needed.
+- **Status**: pending
+- **Commits**: none
