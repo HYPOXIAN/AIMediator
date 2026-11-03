@@ -464,7 +464,7 @@ the rest of the batch proceeds from it.
 - **Rollback**: `git revert` of the commit restores the files at their
   original paths; the archive copy is a second source.
 - **Status**: pending
-- **Commits**: (filled in after implementation)
+- **Commits**: `ecb6c85`
 
 #### P3-D03 Smoke-test scripts with missing inputs
 
@@ -482,7 +482,7 @@ the rest of the batch proceeds from it.
   loses its only code user; the README still names it (P3-D04).
 - **Rollback**: `git revert` of the commit.
 - **Status**: pending
-- **Commits**: (filled in after implementation)
+- **Commits**: `043a622`
 
 #### P3-D04 Legacy prompts in `prompts/`
 
@@ -520,14 +520,16 @@ the rest of the batch proceeds from it.
   URLs (G9), and record provenance that should survive a lost data
   directory; a clean clone then shows which datasets the code expects.
 - **Handling**: `implemented`.
-- **Effect on the batch**: none on other steps; manifests are written in
-  their own routine commit first and become tracked in the decision commit.
+- **Effect on the batch**: none on other steps. The manifests (routine P1
+  work) were first written into the ignored directories, which needs no
+  commit; the decision commit adds the `.gitignore` exceptions and the six
+  files.
 - **Rollback**: `git revert` of the commit untracks the manifests and
   removes them from the working tree; restore the files with
   `git show <commit>:<path>` (or regenerate them) if they should stay as
   ignored local files.
 - **Status**: pending
-- **Commits**: (filled in after implementation)
+- **Commits**: `c6ebca1`
 
 #### P3-D06 Loose annotation file `pending-character-candidates.json`
 
@@ -543,7 +545,7 @@ the rest of the batch proceeds from it.
 - **Effect on the batch**: removes 1 P1 violation.
 - **Rollback**: `git revert` of the commit.
 - **Status**: pending
-- **Commits**: (filled in after implementation)
+- **Commits**: `9ee0e72`
 
 #### P3-D07 Check tool coverage of `reports/`
 
@@ -620,3 +622,191 @@ any change to these scripts.
 - **Rollback**: none needed.
 - **Status**: pending
 - **Commits**: none
+
+### Decision summary
+
+| ID | Question | Recommendation | Handling | Commit |
+| -- | -------- | -------------- | -------- | ------ |
+| P3-D01 | Seventh forwarding script | keep registered, output to `runs/`, no dated default | bypassed | — |
+| P3-D02 | One-off scripts | archive 10 scripts with their runs | implemented | `ecb6c85` |
+| P3-D03 | Smoke-test scripts without inputs | archive both | implemented | `043a622` |
+| P3-D04 | Legacy prompts | batch 4 archives `extract-feedback.txt`; move `extract-grounded-feedback.txt` to package assets | bypassed | — |
+| P3-D05 | Track dataset manifests | track `manifest.json` only | implemented | `c6ebca1` |
+| P3-D06 | Loose alias candidate file | versioned set `character-alias-candidates-v1` | implemented | `9ee0e72` |
+| P3-D07 | Check tool and `reports/` | read manifests and summaries, in batch 4 | bypassed | — |
+| P3-D08 | Top-level `.claude/` | remove after agent sessions | bypassed | — |
+| P3-D09 | One project-root constant | keep both notions for now | bypassed | — |
+| P3-D10 | Collection defaults writing into raw datasets | make `--output` / `--input` required | bypassed | — |
+
+### Changes
+
+Routine work (rules and plan), one kind of operation per commit; tests
+(221, then 222) passed after every commit, and `git grep` found no old
+name in code, configuration or tests after each rename.
+
+- `e3ae36a` plan decision 13 (post-implementation review).
+- `1a52a5c` decisions registered (P3-D01 to P3-D09); `fdaa023` P3-D10,
+  found during execution.
+- `76a5bda` scripts grouped (P3). 23 scripts moved with `git mv`. Moved
+  scripts that define `ROOT` from `__file__` use `parents[2]`;
+  experiment scripts that import a forwarding script insert the
+  `scripts/` root into `sys.path` (position 1), so they keep importing the
+  registered shells; the identity file lists in
+  `diagnose_evidence_quality_live.py` and
+  `run_quality_screening_experiment.py` name the new paths; tests put
+  `scripts/collect` and `scripts/experiments` on `sys.path`. Every moved
+  script was started with `--help` from outside the checkout: all import.
+- `4b45de5` the four `test_*` scripts renamed (P3, P4).
+- `0624193` output defaults to `runs/` (G7, P2).
+- `b6a2431` inputs from moved-out reports made explicit (G7).
+- `3bcbbc0` collector lock and HTTP state in `runs/state/` (P1).
+- `533d152` configuration renames (G8, P7).
+- `60ec836`, `c57d49b`, `6726a0b` data renames (G8, P1, decision 11).
+- `a774bbb` duplicate `cases.json` replaced by a registered symlink, new
+  test `tests/test_evaluation_sets.py` (G2, decision 9). Suite: 222.
+- `3e84c67` compatibility register "Used by" column updated (no layer
+  changed).
+- P1 manifests: written for the four raw feedback datasets,
+  `data/raw/glossary/20261008-glossary-sources/` and
+  `data/processed/glossary-vectors/` (source, record counts by platform
+  and language, per-file SHA256, producing script, consumers; no record
+  text, URL or credential). Tracked under P3-D05.
+
+### Renames
+
+| Original | New | Kind | Commit |
+| -------- | --- | ---- | ------ |
+| `scripts/collect_feedback.py`, `collect_balanced_feedback.py`, `expand_feedback.py`, `screen_feedback.py` | `scripts/collect/<same name>` | move | `76a5bda` |
+| `scripts/check_balance_regressions.py`, `demo_evidence_quality.py`, `diagnose_evidence_quality_live.py`, `evaluate_balance_review.py`, `export_balance_review_followups.py`, `prepare_balance_design.py`, `present_quality_screening_results.py`, `protect_quality_screening_checkpoint.py`, `replay_balance_admission.py`, `resume_quality_screening_local.py`, `review_balance_live.py`, `run_balance_regression_live.py`, `run_quality_screening_experiment.py`, `run_quality_screening_recovery.py` | `scripts/experiments/<same name>` | move | `76a5bda` |
+| `scripts/test_balance_controls.py` | `scripts/experiments/run_balance_controls_live.py` | move, rename | `76a5bda`, `4b45de5` |
+| `scripts/test_balance_numeric_extraction.py` | `scripts/experiments/run_balance_numeric_extraction_live.py` | move, rename | `76a5bda`, `4b45de5` |
+| `scripts/test_balance_semantic_controls.py` | `scripts/experiments/run_balance_semantic_controls_live.py` | move, rename | `76a5bda`, `4b45de5` |
+| `scripts/test_grounded_feedback.py` | `scripts/experiments/run_grounded_feedback_live.py` | move, rename | `76a5bda`, `4b45de5` |
+| `scripts/verify_cli_install.py` | `scripts/maintenance/verify_cli_install.py` | move | `76a5bda` |
+| `configs/feedback-collection-latest-balanced.json` | `configs/feedback-collection-balanced.json` | rename | `533d152` |
+| `configs/feedback-latest-20261027-source-reviews-v2.json` | `configs/20261027-feedback-source-reviews-v2.json` | rename | `533d152` |
+| `data/raw/feedback/20261027-latest-balanced/` (ignored) | `data/raw/feedback/20261027-balanced/` | `mv`, 19 file hashes equal | `60ec836` |
+| `data/evaluation/evidence-quality-real-v1-pending/` | `data/evaluation/evidence-quality-real-v1/` (status in manifest) | rename | `c57d49b` |
+| `data/raw/glossary/<name>-20261008.json` (7, ignored): `alias-validation`, `community-aliases`, `name-pairing`, `official-moves`, `unique-move-aliases`, `unique-move-alias-validation`, `unique-move-reference` | `data/raw/glossary/20261008-glossary-sources/<name>.json` | `mv`, 7 hashes equal | `6726a0b` |
+| `data/evaluation/pending-character-candidates.json` | `data/evaluation/character-alias-candidates-v1/candidates.json` | rename (P3-D06) | `9ee0e72` |
+| `data/evaluation/evidence-quality-synthetic-v1/cases.json` (copy) | symlink to `src/aimediator/assets/fixtures/cases.json` | replace (decision 9) | `a774bbb` |
+| `data/raw/feedback-collector.lock`, `feedback-http-state.json` (code paths) | `runs/state/` | path change | `3bcbbc0` |
+
+Hard-coded path changes (G7):
+
+| File | Original value | New value | Commit |
+| ---- | -------------- | --------- | ------ |
+| `src/aimediator/engine.py` | `--out` default `reports/balance-quality-v1` | `runs/balance-quality-v1` | `0624193` |
+| `scripts/experiments/run_grounded_feedback_live.py` | fallback output `reports/grounded-<stamp>` | `runs/grounded-<stamp>` | `0624193` |
+| `scripts/experiments/check_balance_regressions.py`, `evaluate_balance_review.py` | `--baseline` default `reports/balance-engineering-20261022-final-review` | required | `b6a2431` |
+| `scripts/experiments/run_quality_screening_experiment.py` | `--from-run` default `reports/balance-review-v2/relevance` | required | `b6a2431` |
+| `scripts/experiments/run_quality_screening_recovery.py` | `--from-run` default `reports/quality-screening-existing-100-v1` | required | `b6a2431` |
+| `scripts/collect/collect_feedback.py`, `collect_balanced_feedback.py`, `expand_feedback.py` | `data/raw/feedback-collector.lock`, `data/raw/feedback-http-state.json` | `runs/state/` (one `STATE` constant, created on first use) | `3bcbbc0` |
+| `scripts/collect/collect_balanced_feedback.py` | `--config` default `configs/feedback-collection-latest-balanced.json` | `configs/feedback-collection-balanced.json` | `533d152` |
+| `src/aimediator/assets/data/glossary.json` | `evidence_file` `data/raw/glossary/community-aliases-20261008.json`, `unique-move-reference-20261008.json` | `data/raw/glossary/20261008-glossary-sources/community-aliases.json`, `unique-move-reference.json` | `6726a0b` |
+
+`glossary.json` SHA256 changed from `5d2eca7b…5d90` to `66f29236…2165`
+(decision 11). The glossary vector index in `data/processed/` was built
+from the old hash; its texts are unchanged and searching still works, but
+a rebuild gets a new identity (recorded in its manifest).
+
+Old names kept on purpose: historical report manifests and summaries in
+`reports/` (byte copies or provenance), the deletion log in
+`docs/reviews/directory-cleanup.md`, `former_name` and `former_path`
+fields in the new manifests, and bare script names in documents (batch 4).
+
+### Archive
+
+| Path | Files | Bytes | Reason | Archive |
+| ---- | ----: | ----: | ------ | ------- |
+| `scripts/build_screening_audit.py` and the nine `*latest*` scripts | 10 | 80,168 | one-off scripts of archived runs (P3, P3-D02) | `~/Archives/AIMediator/scripts/` |
+| `scripts/run_smoke_test.py`, `scripts/render_test_results.py` | 2 | 27,209 | inputs no longer exist (P3-D03) | same |
+
+Order as in batch 2 (G6): copy with `cp -a --reflink=auto`, write
+`SHA256SUMS`, verify the archive with `sha256sum -c` and the sources
+against the same list, then `git rm` (contents also in git history).
+`SHA256SUMS` holds 12 entries and was re-verified at the end of the batch.
+
+### Runs that can no longer be resumed
+
+Accepted in plan P3 ("How"). Run identities hash script bytes and paths,
+dataset paths and `glossary.json`; after this batch these runs cannot be
+resumed or replayed in place. All are in the external archive (batch 2);
+`runs/` holds none of them.
+
+| Run (archive name) | Why |
+| ------------------ | --- |
+| `latest-balanced-20261027` | dataset renamed; its scripts archived; `glossary.json` changed |
+| `quality-screening-existing-100-v1`, `quality-screening-existing-100-recovered-v2` | identity names `scripts/run_quality_screening_experiment.py` (moved; bytes changed); `data/glossary.json` hash changed |
+| `screening-audit-20261027` | script archived |
+| `evidence-quality-v1-live-verified` | identity names `scripts/diagnose_evidence_quality_live.py` (moved) |
+| `balance-review-v2`, `balance-review-v22`, `balance-engineering-20261022-final-review`, `evidence-quality-v1-delivery`, `cli-implementation-20261028` | `glossary_sha256` in engine identities changed |
+
+### Results
+
+State at `fdaa023`. Tests: 222 (221 + `test_evaluation_sets.py`), also in
+a fresh `git clone`, where the symlink and the 11 dataset manifests are
+present. Full rule check saved (ignored) to `runs/reorg-p3-violations.txt`.
+
+| Rule | Batch 2 | Batch 3 start | Batch 3 | Change | Remaining |
+| ---- | ------: | ------------: | ------: | -----: | --------- |
+| G2 | 1 | 1 | 0 | −1 | — |
+| G3 | 1 | 2 | 2 | 0 | `notes` (batch 4); `.claude` (P3-D08) |
+| G7 | 14 | 14 | 6 | −8 | 5 documents (batch 4); `run_local_direction_comparison.py` (P3-D01) |
+| G8 | 21 | 21 | 1 | −20 | `docs/reviews/latest-balanced-validation.md` (batch 4) |
+| G9 | 0 | 0 | 0 | 0 | — |
+| D1 | 2 | 2 | 2 | 0 | batch 4 |
+| D2 | 20 | 20 | 20 | 0 | batch 4 |
+| D4 | 24 | 24 | 24 | 0 | batch 4 |
+| D5 | 17 | 17 | 17 | 0 | batch 4 |
+| D6 | 0 | 0 | 0 | 0 | — |
+| D7 | 3 | 3 | 3 | 0 | batch 4 |
+| D8 | 10 | 10 | 10 | 0 | batch 4 |
+| P1 | 7 | 7 | 0 | −7 | — |
+| P2 | 0 | 0 | 0 | 0 | — |
+| P3 | 39 | 39 | 0 | −39 | — |
+| P4 | 0 | 0 | 0 | 0 | static count 222 |
+| **Total** | **159** | **160** | **85** | **−75** | |
+
+P3 "Done when", outside bypassed items:
+
+- `scripts/` root holds the seven registered forwarding scripts and
+  `collect/`, `experiments/`, `maintenance/` only: met.
+- No `test_` prefix under `scripts/`: met.
+- No code default argument names `reports/` or a dated run directory:
+  met except `run_local_direction_comparison.py` (P3-D01). Checked by hand
+  beyond the tool, which exempts `data/` paths: `expand_feedback.py`
+  `--output` and `screen_feedback.py` `--input` default to existing dated
+  raw datasets (P3-D10, bypassed). Input defaults that read a dataset
+  (`engine.py`, `run_grounded_feedback_live.py` `--dataset`) are not output
+  paths.
+- No `/home/` path in tracked code: met. The only matches are the check
+  tool's own pattern and comment and a test fixture string, which the G7
+  check does not count.
+- G2, G7, G8, P1, P3 at 0 apart from the exceptions listed above; P7
+  (checked by hand): `src/aimediator/assets/` is the only prompt and
+  policy source; `configs/` holds collection and screening configuration
+  plus the three registered links; `prompts/` holds the 14 registered
+  links plus the two legacy prompts (P3-D04).
+- The 26 tracked files under `reports/` scanned by hand (P3-D07): no
+  `/home/` path, no URL.
+
+### Deferred
+
+Nothing here was changed in batch 3.
+
+1. **Bypassed decisions** P3-D01, P3-D04, P3-D07, P3-D08, P3-D09,
+   P3-D10: waiting for the owner.
+2. **Documents naming archived scripts or old commands** (batch 4):
+   `docs/reviews/latest-balanced-validation.md` (archived `*latest*`
+   scripts), `README.md` (`run_smoke_test.py` is gone; step 4 uses
+   `prompts/extract-feedback.txt`; `reports/grounded-20261015-pilot/`),
+   `docs/reviews/balance-review-v2.md` (three commands relied on the old
+   `--baseline` default, now required), bare script names elsewhere.
+3. **Stale `dist/`** (batch 2 deferred item 6) is unchanged; P5 rebuilds it.
+4. **Glossary vector index**: built from the previous `glossary.json`
+   hash; rebuild with `python3 scripts/glossary_vectors.py build` when an
+   embedding endpoint is available (not needed for search).
+5. **Batch 2 deferred items** 1 (document references to moved-out
+   reports), 3 (reports without a result record) and 6 stand; items 2 and
+   4 were done in this batch; item 5 became P3-D07.
