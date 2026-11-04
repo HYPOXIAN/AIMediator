@@ -2,7 +2,7 @@
 
 - Type: Reference
 - Status: Active
-- Updated: 2026-11-03
+- Updated: 2026-11-04
 - Applies to: commit `0d390c4` and later; `RULES.md` v1.0 (G2, P3, P7)
 
 This register lists every symlink and forwarding script that RULES.md G2
@@ -73,19 +73,8 @@ Documents are listed by path under `docs/`; `README.md` is the root README.
 
 ## Forwarding scripts
 
-Scripts that tests and other scripts import from `scripts/` by putting that
-directory on `sys.path`. The pure forwarders replace their own module entry
-in `sys.modules` with the package module, so importers get the package
-implementation.
-
-| Path | Points to | Used by | Removal |
-| ---- | --------- | ------- | ------- |
-| `scripts/balance_policy.py` | `aimediator.balance_policy` | tests: `test_balance_review_pipeline.py`; scripts: `evaluate_balance_review.py`, `export_balance_review_followups.py`, `replay_balance_admission.py`; file hashed into run identities by `diagnose_evidence_quality_live.py`, `run_balance_regression_live.py`, `run_quality_screening_experiment.py`, `run_balance_numeric_extraction_live.py`; docs: `design/cli.md`, `design/evidence-quality.md` | R2 |
-| `scripts/evaluate_evidence_quality.py` | `aimediator.quality_scoring` (runs `main()` when executed) | tests: `test_evidence_quality_evaluation.py`; docs: `design/cli.md`, `guides/cli-usage.md`, `records/20261026-evidence-quality-implementation.md` | R2 |
-| `scripts/evidence_quality.py` | `aimediator.evidence_quality` | tests: `test_evidence_quality.py`, `test_evidence_quality_evaluation.py`, `test_quality_screening_experiment.py`; scripts: `diagnose_evidence_quality_live.py`, `run_quality_screening_experiment.py` (both also hash the file); docs: `design/cli.md`, `design/evidence-quality.md`, `records/20261026-evidence-quality-implementation.md` | R2 |
-| `scripts/glossary_vectors.py` | `aimediator.glossary_vectors` (runs `main()` when executed) | docs: `archive/readme-research-history.md`, `design/cli.md`, `reference/glossary-vector-index.md` (documented commands) | R2 |
-| `scripts/review_balance_sources.py` | `aimediator.legacy_review` (runs `main()` when executed) | tests: `test_balance_source_review.py`, `test_evidence_quality.py`; scripts: `check_balance_regressions.py`, `review_balance_live.py`; docs: `design/balance-analysis.md`, `design/cli.md`, `records/20261026-evidence-quality-implementation.md` | R2 |
-| `scripts/run_balance_analysis.py` | `aimediator.engine` (runs `main()` when executed) | tests: `test_balance_analysis.py`, `test_balance_review_pipeline.py`, `test_balanced_collection.py`, `test_evidence_quality.py`, `test_evidence_quality_evaluation.py`, `test_quality_screening_experiment.py`; scripts (12): `check_balance_regressions.py`, `diagnose_evidence_quality_live.py`, `evaluate_balance_review.py`, `export_balance_review_followups.py`, `prepare_balance_design.py`, `replay_balance_admission.py`, `review_balance_live.py`, `run_balance_regression_live.py`, `run_quality_screening_experiment.py`, `run_balance_controls_live.py`, `run_balance_numeric_extraction_live.py`, `run_balance_semantic_controls_live.py`; docs: `README.md`, `archive/readme-research-history.md`, `design/balance-analysis.md`, `design/cli.md`, `design/evidence-quality.md`, `records/20261026-evidence-quality-implementation.md`, `records/20261027-balanced-validation.md` | R2 |
+None since code restructuring step B4.2 (see the change log). Research
+commands are package modules run with `python3 -m aimediator.<module>`.
 
 ## Change log
 
@@ -119,3 +108,14 @@ implementation.
   "Archive and deletions"). The wrapper's row is removed, and both scripts
   are dropped from "Used by". The register now lists 19 symlinks and 6
   forwarding scripts; no layer uses R3 any more.
+- 2026-11-04 (code restructuring step B4.2, CR-D05): the six pure
+  forwarding scripts were archived to
+  `~/Archives/AIMediator/scripts/20261104-forwarders/` and removed (names in
+  the [code restructuring change record](../records/20261103-code-restructuring.md),
+  "Archive and deletions"), and their rows are removed. R2 held for each:
+  no test or script imports them since step B3.3 and B3.4, the documented
+  commands are `python3 -m aimediator.engine`, `.legacy_review`,
+  `.quality_scoring` and `.glossary_vectors` since step B4.1 (in the
+  glossary index manifest since the owner's answer to escalation E-2), and
+  no run identity hashes them since step B3.4. The register now lists 19
+  symlinks and no forwarding script.

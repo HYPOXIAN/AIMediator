@@ -61,6 +61,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | B3.5 | done | 222 | green | `scripts/collect/screen_feedback.py` starts with the plan 4.3 bootstrap and loads `G` from `asset_path('data/glossary.json')` instead of the `data/glossary.json` symlink (the same file). Its local `ROOT` stays for the `--overrides` default. Lock target L4 unchanged: `378 keys, 0 differ`. The four collectors print `--help` with exit 0 from a foreign directory; `collect_balanced_feedback` and `expand_feedback` import `screen_feedback` as before |
 | B3.6 | done | 222 | green | The facade is gone: `engine.py` drops the re-exported names, the `schema_errors` wrapper and every import that only the moved code used (`copy`, `Counter`, `defaultdict`, `re`, `time`, `urllib.request`, `numpy`, `strict_json`, `anchors`, `glossary` and seven `balance_policy` names). It keeps the imports `run` and `main` use and holds the docstring, `ROOT`, `run`, `main` and the `__main__` guard; 153 to 130 lines. The B2.8 docstring paragraph about the facade is removed, so the docstring and the `python3 -m aimediator.engine --help` text equal `restructure-b1` again. `run` and `main` have the same AST as before, every global name they load resolves, and no import is unused. `tests/test_module_layers.py` loses the transitional allowance (`FACADE`, `FACADE_USERS`); `allowed` checks the table only, 5 tests pass, and a scratch copy with `from . import engine` in `review.py` fails with `review -> engine (line 5)`. Plan 8.7 greps 1 and 2 print nothing. Plan 8.5: 222 pass from a foreign directory. Plan 8.2: `"passed": true`, `"commands": 18`; the wheel's 27 modules equal the checkout |
 | B4.1 | done | 222 | green | CR-D05 (D9): living documents name the package commands and asset paths. `README.md`: section "Research commands" lists `python3 -m aimediator.engine`, `.legacy_review`, `.quality_scoring` and `.glossary_vectors` and says once that they need `pip install -e .` or `PYTHONPATH=src`; its "Layout" line for `scripts/` reads "Collection, experiment and maintenance scripts" (plan B4.1 names "Layout"; the `prompts/` and `configs/` lines are B4.3). `guides/cli-usage.md`: the quality-label command, and the section "Compatibility and validation scope" becomes "Research commands and validation scope" (its symlink sentence stays for B4.3). `design/balance-analysis.md`: lines 6, 8, 29 and 170 (168 at `7282f49`), and the five prompt and routing paths as `src/aimediator/assets/...`. `design/cli.md` section 2 and `design/evidence-quality.md` lines 33, 42 and 47 keep their dated sentences with dated notes (2026-11-04) naming the module and command. The B4.2 grep covers `docs/design`, unlike the B1.7 grep, so those sentences name the old scripts by file name only (`run_balance_analysis.py`), as the B1.7 note in `balance-analysis.md` already did; the first note of each section says they were files directly under `scripts/`. Beyond the listed lines, for R1 under CR-D07: `design/evidence-quality.md` lines 37 and 38 (prompt paths in brace form, which the plan 8.7 grep does not match) cite the asset paths; `reference/glossary-vector-index.md` line 8 and `reference/glossary.md` line 46 cite `src/aimediator/assets/data/glossary.json` (both are "Used by" entries of the `data/glossary.json` register row); and `design/cli.md` section 5 gets one dated note on its instruction to keep compatibility adapters. All five documented commands print `--help` with exit 0 under `PYTHONPATH=src`; their options equal the forwarders' (only the program name differs). D5 0; the B4.2 grep prints only the six register rows that B4.2 removes |
+| B4.2 | done | 221 | green | CR-D05 (R2): the six pure forwarders `run_balance_analysis.py`, `review_balance_sources.py`, `evaluate_evidence_quality.py`, `glossary_vectors.py`, `evidence_quality.py` and `balance_policy.py` archived to `~/Archives/AIMediator/scripts/20261104-forwarders/` with `SHA256SUMS` (checked) and removed; see "Archive and deletions". Register: the six rows removed, the section "Forwarding scripts" says none remain, change-log line added (19 symlinks, no forwarding script). `test_refactored_boundaries.test_compatibility_imports_share_package_state` deleted (-1 test): it asserted only that each forwarder re-exported its package module (blueprint 4.2, item 5), and nothing is left to import; the `scripts/` path line and the `importlib` import that only this test used went with it. Before the step, escalation E-2: the glossary index manifest named the glossary forwarder; the owner chose option (a), applied in `376403a`. The B4.2 grep prints nothing; G2 and P3 report 0; `scripts/` has no tracked file at its top level |
 
 ## Baseline measurements (B0.4)
 
@@ -317,6 +318,12 @@ Consequences, all within CR-D06:
 | `tests/test_quality_screening_recovery.py` | same | `b05f3300cd0fb403c3909d2394e735b6941359f16841e135257496ebbf8c3ef1` | 5 tests of the archived `resume_quality_screening_local.py` (CR-D03) | B1.6 |
 | `scripts/run_local_direction_comparison.py` | `~/Archives/AIMediator/scripts/20261103-broken-entry-points/` | `23aba938006dc4ac8c1e45c7f6e03d24bd2a71f7d8c177b03810ec01a4355147` | Broken wrapper, registered under R3 (F-01: `AttributeError` on `args.evidence_quality`); CR-D04 | B1.7 |
 | `scripts/experiments/demo_evidence_quality.py` | same | `463edad8a19da97601d9e47016628d7a2ec15b2c42d92029f0591185fe4d4f98` | Broken demo (F-02: `TypeError` from its retrieval stub), superseded by `aimediator demo`; CR-D04 | B1.7 |
+| `scripts/run_balance_analysis.py` | `~/Archives/AIMediator/scripts/20261104-forwarders/` | `2cacf20f9db5af755fd268595fdba1e2d969fdeb14e1578c7af1340bcddd84f1` | Pure forwarder to `aimediator.engine`; the command is `python3 -m aimediator.engine` (R2, CR-D05) | B4.2 |
+| `scripts/review_balance_sources.py` | same | `b72270d7f30544bfd1534181e865da52928d6f3a67a9f670702b874e5e6566c0` | Pure forwarder to `aimediator.legacy_review`; the command is `python3 -m aimediator.legacy_review` (R2, CR-D05) | B4.2 |
+| `scripts/evaluate_evidence_quality.py` | same | `3579e769a2548544dbcd86ec025c53b1592c5e837df1392fa1dc34e945b11b8e` | Pure forwarder to `aimediator.quality_scoring`; the command is `python3 -m aimediator.quality_scoring` (R2, CR-D05) | B4.2 |
+| `scripts/glossary_vectors.py` | same | `112b26b49ab3285f65a88b4d3ce54f49873fde4a5585c53245b66e0f3a1e568b` | Pure forwarder to `aimediator.glossary_vectors`; the command is `python3 -m aimediator.glossary_vectors` (R2, CR-D05) | B4.2 |
+| `scripts/evidence_quality.py` | same | `2c39facd691408933c79a825266ace243b67f53cf49e1b438111eeeed93140ae` | Import-only forwarder to `aimediator.evidence_quality`; no importer since B3.3 and B3.4 (R2, CR-D05) | B4.2 |
+| `scripts/balance_policy.py` | same | `60ff8df89a53d4014bcd35fe7e98689c7ef8b4bfd8900b8c16621f39a1676fb2` | Import-only forwarder to `aimediator.balance_policy`; no importer since B3.3 and B3.4 (R2, CR-D05) | B4.2 |
 
 B1.6: the copies were taken from `99d57a9`, so the scripts include the B1.3
 encoding keywords; the earlier bytes are in git history. `sha256sum -c
@@ -344,6 +351,22 @@ names the wrapper (`--dataset` default); and
 records the demo script's SHA-256 under its pre-reorganization path.
 `data/raw/` and `reports/` are frozen (P1, P2) and keep these historical
 mentions.
+
+B4.2: the copies were taken from `376403a`. `sha256sum -c SHA256SUMS`
+passed in the archive directory, and each entry equals the SHA-256 of the
+blob at `376403a`. Before the deletion, `git grep` found the six paths,
+apart from the planning documents and the register (updated in the same
+commit), only in: the frozen records `20261026-evidence-quality-implementation.md`,
+`20261027-balanced-validation.md`, `20261103-reorganization.md` and this
+record; the archived `readme-research-history.md`; and the manifests and
+summaries of six curated reports (`20261022-balance-engineering-review`,
+`20261027-screening-audit`, `evidence-quality-live-verified-v1`,
+`evidence-quality-verification-v1`, `quality-screening-existing-100-v1`
+and its `-recovered-v2`), which record the code of their runs. These keep
+their historical paths (CR-D07, P2). The manifest of
+`data/processed/glossary-vectors/` named the glossary forwarder as its
+generating command; it names the module command since the owner's answer
+to escalation E-2 (`376403a`).
 
 ## Decisions found during execution
 

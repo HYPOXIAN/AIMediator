@@ -1,6 +1,5 @@
 """Contracts for shared modules, progress reporting and failure boundaries."""
 import copy
-import importlib
 from pathlib import Path
 import sys
 import tempfile
@@ -9,7 +8,6 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
-sys.path.insert(0, str(ROOT / 'scripts'))  # the forwarders, for the identity test until B4.2
 from aimediator import evidence
 from aimediator.config import defaults, embedding_endpoint, env_values
 from aimediator.inference import Transport
@@ -17,19 +15,6 @@ from aimediator.runner import Runner
 
 
 class RefactoredBoundaries(unittest.TestCase):
-    def test_compatibility_imports_share_package_state(self):
-        for script, package in {
-            'run_balance_analysis': 'engine',
-            'evidence_quality': 'evidence_quality',
-            'balance_policy': 'balance_policy',
-            'glossary_vectors': 'glossary_vectors',
-            'evaluate_evidence_quality': 'quality_scoring',
-            'review_balance_sources': 'legacy_review',
-        }.items():
-            with self.subTest(script=script):
-                self.assertIs(importlib.import_module(script),
-                              importlib.import_module('aimediator.' + package))
-
     def test_character_reference_returns_new_objects(self):
         expected = copy.deepcopy(evidence.character_reference('Ryu'))
         self.assertIn({'text': 'Ryu'}, next(e for e in expected if e['canonical_name'] == 'Ryu')['aliases'])
