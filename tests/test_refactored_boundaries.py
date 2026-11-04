@@ -1,4 +1,5 @@
 """Contracts for shared modules, progress reporting and failure boundaries."""
+import copy
 import importlib
 from pathlib import Path
 import sys
@@ -29,6 +30,18 @@ class RefactoredBoundaries(unittest.TestCase):
             with self.subTest(script=script):
                 self.assertIs(importlib.import_module(script),
                               importlib.import_module('aimediator.' + package))
+
+    def test_character_reference_returns_new_objects(self):
+        expected = copy.deepcopy(engine.character_reference('Ryu'))
+        self.assertIn({'text': 'Ryu'}, next(e for e in expected if e['canonical_name'] == 'Ryu')['aliases'])
+        reference = engine.character_reference('Ryu')
+        for entry in reference:
+            for alias in entry['aliases']:
+                alias['text'] = 'mutated'
+            entry['aliases'].append({'text': 'mutated'})
+            entry['canonical_name'] = 'mutated'
+        reference.clear()
+        self.assertEqual(engine.character_reference('Ryu'), expected)
 
     def test_progress_brackets_generation(self):
         events = []

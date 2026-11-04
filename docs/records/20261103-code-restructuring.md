@@ -37,6 +37,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | B0.2 | done | 222 | — | F-04 fixed: the test reads the prompt through `asset_path`. Plan 8.5 from a foreign directory: 222 pass, no error |
 | B0.3 | done | 223 | green (fixture created) | Behavior lock L1 to L4 and its self-test; see "Behavior lock (B0.3)". Suite 123 s, of which the lock takes about 51 s |
 | B0.4 | done | 223 | green | Baseline measured again, with the wheel acceptance and the foreign-directory run; see "Baseline measurements (B0.4)". Escalation E-1 (not blocking) |
+| B1.1 | done | 224 | green | P-01: `resources.glossary()` (`lru_cache(maxsize=1)`); `character_reference` and `ground_claim` use it. New test `test_character_reference_returns_new_objects`. Plan 8.4: demo 3.1 s under cProfile (1.7 s plain), `engine.character_reference` 688 calls, 0.77 s cumulative; suite 224 in 8.5 s (wall 9.3 s), lock 4.3 s alone |
 
 ## Baseline measurements (B0.4)
 

@@ -23,7 +23,7 @@ from .balance_policy import (POLICY_PATH, load_policy, term_matches, identity_al
                             numeric_request_supported, triage_retrieval, retrieval_review_agrees,
                             direction_action_conflicts, attributed_candidates)
 
-from .resources import asset_path, module_path
+from .resources import asset_path, glossary, module_path
 ROOT = Path.cwd()
 VERSION = 'balance-evidence-v2'
 
@@ -400,11 +400,10 @@ def retrieve(rows, base, folder, model, embedding_config=None, api_transport=Non
 
 
 def character_reference(text=''):
-    glossary = json.loads((asset_path('data/glossary.json')).read_text(encoding='utf-8'))
     reference = [{'canonical_name': e['canonical_name'], 'chinese_label': e.get('chinese_label'),
              'aliases': [{k: a[k] for k in ('text', 'candidate_only', 'requires_context', 'context_note') if k in a}
                          for a in e['aliases'] if term_matches(a['text'], text) and identity_alias_allowed(a['text'])]}
-            for e in glossary['entries'] if e['category'] == 'character']
+            for e in glossary()['entries'] if e['category'] == 'character']
     reference.extend(copy.deepcopy(load_policy()['source_literal_characters']))
     return reference
 
@@ -474,7 +473,7 @@ def ground_claim(claim, row, characters):
         enriched['character_identity'] = {'source_literal': literal,
             'canonical_name': None if unverified else claim['character'],
             'normalization_status': 'source_literal_unverified' if unverified else 'glossary_reference',
-            'glossary_target_patch': json.loads((asset_path('data/glossary.json')).read_text(encoding='utf-8')).get('target_patch')}
+            'glossary_target_patch': glossary().get('target_patch')}
     for item in enriched['evidence']:
         assert item['text'] == row['text_original'][item['start']:item['end']]
     return errors, enriched
