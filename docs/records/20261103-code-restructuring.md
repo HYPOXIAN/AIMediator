@@ -1859,6 +1859,164 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
     - the earlier open items named in the B5-V note.
 - Result: accepted, tag `restructure-b6`. B7 starts from it.
 
+### 2026-11-04 B7-V
+
+- Range: `restructure-b6..1e664a4`; 11 commits: B7.1 as a series of four
+  commits (`25e1486`, `949c316`, `ccf146c` and `8bfb79b`), B7.2
+  (`ec3e5d4`), B7.3 (`cd351fa` and the follow-up `05812d0`), B7.4
+  (`75adaa1`) and B7.5 item 1 (`8d892c6`), plus the session-log entries of
+  B7-1 (`0603fa7`) and B7-2 (`1e664a4`). Every check ran on `1e664a4`.
+- Checks:
+  1. Boundary and commit hygiene: pass. The boundary check from
+     `restructure-b6`, with the work order's pattern, prints nothing; all
+     33 changed paths lie inside it, and none is under `tests/`. The
+     hygiene check prints nothing, and no added line in the range carries
+     an attribution. The nine step commits have `Step:` lines, with
+     `Decision: CR-D11` on the B7.1 series (`CR-D11, CR-D02` on
+     `949c316`) and `Decision: CR-D10` on B7.4; B7.2, B7.3 and B7.5 rest
+     on no decision. The two session-log commits have `Session:`.
+     `restructure-b6` is an ancestor of HEAD, and the frozen pilot
+     `run_grounded_feedback_live.py` is unchanged in the range. Each
+     commit holds one kind of operation. The B7.3 follow-up `05812d0`
+     comes after B7.4, and the B7.3 progress row does not name it; the
+     B7-2 session-log entry does.
+  2. AST equivalence of B7.1: pass. The work order's check, run for each
+     commit against its parent with both sides read from git, prints
+     `same` for all 16 changed `.py` files: four in `25e1486`, eleven in
+     `ccf146c` and one in `8bfb79b`; `949c316` changes no code. A token
+     comparison (scratch) finds the same comments in each of the 16 files
+     before and after. A token and AST scan of `src/` and `scripts/` at
+     HEAD finds no semicolon and no one-line compound-statement body
+     outside the pilot (decision found in B7.1).
+     - B7.2, checked with the lock and the suite as the work order
+       directs, and also structurally: with the parameter and return
+       annotations, the docstrings and the added `__future__`, `typing`
+       and `pathlib.Path` imports removed, each of the nine modules of
+       `ec3e5d4` is AST-equal to its parent. In all nine,
+       `from __future__ import annotations` follows the module docstring;
+       every function has parameter and return hints, and every public
+       function and class has a docstring.
+     - All 82 tracked `.py` files under `src/`, `scripts/` and `tests/`
+       parse with the Python 3.9 grammar, and none has a star import.
+  3. Plan section 12, criteria 1 to 9: pass.
+     1. The progress table has a row for each of the 52 plan steps, plus
+        B5.F1. All are `done` except B7.5, which is `item 1 done`; its
+        items 2 and 3 belong to the closure.
+     2. Tree clean, no stash; 241 tests OK; rule check `Total: 0`. Plan
+        8.5: 241 OK from a foreign temporary directory, which stays empty.
+     3. Plan 8.2: `"passed": true`, `"commands": 18` (Python 3.14.8, NumPy
+        2.4.6). The wheel's 37 modules and 21 asset files match the
+        checkout byte for byte; it holds nothing under `data/raw` and no
+        `.env`.
+     4. Plan 8.3 passes, and `python3 tests/behavior_lock.py` prints
+        `465 keys, 0 differ`. The fixture has four commits: its creation
+        (`3979a72`, B0.3), CR-D12 (`550ade1`, B5.11), and CR-D12 with E-5
+        (`d772943` and `e41aaec`). Each regeneration names its decision in
+        the `Decision:` line.
+     5. `test_module_layers` passes its 7 tests. The table has no
+        transitional allowance; `engine` has an ordinary row.
+     6. Plan 8.7 greps 1, 2, 4 and 5 print nothing. The third grep, read
+        under the decision found in B4.1 (accepted at the B4 review),
+        prints nothing in its narrowed form; the plain command prints the
+        40 lines that B7.5 lists, 9 of them in the planning documents.
+     7. The timings are recorded against plan section 0 in the acceptance
+        table, and measured again below.
+     8. See item 5. The README "Layout", "Layout decisions" in
+        `docs/plans/cli-implementation-status.md`, the register and the
+        index carry the B7.3 changes; `scripts/` has no top-level file.
+     9. The rule check reports 0 for every rule, with P4 reading the v1.4
+        floor. `git ls-files -s` lists one symlink, the registered
+        `cases.json` link (CR-D08), and no tracked script's docstring
+        begins with "Compatibility entry point". Every living user of the
+        link path that `git grep` finds is in the register's "Used by"
+        cell.
+  4. Test count and lock fixture: pass. 241 tests run;
+     `check_rules.count_tests` gives 241, and `recorded_baseline` reads
+     241 from `RULES.md` v1.4. The fixture item is read under E-5, as
+     B6-V and B7-2 read it: since B5.11 (`550ade1`) the fixture changed
+     only by the six added existence-only keys
+     `L2:<mode>/code-snapshot/design_briefs.py` and
+     `L2:<mode>/code-snapshot/diagnostics.py`, which the owner's answer to
+     E-5 authorized. It is unchanged since `e41aaec`, and nothing under
+     `tests/` changed in the range.
+  5. Documents match the code: pass.
+     - The layout block of `docs/design/cli.md` section 5 names exactly
+       the 29 top-level modules of `ls src/aimediator`, the seven
+       `collection/` modules and the five entries of `assets/`. Its
+       modules are exactly those of the 27-row table in
+       `tests/test_module_layers.py`, plus `__init__`, which the document
+       describes as importing nothing from the package, as the test checks.
+     - Every name in the module contracts exists. The 79 functions and
+       classes in 15 modules have the documented signatures (checked with
+       `inspect`), and so do the constants `pipeline.VERSION`, the four
+       `schema` constants, `PARAMETER` and `CLAIM`.
+     - Spot checks agree: the `stages.options` values, the key orders of
+       `schema.obj` and `quality_obj`, the stages of `resources.prompts`
+       per mode and the enforce appendix, 10 positive and 10 negative
+       anchors, `operations.prompts_for is resources.prompts`,
+       `demo.FixtureTransport`, `FixtureTransport.provenance`,
+       `engine.ROOT` and `glossary_vectors.ROOT` equal to
+       `workspace_root()`, and the collectors' `main(argv=None)` and
+       `STATE`.
+     - Observation, not a failure: the layout groups the modules "from
+       top to bottom" and lists the research group last, below
+       foundation. The sentence after it says a module imports from "its
+       own layer or the ones below it". `diagnostics` imports `evidence`,
+       `evidence_quality` and `runner`, and `collection.*` imports `common`
+       and `resources`, all as the table allows, so the sentence does not
+       hold literally for the research group. Blueprint 3.1 has the same
+       picture and sentence. The table and its test, which are
+       authoritative, agree with the code.
+- Measurements: tests 241 in 8.3 s (wall 8.6 s); demo 2.1 s under
+  cProfile, 1.05 to 1.12 s plain over three runs;
+  `evidence.character_reference` 688 calls, 0.78 s cumulative; lock green
+  (465 keys), 3.6 s run alone.
+  - The acceptance table's first six columns equal blueprint section 2 row
+    for row, and every "Achieved" cell is filled.
+  - Its values, measured again at HEAD, agree: `engine.py` has 124 lines
+    and only `ROOT`, `run` and `main`; the blueprint 7.3 metric lists the
+    same 10 functions with the same lengths; 202 tracked files; 29
+    top-level modules (3,937 lines) and 8 `collection/` files (879 lines);
+    `collect/` 4 files (32 lines), `experiments/` 13 (1,276) and
+    `maintenance/` 3 (1,110).
+- Owner review items (work order section 5):
+  1. `RULES.md` v1.4 (`75adaa1`), effective 2026-11-04: the P4 floor "241
+     on 2026-11-04", the revision-log entry, and "Applies to: `RULES.md`
+     v1.4" in `CLAUDE.md`. 241 is the count after B7.2, unchanged since
+     B6.4.
+  2. The acceptance table under "Batch results" (`8d892c6`). Every target
+     of blueprint section 2 is met. The suite takes 8.3 to 8.6 s wall
+     against at most 45 s (baseline about 70 s), and the demo 1.1 s
+     against at most 10 s (baseline 26.2 s). Four functions on blueprint
+     1.2's list are longer than at `7282f49` (B1.4 and B7.1), and
+     `collection/balanced.main` has 101 lines, above the "63 to 95" that
+     blueprint 1.2 gives.
+  3. `docs/design/cli.md` section 5 (`cd351fa`, `05812d0`) and the README
+     "Layout" (`cd351fa`). They describe the code at HEAD. Two points:
+     - the research group's place in the layer wording (item 5 above);
+     - blueprint 3.1 places `design_briefs` and `diagnostics` outside run
+       identities, but the code includes them (E-5), and the design
+       document says what the code does (B7-2 finding).
+  4. Deferred items and escalations. "Deferred" is empty, and E-1 to E-5
+     are answered.
+     - Decisions found during execution that no owner review has closed,
+       each implemented under plan section 1, item 8:
+       - `__init__.py` and the module table (B2.10);
+       - the scope of `asset_sha256` (B3.4);
+       - `character_terms` in `balance_policy`, and the term order of the
+         `ground_claim` literal (B5.3);
+       - where the response journal of `Runner` lives (B5.5);
+       - the commit series of B6.2;
+       - the controls script keeps its own audit (B6.4);
+       - the frozen pilot stays out of the style normalization (B7.1).
+     - Open items that are not decisions, candidates for later work:
+       - `replay_balance_admission.py` builds its `Runner` without
+         `quality_identity` (B2-1);
+       - `run_store.state` still lists the request directories on every
+         call (B5-3).
+- Result: accepted, tag `restructure-b7-review`. The owner's final review
+  and the closure session B7-3 follow (work order section 4).
+
 ## Session log
 
 ### 2026-11-03 B0-1 (implementation)
@@ -2452,6 +2610,20 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   - No escalation.
 - Next: B7-V (verification) from `restructure-b6`, then the owner's final
   review and session B7-3 (closure); blockers: none.
+
+### 2026-11-04 B7-V (verification)
+
+- Steps: none (verification); none started and stashed.
+- State: HEAD is the verification-note commit (parent `1e664a4`), tagged
+  `restructure-b7-review`; tests 241; lock green, fixture unchanged since
+  `e41aaec` (`465 keys, 0 differ`); rule check 0.
+- Findings: none blocking. All five checklist items pass, with no fix-up
+  steps and no escalations. Two observations: the research group's place
+  in the layer wording of `docs/design/cli.md` section 5, and the B7.3
+  follow-up `05812d0`, which the B7.3 progress row does not name. The B7-V
+  note lists the owner review items.
+- Next: the owner's final review, then session B7-3 (closure); blockers:
+  the owner's review.
 
 ## Batch results
 
