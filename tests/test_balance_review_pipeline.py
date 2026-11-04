@@ -5,11 +5,11 @@ from pathlib import Path
 import sys
 import unittest
 
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts/collect'))
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'src'))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts/experiments'))
-import run_balance_analysis as m
-from balance_policy import numeric_request_supported,triage_retrieval,direction_action_conflicts,attributed_candidates
+from aimediator import evidence, pipeline, stages
+from aimediator.balance_policy import numeric_request_supported,triage_retrieval,direction_action_conflicts,attributed_candidates
+from aimediator.common import sha as digest
 from evaluate_balance_review import read_labels,calibrate,relevance_metrics
 from prepare_balance_design import prepare_briefs,validate_move_data
 from run_balance_regression_live import CASES
@@ -26,14 +26,14 @@ class ReviewPipelineTests(unittest.TestCase):
     def test_cosmetic_scope_exclusion_does_not_hide_a_real_buff_request(self):
         for text,expected in [('Drive Impact is unfair. Elena looks great; where is Makoto?',[]),
                               ('Elena looks great; please buff Elena.',['Elena'])]:
-            reference=m.character_reference(text);raw=m.character_candidates(text,reference)
+            reference=evidence.character_reference(text);raw=evidence.character_candidates(text,reference)
             allowed,_=attributed_candidates(text,reference,raw)
             self.assertEqual(allowed,expected)
 
     def test_explicit_victim_exclusion_preserves_independent_victim_feedback(self):
         for text,expected in [('你阿俊一招给我老桑打半管白血。',['Arjun']),
                               ('你阿俊一招给我老桑打半管白血。加强老桑。',['Zangief','Arjun'])]:
-            reference=m.character_reference(text);raw=m.character_candidates(text,reference)
+            reference=evidence.character_reference(text);raw=evidence.character_candidates(text,reference)
             allowed,_=attributed_candidates(text,reference,raw)
             self.assertEqual(allowed,expected)
 
@@ -45,19 +45,19 @@ class ReviewPipelineTests(unittest.TestCase):
 
     def test_nationality_alone_never_resolves_dhalsim(self):
         for text in ['印度人怎么这么赖','阿三不削我就退游','三哥白血太强了','Indian guy is too strong']:
-            self.assertNotIn('Dhalsim',m.character_candidates(text,m.character_reference(text)))
-        text='达尔西姆太强了，印度人';self.assertIn('Dhalsim',m.character_candidates(text,m.character_reference(text)))
+            self.assertNotIn('Dhalsim',evidence.character_candidates(text,evidence.character_reference(text)))
+        text='达尔西姆太强了，印度人';self.assertIn('Dhalsim',evidence.character_candidates(text,evidence.character_reference(text)))
 
     def test_source_literal_kept_without_official_identity_or_grouping(self):
         text='阿俊不削等着所有人退游吧';c=proposal();c.update(character='Arjun',target=None,recommendation='降低阿俊整体强度。',specificity='qualitative_only',parameters=[])
-        errors,enriched=m.ground_claim(c,{'record_id':'fixture','text_original':text}, {'Arjun'})
+        errors,enriched=evidence.ground_claim(c,{'record_id':'fixture','text_original':text}, {'Arjun'})
         self.assertFalse(errors);self.assertIsNone(enriched['character_identity']['canonical_name'])
         self.assertEqual(enriched['character_identity']['source_literal'],'阿俊')
-        self.assertEqual(m.aggregate([{**enriched,'comment_id':'fixture'}]),[])
+        self.assertEqual(pipeline.aggregate([{**enriched,'comment_id':'fixture'}]),[])
 
     def test_wrong_dhalsim_assignment_blocked_in_named_arjun_source(self):
         c=proposal();c.update(character='Dhalsim',recommendation='Nerf Dhalsim.',specificity='qualitative_only',parameters=[])
-        errors,_=m.ground_claim(c,{'record_id':'fixture','text_original':'阿俊的白血太强，阿三重做吧。'}, {'Dhalsim'})
+        errors,_=evidence.ground_claim(c,{'record_id':'fixture','text_original':'阿俊的白血太强，阿三重做吧。'}, {'Dhalsim'})
         self.assertTrue(any('identity' in e for e in errors))
 
     def test_numeric_coincidence_fails_both_languages(self):
@@ -66,15 +66,15 @@ class ReviewPipelineTests(unittest.TestCase):
 
     def test_generation_schema_cannot_invent_derived_delta_or_unstated_units(self):
         text="Please reduce Ryu's Hadoken damage from 600 to 500."
-        data={'comments':[{'comment_id':'a','units':m.evidence_units(text)}],
-              'character_normalization_reference':m.character_reference(text)}
-        schema=m.schema_for('extract',['a'],data)
+        data={'comments':[{'comment_id':'a','units':evidence.evidence_units(text)}],
+              'character_normalization_reference':evidence.character_reference(text)}
+        schema=stages.schema_for('extract',['a'],data)
         properties=schema['properties']['assessments']['properties']['a']['properties']['claims']['items']['properties']['parameters']['items']['properties']
         self.assertEqual(properties['delta']['enum'],[None]);self.assertEqual(properties['unit']['enum'],[None])
         self.assertEqual(properties['proposed']['enum'],[None,'600','500'])
         text='请将隆的伤害降低100点。'
-        data['comments'][0]['units']=m.evidence_units(text)
-        p=m.schema_for('extract',['a'],data)['properties']['assessments']['properties']['a']['properties']['claims']['items']['properties']['parameters']['items']['properties']
+        data['comments'][0]['units']=evidence.evidence_units(text)
+        p=stages.schema_for('extract',['a'],data)['properties']['assessments']['properties']['a']['properties']['claims']['items']['properties']['parameters']['items']['properties']
         self.assertIn('100',p['delta']['enum']);self.assertIn('点',p['unit']['enum'])
 
     def test_explicit_requests_survive_without_inventing_values(self):
@@ -91,15 +91,15 @@ class ReviewPipelineTests(unittest.TestCase):
         status,reasons=triage_retrieval(row,'请给一键指令加5帧发生。',.08)
         self.assertEqual(status,'review_queue');self.assertIn('explicit_numeric_request',reasons)
         row['retrieval_triage']=status;review={'related':True,'uncertain':False}
-        self.assertFalse(m.relevance_agrees(row,review))
+        self.assertFalse(pipeline.relevance_agrees(row,review))
         row.update(retrieval_review_related=True,retrieval_review_uncertain=False)
-        self.assertTrue(m.relevance_agrees(row,review))
-        self.assertFalse(m.relevance_agrees(row,{'related':True,'uncertain':True}))
+        self.assertTrue(pipeline.relevance_agrees(row,review))
+        self.assertFalse(pipeline.relevance_agrees(row,{'related':True,'uncertain':True}))
 
     def test_borderline_nomination_does_not_count_as_admission(self):
         row={'positive_score':.49,'negative_score':.50,'retrieval_related':False}
         self.assertEqual(triage_retrieval(row,'Nice costumes.',.02)[0],'review_queue')
-        self.assertFalse(m.relevance_agrees(row,{'related':True,'uncertain':False}))
+        self.assertFalse(pipeline.relevance_agrees(row,{'related':True,'uncertain':False}))
 
     def test_disagreement_export_preserves_source_without_overriding_admission(self):
         sources=[{'record_id':'a','text_original':'Drive Rush is unfair.'},
@@ -130,7 +130,7 @@ class ReviewPipelineTests(unittest.TestCase):
 
     def test_silver_set_is_frozen_and_disjoint(self):
         folder=ROOT/'data/evaluation/balance-silver-v1';manifest=json.loads((folder/'manifest.json').read_text(encoding='utf-8'))
-        raw=(folder/'labels.jsonl').read_bytes();self.assertEqual(m.digest(raw),manifest['labels_sha256'])
+        raw=(folder/'labels.jsonl').read_bytes();self.assertEqual(digest(raw),manifest['labels_sha256'])
         labels=[json.loads(s) for s in raw.decode().splitlines()]
         dev={r['comment_id'] for r in labels if r['split']=='development'};hold={r['comment_id'] for r in labels if r['split']=='holdout'}
         self.assertEqual((len(dev),len(hold)),(70,30));self.assertFalse(dev&hold)
@@ -141,9 +141,9 @@ class ReviewPipelineTests(unittest.TestCase):
         folder=ROOT/'data/evaluation/balance-regressions-v1'
         raw=(folder/'cases.json').read_bytes();cases=json.loads(raw)
         manifest=json.loads((folder/'manifest.json').read_text(encoding='utf-8'))
-        self.assertEqual(m.digest(raw),manifest['cases_sha256'])
+        self.assertEqual(digest(raw),manifest['cases_sha256'])
         for case in cases:
-            self.assertEqual(m.digest(case['source']['text_original'].encode()),manifest['source_hashes'][case['case_id']])
+            self.assertEqual(digest(case['source']['text_original'].encode()),manifest['source_hashes'][case['case_id']])
         self.assertEqual(len(cases),12);self.assertEqual(len({c['case_id'] for c in cases}),12)
         self.assertTrue(all(c['reviewer_type']=='agent' and c['expected_original_supported'] is False for c in cases))
         categories={c['category'] for c in cases}

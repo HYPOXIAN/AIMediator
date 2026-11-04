@@ -8,11 +8,11 @@ import tempfile
 import unittest
 from unittest.mock import Mock, patch
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'src'))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts/collect'))
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts/experiments'))
 import collect_balanced_feedback as b
-import run_balance_analysis as m
+from aimediator import evidence, evidence_quality, retrieval, stages
+from aimediator.runner import Runner
 import numpy as np
 
 
@@ -24,29 +24,29 @@ def row(i, lang, text, date):
 class BalancedCollectionTests(unittest.TestCase):
     def test_no_number_request_cannot_emit_null_only_numeric_parameters(self):
         text = 'Ken hits Ryu too hard. Please nerf Ken.'
-        data = {'comments': [{'comment_id': 'one', 'units': m.evidence_units(text)}],
-                'character_normalization_reference': m.character_reference(text)}
+        data = {'comments': [{'comment_id': 'one', 'units': evidence.evidence_units(text)}],
+                'character_normalization_reference': evidence.character_reference(text)}
         c = {'character': 'Ken', 'target': None, 'direction': 'nerf',
              'recommendation': 'Nerf Ken.', 'specificity': 'source_numeric',
              'parameters': [{'metric': 'damage', 'current': None, 'proposed': None,
                  'delta': None, 'unit': None, 'evidence_id': 'E1'}],
              'evidence_ids': ['E1', 'E2'], 'uncertain': False}
-        schema = m.schema_for('extract', ['one'], data)
-        self.assertTrue(m.schema_errors({'assessments': {'one': {'claims': [c]}}}, schema))
+        schema = stages.schema_for('extract', ['one'], data)
+        self.assertTrue(evidence_quality.schema_errors({'assessments': {'one': {'claims': [c]}}}, schema))
         c.update(specificity='qualitative_only', parameters=[])
-        self.assertFalse(m.schema_errors({'assessments': {'one': {'claims': [c]}}}, schema))
+        self.assertFalse(evidence_quality.schema_errors({'assessments': {'one': {'claims': [c]}}}, schema))
 
     def test_explicit_numeric_target_remains_available(self):
         text = "Please reduce Ryu's Hadoken damage from 600 to 500."
-        data = {'comments': [{'comment_id': 'one', 'units': m.evidence_units(text)}],
-                'character_normalization_reference': m.character_reference(text)}
+        data = {'comments': [{'comment_id': 'one', 'units': evidence.evidence_units(text)}],
+                'character_normalization_reference': evidence.character_reference(text)}
         c = {'character': 'Ryu', 'target': 'Hadoken damage', 'direction': 'nerf',
              'recommendation': 'Reduce Hadoken damage from 600 to 500.',
              'specificity': 'source_numeric', 'parameters': [{'metric': 'damage',
                  'current': '600', 'proposed': '500', 'delta': None, 'unit': None,
                  'evidence_id': 'E1'}], 'evidence_ids': ['E1'], 'uncertain': False}
-        self.assertFalse(m.schema_errors({'assessments': {'one': {'claims': [c]}}},
-            m.schema_for('extract', ['one'], data)))
+        self.assertFalse(evidence_quality.schema_errors({'assessments': {'one': {'claims': [c]}}},
+            stages.schema_for('extract', ['one'], data)))
 
     def test_newest_unique_relevant_rows_fill_equal_quotas(self):
         rows = [row(1, 'en', 'Nerf Ryu.', '2026-10-01'),
@@ -80,7 +80,7 @@ class BalancedCollectionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             folder = Path(temp)
             embed, api = Mock(side_effect=lambda c,t: (np.ones((len(t), 4)), {})), Mock()
-            result = m.retrieve(rows, '', folder, 'fixture', cfg, api_transport=api, embed_transport=embed)
+            result = retrieval.retrieve(rows, '', folder, 'fixture', cfg, api_transport=api, embed_transport=embed)
             self.assertEqual(len(result), 1)
             self.assertEqual(embed.call_count, 3)
             api.assert_not_called()
@@ -90,7 +90,7 @@ class BalancedCollectionTests(unittest.TestCase):
     def test_runtime_options_are_recorded_in_actual_request(self):
         with tempfile.TemporaryDirectory() as temp:
             result = {'done': True, 'done_reason': 'stop', 'message': {'content': '{"decisions":["related"]}'}}
-            runner = m.Runner('http://test', Path(temp), {'relevance': {'en': 'test'}},
+            runner = Runner('http://test', Path(temp), {'relevance': {'en': 'test'}},
                               chat_transport=Mock(return_value=result))
             runner.runtime_options = {'num_gpu': 0}
             parsed, meta = runner.generate('fixture', 'en', 'relevance', {'comments': []}, ['one'])
