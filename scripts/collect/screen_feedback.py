@@ -2,8 +2,8 @@ import json,re
 from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
-from aimediator.resources import asset_path
-ROOT=Path(__file__).resolve().parents[2]
+from aimediator.resources import asset_path, workspace_root
+ROOT=workspace_root()
 G=json.loads(asset_path('data/glossary.json').read_text(encoding='utf-8'))
 NAMES=[e['canonical_name'] for e in G['entries'] if e['category']=='character']+['Arjun','Viper','Bison','Akuma','Gouki','Gief','Honda','Deejay','Chun','Luke','Guile','Cammy']
 CHAR_EN=re.compile(r'\b(?:'+ '|'.join(re.escape(x) for x in NAMES)+r')\b',re.I)

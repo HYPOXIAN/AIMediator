@@ -5,12 +5,15 @@ import fcntl
 import hashlib
 import json
 from pathlib import Path
+import sys
 import time
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
+from aimediator.resources import workspace_root
 import collect_feedback as collector
 import screen_feedback as screener
 
-ROOT=Path(__file__).resolve().parents[2]
+ROOT=workspace_root()
 
 
 def kept_counts(store, overrides):

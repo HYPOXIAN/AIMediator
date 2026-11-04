@@ -10,8 +10,9 @@ from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
 from aimediator.common import sha as digest, strict_json, write as write_json
+from aimediator.resources import workspace_root
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = workspace_root()
 
 
 def validate_move_data(rows):

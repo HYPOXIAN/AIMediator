@@ -10,8 +10,9 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
 from aimediator.balance_policy import triage_retrieval
 from aimediator.common import sha as digest, strict_json, write as write_json
+from aimediator.resources import workspace_root
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = workspace_root()
 
 
 def read_labels(folder, source_rows):

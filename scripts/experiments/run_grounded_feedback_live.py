@@ -13,9 +13,9 @@ import time
 import urllib.request
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
-from aimediator.resources import asset_path
+from aimediator.resources import asset_path, workspace_root
 
-ROOT=Path(__file__).resolve().parents[2]
+ROOT=workspace_root()
 FIELDS={'comment_id','language','claims','emotional_tone'}
 CLAIM_FIELDS={'character','mechanic','direction','reason','evidence_id','uncertain'}
 CASE_SPECS=[

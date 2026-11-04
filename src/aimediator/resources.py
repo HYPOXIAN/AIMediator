@@ -40,3 +40,15 @@ def prompts(mode):
             for lang in ('en', 'zh'):
                 result[stage][lang] += '\n' + asset_path('prompts/%s.%s.txt' % (name, lang)).read_text(encoding='utf-8')
     return result
+
+
+def _workspace_root(candidate):
+    """Return candidate when it holds RULES.md and pyproject.toml, otherwise the working directory."""
+    if (candidate / 'RULES.md').exists() and (candidate / 'pyproject.toml').exists():
+        return candidate
+    return Path.cwd()
+
+
+def workspace_root():
+    """Return the checkout root when the package is imported from a checkout, otherwise the working directory."""
+    return _workspace_root(Path(__file__).resolve().parents[2])

@@ -17,11 +17,11 @@ from aimediator import evidence_quality as q
 from aimediator.common import sha as digest, strict_json, write as write_json
 from aimediator.evidence import character_reference, evidence_units
 from aimediator.inference import api
-from aimediator.resources import asset_path, module_path
+from aimediator.resources import asset_path, module_path, workspace_root
 from aimediator.run_store import code_manifest
 from aimediator.runner import Runner
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = workspace_root()
 ASSETS = ('configs/balance-review-policy.json', 'configs/evidence-quality-policy.json',
           'configs/local-language-routing.json', 'data/glossary.json', 'prompts/evidence-quality.en.txt',
           'prompts/evidence-quality.zh.txt')

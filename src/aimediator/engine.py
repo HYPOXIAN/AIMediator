@@ -13,12 +13,12 @@ from . import evidence_quality as quality
 from . import glossary_vectors, resources
 from .common import sha as digest, write as write_json
 from .balance_policy import POLICY_PATH, load_policy
-from .resources import asset_path, module_path
+from .resources import asset_path, module_path, workspace_root
 from .inference import api
 from .runner import Runner
 from .retrieval import retrieve
 from .pipeline import VERSION, process, validate_modes
-ROOT = Path.cwd()
+ROOT = workspace_root()
 
 
 def run(args, *, api_transport=None, chat_transport=None, embed_transport=None, retrieval_service=None, log=None):

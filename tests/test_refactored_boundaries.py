@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
-from aimediator import evidence
+from aimediator import evidence, resources
 from aimediator.config import defaults, embedding_endpoint, env_values
 from aimediator.inference import Transport
 from aimediator.runner import Runner
@@ -56,3 +56,21 @@ class RefactoredBoundaries(unittest.TestCase):
             path = Path(folder) / '.env'
             path.write_text('export A="value"\nB=value\'\n', encoding='utf-8')
             self.assertEqual(env_values(path), {'A': 'value', 'B': "value'"})
+
+    def test_workspace_root_is_a_directory_with_both_markers(self):
+        with tempfile.TemporaryDirectory() as folder:
+            candidate = Path(folder)
+            (candidate / 'RULES.md').write_text('', encoding='utf-8')
+            (candidate / 'pyproject.toml').write_text('', encoding='utf-8')
+            self.assertEqual(resources._workspace_root(candidate), candidate)
+
+    def test_workspace_root_falls_back_to_the_working_directory(self):
+        with tempfile.TemporaryDirectory() as folder:
+            candidate = Path(folder)
+            self.assertEqual(resources._workspace_root(candidate), Path.cwd())
+            (candidate / 'RULES.md').write_text('', encoding='utf-8')
+            self.assertEqual(resources._workspace_root(candidate), Path.cwd())
+            self.assertNotEqual(Path.cwd(), candidate)
+
+    def test_workspace_root_of_the_checkout_package(self):
+        self.assertEqual(resources.workspace_root(), ROOT)

@@ -15,8 +15,11 @@ import urllib.parse
 import urllib.request
 from zoneinfo import ZoneInfo
 
-ROOT = Path(__file__).resolve().parents[2]
-STATE = ROOT / "runs/state"  # collector lock and HTTP state; runtime state stays out of data/ (RULES.md P1)
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
+from aimediator.resources import workspace_root
+
+ROOT = workspace_root()
+STATE = workspace_root() / "runs/state"  # collector lock and HTTP state; runtime state stays out of data/ (RULES.md P1)
 HOSTS = {"api.steampowered.com", "public.api.bsky.app", "bsky.social", "www.googleapis.com"}
 
 

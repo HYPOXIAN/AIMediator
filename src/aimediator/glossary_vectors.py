@@ -12,8 +12,8 @@ import numpy as np
 
 from .common import sha as digest, write as write_json
 from .config import embedding_endpoint, env_values
-from .resources import asset_path
-ROOT = Path.cwd()
+from .resources import asset_path, workspace_root
+ROOT = workspace_root()
 DEFAULT_INDEX = ROOT / 'data/processed/glossary-vectors'
 QUERY_INSTRUCTION = 'Instruct: Retrieve the Street Fighter 6 glossary concept matching this query, preserving character and move qualifiers.\nQuery: '
 

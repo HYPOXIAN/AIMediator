@@ -10,9 +10,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
 from aimediator.common import sha as digest, strict_json, write as write_json
 from aimediator.evidence import character_reference, ground_claim
 from aimediator.legacy_review import apply_review, proposal_hash
+from aimediator.resources import workspace_root
 from prepare_balance_design import prepare_briefs
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = workspace_root()
 
 
 def replay(cases, prior_claims):
