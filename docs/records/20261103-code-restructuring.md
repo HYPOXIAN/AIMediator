@@ -687,6 +687,37 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
 - **Status**: implemented in B6.2 under plan section 1, item 8. The owner
   may reject it.
 
+### The controls script keeps its own audit (found in B6.4)
+
+- **Question**: U-08 and plan 4.4 list `run_balance_controls_live.py`
+  among the five scripts that use the shared `diagnostics` loop. That
+  script has no extraction. It builds four fixed claims, grounds them, and
+  sends the `verify` request for every control, also when grounding
+  reports errors, because it measures the model on its own
+  (`support_status`, `model_only_passed`). Controls 2 and 4, which expect
+  "unsupported", fail grounding ("Numerical adjustment intent absent or
+  ambiguous; review required"), and their two `verify` requests are half
+  of the script's four. `diagnostics.audit` (blueprint 3.3) sends `verify`
+  only when no error remains, so calling it would drop those two requests.
+  That is a request-bytes change and an escalation trigger of the B6 work
+  order (section 6). How does the script relate to `diagnostics`?
+- **Options**:
+  - (a) The script keeps its grounding and its unconditional `verify` and
+    does not import `diagnostics`. The other four scripts use `extract`
+    and `audit`. Its request list is still recorded before and after.
+  - (b) A keyword on `audit` that sends `verify` despite errors: a contract
+    change for one caller.
+  - (c) A public `verify` helper in `diagnostics` that the script calls: a
+    name that blueprint 3.3 does not list.
+- **Recommendation**: (a). CR-D02 moves logic that two or more scripts or
+  the tests use. The unconditional audit has one user and is that
+  experiment's purpose, so it is experiment-specific orchestration that P3
+  lets the script keep. The shared part would be three lines (the envelope
+  and one `generate` call). (a) changes no file, and blueprint 3.3 stays as
+  written.
+- **Status**: implemented in B6.4 under plan section 1, item 8. The owner
+  may reject it.
+
 ## Escalations
 
 ### E-1 Baseline of "Test files importing forwarders" (B0.4)
