@@ -73,35 +73,64 @@ EVERYWHERE = frozenset({'__version__'})
 # found in B2.10).
 PACKAGE_INIT = '__init__'
 
+# Subpackages with a "<name>.*" row. Their modules are named "<name>.<module>",
+# and the subpackage's own __init__.py is named "<name>".
+SUBPACKAGES = ('collection',)
 
-def imported_modules(source):
-    """Return (line, target) for every intra-package import in the source, function bodies included."""
+
+def target_name(parts):
+    """Name an import target given as parts below aimediator: a top-level module or a subpackage module."""
+    if parts[0] in SUBPACKAGES and len(parts) > 1:
+        return parts[0] + '.' + parts[1]
+    return parts[0]
+
+
+def imported_modules(source, package=()):
+    """Return (line, target) for every intra-package import in the source, function bodies included.
+
+    package holds the parts of the subpackage that contains the source; relative imports resolve from it.
+    """
     edges = []
     for node in ast.walk(ast.parse(source)):
         if isinstance(node, ast.ImportFrom):
             if node.level >= 1:
+                base = list(package[:len(package) - node.level + 1])
                 module = node.module
             elif node.module == 'aimediator' or (node.module or '').startswith('aimediator.'):
+                base = []
                 module = node.module.partition('.')[2] or None
             else:
                 continue
-            if module:
-                edges.append((node.lineno, module.split('.')[0]))
-            else:
-                edges.extend((node.lineno, alias.name) for alias in node.names)
+            parts = base + module.split('.') if module else base
+            if parts and (len(parts) > 1 or parts[0] not in SUBPACKAGES):
+                edges.append((node.lineno, target_name(parts)))
+            else:  # the imported names are modules of the package, or of the subpackage that parts name
+                edges.extend((node.lineno, target_name(parts + [alias.name])) for alias in node.names)
         elif isinstance(node, ast.Import):
-            edges.extend((node.lineno, alias.name.split('.')[1]) for alias in node.names
+            edges.extend((node.lineno, target_name(alias.name.split('.')[1:])) for alias in node.names
                          if alias.name.startswith('aimediator.'))
     return edges
 
 
+def module_name(path):
+    parts = path.relative_to(PACKAGE).with_suffix('').parts
+    return '.'.join(parts[:-1] if len(parts) > 1 and parts[-1] == '__init__' else parts)
+
+
 def package_imports():
-    return {path.stem: imported_modules(path.read_text(encoding='utf-8'))
-            for path in sorted(PACKAGE.glob('*.py'))}
+    return {module_name(path): imported_modules(path.read_text(encoding='utf-8'),
+                                                path.parent.relative_to(PACKAGE).parts)
+            for path in sorted(PACKAGE.rglob('*.py'))}
+
+
+def row(module):
+    """Return the table row of a module: its own name, or "<subpackage>.*"."""
+    head = module.split('.')[0]
+    return head + '.*' if head in SUBPACKAGES else module
 
 
 def allowed(module, target):
-    return target in EVERYWHERE or target in ALLOWED.get(module, ())
+    return target in EVERYWHERE or row(target) in ALLOWED.get(row(module), ())
 
 
 class ModuleLayers(unittest.TestCase):
@@ -122,12 +151,30 @@ class ModuleLayers(unittest.TestCase):
             (2, '__version__'), (3, 'evidence_quality'), (3, 'run_store'), (4, 'common'), (5, 'config'),
             (6, 'schema'), (7, 'resources'), (10, 'fixture_transport')])
 
+    def test_scanner_resolves_subpackage_imports(self):
+        source = '\n'.join([
+            'from . import screening as s',
+            'from .client import Halt',
+            'from ..common import write as write_json',
+            'from .. import __version__, resources',
+            'from aimediator.collection.store import Store',
+            'import aimediator.collection.export',
+            'from aimediator.collection import sources',
+        ])
+        self.assertEqual(sorted(imported_modules(source, ('collection',))), [
+            (1, 'collection.screening'), (2, 'collection.client'), (3, 'common'), (4, '__version__'),
+            (4, 'resources'), (5, 'collection.store'), (6, 'collection.export'), (7, 'collection.sources')])
+        self.assertEqual(row('collection.client'), 'collection.*')
+        self.assertTrue(allowed('collection.balanced', 'collection.screening'))
+        self.assertTrue(allowed('collection.client', 'common'))
+        self.assertFalse(allowed('collection.client', 'evidence'))
+        self.assertFalse(allowed('evidence', 'collection.client'))
+
     def test_every_module_file_is_in_the_table(self):
-        nested = sorted(p.relative_to(PACKAGE).as_posix() for p in PACKAGE.rglob('*.py') if p.parent != PACKAGE)
-        self.assertEqual(nested, [], 'Subpackage modules are not covered yet; add them to this test on purpose')
         modules = set(package_imports()) - {PACKAGE_INIT}
         self.assertIn('common', modules)
-        self.assertEqual(sorted(modules - set(ALLOWED)), [], 'Add new modules to the table on purpose')
+        self.assertEqual(sorted(m for m in modules if row(m) not in ALLOWED), [],
+                         'Add new modules to the table on purpose')
 
     def test_importing_every_module_reads_no_file(self):
         # __main__ is left out: importing it runs the command line.
