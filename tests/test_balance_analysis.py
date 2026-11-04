@@ -6,7 +6,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts/collect'))
@@ -93,9 +93,9 @@ class BalanceEvidenceTests(unittest.TestCase):
             response = {'done': True, 'done_reason': done_reason,
                         'message': {'content': json.dumps({'decisions': decisions})}}
             with tempfile.TemporaryDirectory() as temp:
-                runner = m.Runner('http://local.test', Path(temp), {'relevance': {'en': 'Review relevance'}})
-                with patch.object(m, 'streamed_chat', return_value=response):
-                    parsed, meta = runner.generate('fixture', 'en', 'relevance', {'comments': []}, ['a'])
+                runner = m.Runner('http://local.test', Path(temp), {'relevance': {'en': 'Review relevance'}},
+                                  chat_transport=Mock(return_value=response))
+                parsed, meta = runner.generate('fixture', 'en', 'relevance', {'comments': []}, ['a'])
                 self.assertIsNone(parsed)
                 self.assertTrue(meta['errors'])
                 request = json.loads(next(Path(temp).rglob('request.json')).read_text(encoding='utf-8'))
@@ -109,10 +109,10 @@ class BalanceEvidenceTests(unittest.TestCase):
         for status in ('supported', 'unsupported', 'uncertain'):
             response = {'done': True, 'done_reason': 'stop', 'message': {'content': json.dumps({'support': status})}}
             with tempfile.TemporaryDirectory() as temp:
-                runner = m.Runner('http://local.test', Path(temp), {'verify': {'en': 'Assess source support'}})
-                with patch.object(m, 'streamed_chat', return_value=response):
-                    parsed, meta = runner.generate('fixture', 'en', 'verify',
-                        {'claims': [entry], 'original_comment': source['text_original']}, ['steam:test:1'])
+                runner = m.Runner('http://local.test', Path(temp), {'verify': {'en': 'Assess source support'}},
+                                  chat_transport=Mock(return_value=response))
+                parsed, meta = runner.generate('fixture', 'en', 'verify',
+                    {'claims': [entry], 'original_comment': source['text_original']}, ['steam:test:1'])
                 self.assertEqual(meta['errors'], [])
                 verdict = parsed['verdicts'][0]
                 self.assertEqual(verdict['claim_id'], 'steam:test:1')

@@ -7,11 +7,14 @@ import argparse
 import json
 from pathlib import Path
 import shutil
-from unittest.mock import patch
 import sys
 sys.path.insert(1, str(Path(__file__).resolve().parents[1]))  # scripts/ holds the registered forwarding shells
 import run_balance_analysis as m
 from balance_policy import triage_retrieval,load_policy
+
+
+def no_inference(*unused):
+    raise RuntimeError('Replay cannot run inference')
 
 
 def main():
@@ -23,15 +26,14 @@ def main():
         for language,t in langs.items():
             if m.digest(t.encode())!=old['identity']['prompts'][stage][language]:raise ValueError('Relevance prompt changed')
     original=m.strict_json((args.from_run/'relevance.json').read_text(encoding='utf-8'));decisions={r['comment_id']:{**r,'model_related':None,'model_uncertain':True,'agreement':False,'retrieval_review_related':None,'retrieval_review_uncertain':True} for r in original}
-    trace=m.strict_json((args.from_run/'request-trace.json').read_text(encoding='utf-8'));runner=m.Runner('http://no-network.invalid',args.out,prompts);verified=[]
+    trace=m.strict_json((args.from_run/'request-trace.json').read_text(encoding='utf-8'));runner=m.Runner('http://no-network.invalid',args.out,prompts,chat_transport=no_inference);verified=[]
     for entry in trace:
         stage='relevance' if entry['stage']=='relevance_refinement' else entry['stage'];folder=args.from_run/'requests'/stage/entry['request_id'];target=args.out/'requests'/stage/entry['request_id'];shutil.copytree(folder,target,dirs_exist_ok=True)
         request=m.strict_json((folder/'request.json').read_text(encoding='utf-8'));data=m.strict_json(request['messages'][1]['content']);ids=[c['comment_id'] for c in data['comments']]
         language='en' if entry['model']=='llama3.1:latest' else 'zh'
         for item in data['comments']:
             if item['text']!=by_id[item['comment_id']]['text_original']:raise ValueError('Cached source differs')
-        with patch.object(m,'streamed_chat',side_effect=RuntimeError('Replay cannot run inference')):
-            parsed,meta=runner.generate(entry['model'],language,stage,data,ids)
+        parsed,meta=runner.generate(entry['model'],language,stage,data,ids)
         if meta['request_id']!=entry['request_id'] or meta['errors'] or parsed is None:raise ValueError('Cached inference no longer validates')
         for item in parsed['decisions']:
             r=decisions[item['comment_id']]

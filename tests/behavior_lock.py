@@ -29,7 +29,6 @@ import re
 import sys
 import tempfile
 from types import SimpleNamespace
-from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / 'src'
@@ -110,7 +109,7 @@ def produce_reviewed_report(work):
 
 
 def fixture_api(transport):
-    """Module-global ``engine.api`` replacement (until B2.2 injects transports)."""
+    """``api_transport`` for ``engine.run``: ``/api/tags`` to ``transport.tags``, any other endpoint to ``transport.api``."""
     def api(base, endpoint, payload=None):
         if endpoint == '/api/tags':
             return transport.tags()
@@ -138,10 +137,8 @@ def run_legacy(root, dataset, mode):
                            embedding_model='qwen3-embedding:8b', base_url='http://fixture.invalid',
                            evidence_quality=mode, quality_only=False, relevance_only=False)
     stdout = io.StringIO()
-    with patch.object(engine, 'api', fixture_api(transport)), \
-            patch.object(engine, 'streamed_chat', transport.chat), \
-            contextlib.redirect_stdout(stdout):
-        engine.run(args)
+    with contextlib.redirect_stdout(stdout):
+        engine.run(args, api_transport=fixture_api(transport), chat_transport=transport.chat)
     return stdout.getvalue()
 
 

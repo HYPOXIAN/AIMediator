@@ -7,7 +7,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts/collect'))
@@ -288,9 +288,8 @@ class MockPipelineTests(unittest.TestCase):
             return [{'comment_id':r['record_id'],'language':r['language'],'retrieval_related':r['record_id']!='reject',
                      'positive_score':.1 if r['record_id']=='reject' else .9,
                      'negative_score':.9 if r['record_id']=='reject' else .1,'references':[]} for r in rows]
-        with patch.object(m,'api',return_value=tags),patch.object(m,'retrieve',side_effect=retrieval), \
-             patch.object(m,'streamed_chat',side_effect=self.transport),patch('sys.stdout',new=io.StringIO()):
-            m.run(args)
+        with patch('sys.stdout',new=io.StringIO()):
+            m.run(args,api_transport=Mock(return_value=tags),chat_transport=self.transport,retrieval_service=retrieval)
         return json.loads((folder/'balance-report.json').read_text(encoding='utf-8'))
 
     def test_off_shadow_downstream_identical_enforce_routes_and_resume(self):

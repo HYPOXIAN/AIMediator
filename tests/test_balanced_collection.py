@@ -6,7 +6,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts'))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts/collect'))
@@ -79,8 +79,8 @@ class BalancedCollectionTests(unittest.TestCase):
         rows = [row(1, 'en', 'Nerf Ryu.', '2026-10-27')]
         with tempfile.TemporaryDirectory() as temp:
             folder = Path(temp)
-            with patch.object(m.glossary_vectors, 'embed', side_effect=lambda c,t: (np.ones((len(t), 4)), {})) as embed, patch.object(m, 'api') as api:
-                result = m.retrieve(rows, '', folder, 'fixture', cfg)
+            embed, api = Mock(side_effect=lambda c,t: (np.ones((len(t), 4)), {})), Mock()
+            result = m.retrieve(rows, '', folder, 'fixture', cfg, api_transport=api, embed_transport=embed)
             self.assertEqual(len(result), 1)
             self.assertEqual(embed.call_count, 3)
             api.assert_not_called()
@@ -89,11 +89,11 @@ class BalancedCollectionTests(unittest.TestCase):
 
     def test_runtime_options_are_recorded_in_actual_request(self):
         with tempfile.TemporaryDirectory() as temp:
-            runner = m.Runner('http://test', Path(temp), {'relevance': {'en': 'test'}})
-            runner.runtime_options = {'num_gpu': 0}
             result = {'done': True, 'done_reason': 'stop', 'message': {'content': '{"decisions":["related"]}'}}
-            with patch.object(m, 'streamed_chat', return_value=result):
-                parsed, meta = runner.generate('fixture', 'en', 'relevance', {'comments': []}, ['one'])
+            runner = m.Runner('http://test', Path(temp), {'relevance': {'en': 'test'}},
+                              chat_transport=Mock(return_value=result))
+            runner.runtime_options = {'num_gpu': 0}
+            parsed, meta = runner.generate('fixture', 'en', 'relevance', {'comments': []}, ['one'])
             self.assertFalse(meta['errors'])
             request = json.loads(next(Path(temp).rglob('request.json')).read_text(encoding='utf-8'))
             self.assertEqual(request['options']['num_gpu'], 0)
