@@ -89,6 +89,9 @@ def run(args, *, api_transport=None, chat_transport=None, embed_transport=None, 
         (folder / 'quality-module-snapshot.py').write_bytes((module_path('evidence_quality.py')).read_bytes())
         (folder / 'runner-snapshot.py').write_bytes(module_path('engine.py').read_bytes())
         (folder / 'policy-module-snapshot.py').write_bytes((module_path('balance_policy.py')).read_bytes())
+        (folder / 'code-snapshot').mkdir(exist_ok=True)
+        for path in sorted(module_path('engine.py').parent.glob('*.py')):
+            (folder / 'code-snapshot' / path.name).write_bytes(path.read_bytes())
     runner_factory = partial(Runner, chat_transport=chat_transport, log=log)
     if retrieval_service is None:
         retrieval_service = partial(retrieve, api_transport=api_transport, embed_transport=embed_transport, log=log)

@@ -280,6 +280,14 @@ class MockPipelineTests(unittest.TestCase):
             engine.run(args,api_transport=Mock(return_value=tags),chat_transport=self.transport,retrieval_service=retrieval)
         return json.loads((folder/'balance-report.json').read_text(encoding='utf-8'))
 
+    def test_legacy_run_snapshots_every_package_module(self):
+        with tempfile.TemporaryDirectory() as temp:
+            folder=Path(temp)/'off';self.run_mock(folder,'off')
+            package=Path(engine.__file__).parent;modules=sorted(p.name for p in package.glob('*.py'))
+            self.assertIn('engine.py',modules)
+            self.assertEqual(sorted(p.name for p in (folder/'code-snapshot').iterdir()),modules)
+            for name in modules:self.assertEqual((folder/'code-snapshot'/name).read_bytes(),(package/name).read_bytes())
+
     def test_off_shadow_downstream_identical_enforce_routes_and_resume(self):
         with tempfile.TemporaryDirectory() as temp:
             folder=Path(temp)

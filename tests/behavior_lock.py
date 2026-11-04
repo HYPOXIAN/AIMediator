@@ -70,7 +70,7 @@ VOLATILE_MAPS = {'artifact_hashes': '<artifact-sha256>'}
 HEX_DIGEST = re.compile(r'(?<![0-9a-f])[0-9a-f]{64}(?![0-9a-f])')
 MIN_LITERAL = 16
 # Files that hold only code or code hashes: existence is locked, content is not.
-CODE_ONLY = re.compile(r'(^|/)([^/]*-snapshot\.py|code-manifest\.json)$')
+CODE_ONLY = re.compile(r'(^|/)([^/]*-snapshot\.py|code-manifest\.json|code-snapshot/[^/]+\.py)$')
 # The empty advisory writer lock: existence is locked, content is not (plan 5.3).
 EXEMPT = re.compile(r'(^|/)\.writer\.lock$')
 EXEMPT_VALUE = '<exempt: existence only>'
