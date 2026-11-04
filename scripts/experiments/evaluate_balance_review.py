@@ -13,7 +13,7 @@ from balance_policy import triage_retrieval
 
 
 def read_labels(folder, source_rows):
-    manifest = strict_json((folder / 'manifest.json').read_text())
+    manifest = strict_json((folder / 'manifest.json').read_text(encoding='utf-8'))
     raw = (folder / 'labels.jsonl').read_bytes()
     if digest(raw) != manifest['labels_sha256']:
         raise ValueError('Frozen evaluation labels changed')
@@ -84,17 +84,17 @@ def main():
     p.add_argument('--baseline',type=Path,required=True)
     p.add_argument('--candidate',type=Path)
     p.add_argument('--out',type=Path,required=True)
-    args=p.parse_args();sources=strict_json((args.baseline/'source-snapshot.json').read_text())
-    labels,manifest=read_labels(args.labels,sources);retrieval=strict_json((args.baseline/'retrieval.json').read_text())
+    args=p.parse_args();sources=strict_json((args.baseline/'source-snapshot.json').read_text(encoding='utf-8'))
+    labels,manifest=read_labels(args.labels,sources);retrieval=strict_json((args.baseline/'retrieval.json').read_text(encoding='utf-8'))
     fit=calibrate(labels,retrieval,sources);write_json(args.out/'calibration.json',fit)
-    baseline=strict_json((args.baseline/'relevance.json').read_text())
-    candidate=strict_json((args.candidate/'relevance.json').read_text()) if args.candidate else None
+    baseline=strict_json((args.baseline/'relevance.json').read_text(encoding='utf-8'))
+    candidate=strict_json((args.candidate/'relevance.json').read_text(encoding='utf-8')) if args.candidate else None
     if args.candidate:
-        candidate_manifest=strict_json((args.candidate/'manifest.json').read_text())
+        candidate_manifest=strict_json((args.candidate/'manifest.json').read_text(encoding='utf-8'))
         if candidate_manifest['identity']['dataset_sha256']!=manifest['source_dataset_sha256']:
             raise ValueError('Candidate source dataset differs from frozen evaluation sources')
-        read_labels(args.labels,strict_json((args.candidate/'source-snapshot.json').read_text()))
-        policy=strict_json((args.candidate/'review-policy-snapshot.json').read_text())
+        read_labels(args.labels,strict_json((args.candidate/'source-snapshot.json').read_text(encoding='utf-8')))
+        policy=strict_json((args.candidate/'review-policy-snapshot.json').read_text(encoding='utf-8'))
         if policy['retrieval_borderline_margin']!=fit['selected_margin']:raise ValueError('Candidate did not use development-calibrated margin')
     result={'reviewer_type':'agent','independent_human_gold':False,'label_manifest':manifest,
         'selection_warning':manifest['selection'],'metrics':evaluate(labels,baseline,candidate,fit['selected_margin'],retrieval,sources),

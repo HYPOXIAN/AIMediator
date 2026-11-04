@@ -12,7 +12,7 @@ def main():
     parser.add_argument('--base-url', default='http://127.0.0.1:11434')
     parser.add_argument('--num-gpu', type=int)
     args = parser.parse_args()
-    prompts = {'verify': {language: (ROOT / f'prompts/verify-balance.{language}.txt').read_text()
+    prompts = {'verify': {language: (ROOT / f'prompts/verify-balance.{language}.txt').read_text(encoding='utf-8')
                           for language in ('en', 'zh')}}
     runner = Runner(args.base_url, args.out, prompts)
     if args.num_gpu is not None:

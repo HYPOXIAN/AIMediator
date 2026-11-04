@@ -39,7 +39,7 @@ class ReviewPipelineTests(unittest.TestCase):
 
     def test_live_manifest_cases_survive_json_round_trip_for_resume(self):
         self.assertEqual(json.loads(json.dumps(CASES)),CASES)
-        labels=[json.loads(line) for line in (ROOT/'data/evaluation/balance-silver-v1/labels.jsonl').read_text().splitlines()]
+        labels=[json.loads(line) for line in (ROOT/'data/evaluation/balance-silver-v1/labels.jsonl').read_text(encoding='utf-8').splitlines()]
         development={r['comment_id'] for r in labels if r['split']=='development'}
         self.assertTrue({c['comment_id'] for c in CASES}<=development)
 
@@ -129,7 +129,7 @@ class ReviewPipelineTests(unittest.TestCase):
         self.assertEqual(before['development_comment_ids'],['a'])
 
     def test_silver_set_is_frozen_and_disjoint(self):
-        folder=ROOT/'data/evaluation/balance-silver-v1';manifest=json.loads((folder/'manifest.json').read_text())
+        folder=ROOT/'data/evaluation/balance-silver-v1';manifest=json.loads((folder/'manifest.json').read_text(encoding='utf-8'))
         raw=(folder/'labels.jsonl').read_bytes();self.assertEqual(m.digest(raw),manifest['labels_sha256'])
         labels=[json.loads(s) for s in raw.decode().splitlines()]
         dev={r['comment_id'] for r in labels if r['split']=='development'};hold={r['comment_id'] for r in labels if r['split']=='holdout'}
@@ -140,7 +140,7 @@ class ReviewPipelineTests(unittest.TestCase):
     def test_regression_fixtures_keep_exact_original_hash_bindings(self):
         folder=ROOT/'data/evaluation/balance-regressions-v1'
         raw=(folder/'cases.json').read_bytes();cases=json.loads(raw)
-        manifest=json.loads((folder/'manifest.json').read_text())
+        manifest=json.loads((folder/'manifest.json').read_text(encoding='utf-8'))
         self.assertEqual(m.digest(raw),manifest['cases_sha256'])
         for case in cases:
             self.assertEqual(m.digest(case['source']['text_original'].encode()),manifest['source_hashes'][case['case_id']])

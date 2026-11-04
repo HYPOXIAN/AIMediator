@@ -25,7 +25,7 @@ def main():
     p.add_argument('--base-url',default='http://127.0.0.1:11434')
     p.add_argument('--num-gpu',type=int,default=99)
     args=p.parse_args()
-    prompts={s:{l:(m.ROOT/f'prompts/{name}.{l}.txt').read_text() for l in ('en','zh')}
+    prompts={s:{l:(m.ROOT/f'prompts/{name}.{l}.txt').read_text(encoding='utf-8') for l in ('en','zh')}
         for s,name in [('extract','summarize-balance'),('verify','verify-balance')]}
     models={'en':'llama3.1:latest','zh':'qwen2.5:7b'}
     tags={r['name']:r['digest'] for r in m.api(args.base_url,'/api/tags')['models']}
@@ -33,7 +33,7 @@ def main():
         'script_sha256':m.digest(Path(__file__).read_bytes()),'runner_sha256':m.digest((m.ROOT/'scripts/run_balance_analysis.py').read_bytes()),
         'models':{n:tags[n] for n in models.values()},'prompts':prompts,'runtime_options':{'num_gpu':args.num_gpu}}
     path=args.out/'manifest.json'
-    if path.exists() and m.strict_json(path.read_text()) != json.loads(json.dumps(identity)):
+    if path.exists() and m.strict_json(path.read_text(encoding='utf-8')) != json.loads(json.dumps(identity)):
         raise ValueError('Control identity changed; use a new output directory')
     m.write_json(path,identity)
     runner=m.Runner(args.base_url,args.out,prompts);runner.runtime_options=identity['runtime_options']

@@ -55,11 +55,11 @@ class ScreeningTests(unittest.TestCase):
     def test_overlapping_views_are_deduplicated_and_original_files_unchanged(self):
         with tempfile.TemporaryDirectory() as folder:
             p=Path(folder);source=json.dumps(row('Ryu needs a nerf.'))+'\n'
-            (p/'records.jsonl').write_text(source);(p/'english.jsonl').write_text(source)
+            (p/'records.jsonl').write_text(source, encoding='utf-8');(p/'english.jsonl').write_text(source, encoding='utf-8')
             union,members,hashes=m.load_sources(p)
             self.assertEqual(len(union),1)
             self.assertEqual(len(members),2)
-            self.assertEqual((p/'records.jsonl').read_text(),source)
+            self.assertEqual((p/'records.jsonl').read_text(encoding='utf-8'),source)
             self.assertEqual(hashes['records.jsonl'],hashlib.sha256(source.encode()).hexdigest())
 
     def test_language_correction_rebuilds_cross_language_views_without_editing_raw(self):
@@ -67,23 +67,23 @@ class ScreeningTests(unittest.TestCase):
             folder=Path(directory);source=folder/'raw';source.mkdir();output=folder/'screened'
             original={'record_id':'fixture:cn','text_original':'请加强隆，伤害太低了','language':'en','platform':'steam','source_url':'https://example.org'}
             raw=json.dumps(original,ensure_ascii=False)+'\n'
-            (source/'records.jsonl').write_text(raw);(source/'english.jsonl').write_text(raw);(source/'chinese.jsonl').write_text('')
-            overrides=folder/'overrides.json';overrides.write_text(json.dumps({'entries':[]}))
-            corrections=folder/'languages.json';corrections.write_text(json.dumps({'entries':[{'record_id':original['record_id'],'language':'zh','reason':'Original text is Chinese.','text_sha256':hashlib.sha256(original['text_original'].encode()).hexdigest()}]}))
+            (source/'records.jsonl').write_text(raw, encoding='utf-8');(source/'english.jsonl').write_text(raw, encoding='utf-8');(source/'chinese.jsonl').write_text('', encoding='utf-8')
+            overrides=folder/'overrides.json';overrides.write_text(json.dumps({'entries':[]}), encoding='utf-8')
+            corrections=folder/'languages.json';corrections.write_text(json.dumps({'entries':[{'record_id':original['record_id'],'language':'zh','reason':'Original text is Chinese.','text_sha256':hashlib.sha256(original['text_original'].encode()).hexdigest()}]}),encoding='utf-8')
             with patch('sys.argv',['screen_feedback.py','--input',str(source),'--output',str(output),'--overrides',str(overrides),'--language-corrections',str(corrections)]),patch('builtins.print'):
                 m.main()
-            self.assertEqual((output/'english.jsonl').read_text(),'')
-            corrected=json.loads((output/'chinese.jsonl').read_text())
+            self.assertEqual((output/'english.jsonl').read_text(encoding='utf-8'),'')
+            corrected=json.loads((output/'chinese.jsonl').read_text(encoding='utf-8'))
             self.assertEqual(corrected['language'],'zh')
             self.assertEqual(corrected['coarse_screening']['language_correction']['original_label'],'en')
             self.assertEqual(corrected['text_original'],original['text_original'])
-            self.assertEqual((source/'records.jsonl').read_text(),raw)
+            self.assertEqual((source/'records.jsonl').read_text(encoding='utf-8'),raw)
 
     def test_conflicting_overlapping_copies_fail_loudly(self):
         with tempfile.TemporaryDirectory() as folder:
             p=Path(folder)
-            (p/'records.jsonl').write_text(json.dumps(row('original'))+'\n')
-            (p/'english.jsonl').write_text(json.dumps(row('edited'))+'\n')
+            (p/'records.jsonl').write_text(json.dumps(row('original'))+'\n', encoding='utf-8')
+            (p/'english.jsonl').write_text(json.dumps(row('edited'))+'\n', encoding='utf-8')
             with self.assertRaises(ValueError):
                 m.load_sources(p)
 

@@ -39,9 +39,9 @@ def generate(self, model, language, stage, data, ids):
                             'num_predict': self.quality_policy['num_predict']}
         for response in sorted((self.folder / 'requests' / stage).glob('*/response.json')):
             try:
-                payload = json.loads((response.parent / 'request.json').read_text())
-                envelope = json.loads(response.read_text())['response']
-                validation = json.loads((response.parent / 'validation.json').read_text())
+                payload = json.loads((response.parent / 'request.json').read_text(encoding='utf-8'))
+                envelope = json.loads(response.read_text(encoding='utf-8'))['response']
+                validation = json.loads((response.parent / 'validation.json').read_text(encoding='utf-8'))
                 if (payload['model'] != model or payload['options'] != expected_options or
                     payload['messages'][0]['content'] != self.prompts[stage][language] or
                     payload['format'] != schema or

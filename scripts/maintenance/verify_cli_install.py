@@ -74,12 +74,12 @@ def main():
     run(['analyze'],2)
     run(['init','--out','config.json'],4)
     for mode in ('off','shadow','enforce'):
-        manifest=json.loads(Path('demo',mode,'manifest.json').read_text())
+        manifest=json.loads(Path('demo',mode,'manifest.json').read_text(encoding='utf-8'))
         assert manifest['schema_version']=='aimediator-run-v1'
         assert manifest['execution_provenance']=='agent_authored_synthetic_fixture_transports'
-        ledger=json.loads(Path('demo',mode,'full-pipeline-coverage.json').read_text())
+        ledger=json.loads(Path('demo',mode,'full-pipeline-coverage.json').read_text(encoding='utf-8'))
         assert len(ledger)==len(cases)==len({r['comment_id'] for r in ledger})
-    assert json.loads(Path('reviewed-report/report.json').read_text())['counts']['formal_claims']==0
+    assert json.loads(Path('reviewed-report/report.json').read_text(encoding='utf-8'))['counts']['formal_claims']==0
     for path in Path('demo').rglob('*'):
         if path.is_file():assert b'UNRELATED_' not in path.read_bytes()
     result={'passed':True,'network_calls':0,'package_file':str(Path(aimediator.__file__).resolve()),

@@ -99,7 +99,7 @@ class RestrictedRedirect(urllib.request.HTTPRedirectHandler):
 class Client:
     def __init__(self, path):
         self.path = path
-        self.state = json.loads(path.read_text()) if path.exists() else {}
+        self.state = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
         self.opener = urllib.request.build_opener(RestrictedRedirect())
         self.events = []
         self.calls = collections.Counter()
@@ -108,7 +108,7 @@ class Client:
         host = urllib.parse.urlsplit(endpoint).hostname
         if host not in HOSTS or not endpoint.startswith("https://"):
             raise Halt("Endpoint is outside the official host allowlist")
-        self.state = json.loads(self.path.read_text()) if self.path.exists() else self.state
+        self.state = json.loads(self.path.read_text(encoding="utf-8")) if self.path.exists() else self.state
         entry = self.state.setdefault(host, {})
         if entry.get("blocked_until", 0) > time.time():
             raise Halt("Host is in a persisted cooldown; no request sent")
@@ -187,10 +187,10 @@ class Store:
         self.config = config
         signature = hashlib.sha256(json.dumps(config, sort_keys=True).encode()).hexdigest()
         self.path = directory / "records.jsonl"
-        self.rows = [json.loads(line) for line in self.path.read_text().splitlines()] if self.path.exists() else []
+        self.rows = [json.loads(line) for line in self.path.read_text(encoding="utf-8").splitlines()] if self.path.exists() else []
         self.ids = {row["record_id"] for row in self.rows}
         state_path = directory / "checkpoint.json"
-        self.state = json.loads(state_path.read_text()) if state_path.exists() else {"config_hash": signature, "streams": {}, "started_at": utc_now(), "youtube_quota_used": 0}
+        self.state = json.loads(state_path.read_text(encoding="utf-8")) if state_path.exists() else {"config_hash": signature, "streams": {}, "started_at": utc_now(), "youtube_quota_used": 0}
         if self.state["config_hash"] != signature:
             raise ValueError("Configuration changed; use a new output directory")
         if not (directory / "config-snapshot.json").exists():
@@ -341,7 +341,7 @@ def export(store, statuses, client):
     summary = {"updated_at_utc": utc_now(), "counts": counts, "total_by_language": totals, "total_records": len(store.rows), "statuses": statuses, "requests_this_invocation": dict(client.calls), "content_filtering": False, "patch_filtering": False, "language_labels": "Platform/author labels and script heuristics are provisional, not manual verification", "youtube_policy": "Collection only; refresh/delete non-authorized API data within 30 days. No model analysis or derived metrics performed.", "network_guarantee": "Conservative budgets reduce load but cannot guarantee freedom from IP restrictions."}
     write_json(store.directory / "summary.json", summary)
     log_path = store.directory / "request-log.json"
-    previous_events = json.loads(log_path.read_text()) if log_path.exists() else []
+    previous_events = json.loads(log_path.read_text(encoding="utf-8")) if log_path.exists() else []
     write_json(log_path, previous_events + client.events)
     for language in ("en", "zh"):
         path = store.directory / ("english.jsonl" if language == "en" else "chinese.jsonl")
@@ -359,7 +359,7 @@ def export(store, statuses, client):
     for platform, status in statuses.items():
         lines += [f"## {platform}", "", f"Status: {status}", f"Language counts: {json.dumps(counts[platform], ensure_ascii=False)}", ""]
     lines += ["## Human review", "", "Reviewer:", "Decision:", "Language count verification:", "Patch applicability:", "Notes:", "", "API access and conservative rate limits do not guarantee complete coverage or prevent all network restrictions. No claim is made that all records are substantive game reviews. Source URLs can identify their original public authors. Record provenance and retention limits in the dataset's manifest.json (RULES.md P1)."]
-    (store.directory / "review.md").write_text("\n".join(lines) + "\n")
+    (store.directory / "review.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(json.dumps(summary, ensure_ascii=False, indent=2), flush=True)
 
 
@@ -376,12 +376,12 @@ def main():
         except (OSError, ValueError):
             parser.error("Unable to load a valid YOUTUBE_API_KEY from the specified local file; no values displayed")
     STATE.mkdir(parents=True, exist_ok=True)
-    lock = (STATE / "feedback-collector.lock").open("a")
+    lock = (STATE / "feedback-collector.lock").open("a", encoding="utf-8")
     try:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except BlockingIOError:
         parser.error("Another collector is running in this project")
-    config = json.loads(args.config.read_text())
+    config = json.loads(args.config.read_text(encoding="utf-8"))
     output = args.output or ROOT / "data/raw/feedback" / dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     store = Store(output, config)
     client = Client(STATE / "feedback-http-state.json")

@@ -43,14 +43,14 @@ class ScreeningExperimentTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             folder=Path(temp);summary=export_results(folder,rows)
             self.assertEqual(summary['mutually_exclusive_comment_counts'],{'retained':2,'excluded':1,'review':1})
-            saved=json.loads((folder/'retained-comments.json').read_text())
+            saved=json.loads((folder/'retained-comments.json').read_text(encoding='utf-8'))
             self.assertEqual(len(saved),2)
             for row in saved:
                 for item in row['retained_fragments']:
                     for s in item['segments']:
                         self.assertEqual(s['quote'],row['text_original'][s['start']:s['end']])
             self.assertTrue((folder/'retained-comments.md').exists())
-            self.assertEqual(sum(1 for line in (folder/'retained-comments.jsonl').read_text().splitlines() if line.strip()),2)
+            self.assertEqual(sum(1 for line in (folder/'retained-comments.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()),2)
 
 
 if __name__=='__main__':unittest.main()

@@ -30,7 +30,7 @@ def main():
         progress=folder/'progress.json';summary=folder/'summary.json'
         complete=False
         if progress.exists() and summary.exists():
-            try:complete=json.loads(progress.read_text())['completed']==json.loads(progress.read_text())['input']
+            try:complete=json.loads(progress.read_text(encoding='utf-8'))['completed']==json.loads(progress.read_text(encoding='utf-8'))['input']
             except (ValueError,KeyError,OSError):pass
         if args.once or complete:break
         time.sleep(20)

@@ -17,7 +17,7 @@ class CollectorTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / ".env"
             key = "A" * 39
-            path.write_text('OTHER_SECRET=not_loaded\nexport YOUTUBE_API_KEY="' + key + '" # local\n')
+            path.write_text('OTHER_SECRET=not_loaded\nexport YOUTUBE_API_KEY="' + key + '" # local\n', encoding="utf-8")
             with patch.dict(m.os.environ, {}, clear=True):
                 m.load_youtube_key(path)
                 self.assertEqual(m.os.environ["YOUTUBE_API_KEY"], key)
@@ -27,7 +27,7 @@ class CollectorTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / ".env"
             for value in ['YOUTUBE_API_KEY=$(malicious)\n', 'YOUTUBE_API_KEY=' + 'A' * 39 + '\nYOUTUBE_API_KEY=' + 'B' * 39]:
-                path.write_text(value)
+                path.write_text(value, encoding="utf-8")
                 with self.assertRaises(ValueError) as result:
                     m.load_youtube_key(path)
                 self.assertNotIn(value, str(result.exception))
@@ -73,7 +73,7 @@ class CollectorTests(unittest.TestCase):
                 with self.assertRaises(m.Halt):
                     client.get("https://api.steampowered.com/test", {}, "steam", {"interval_seconds": 0, "max_requests": 5})
                 self.assertEqual(opened.call_count, 1)
-            self.assertGreater(json.loads(client.path.read_text())["api.steampowered.com"]["blocked_until"], m.time.time())
+            self.assertGreater(json.loads(client.path.read_text(encoding="utf-8"))["api.steampowered.com"]["blocked_until"], m.time.time())
 
     def test_secret_does_not_enter_request_log_on_403(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -105,7 +105,7 @@ class CollectorTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "http.json"
             day = m.dt.datetime.now(m.ZoneInfo("America/Los_Angeles")).date().isoformat()
-            path.write_text(json.dumps({"www.googleapis.com": {"quota_day": day, "quota_units_reserved": 500}}))
+            path.write_text(json.dumps({"www.googleapis.com": {"quota_day": day, "quota_units_reserved": 500}}), encoding="utf-8")
             client = m.Client(path)
             with patch.object(client.opener, "open") as opened:
                 with self.assertRaisesRegex(m.Halt, "daily YouTube quota"):

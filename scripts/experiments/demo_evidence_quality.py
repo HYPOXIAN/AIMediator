@@ -64,7 +64,7 @@ def main():
     args=p.parse_args();folder=args.out
     if folder.exists():raise ValueError('Choose a new example output directory')
     cases_path=m.ROOT/'data/evaluation/evidence-quality-synthetic-v1/cases.json'
-    cases=json.loads(cases_path.read_text());policy=q.load_policy();records=[]
+    cases=json.loads(cases_path.read_text(encoding='utf-8'));policy=q.load_policy();records=[]
     for c in cases:
         row=c['source'];record=q.qualify(c['annotation'],row,m.evidence_units(row['text_original']),policy)
         record['annotation_origin']='agent_authored_synthetic_fixture'

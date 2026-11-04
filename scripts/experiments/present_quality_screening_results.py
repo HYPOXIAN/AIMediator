@@ -29,7 +29,7 @@ def main():
     parser.add_argument('--canvas', type=Path, required=True)
     args = parser.parse_args()
     folder = args.run.resolve()
-    read = lambda name: json.loads((folder / name).read_text())
+    read = lambda name: json.loads((folder / name).read_text(encoding='utf-8'))
     rows, summary, manifest = read('all-classifications.json'), read('summary.json'), read('manifest.json')
     sources = {r['record_id']: r for r in read('source-snapshot.json')}
     expected_ids = manifest['identity']['comment_ids']
@@ -64,7 +64,7 @@ def main():
     assert all(counts.get(k, 0) == v for k, v in summary['mutually_exclusive_comment_counts'].items())
     for decision in ('retained', 'excluded', 'review'):
         assert read(decision + '-comments.json') == [r for r in rows if r['decision'] == decision]
-    (folder / 'retained-fragments.jsonl').write_text(''.join(json.dumps(r, ensure_ascii=False) + '\n' for r in eligible))
+    (folder / 'retained-fragments.jsonl').write_text(''.join(json.dumps(r, ensure_ascii=False) + '\n' for r in eligible), encoding='utf-8')
     lines = ['# 剔除片段', '', '这里包括保留评论中被单独剔除的内容。整条剔除的数据另见 excluded-comments.md。', '']
     for row in rows:
         for fragment in row['excluded_fragments']:
@@ -72,15 +72,15 @@ def main():
                       '原因：' + REASONS.get(fragment['reason'], fragment['reason']), '']
             for seg in fragment['segments']:
                 lines += [f"原文位置 [{seg['start']},{seg['end']})", '', '> ' + seg.get('quote', seg.get('text', '')).replace('\n', '\n> '), '']
-    (folder / 'excluded-fragments.md').write_text('\n'.join(lines) + '\n')
+    (folder / 'excluded-fragments.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
     for filename in ('retained-comments.md', 'excluded-comments.md', 'review-comments.md'):
         path = folder / filename
-        rendered = path.read_text()
+        rendered = path.read_text(encoding='utf-8')
         for route_name in NAMES.values():
             for code, label in REASONS.items():
                 rendered = rendered.replace('\n' + route_name + '；原因：' + code + '\n',
                                             '\n' + route_name + '；原因：' + label + '\n')
-        path.write_text(rendered)
+        path.write_text(rendered, encoding='utf-8')
     stamp = datetime.now(ZoneInfo('America/Los_Angeles')).isoformat()
     verification = {'verified_at': stamp, 'input_count': len(rows), 'comment_counts': counts,
                     'fragment_item_counts': dict(fragment_counts), 'eligible_fragment_items': len(eligible),
@@ -88,7 +88,7 @@ def main():
                                'all_fragment_quotes_match_original_offsets', 'exported_groups_match_classifications', 'completed_annotations_and_routing_revalidated',
                                'classifications_recomputed_from_original_source'],
                     'quality_failed_comment_ids': [r['comment_id'] for r in rows if r['quality_status'] == 'failed']}
-    (folder / 'delivery-verification.json').write_text(json.dumps(verification, ensure_ascii=False, indent=2) + '\n')
+    (folder / 'delivery-verification.json').write_text(json.dumps(verification, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     c = summary['mutually_exclusive_comment_counts']
     report = f'''# 项目既有 100 条评论筛选实验结果
 
@@ -123,7 +123,7 @@ def main():
         report += ('\n## 恢复协议说明\n\n本次使用精简引用标注协议，原有质量校验没有放宽。复用父实验中校验通过的 '
                    + str(summary['imported_quality_completed']) + ' 条标注，其余进入质量阶段的数据通过本地模型重新评估。'
                    + '精简提示词和传输格式与原实验不同；不能视为原模型输出的逐位重现。父实验完整保留，协议和来源详见 manifest.json 与 RECOVERY.md。\n')
-    (folder / 'RESULTS.md').write_text(report)
+    (folder / 'RESULTS.md').write_text(report, encoding='utf-8')
     compact = []
     for r in rows:
         record = r.get('quality_record') or {}
@@ -137,7 +137,7 @@ def main():
                 {'start': s['start'], 'end': s['end'], 'quote': s.get('quote', s.get('text', ''))}
                 for s in f['segments']]} for f in row[key]]
     code = TEMPLATE.replace('__ROWS__', json.dumps(compact, ensure_ascii=False)).replace('__SUMMARY__', json.dumps(summary, ensure_ascii=False)).replace('__REASONS__', json.dumps(REASONS, ensure_ascii=False)).replace('__RUN_NAME__', json.dumps(folder.name, ensure_ascii=False)).replace('__RECOVERY_NOTE__', json.dumps(('精简标注恢复版：沿用原质量校验，复用 '+str(summary.get('imported_quality_completed', 0))+' 条已校验旧标注；其余进入质量阶段的数据由本地模型重新评估。原实验另行保留。') if summary.get('recovery_protocol') else '', ensure_ascii=False))
-    args.canvas.write_text(code)
+    args.canvas.write_text(code, encoding='utf-8')
     print(json.dumps(verification, ensure_ascii=False, indent=2))
 
 

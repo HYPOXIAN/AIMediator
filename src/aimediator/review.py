@@ -168,7 +168,7 @@ def export_review(run, out):
             c = e['claim']
             writer.writerow([cell(x) for x in (cid,e['comment_id'],e['automatic_accepted'], '; '.join(e['automatic_errors']),
                 c['character'],c['target'],c['direction'],c['recommendation'],data['sources'][e['comment_id']]['text_original'], 'uncertain','pending_review')])
-    (out / 'README.md').write_text('''# Source review
+    (out / 'README.md').write_text(encoding='utf-8', data='''# Source review
 
 Edit decisions.json; CSV is a reading worksheet only. Set reviewer_type to agent
 or human and reviewer_id to your identifier. Inspect the complete original source
@@ -179,7 +179,7 @@ Changes lose their previous automatic audit and remain pending_reaudit.
 Source acceptance does not verify game mechanics, patch applicability or automatic
 success. Import and report make no model calls. Synthetic demo reviewers must be
 labeled agent; the demo does not establish semantic accuracy.
-''', encoding='utf-8')
+''')
     return out, len(decisions)
 
 

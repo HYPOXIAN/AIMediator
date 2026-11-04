@@ -39,6 +39,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | B0.4 | done | 223 | green | Baseline measured again, with the wheel acceptance and the foreign-directory run; see "Baseline measurements (B0.4)". Escalation E-1 (not blocking) |
 | B1.1 | done | 224 | green | P-01: `resources.glossary()` (`lru_cache(maxsize=1)`); `character_reference` and `ground_claim` use it. New test `test_character_reference_returns_new_objects`. Plan 8.4: demo 3.1 s under cProfile (1.7 s plain), `engine.character_reference` 688 calls, 0.77 s cumulative; suite 224 in 8.5 s (wall 9.3 s), lock 4.3 s alone |
 | B1.2 | done | 224 | green | F-05: the span check in `ground_claim` raises `AssertionError('Evidence span differs from the original text')` explicitly, so it survives `python -O`. The CLI still maps it to exit code 1 with the message `Unexpected internal error (AssertionError)` |
+| B1.3 | done | 224 | green | F-06: `encoding='utf-8'` added to 145 calls in 32 files: 142 `read_text`/`write_text` and the 3 text-mode collector lock opens (`Path.open('a')`). Found with an AST scan; each file's AST equals HEAD's apart from the added keyword. Plan 8.7 fifth grep: 0 lines (129 at entry); the `review.py` line is a decision found during execution. `open(` hits left without encoding: binary (`'rb'`, two `'wb'`), `tarfile.open`, and three lines inside a string fixture in `test_check_rules.py`. Left alone: `subprocess.run(..., text=True)` in `verify_cli_install.py`, which decodes the child's stdout in the child's locale. Under `LC_ALL=en_US.iso88591`: 224 pass (before B1.3: 36 failures, 7 errors) |
 
 ## Baseline measurements (B0.4)
 
@@ -263,6 +264,24 @@ in the checkout, the lock was run, and the file was restored with
   boundary check, run from `restructure-b0`, therefore prints
   `docs/plans/code-restructuring.md` for this commit. That line is
   expected and is not a B1 change.
+
+### Encoding grep line in `review.py` (found in B1.3)
+
+- **Question**: plan 8.7, fifth grep, checks one line at a time. At entry
+  it printed `src/aimediator/review.py:171`. That `write_text` call spans
+  13 lines and already passes `encoding='utf-8'` on its last line, so the
+  grep line is a false positive. The plan counts it as the one `src/` call
+  in F-06. B1.3 and B1-V checklist item 6 require the grep to print
+  nothing. How is the line resolved?
+- **Options**: (a) move the keyword to the call's first line, as
+  `write_text(encoding='utf-8', data='''...''')`. The file's bytes and
+  behavior are unchanged. (b) Leave the call, and have the owner amend the
+  grep or accept one known line. The plan is outside the B1 boundary.
+- **Recommendation**: (a). It changes only where the encoding argument
+  sits. Restoring the old two lines undoes it, the lock stays green, and
+  no rule or content changes.
+- **Status**: implemented in B1.3 under plan section 1, item 8. The owner
+  may reject it at the B1 review.
 
 ## Escalations
 

@@ -18,7 +18,7 @@ from prepare_balance_design import prepare_briefs
 from review_balance_sources import apply_review, proposal_hash
 
 ROOT = Path(__file__).resolve().parents[1]
-CASES = json.loads((ROOT / 'data/evaluation/evidence-quality-synthetic-v1/cases.json').read_text())
+CASES = json.loads((ROOT / 'data/evaluation/evidence-quality-synthetic-v1/cases.json').read_text(encoding='utf-8'))
 
 
 def case(category, language='en'):
@@ -279,7 +279,7 @@ class MockPipelineTests(unittest.TestCase):
         return {'done':True,'done_reason':'stop','message':{'content':json.dumps(result)}}
 
     def run_mock(self,folder,mode='enforce',quality_only=False,model='llama3.1:latest'):
-        dataset=folder.parent/'dataset.jsonl';dataset.write_text(''.join(json.dumps(r)+'\n' for r in self.rows))
+        dataset=folder.parent/'dataset.jsonl';dataset.write_text(''.join(json.dumps(r)+'\n' for r in self.rows), encoding='utf-8')
         args=argparse.Namespace(out=folder,dataset=dataset,model=model,
             base_url='http://local.test',embedding_model='qwen3-embedding:8b',evidence_quality=mode,
             quality_only=quality_only,relevance_only=False)
@@ -291,7 +291,7 @@ class MockPipelineTests(unittest.TestCase):
         with patch.object(m,'api',return_value=tags),patch.object(m,'retrieve',side_effect=retrieval), \
              patch.object(m,'streamed_chat',side_effect=self.transport),patch('sys.stdout',new=io.StringIO()):
             m.run(args)
-        return json.loads((folder/'balance-report.json').read_text())
+        return json.loads((folder/'balance-report.json').read_text(encoding='utf-8'))
 
     def test_off_shadow_downstream_identical_enforce_routes_and_resume(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -302,7 +302,7 @@ class MockPipelineTests(unittest.TestCase):
             self.assertEqual(off['summary'],shadow['summary'])
             enforce=self.run_mock(folder/'enforce')
             self.assertTrue(enforce['opinion_summary']['groups']);self.assertTrue(enforce['system_feedback'])
-            accepted=json.loads((folder/'enforce/validated-claims.json').read_text())
+            accepted=json.loads((folder/'enforce/validated-claims.json').read_text(encoding='utf-8'))
             self.assertEqual(len(accepted),2)
             self.assertTrue(all(c['evidence_quality']['route']=='mechanism_evidence' for c in accepted))
             self.assertTrue(any(g['direction']=='unclear' for g in enforce['character_adjustments']))
@@ -347,7 +347,7 @@ class MockPipelineTests(unittest.TestCase):
         self.fail_quality=fail
         with tempfile.TemporaryDirectory() as temp:
             run=Path(temp)/'run';report=self.run_mock(run)
-            records=json.loads((run/'evidence-quality.json').read_text())
+            records=json.loads((run/'evidence-quality.json').read_text(encoding='utf-8'))
             failed=next(r for r in records if 'numeric_request' in r['comment_id'])
             self.assertEqual(failed['status'],'failed');self.assertEqual(failed['routes_present'],['review'])
             self.assertEqual(len(failed['attempts']),2)
@@ -369,7 +369,7 @@ class MockPipelineTests(unittest.TestCase):
             self.fail_quality=fail
             with tempfile.TemporaryDirectory() as temp:
                 self.run_mock(Path(temp)/'run',quality_only=True)
-                records=json.loads((Path(temp)/'run/evidence-quality.json').read_text())
+                records=json.loads((Path(temp)/'run/evidence-quality.json').read_text(encoding='utf-8'))
                 r=next(r for r in records if 'numeric_request' in r['comment_id'])
                 self.assertEqual(r['status'],'failed');self.assertEqual(len(r['attempts']),2)
 
@@ -377,7 +377,7 @@ class MockPipelineTests(unittest.TestCase):
         self.fail_quality=lambda data: {'done':True,'done_reason':'stop','message':{'content':'{}'}} if data['attempt']==1 else None
         with tempfile.TemporaryDirectory() as temp:
             self.run_mock(Path(temp)/'run',quality_only=True)
-            records=json.loads((Path(temp)/'run/evidence-quality.json').read_text())
+            records=json.loads((Path(temp)/'run/evidence-quality.json').read_text(encoding='utf-8'))
             self.assertTrue(all(r['status']=='completed' and len(r['attempts'])==2 for r in records))
             self.assertTrue(all(r['attempts'][0]['errors'] and not r['attempts'][1]['errors'] for r in records))
 
@@ -385,9 +385,9 @@ class MockPipelineTests(unittest.TestCase):
         self.inject_bad_claim=True
         with tempfile.TemporaryDirectory() as temp:
             self.run_mock(Path(temp)/'run')
-            quarantine=json.loads((Path(temp)/'run/quarantined-claims.json').read_text())
+            quarantine=json.loads((Path(temp)/'run/quarantined-claims.json').read_text(encoding='utf-8'))
             self.assertTrue(any(any('selected point' in e for e in c['errors']) for c in quarantine))
-            self.assertEqual(len(json.loads((Path(temp)/'run/validated-claims.json').read_text())),2)
+            self.assertEqual(len(json.loads((Path(temp)/'run/validated-claims.json').read_text(encoding='utf-8'))),2)
 
     def test_policy_changes_forbid_directory_resume(self):
         with tempfile.TemporaryDirectory() as temp:

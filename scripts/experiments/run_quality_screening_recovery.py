@@ -77,13 +77,13 @@ def main():
     parser.add_argument('--base-url', default='http://127.0.0.1:11434')
     args = parser.parse_args()
     origin, folder = args.from_run.resolve(), args.out.resolve()
-    old_manifest = json.loads((origin/'manifest.json').read_text())
+    old_manifest = json.loads((origin/'manifest.json').read_text(encoding='utf-8'))
     identity_old = old_manifest['identity']
     for name, expected in identity_old['code_and_data_sha256'].items():
         if m.digest((m.ROOT/name).read_bytes()) != expected:
             raise ValueError('Frozen code/policy changed: ' + name)
-    sources = json.loads((origin/'source-snapshot.json').read_text())
-    relevance = json.loads((origin/'relevance.json').read_text())
+    sources = json.loads((origin/'source-snapshot.json').read_text(encoding='utf-8'))
+    relevance = json.loads((origin/'relevance.json').read_text(encoding='utf-8'))
     frozen = Path(old_manifest['frozen_relevance_run'])
     frozen_source_bytes = (frozen/'source-snapshot.json').read_bytes()
     frozen_relevance_bytes = (frozen/'relevance.json').read_bytes()
@@ -103,16 +103,16 @@ def main():
     tags = {r['name']: r['digest'] for r in m.api(args.base_url, '/api/tags')['models']}
     if any(tags.get(name) != digest for name, digest in identity_old['models'].items()):
         raise ValueError('Original local model digest mismatch')
-    routing = json.loads((m.ROOT/'configs/local-language-routing.json').read_text())
+    routing = json.loads((m.ROOT/'configs/local-language-routing.json').read_text(encoding='utf-8'))
     models = {v['language']: name for name,v in routing['models'].items()}
     policy = q.load_policy()
     prompts = {'en': EN, 'zh': ZH}
     folder.mkdir(parents=True, exist_ok=True)
     manifest_path = folder/'manifest.json'
     if manifest_path.exists():
-        imported = json.loads((folder/'imported-classifications.json').read_text())
+        imported = json.loads((folder/'imported-classifications.json').read_text(encoding='utf-8'))
     else:
-        progress = json.loads((origin/'screening-progress.json').read_text())
+        progress = json.loads((origin/'screening-progress.json').read_text(encoding='utf-8'))
         imported = []
         for r in progress:
             if r['quality_status'] != 'completed' or r['quality_record'] is None:
@@ -132,7 +132,7 @@ def main():
                 'local_inference': {'num_gpu': 0, 'temperature': 0, 'seed': 42,
                                     'num_ctx': policy['num_ctx'], 'num_predict': policy['num_predict']}}
     if manifest_path.exists():
-        if json.loads(manifest_path.read_text())['identity'] != identity:
+        if json.loads(manifest_path.read_text(encoding='utf-8'))['identity'] != identity:
             raise ValueError('Recovery inputs/code changed; use a new directory')
     else:
         m.write_json(manifest_path, {'identity': identity, 'created_at_utc': datetime.now(timezone.utc).isoformat(),
@@ -169,7 +169,7 @@ def main():
             response_path=request_folder/'response.json';beg=time.monotonic()
             m.write_json(request_folder/'request.json',payload)
             if response_path.exists():
-                response=json.loads(response_path.read_text())
+                response=json.loads(response_path.read_text(encoding='utf-8'))
             else:
                 partial=request_folder/'partial-output.txt'
                 if partial.exists():

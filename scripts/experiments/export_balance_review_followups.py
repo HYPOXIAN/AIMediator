@@ -43,7 +43,7 @@ def followups(decisions,sources):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--run',type=Path,required=True);p.add_argument('--out',type=Path);args=p.parse_args()
-    result=followups(strict_json((args.run/'relevance.json').read_text()),strict_json((args.run/'source-snapshot.json').read_text()))
+    result=followups(strict_json((args.run/'relevance.json').read_text(encoding='utf-8')),strict_json((args.run/'source-snapshot.json').read_text(encoding='utf-8')))
     write_json(args.out or args.run/'review-followups.json',result)
     print({'total':result['total'],'scope_counts':result['scope_counts'],
            'attribution_exclusion_count':len(result['attribution_exclusions']),'decision_overrides':False})

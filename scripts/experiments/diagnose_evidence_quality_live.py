@@ -27,10 +27,10 @@ def main():
     if not set(args.comment_id)<=admitted or len(set(args.comment_id))!=len(args.comment_id):
         raise ValueError('Select unique comments from frozen affirmative admissions')
     rows=[sources[cid] for cid in args.comment_id]
-    routing=json.loads((m.ROOT/'configs/local-language-routing.json').read_text())['models']
+    routing=json.loads((m.ROOT/'configs/local-language-routing.json').read_text(encoding='utf-8'))['models']
     by_lang={v['language']:model for model,v in routing.items()}
     tags={r['name']:r['digest'] for r in m.api(args.base_url,'/api/tags')['models']}
-    prompts={stage:{lang:(m.ROOT/f'prompts/{name}.{lang}.txt').read_text() for lang in ('en','zh')}
+    prompts={stage:{lang:(m.ROOT/f'prompts/{name}.{lang}.txt').read_text(encoding='utf-8') for lang in ('en','zh')}
         for stage,name in [('quality','evidence-quality'),('extract','summarize-balance'),('verify','verify-balance')]}
     code_paths=['scripts/evidence_quality.py','scripts/run_balance_analysis.py',
                 'scripts/balance_policy.py','scripts/experiments/diagnose_evidence_quality_live.py']
@@ -40,11 +40,11 @@ def main():
         'models':{by_lang[r['language']]:tags[by_lang[r['language']]] for r in rows},
         'code_sha256':{name:m.digest((m.ROOT/name).read_bytes()) for name in code_paths},
         'prompts':prompts,
-        'enforce_prompts':{stage:{lang:(m.ROOT/f'prompts/quality-{stage}.{lang}.txt').read_text()
+        'enforce_prompts':{stage:{lang:(m.ROOT/f'prompts/quality-{stage}.{lang}.txt').read_text(encoding='utf-8')
                                  for lang in ('en','zh')} for stage in ('extract','verify')}}
     folder.mkdir(parents=True,exist_ok=True)
     manifest=folder/'manifest.json'
-    if manifest.exists() and json.loads(manifest.read_text())['identity']!=identity:
+    if manifest.exists() and json.loads(manifest.read_text(encoding='utf-8'))['identity']!=identity:
         raise ValueError('Diagnostic identity changed; use a new output directory')
     m.write_json(manifest,{'identity':identity,'scope':'Fixed historical admissions only; no fresh retrieval or human effectiveness validation.'})
     m.write_json(folder/'source-snapshot.json',rows)

@@ -31,12 +31,12 @@ def main():
     if args.base.resolve()==args.output.resolve():
         parser.error('Expansion must use a separate directory')
     collector.STATE.mkdir(parents=True,exist_ok=True)
-    lock=(collector.STATE/'feedback-collector.lock').open('a')
+    lock=(collector.STATE/'feedback-collector.lock').open('a', encoding='utf-8')
     try:
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     except BlockingIOError:
         parser.error('Another collector is running')
-    config=json.loads((ROOT/'configs/feedback-collection.json').read_text())
+    config=json.loads((ROOT/'configs/feedback-collection.json').read_text(encoding='utf-8'))
     config['steam']['targets']={'en':3000,'zh':1500}
     config['steam']['max_requests']=35
     config['screening_keep_goals']={'en':args.english,'zh':args.chinese}
@@ -45,14 +45,14 @@ def main():
     config['youtube']['enabled']=False
     store=collector.Store(args.output,config)
     if not store.rows:
-        store.rows=[json.loads(line) for line in (args.base/'records.jsonl').read_text().splitlines()]
+        store.rows=[json.loads(line) for line in (args.base/'records.jsonl').read_text(encoding='utf-8').splitlines()]
         store.ids={row['record_id'] for row in store.rows}
-        base_state=json.loads((args.base/'checkpoint.json').read_text())
+        base_state=json.loads((args.base/'checkpoint.json').read_text(encoding='utf-8'))
         store.state['streams']=copy.deepcopy(base_state['streams'])
         store.state['base_source_sha256']=hashlib.sha256((args.base/'records.jsonl').read_bytes()).hexdigest()
         store.state['seed_record_count']=len(store.rows)
         store.save()
-    overrides={r['record_id']:r for r in json.loads((ROOT/'configs/feedback-screening-overrides.json').read_text())['entries']}
+    overrides={r['record_id']:r for r in json.loads((ROOT/'configs/feedback-screening-overrides.json').read_text(encoding='utf-8'))['entries']}
     client=collector.Client(collector.STATE/'feedback-http-state.json')
     settings=config['steam']
     statuses={'steam':'not_started','youtube':'inherited_from_base; no new request','bluesky':'previous_access_denied; no request'}

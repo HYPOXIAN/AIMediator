@@ -38,13 +38,13 @@ def main():
     p.add_argument('--baseline',type=Path,required=True)
     p.add_argument('--out',type=Path,required=True)
     args=p.parse_args();fixture=ROOT/'data/evaluation/balance-regressions-v1/cases.json'
-    cases=strict_json(fixture.read_text());audit={r['claim_id']:r.get('audit') for r in strict_json((args.baseline/'audit-progress.json').read_text())}
+    cases=strict_json(fixture.read_text(encoding='utf-8'));audit={r['claim_id']:r.get('audit') for r in strict_json((args.baseline/'audit-progress.json').read_text(encoding='utf-8'))}
     output=replay(cases,audit);output['fixtures_sha256']=digest(fixture.read_bytes());write_json(args.out,output)
-    reviews=strict_json((args.baseline/'source-review-decisions.json').read_text())
+    reviews=strict_json((args.baseline/'source-review-decisions.json').read_text(encoding='utf-8'))
     selected={c['case_id']:reviews['decisions'][c['case_id']] for c in cases}
     proposals={c['case_id']:{'comment_id':c['source']['record_id'],'claim':c['proposed_claim'],'model':'prior-model-fixture'} for c in cases}
     sources={c['source']['record_id']:c['source'] for c in cases}
-    admitted={r['comment_id'] for r in strict_json((args.baseline/'relevance.json').read_text()) if r['agreement']}
+    admitted={r['comment_id'] for r in strict_json((args.baseline/'relevance.json').read_text(encoding='utf-8')) if r['agreement']}
     accepted,excluded=apply_review(proposals,selected,sources,admitted,{r['canonical_name'] for r in character_reference()})
     unresolved=[c['claim_id'] for c in accepted if not c['source_review']['direction_changed']]
     output['fingerprinted_review_workflow']={'reviewer_type':reviews['reviewer_type'],

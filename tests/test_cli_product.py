@@ -247,11 +247,11 @@ class ProductTests(unittest.TestCase):
         cfg=defaults();cfg['embedding'].update(provider='configured',endpoint='https://example.invalid/embeddings')
         with patch.dict('os.environ',{'EMBEDDING_API_KEY':'SECRET'}):self.assertEqual(credential(cfg),'SECRET')
         cfg['embedding']['model']='frozen-model'
-        env=self.root/'credentials.env';env.write_text('EMBEDDING_API_KEY=NEW_SECRET\nEMBEDDING_API_URL=https://different.invalid\nEMBEDDING_MODEL=different\n')
+        env=self.root/'credentials.env';env.write_text('EMBEDDING_API_KEY=NEW_SECRET\nEMBEDDING_API_URL=https://different.invalid\nEMBEDDING_MODEL=different\n', encoding='utf-8')
         self.assertEqual(credential(cfg,env),'NEW_SECRET');self.assertEqual(cfg['embedding']['model'],'frozen-model')
         resolved=resolve(overrides={'embedding_provider':'configured','embedding_model':'explicit'},env_file=env)
         self.assertEqual(resolved['embedding']['model'],'explicit')
-        env.write_text('EMBEDDING_API_KEY=NEW_SECRET\nEMBEDDING_API_URL=https://example.invalid/v1/chat/completions\n')
+        env.write_text('EMBEDDING_API_KEY=NEW_SECRET\nEMBEDDING_API_URL=https://example.invalid/v1/chat/completions\n', encoding='utf-8')
         resolved=resolve(overrides={'embedding_provider':'configured','embedding_model':'explicit'},env_file=env)
         self.assertEqual(resolved['embedding']['endpoint'],'https://example.invalid/v1/embeddings')
 
@@ -275,7 +275,7 @@ class ProductTests(unittest.TestCase):
         cfg['embedding'].update(provider='configured',model='frozen-remote',endpoint='https://embedding.invalid/v1/embeddings')
         transport=FixtureTransport(cfg)
         env=self.root/'secret.env'
-        env.write_text('EMBEDDING_API_KEY=FIRST_SECRET_SENTINEL\n')
+        env.write_text('EMBEDDING_API_KEY=FIRST_SECRET_SENTINEL\n', encoding='utf-8')
         run=self.root/'run'
         with patch.dict('os.environ',{},clear=True):
             analyze(self.input,run,cfg,env_file=env,transport=transport,quiet=True)
@@ -285,7 +285,7 @@ class ProductTests(unittest.TestCase):
         with patch.dict('os.environ',{},clear=True):
             self.expect_failure(3,analyze,resume=run,transport=transport,quiet=True)
         self.assertEqual(before,(run/'run-state.json').read_bytes());self.assertEqual(calls,len(transport.calls))
-        env.write_text('EMBEDDING_API_KEY=SECOND_SECRET_SENTINEL\nEMBEDDING_MODEL=wrong\nEMBEDDING_API_URL=https://wrong.invalid\n')
+        env.write_text('EMBEDDING_API_KEY=SECOND_SECRET_SENTINEL\nEMBEDDING_MODEL=wrong\nEMBEDDING_API_URL=https://wrong.invalid\n', encoding='utf-8')
         with patch.dict('os.environ',{},clear=True):
             _,_,warnings=analyze(resume=run,env_file=env,transport=transport,quiet=True)
         self.assertTrue(warnings)
@@ -312,7 +312,7 @@ class ProductTests(unittest.TestCase):
         with patch('aimediator.run_store.code_manifest',return_value={'changed':True}):
             self.expect_failure(4,analyze,resume=run,transport=self.transport)
         snapshot=run/'resource-snapshot/configs/evidence-quality-policy.json'
-        snapshot.write_text('{}')
+        snapshot.write_text('{}', encoding='utf-8')
         self.expect_failure(4,analyze,resume=run,transport=self.transport)
         self.assertEqual(before,(run/'run-state.json').read_bytes())
 

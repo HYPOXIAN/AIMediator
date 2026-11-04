@@ -49,7 +49,7 @@ def classify(row, relevance, quality_record=None):
 
 
 def jsonl(path, rows):
-    path.write_text(''.join(json.dumps(row, ensure_ascii=False, allow_nan=False)+'\n' for row in rows))
+    path.write_text(''.join(json.dumps(row, ensure_ascii=False, allow_nan=False)+'\n' for row in rows), encoding='utf-8')
 
 
 def export_results(folder, rows):
@@ -75,7 +75,7 @@ def export_results(folder, rows):
                     for s in item['segments']:
                         lines += [f"{s['evidence_id']} [{s['start']},{s['end']})", '',
                                   '> '+s.get('quote',s.get('text','')).replace('\n','\n> '), '']
-        (folder/(key+'-comments.md')).write_text('\n'.join(lines)+'\n')
+        (folder/(key+'-comments.md')).write_text('\n'.join(lines)+'\n', encoding='utf-8')
     # Removed portions of mixed comments remain separate from wholly removed rows.
     portions = [{ 'comment_id': r['comment_id'], 'source_url':r['source_url'],
                  'whole_comment_decision':r['decision'], 'fragment': p}
@@ -121,12 +121,12 @@ def main():
     decisions={r['comment_id']:r for r in json.loads(relevance_bytes)}
     if not set(ids)<=set(sources) or not set(ids)<=set(decisions):raise ValueError('Incomplete frozen source/relevance coverage')
     rows=[sources[cid] for cid in ids]
-    routing=json.loads((m.ROOT/'configs/local-language-routing.json').read_text())
+    routing=json.loads((m.ROOT/'configs/local-language-routing.json').read_text(encoding='utf-8'))
     models={v['language']:name for name,v in routing['models'].items()}
     tags={r['name']:r['digest'] for r in m.api(args.base_url,'/api/tags')['models']}
     if any(models.get(r['language']) not in tags for r in rows):raise ValueError('A required local language model is missing')
     policy=q.load_policy()
-    prompts={'quality':{lang:(m.ROOT/f'prompts/evidence-quality.{lang}.txt').read_text() for lang in ('en','zh')}}
+    prompts={'quality':{lang:(m.ROOT/f'prompts/evidence-quality.{lang}.txt').read_text(encoding='utf-8') for lang in ('en','zh')}}
     files=['scripts/run_balance_analysis.py','scripts/evidence_quality.py','scripts/balance_policy.py',
            'scripts/experiments/run_quality_screening_experiment.py','configs/evidence-quality-policy.json','configs/balance-review-policy.json','data/glossary.json']
     identity={'version':'existing-group-quality-screen-v1','group_sha256':m.digest(group_bytes),
@@ -137,7 +137,7 @@ def main():
         'mode':'quality_only_using_frozen_relevance'}
     folder.mkdir(parents=True,exist_ok=True);manifest=folder/'manifest.json'
     if manifest.exists():
-        if json.loads(manifest.read_text())['identity']!=identity:raise ValueError('Changed inputs/code: choose a new output directory')
+        if json.loads(manifest.read_text(encoding='utf-8'))['identity']!=identity:raise ValueError('Changed inputs/code: choose a new output directory')
     else:
         m.write_json(manifest,{'identity':identity,'created_at_utc':datetime.now(timezone.utc).isoformat(),
             'group_path':str(args.group.resolve()),'frozen_relevance_run':str(args.from_run.resolve()),

@@ -1,7 +1,7 @@
 import json,re
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
-G=json.loads((ROOT/'data/glossary.json').read_text())
+G=json.loads((ROOT/'data/glossary.json').read_text(encoding='utf-8'))
 NAMES=[e['canonical_name'] for e in G['entries'] if e['category']=='character']+['Arjun','Viper','Bison','Akuma','Gouki','Gief','Honda','Deejay','Chun','Luke','Guile','Cammy']
 CHAR_EN=re.compile(r'\b(?:'+ '|'.join(re.escape(x) for x in NAMES)+r')\b',re.I)
 CHAR_ZH=re.compile('隆|卢克|傑米|杰米|春丽|春麗|古烈|盖尔|蓋爾|朱莉|蛛俐|肯|布兰卡|布蘭卡|达尔西姆|達爾錫|本田|迪杰|迪傑|曼侬|曼儂|玛丽莎|瑪麗莎|桑吉|莉莉|嘉米|嘉蜜|阿鬼|豪鬼|维加|維加|特瑞|不知火舞|艾琳娜|沙加特|沙盖特|毒蛇|阿里克斯|英格丽德|雅思敏|阿俊|阿军|印度人|阿三|老桑|将军|將軍|警察|狮子|獅子|阿光|阿杜')
@@ -70,7 +70,7 @@ def load_sources(folder):
     for path in files:
         hashes[path.name]=hashlib.sha256(path.read_bytes()).hexdigest()
         ids=[]
-        for line in path.read_text().splitlines():
+        for line in path.read_text(encoding='utf-8').splitlines():
             row=json.loads(line)
             identity=row['record_id']
             if not isinstance(row['text_original'],str):
@@ -103,11 +103,11 @@ def main():
     if output.resolve()==args.input.resolve():
         parser.error('Output must differ from the original source directory')
     union,members,hashes=load_sources(args.input)
-    raw_overrides=json.loads(args.overrides.read_text())['entries'] if args.overrides.exists() else []
+    raw_overrides=json.loads(args.overrides.read_text(encoding='utf-8'))['entries'] if args.overrides.exists() else []
     overrides={r['record_id']:r for r in raw_overrides}
     if len(overrides)!=len(raw_overrides):
         raise ValueError('Duplicate boundary override IDs')
-    language_corrections={r['record_id']:r for r in json.loads(args.language_corrections.read_text())['entries']} if args.language_corrections else {}
+    language_corrections={r['record_id']:r for r in json.loads(args.language_corrections.read_text(encoding='utf-8'))['entries']} if args.language_corrections else {}
     tagged={};decisions=[]
     for identity,row in union.items():
         decision,reason,signals,method=classify(row,overrides)
@@ -148,14 +148,14 @@ def main():
     summary['language_corrections_applied']=len(set(language_corrections)&set(union))
     summary['language_corrections_sha256']=hashlib.sha256(args.language_corrections.read_bytes()).hexdigest() if args.language_corrections else None
     summary['original_fields_unchanged_except_explicit_language_corrections']=True
-    (output/'summary.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2)+'\n')
+    (output/'summary.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     lines=['# Coarse Balance Relevance Screening','','Scope: Street Fighter 6 competitive character/system balance. Original source files and text are unchanged. All five overlapping input views were classified once per stable source ID.','','Keep: explicit balance/strength opinions, requested buffs/nerfs, concrete offensive/defensive mechanics, matchup/resource/risk-reward claims, and Modern/Classic competitive fairness. Favorable, negative, sarcastic, and emotional balance opinions can all be retained.','','Exclude: unrelated games without an SF6 claim; shopping/price-only discussions; cosmetics, visuals, music, story and PvE-only content; network/crash/matchmaking-only issues; video/creator discussion; general learning/accessibility praise; generic reactions without a balance claim. Mixed reviews remain intact when a relevant balance claim exists.','','Review: potentially relevant but under-specified character/control complaints and ambiguous mechanic-only mentions. These are not included in the kept files.','','No date, patch, character-roster, sentiment, language/script, toxicity, truthfulness, or authenticity filter was applied. Inclusion does not confirm the claimed mechanic is true. Some records concern later patches. Original language labels are inherited and unverified.','','Rules and boundary corrections are coarse judgments, not a measured semantic-accuracy guarantee or human-approved labels. A human should still review the kept material and the separate uncertain set.','',f"Unique records: {len(union)}; kept: {len(kept)}; excluded: {len(excluded)}; needs review: {len(review)}.",'','## Output views','']
     if args.language_corrections:lines+=['', 'Explicit inspected language-label corrections were applied only to output copies. Original raw labels/text are unchanged; language_correction preserves old labels and reasons. English/Chinese views are rebuilt from corrected labels, so source-view input counts can differ from normalized output-view counts. Other unverified language labels are inherited.', '']
     for name,counts in file_stats.items():lines.append(f"- {name}: {counts['input']} input -> {counts['keep']} kept; {counts['exclude']} excluded; {counts['review']} needs review.")
     lines+=['','Do not sum overlapping language/platform views. Use records.jsonl as the canonical kept dataset. excluded.jsonl retains reversible exclusions with reasons; decisions.jsonl records every decision; needs-review.jsonl is the uncertain set. YouTube-derived files inherit their original refresh/delete obligations.','','## Human review','','Reviewer:','Decision:','Notes:','','## Uncertain records','']
     for row in review:
         lines += [f"### {row['record_id']}",'',f"Source: {row['source_url']}",'',f"Reason: {row['coarse_screening']['reason']}",'','Original text:','']+['> '+line for line in row['text_original'].splitlines()]+['','Reviewer:','Decision:','Notes:','']
-    (output/'review.md').write_text('\n'.join(lines)+'\n')
+    (output/'review.md').write_text('\n'.join(lines)+'\n', encoding='utf-8')
     print(json.dumps({k:summary[k] for k in ['unique_records','counts','kept_by_language','kept_by_platform','input_files','agent_boundary_overrides_applied']},ensure_ascii=False,indent=2))
 
 

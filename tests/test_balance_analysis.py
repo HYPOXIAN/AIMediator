@@ -98,7 +98,7 @@ class BalanceEvidenceTests(unittest.TestCase):
                     parsed, meta = runner.generate('fixture', 'en', 'relevance', {'comments': []}, ['a'])
                 self.assertIsNone(parsed)
                 self.assertTrue(meta['errors'])
-                request = json.loads(next(Path(temp).rglob('request.json')).read_text())
+                request = json.loads(next(Path(temp).rglob('request.json')).read_text(encoding='utf-8'))
                 self.assertIn('response_schema', json.loads(request['messages'][1]['content']))
 
     def test_semantic_support_labels_are_explicit_and_bound_to_one_claim(self):
@@ -117,7 +117,7 @@ class BalanceEvidenceTests(unittest.TestCase):
                 verdict = parsed['verdicts'][0]
                 self.assertEqual(verdict['claim_id'], 'steam:test:1')
                 self.assertEqual(verdict['supported'], status == 'supported')
-                request = json.loads(next(Path(temp).rglob('request.json')).read_text())
+                request = json.loads(next(Path(temp).rglob('request.json')).read_text(encoding='utf-8'))
                 supplied = json.loads(request['messages'][1]['content'])
                 self.assertEqual(supplied['original_evidence'], source['text_original'])
                 self.assertNotIn('uncertain', supplied['proposed_claim'])
@@ -136,7 +136,7 @@ class BalanceEvidenceTests(unittest.TestCase):
                 result = m.streamed_chat('http://local.test', {'format': {'properties': {'assessments': {}}}}, path)
             self.assertEqual(result['done_reason'], 'duplicate_comment_loop')
             self.assertFalse(result['done'])
-            self.assertEqual(path.read_text(), partial)
+            self.assertEqual(path.read_text(encoding='utf-8'), partial)
 
     def test_streaming_whitespace_loop_is_interrupted(self):
         stream = io.BytesIO((json.dumps({'message': {'content': ' ' * 257}, 'done': False}) + '\n').encode())

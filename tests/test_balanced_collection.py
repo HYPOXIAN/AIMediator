@@ -83,7 +83,7 @@ class BalancedCollectionTests(unittest.TestCase):
             self.assertEqual(embed.call_count, 3)
             api.assert_not_called()
             for f in folder.rglob('*.json'):
-                self.assertNotIn('SECRET', f.read_text())
+                self.assertNotIn('SECRET', f.read_text(encoding='utf-8'))
 
     def test_runtime_options_are_recorded_in_actual_request(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -93,7 +93,7 @@ class BalancedCollectionTests(unittest.TestCase):
             with patch.object(m, 'streamed_chat', return_value=result):
                 parsed, meta = runner.generate('fixture', 'en', 'relevance', {'comments': []}, ['one'])
             self.assertFalse(meta['errors'])
-            request = json.loads(next(Path(temp).rglob('request.json')).read_text())
+            request = json.loads(next(Path(temp).rglob('request.json')).read_text(encoding='utf-8'))
             self.assertEqual(request['options']['num_gpu'], 0)
 
 

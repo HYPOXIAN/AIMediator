@@ -14,9 +14,9 @@ from prepare_balance_design import prepare_briefs
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--live-run',type=Path,required=True)
     p.add_argument('--admission-run',type=Path,required=True);p.add_argument('--decisions',type=Path,required=True);p.add_argument('--out',type=Path,required=True);args=p.parse_args()
-    raw=strict_json((args.live_run/'results.json').read_text());review=strict_json(args.decisions.read_text())
+    raw=strict_json((args.live_run/'results.json').read_text(encoding='utf-8'));review=strict_json(args.decisions.read_text(encoding='utf-8'))
     if review['reviewer_type'] not in ('agent','human'):raise ValueError('Explicit reviewer provenance required')
-    admitted={r['comment_id'] for r in strict_json((args.admission_run/'relevance.json').read_text()) if r['agreement']}
+    admitted={r['comment_id'] for r in strict_json((args.admission_run/'relevance.json').read_text(encoding='utf-8')) if r['agreement']}
     sources={c['comment_id']:c['source'] for c in raw['cases'] if c.get('source')};proposals={}
     for case in raw['cases']:
         for index,item in enumerate(case.get('claims',[]),1):

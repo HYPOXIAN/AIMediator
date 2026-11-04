@@ -62,14 +62,14 @@ def main():
     if not 250 <= args.per_language <= 350:
         parser.error('Choose 250..350 per language (500..700 total)')
     c.STATE.mkdir(parents=True, exist_ok=True)
-    lock = (c.STATE/'feedback-collector.lock').open('a')
+    lock = (c.STATE/'feedback-collector.lock').open('a', encoding='utf-8')
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    config = json.loads(args.config.read_text())
+    config = json.loads(args.config.read_text(encoding='utf-8'))
     config['screening_keep_goals'] = {'en': args.per_language, 'zh': args.per_language}
-    reviews = {r['record_id']: r for r in json.loads(args.review_decisions.read_text())['entries']} if args.review_decisions else {}
+    reviews = {r['record_id']: r for r in json.loads(args.review_decisions.read_text(encoding='utf-8'))['entries']} if args.review_decisions else {}
     store = c.Store(args.out, config)
     client = c.Client(c.STATE/'feedback-http-state.json')
-    statuses = json.loads((args.out/'summary.json').read_text())['statuses'] if args.screen_only else {}
+    statuses = json.loads((args.out/'summary.json').read_text(encoding='utf-8'))['statuses'] if args.screen_only else {}
     # Existing source settings, official endpoints, intervals, quota and cooldown.
     for platform, function in ([] if args.screen_only else [('steam', c.steam), ('bluesky', c.bluesky), ('youtube', c.youtube)]):
         settings = deepcopy(config[platform])

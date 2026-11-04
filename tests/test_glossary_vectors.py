@@ -15,11 +15,11 @@ class VectorTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             path = Path(folder) / '.env'
             content = 'EMBEDDING_MODEL=m\nEMBEDDING_API_KEY=secret\nEMBEDDING_API_URL=https://example.com/api/v1/chat/completions\n'
-            path.write_text(content)
+            path.write_text(content, encoding='utf-8')
             with patch.dict(v.os.environ, {}, clear=True):
                 cfg = v.config(path)
             self.assertEqual(cfg['url'], 'https://example.com/api/v1/embeddings')
-            self.assertEqual(path.read_text(), content)
+            self.assertEqual(path.read_text(encoding='utf-8'), content)
 
     def test_pending_alias_and_conditions_preserved(self):
         entry = {'id': 'x', 'scope': 'Ryu', 'canonical_name': 'Shoryuken',

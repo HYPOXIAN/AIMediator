@@ -16,17 +16,17 @@ from balance_policy import triage_retrieval,load_policy
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--from-run',type=Path,required=True);p.add_argument('--out',type=Path,required=True);args=p.parse_args()
-    old=m.strict_json((args.from_run/'manifest.json').read_text());sources=m.strict_json((args.from_run/'source-snapshot.json').read_text());by_id={r['record_id']:r for r in sources}
+    old=m.strict_json((args.from_run/'manifest.json').read_text(encoding='utf-8'));sources=m.strict_json((args.from_run/'source-snapshot.json').read_text(encoding='utf-8'));by_id={r['record_id']:r for r in sources}
     if m.digest((m.ROOT/'configs/balance-review-policy.json').read_bytes())!=old['identity']['review_policy_sha256']:raise ValueError('Retrieval policy changed')
-    prompts={s:{l:(m.ROOT/f'prompts/{name}.{l}.txt').read_text() for l in ('en','zh')} for s,name in [('relevance','relevance'),('retrieval_review','retrieval-review')]}
+    prompts={s:{l:(m.ROOT/f'prompts/{name}.{l}.txt').read_text(encoding='utf-8') for l in ('en','zh')} for s,name in [('relevance','relevance'),('retrieval_review','retrieval-review')]}
     for stage,langs in prompts.items():
         for language,t in langs.items():
             if m.digest(t.encode())!=old['identity']['prompts'][stage][language]:raise ValueError('Relevance prompt changed')
-    original=m.strict_json((args.from_run/'relevance.json').read_text());decisions={r['comment_id']:{**r,'model_related':None,'model_uncertain':True,'agreement':False,'retrieval_review_related':None,'retrieval_review_uncertain':True} for r in original}
-    trace=m.strict_json((args.from_run/'request-trace.json').read_text());runner=m.Runner('http://no-network.invalid',args.out,prompts);verified=[]
+    original=m.strict_json((args.from_run/'relevance.json').read_text(encoding='utf-8'));decisions={r['comment_id']:{**r,'model_related':None,'model_uncertain':True,'agreement':False,'retrieval_review_related':None,'retrieval_review_uncertain':True} for r in original}
+    trace=m.strict_json((args.from_run/'request-trace.json').read_text(encoding='utf-8'));runner=m.Runner('http://no-network.invalid',args.out,prompts);verified=[]
     for entry in trace:
         stage='relevance' if entry['stage']=='relevance_refinement' else entry['stage'];folder=args.from_run/'requests'/stage/entry['request_id'];target=args.out/'requests'/stage/entry['request_id'];shutil.copytree(folder,target,dirs_exist_ok=True)
-        request=m.strict_json((folder/'request.json').read_text());data=m.strict_json(request['messages'][1]['content']);ids=[c['comment_id'] for c in data['comments']]
+        request=m.strict_json((folder/'request.json').read_text(encoding='utf-8'));data=m.strict_json(request['messages'][1]['content']);ids=[c['comment_id'] for c in data['comments']]
         language='en' if entry['model']=='llama3.1:latest' else 'zh'
         for item in data['comments']:
             if item['text']!=by_id[item['comment_id']]['text_original']:raise ValueError('Cached source differs')

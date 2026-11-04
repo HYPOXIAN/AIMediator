@@ -129,7 +129,7 @@ def semantic_checks(parsed,case):
 
 
 def prepare_cases(dataset):
-    records=[json.loads(line) for line in dataset.read_text().splitlines()]
+    records=[json.loads(line) for line in dataset.read_text(encoding='utf-8').splitlines()]
     rows={r['record_id']:r for r in records};cases=[]
     for identity,language,category,expectations in CASE_SPECS:
         row=rows[identity]
@@ -175,7 +175,7 @@ def export(folder,results,cases,models):
     lines+=['## Human review','','Reviewer:','Decision:','Notes:','','Exact original evidence does not prove that a generated reason or direction is entailed by it. Review every retained claim before using it as a consensus input.','']
     for row in results:
         case=next(c for c in cases if c['comment_id']==row['comment_id']);lines += [f"## {row['model']} / {row['comment_id']}",'',f"Case kind: {case['kind']}; category: {case['category']}",'',f"Source: {case.get('source_url')}",'','Original text:','']+['> '+x for x in case['text'].splitlines()]+['','Raw response:','','```text',row.get('response',{}).get('response',row.get('error','')),'```','',f"Automatic checks: {json.dumps(row.get('checks',{}),ensure_ascii=False)}",'',f"Provisional checks: {json.dumps(row.get('semantic_checks',{}),ensure_ascii=False)}",'','Reviewer:','Reason supported:','Direction correct:','Notes:','']
-    (folder/'review.md').write_text('\n'.join(lines)+'\n')
+    (folder/'review.md').write_text('\n'.join(lines)+'\n', encoding='utf-8')
 
 
 def main():
@@ -185,20 +185,20 @@ def main():
     if any(model not in digests for model in args.models):
         raise ValueError('Requested installed model is missing; no model downloads are attempted')
     if args.resume:
-        metadata=json.loads((folder/'metadata.json').read_text());cases=json.loads((folder/'cases.json').read_text());template=(folder/'prompt.txt').read_text()
+        metadata=json.loads((folder/'metadata.json').read_text(encoding='utf-8'));cases=json.loads((folder/'cases.json').read_text(encoding='utf-8'));template=(folder/'prompt.txt').read_text(encoding='utf-8')
         if args.models!=metadata['models'] or any(digests[m]!=metadata['model_digests'][m] for m in args.models):
             raise ValueError('Model selection/digest differs from frozen run')
         if sha(template.encode())!=metadata['prompt_sha256'] or sha((folder/'cases.json').read_bytes())!=metadata['cases_sha256']:
             raise ValueError('Frozen prompt or cases changed')
     else:
-        folder.mkdir(parents=True,exist_ok=False);cases=prepare_cases(args.dataset);template=(ROOT/'src/aimediator/assets/prompts/extract-grounded-feedback.txt').read_text();save_json(folder/'cases.json',cases);(folder/'prompt.txt').write_text(template);(folder/'runner.py').write_text(Path(__file__).read_text())
+        folder.mkdir(parents=True,exist_ok=False);cases=prepare_cases(args.dataset);template=(ROOT/'src/aimediator/assets/prompts/extract-grounded-feedback.txt').read_text(encoding='utf-8');save_json(folder/'cases.json',cases);(folder/'prompt.txt').write_text(template,encoding='utf-8');(folder/'runner.py').write_text(Path(__file__).read_text(encoding='utf-8'),encoding='utf-8')
         metadata={'started_at_utc':dt.datetime.now(dt.timezone.utc).isoformat(),'models':args.models,'model_digests':{m:digests[m] for m in args.models},'ollama_version':local_request('/api/version'),'dataset_path':str(args.dataset),'dataset_sha256':sha(args.dataset.read_bytes()),'cases_sha256':sha((folder/'cases.json').read_bytes()),'prompt_sha256':sha(template.encode()),'options':{'temperature':0,'seed':42,'num_ctx':4096,'num_predict':520,'num_gpu':0,'num_thread':min(8,os.cpu_count() or 4)},'generation_mode':'local structured JSON schema plus evidence references','case_count':len(cases),'real_reviews':10,'empty_controls':2,'selection':'Purposive initial diagnostics, not random or held-out; expectations are not included in the model request.','hardware_note':'CPU explicitly selected after earlier GPU backend failures; no speed comparison claimed.'};save_json(folder/'metadata.json',metadata)
     results=[]
     for model in args.models:
         for case in cases:
             filename=model.replace(':','-').replace('/','-')+'-'+case['comment_id'].replace(':','-')+'.json';path=folder/filename
             if args.resume and path.exists():
-                previous=json.loads(path.read_text())
+                previous=json.loads(path.read_text(encoding='utf-8'))
                 if previous.get('response',{}).get('done') is True:
                     results.append(previous);continue
                 archive=folder/'interrupted-attempts';archive.mkdir(exist_ok=True);path.rename(archive/(str(time.time_ns())+'-'+filename))
