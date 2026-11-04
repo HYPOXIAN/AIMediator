@@ -1924,6 +1924,46 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   ([B6 work order](../plans/code-restructuring-handoffs/b6-research-code.md)),
   from `restructure-b5`; blockers: none.
 
+### 2026-11-04 B6-1 (implementation)
+
+- Steps: B6.1 (`5d7cd54`) and B6.2, a series of 14 commits (`ec91455`
+  to `faaf44c`); none started and stashed.
+- State: HEAD is this entry's commit (parent `faaf44c`); tests 237 (233,
+  plus 3 in B6.1 and 1 in B6.2); lock green, fixture unchanged since
+  `restructure-b5`; rule check 0. Suite 7.9 s (wall 8.2 s). Plan 8.5: 237
+  pass from a foreign directory, which stays empty. Plan 8.2:
+  `"passed": true`, `"commands": 18`, and the wheel lists
+  `aimediator/collection/` and nothing under `data/raw`. The boundary
+  check from `restructure-b5`, the commit hygiene check and plan 8.7
+  fourth grep print nothing. All 79 tracked `.py` files under `src/`,
+  `tests/` and `scripts/` parse with the Python 3.9 grammar.
+- Findings:
+  - Decision found during execution: the commit series of B6.2 (the
+    layering test first, then the lazy screening pattern, the writer
+    switch, `export` before `sources`, and the test migration before the
+    thin scripts, with one test patch line in the `balanced` commit).
+    Implemented; the owner may reject it.
+  - Meaning change, as the work order expects: the screening summary's
+    `script_sha256` now hashes `collection/screening.py`.
+  - `common.write` writes the same bytes as the old collector writer for
+    finite data. It also creates a missing parent directory, and it
+    raises `ValueError` for NaN or infinity, which the old writer wrote.
+  - B6.1: from a foreign directory, `engine.ROOT`, `glossary_vectors.ROOT`
+    and `DEFAULT_INDEX` now name the checkout, the intended change. From
+    the project root, where the documented commands run, all 13 probed
+    roots are unchanged, so no escalation was needed.
+  - The blueprint 7.3 metric now also lists the moved collector
+    functions: `balanced.main` 101, `client.Client.get` 74,
+    `expansion.main` 66 and `screening.main` 65 lines, the same as in
+    the scripts at `restructure-b5`. Blueprint 1.2 keeps them.
+  - The first four commits of the B6.2 series lacked `Decision: CR-D01`.
+    `git filter-branch` added the line to their messages before
+    anything was pushed (there is no remote); the trees are unchanged.
+  - No escalation.
+- Next: B6.3, session B6-2
+  ([B6 work order](../plans/code-restructuring-handoffs/b6-research-code.md));
+  blockers: none.
+
 ## Batch results
 
 ## Deferred
