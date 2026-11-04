@@ -176,6 +176,43 @@ def review_retrieval(state, model, language, language_rows):
                                 retrieval_review_uncertain=result.get('uncertain', True))
 
 
+def admit_relevance(state, model, language, language_rows):
+    """Check relevance in batches, recheck each disagreement alone, then write relevance.json and review-queue.json."""
+    candidates = [d for d in language_rows if d['retrieval_related'] or (
+        d.get('retrieval_review_related') is True and d.get('retrieval_review_uncertain') is False)]
+    for batch in batches(candidates, count=8, chars=10000):
+        data = {'comments': [{'comment_id': d['comment_id'],
+            'text': state.by_id[d['comment_id']]['text_original'], 'retrieved_topics': d['references']} for d in batch]}
+        parsed, meta = state.runner.generate(model, language, 'relevance', data, [d['comment_id'] for d in batch])
+        state.trace.append({'model': model, 'stage': 'relevance', **meta})
+        if parsed:
+            for item in parsed['decisions']:
+                state.decisions[item['comment_id']].update(model_related=item['related'],
+                    model_uncertain=item['uncertain'], model_reason=item['reason'],
+                    agreement=relevance_agrees(state.decisions[item['comment_id']], item))
+    # Recheck every rejection alone: short ordered arrays can still drift
+    # semantically across comments. Preserve the initial result for review.
+    for decision in candidates:
+        decision['initial_model_related'] = decision['model_related']
+        decision['initial_model_uncertain'] = decision.get('model_uncertain')
+        decision['refinement_performed'] = False
+        if decision['agreement']:
+            continue
+        decision['refinement_performed'] = True
+        record_id = decision['comment_id']
+        data = {'comments': [{'comment_id': record_id, 'text': state.by_id[record_id]['text_original'],
+                              'retrieved_topics': decision['references']}]}
+        parsed, meta = state.runner.generate(model, language, 'relevance', data, [record_id])
+        state.trace.append({'model': model, 'stage': 'relevance_refinement', **meta})
+        if parsed:
+            item = parsed['decisions'][0]
+            decision.update(model_related=item['related'], model_uncertain=item['uncertain'],
+                model_reason=item['reason'], agreement=relevance_agrees(decision, item))
+    write_json(state.folder / 'relevance.json', list(state.decisions.values()))
+    write_json(state.folder / 'review-queue.json', [d for d in state.decisions.values()
+               if d['retrieval_triage'] == 'review_queue' and not d['agreement']])
+
+
 def process(args, rows, routing, models, prompts, quality_identity, quality_policy,
             identity, embedding_config=None, runner_factory=Runner, retrieval_service=retrieve):
     """Shared orchestration with explicit inputs and injected inference boundaries."""
@@ -195,39 +232,7 @@ def process(args, rows, routing, models, prompts, quality_identity, quality_poli
         language = state.routes[model]['language']
         language_rows = [d for d in state.decisions.values() if d['language'] == language]
         review_retrieval(state, model, language, language_rows)
-        candidates = [d for d in language_rows if d['retrieval_related'] or (
-            d.get('retrieval_review_related') is True and d.get('retrieval_review_uncertain') is False)]
-        for batch in batches(candidates, count=8, chars=10000):
-            data = {'comments': [{'comment_id': d['comment_id'],
-                'text': state.by_id[d['comment_id']]['text_original'], 'retrieved_topics': d['references']} for d in batch]}
-            parsed, meta = state.runner.generate(model, language, 'relevance', data, [d['comment_id'] for d in batch])
-            state.trace.append({'model': model, 'stage': 'relevance', **meta})
-            if parsed:
-                for item in parsed['decisions']:
-                    state.decisions[item['comment_id']].update(model_related=item['related'],
-                        model_uncertain=item['uncertain'], model_reason=item['reason'],
-                        agreement=relevance_agrees(state.decisions[item['comment_id']], item))
-        # Recheck every rejection alone: short ordered arrays can still drift
-        # semantically across comments. Preserve the initial result for review.
-        for decision in candidates:
-            decision['initial_model_related'] = decision['model_related']
-            decision['initial_model_uncertain'] = decision.get('model_uncertain')
-            decision['refinement_performed'] = False
-            if decision['agreement']:
-                continue
-            decision['refinement_performed'] = True
-            record_id = decision['comment_id']
-            data = {'comments': [{'comment_id': record_id, 'text': state.by_id[record_id]['text_original'],
-                                  'retrieved_topics': decision['references']}]}
-            parsed, meta = state.runner.generate(model, language, 'relevance', data, [record_id])
-            state.trace.append({'model': model, 'stage': 'relevance_refinement', **meta})
-            if parsed:
-                item = parsed['decisions'][0]
-                decision.update(model_related=item['related'], model_uncertain=item['uncertain'],
-                    model_reason=item['reason'], agreement=relevance_agrees(decision, item))
-        write_json(state.folder / 'relevance.json', list(state.decisions.values()))
-        write_json(state.folder / 'review-queue.json', [d for d in state.decisions.values()
-                   if d['retrieval_triage'] == 'review_queue' and not d['agreement']])
+        admit_relevance(state, model, language, language_rows)
         if getattr(state.args, 'relevance_only', False):
             continue
         selected = [state.by_id[d['comment_id']] for d in state.decisions.values()
