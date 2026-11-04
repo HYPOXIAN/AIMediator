@@ -1071,6 +1071,147 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
     grep, also matches asset-relative names (B3-2 session-log entry).
 - Result: accepted, tag `restructure-b3`.
 
+### 2026-11-04 B4-V
+
+- Range: `restructure-b3..d03e1c4`; 12 commits, all by B4-1: the steps
+  B4.1 (`62a9c74`), B4.2 (`03d6f2f`), B4.3 (`65ce0c5`), B4.4 (the series
+  `d5eecce`, `59a0b66`) and B4.5 (`99d4c49`); the escalations `560f4cd`
+  (E-2) and `6409098` (E-3); the owner's answers `376403a` (E-2),
+  `2127d63` (E-4, entry and answer together) and `16412d4` (E-3); and the
+  session-log entry `d03e1c4`. All checks ran on `d03e1c4`. The tree of
+  `restructure-b3` was extracted with `git archive` outside the checkout.
+- Checks:
+  1. Boundary and commit hygiene: pass. The boundary check from
+     `restructure-b3` prints exactly two paths, each changed at the owner's
+     instruction in its own commit, as the B4-1 entry states:
+     `data/processed/glossary-vectors/manifest.json` (`376403a`, E-2; only
+     `generating_command` and one consumer now name
+     `python3 -m aimediator.glossary_vectors`) and
+     `tests/test_cli_product.py` (`16412d4`, E-3; only the expected side of
+     line 337 now reads through `asset_path`). The other 40 changed paths
+     lie inside the pattern. Nothing under `src/`, `data/evaluation/`,
+     `data/raw/` or `reports/` changed, and no frozen record, decision
+     0001, meeting note or archived document changed. The hygiene check
+     prints nothing, and no added line in the range has an attribution.
+     Each step commit has its `Step:` and `Decision:` lines, B4.4 is two
+     commits (`docs`, then `chore`), and the last commit of each step
+     updates its progress row.
+  2. Root, `scripts/` and links: pass. `ls -A` lists only G3 entries and
+     no `prompts`. `git ls-files scripts` has no file at the top level. On
+     disk, the only entry besides `collect/`, `experiments/` and
+     `maintenance/` is the ignored `scripts/__pycache__/`, which holds
+     stale bytecode of the six forwarders. Python never imports it without
+     the source, and G4 allows deleting it. `git ls-files -s | awk
+     '$1=="120000"'` lists exactly
+     `data/evaluation/evidence-quality-synthetic-v1/cases.json`, which
+     resolves to `src/aimediator/assets/fixtures/cases.json`, and
+     `find -type l` outside `.git/` finds the same single link.
+  3. Register, Layout and links: pass. G2 0, P3 0 and D5 0; the full rule
+     check prints `Total: 0`. The register lists one symlink (`cases.json`,
+     with the prescribed CR-D08 removal condition) and no forwarding
+     script, as in the tree. Outside the checker and its test, no tracked
+     file has the docstring "Compatibility entry point". The README
+     "Layout" matches the tree. It lists every tracked top-level entry and
+     the subdirectories of `scripts/` and `data/`, and it has no `prompts/`
+     line. `configs/` reads "Collection settings" and holds only the six
+     collection files. The assets bullet names the one remaining link.
+  4. Plan 8.7, third grep: pass under the B4.1 decision "Reading of plan
+     8.7, third grep, after B4.3" (option (a), open to the owner). As
+     written, the grep matches 32 lines in 16 files outside the planning
+     documents. Each was checked by hand, and every match is one of: an
+     `asset_path(...)` argument (package, `screen_feedback.py`,
+     `test_balance_analysis.py`); an `ASSETS` tuple or snapshot loop whose
+     names are read only with `asset_path` (six experiment scripts); a
+     `prompt` value inside the packaged routing asset, which no code reads;
+     or a synthetic name in the G8 test's temporary tree. The decision's
+     narrowed command prints nothing. A wider scan of `src`, `scripts` and
+     `tests` for the removed names outside `asset_path`, including
+     root-joined forms (`ROOT / ...`) like the one E-3 found, finds only
+     identity keys, run-relative `resource-snapshot/` names,
+     lock keys and temporary test trees. In the living documents (README,
+     guides, design, reference, `docs/README.md`), the removed paths and
+     forwarder names appear only in dated sentences with dated notes and
+     in the assets tree of `design/cli.md` section 5. ADR 0002 names them
+     as history. No deleted path is used outside the planning documents,
+     so the second trigger of work order section 6 is not met.
+  5. Rules amendment: pass. `RULES.md` reads "Version 1.3 · Effective
+     2026-11-04 · Approved by the project owner." and has the v1.3
+     revision-log entry. G3, P3, P7 and the entry match the work order's
+     draft word for word. No other rule mentions `prompts/`, so the third
+     trigger of work order section 6 is not met. `CLAUDE.md` names v1.3
+     (Updated 2026-11-04). `G3_ALLOWED` no longer has `prompts`, and
+     `test_g3_flags_entries_outside_allowlist` expects
+     `['notes', 'prompts', 'stray.txt']` and passes. Apart from G3, the
+     only change to `check_rules.py` is the `D7_JUSTIFIED` map that the
+     owner authorized under E-4 (`2127d63`). It lists only this record.
+  6. Gates, lock, wheel and foreign directory: pass. Tree clean, no
+     stash. 221 tests OK, one fewer than B3: the collected test IDs differ
+     from `restructure-b3` only by
+     `test_refactored_boundaries.RefactoredBoundaries.test_compatibility_imports_share_package_state`.
+     Rule check `Total: 0`. The only warnings are the two known
+     `ResourceWarning`s for unclosed `HTTPError` objects, as at B3.
+     `tests/fixtures/behavior-lock.json` is the same blob at
+     `restructure-b0` and at HEAD (`df5a724`), and no B4 commit touches it,
+     `tests/behavior_lock.py` or `tests/test_behavior_lock.py`.
+     `python3 tests/behavior_lock.py` prints `378 keys, 0 differ`, and
+     plan 8.3 passes. Plan 8.2, with the build directory outside the
+     checkout, prints `"passed": true` and `"commands": 18` (Python
+     3.14.8, NumPy 2.4.6). The wheel's 27 modules and 21 asset files (15
+     of them prompts) match the checkout byte for byte, and the wheel has
+     no `data/raw` and no `.env`. Plan 8.5: 221 tests OK from a foreign
+     temporary directory, which stays empty.
+- Measurements: tests 221 in 8.9 s (wall 9.3 s); demo 3.0 s under
+  cProfile, 1.62 s plain; `evidence.character_reference` 688 calls,
+  0.72 s cumulative; lock green, 4.2 s run alone.
+- Notes:
+  - Batch checks of blueprint 7.1 beyond the checklist. Plan 8.7 greps 1,
+    2 and 5 and the B4.2 grep print nothing; the fourth grep is not due
+    yet. `tests/test_module_layers.py` passes. All 68 tracked `.py` files
+    under `src/`, `tests/` and `scripts/` parse as Python 3.9, and none
+    has a star import. The progress table has rows B4.1 to B4.5, all
+    `done` with lock `green`.
+  - The first trigger of work order section 6 is not met. The four
+    documented module commands, plus `quality_scoring prepare` and
+    `glossary_vectors build` and `search`, print `--help` with exit 0
+    under `PYTHONPATH=src` from a foreign directory, which stays empty.
+    Apart from the program name and line wrapping, each help text matches
+    its forwarder's at `restructure-b3`.
+  - Archives (G6): `sha256sum -c SHA256SUMS` passes in
+    `~/Archives/AIMediator/scripts/20261104-forwarders/` and
+    `~/Archives/AIMediator/scripts/20261104-compatibility-links/`. The six
+    copies match their blobs at `376403a`, and `SYMLINKS.txt` matches the
+    18 link blobs at `16412d4` line for line.
+  - ADR 0002 has the D2 header and an index row, and its links resolve.
+    Its layer table names all 29 rows of `TABLE` in the layering test and
+    every module file. No import that `TABLE` allows points to a higher
+    layer.
+  - Observations, not B4 defects. `design/cli.md` section 5, "Concrete
+    migration seams", still says "Adapt `evaluate_evidence_quality.evaluate`".
+    That is a module name, now `aimediator.quality_scoring.evaluate`. It
+    sits after the dated note that B4.1 added, and B7.3 merges that
+    section. The register's header still reads "`RULES.md` v1.0 (G2, P3,
+    P7)".
+- Owner review items (work order section 5):
+  1. The v1.3 wording, effective 2026-11-04: G3 (the `prompts/` sentence
+     deleted), P3 (the experiment-script bullet, CR-D02) and the P7
+     consequence of B4.3 ("Root `configs/` keeps only collection
+     configuration.").
+  2. ADR 0002 (`99d4c49`).
+  3. The document changes of B4.1 (`62a9c74`: `README.md`,
+     `guides/cli-usage.md`, `design/balance-analysis.md`, `design/cli.md`,
+     `design/evidence-quality.md`, `reference/glossary-vector-index.md`
+     and `reference/glossary.md`) and of B4.3 (`65ce0c5`: the README
+     "Layout" and the symlink sentence in `guides/cli-usage.md`).
+  4. The register (`docs/reference/compatibility-layers.md`).
+
+  Also open to the owner, from the B4-1 entry: the two decisions found
+  during execution in B4.1, namely the reading of plan 8.7, third grep
+  (item 4 rests on it), and the archive form of the deleted symlinks;
+  and the E-4 checker change, a deviation from plan 4.4 that the owner
+  authorized.
+- Result: accepted, tag `restructure-b4-review`. The owner's review and
+  the `restructure-b4` tag follow in a closure session (blueprint 6.4).
+
 ## Session log
 
 ### 2026-11-03 B0-1 (implementation)
@@ -1345,6 +1486,21 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
     2026-11-04.
 - Next: B4-V (verification of B4, sets `restructure-b4-review`);
   blockers: none.
+
+### 2026-11-04 B4-V (verification)
+
+- Steps: none (verification); none started and stashed.
+- State: HEAD is the verification-note commit (parent `d03e1c4`), tagged
+  `restructure-b4-review`; tests 221; lock green, fixture unchanged since
+  `restructure-b0`; rule check 0.
+- Findings: none. All six checklist items pass, with no fix-up steps and
+  no escalations. Item 4 passes under the B4.1 reading of plan 8.7, third
+  grep, which is still open to the owner. The B4-V note lists the owner
+  review items.
+- Next: the owner's B4 review, then a closure session that records it and
+  sets `restructure-b4` (blueprint 6.4). B5.1, session B5-1
+  ([B5 work order](../plans/code-restructuring-handoffs/b5-internals-and-performance.md)),
+  starts from that tag. Blockers: the owner's review.
 
 ## Batch results
 
