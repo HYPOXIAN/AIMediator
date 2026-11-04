@@ -519,6 +519,43 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   corrections to the blueprint are `docs` commits that cite the reason).
   Plan T-01 keeps its own figure and definition.
 
+### E-2 The glossary index manifest names a forwarder (B4.2)
+
+- **Step**: B4.2.
+- **Question**: `data/processed/glossary-vectors/manifest.json`, the P1
+  descriptor of the reproducible glossary vector index, records
+  `"generating_command": "python3 scripts/glossary_vectors.py build"` and
+  the consumer `"scripts/glossary_vectors.py search"`. B4.2 deletes that
+  forwarder, so the recorded command would fail. This is the second
+  trigger of work order B4, section 6: a deleted path is still used
+  outside the planning documents. The file is under `data/`, outside the
+  B4 boundary, and no session may change `data/` (blueprint 5.3, item 4).
+  Its `source` value also says the index was built "through the
+  data/glossary.json link", which B4.3 deletes; that describes how the
+  current build was made and stays true. How is the manifest handled?
+- **Options**:
+  - (a) The owner authorizes one `data` commit that sets
+    `generating_command` to `python3 -m aimediator.glossary_vectors build`
+    and the consumer to `python3 -m aimediator.glossary_vectors search`.
+    Nothing else in the file changes: `files_sha256` covers only the
+    ignored index files, and the index identity hashes the source, the
+    texts and the model, not the command. B4.2 then runs as written.
+  - (b) Keep `scripts/glossary_vectors.py` registered until the manifest
+    changes. B4.2 deletes five forwarders, and B4-V checklist item 2
+    ("`scripts/` has no file at its top level") needs a waiver.
+  - (c) Read the manifest as a historical record, as B1.7 did for the
+    consumer list of `data/raw/feedback/20261015-expanded/manifest.json`,
+    and delete all six. The recorded command stays wrong until someone
+    updates the manifest.
+- **Recommendation**: (a). P1 requires the generating command of
+  processed data, and the change is two string values in a hand-written
+  descriptor (its `manifest_written` names reorganization batch 3), with
+  no effect on the index. (c) differs from B1.7: that consumer was a
+  broken wrapper with no replacement, while this manifest is the
+  instruction for rebuilding the data.
+- **Blocked**: B4.2, and B4.5, whose ADR records the removal of the
+  layers. B4.3 and B4.4 do not depend on B4.2.
+
 ## Verification notes
 
 ### 2026-11-03 B0-V
