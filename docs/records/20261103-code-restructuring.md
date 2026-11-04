@@ -85,6 +85,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | B7.2 | done | 241 | green | S-03: `common`, `resources`, `schema`, `evidence`, `stages`, `runner`, `retrieval`, `pipeline` and `run_store` have `from __future__ import annotations` right after the module docstring (`common` had it already). Every module-level function and every `Runner` method has parameter and return hints, the few private helpers included, and every public function and the classes `Failure` and `Runner` have a one-line docstring: 39 added (27 to 66), existing ones unchanged. Hint style as in `common`: built-in generics, PEP 604 unions with `None`, and `Any`, `Callable`, `Iterable` and `Iterator` from `typing`; under the future import no annotation is evaluated at runtime, so Python 3.9 is unaffected. Added imports: only `__future__`, `typing` and, in `runner` and `retrieval`, `pathlib.Path`. Checks besides the suite and the lock (`465 keys, 0 differ`): with annotations, docstrings and imports removed, each module's AST equals HEAD's; every tracked `.py` file under `src/`, `scripts/` and `tests/` parses with `feature_version=(3, 9)`; `typing.get_type_hints` resolves all 69 annotated functions; the nine modules import under Python 3.10 (the oldest local interpreter, NumPy stubbed). Blueprint 7.3: nothing over 60 lines in `pipeline`, `runner`, `stages`, `evidence` or `retrieval` (longest `evidence.ground_claim`, 55) |
 | B7.3 | done | 241 | green | Documents describe the code at HEAD (D9). `docs/design/cli.md` section 5: the "Target structure" block is replaced by the actual layout, grouped by the blueprint 3.1 layers; a paragraph on the layering that `tests/test_module_layers.py` enforces, with a link to ADR 0002; one on the research commands and the script layout; the module contracts of blueprint 3.3, each checked against the code and kept only where it still holds (P6 merge); condensed, the frozen request construction and artifact write order of blueprint 3.4 and 3.5, which blueprint 9 counts among the section 3 contracts; and a dated paragraph on the difference from the original target. That paragraph names more than the work order lists, because the target also lacked `schema` (it put schemas in `evidence`) and the modules the CLI implementation had added before the restructuring (`common`, `legacy_review`, `quality_scoring`, `glossary_vectors`, `presentation`, `engine`), and it stored the glossary at the asset root. Blueprint 3.1 places `design_briefs`, `diagnostics` and `collection.*` outside run identities, but only `collection/` is: `run_store.code_manifest` and the legacy `shared_code_sha256` and `code-snapshot/` cover every top-level module (as E-5 found), and section 5 states that. Section 2 gains a dated note that `prepare_balance_design.py` calls `aimediator.design_briefs`. `docs/plans/cli-implementation-status.md` ("Layout decisions"): a dated note on the split and a link to section 5. `README.md`: the intro says the CLI runs the analysis pipeline in-process instead of "the existing Python engine"; in "Layout", `src/aimediator/` is the package and `scripts/` has no files at its top level, and a bullet links section 5 and says the rule check runs without the package. Register: a B7.3 change-log line (1 symlink, no forwarding script, checked against the tree), and the link's "Used by" cell adds `README.md` and ADR 0002. Index: the rows of `cli.md` and the register. Checks: a scratch script finds every module of `ls src/aimediator` in the section 5 block and none extra, and no import edge of `test_module_layers.package_imports()` points to a higher layer |
 | B7.4 | done | 241 | green | CR-D10: `RULES.md` v1.4 in the work order's draft wording, effective 2026-11-04, which the owner confirms at the final review. The version line reads 1.4; P4's second bullet reads "baseline count (241 on 2026-11-04;", where 241 is the test count after B7.2 (unchanged by B7.3, a documents-only step), and keeps the words `check_rules.py` reads; the revision log gains the v1.4 entry; `CLAUDE.md` names v1.4. `check_rules.recorded_baseline` now returns 241 and `count_tests` 241, so the floor equals the suite; rule check 0. The other mentions of v1.3 are in the restructuring's plan documents, the revision log and ADR 0002, a decision frozen once final (D3), so they stay. No test changes: the P4 test of the rule check writes its own `RULES.md` in a temporary root |
+| B7.5 | item 1 done | 241 | green | Item 1: every gate (plan 8.1), the wheel acceptance (8.2), the foreign directory check (8.5), the timings (8.4), the greps (8.7) and the function-length metric (blueprint 7.3) were run at `05812d0`; the results are under "Batch results", "Acceptance (B7.5, item 1)", with the blueprint section 2 metrics and their achieved values. Every metric meets its target. B7-V sets `restructure-b7-review`; items 2 and 3 (archive the plan documents, freeze this record, tag `restructure-done`) follow the owner's final review, in session B7-3 |
 
 ## Baseline measurements (B0.4)
 
@@ -2410,5 +2411,63 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   blockers: none.
 
 ## Batch results
+
+### Acceptance (B7.5, item 1)
+
+Measured on 2026-11-04 at `05812d0` (B7.4 done), with Python 3.14.8 and
+NumPy 2.4.6, by the commands of plan section 8 and blueprint 7.3. The
+metrics are those of blueprint section 2, with the column "Achieved"
+added.
+
+| Objective | Metric | Baseline | Target | Batch | How measured | Achieved |
+| --------- | ------ | -------- | ------ | ----- | ------------ | -------- |
+| Remove the hub module | `engine.py` content | 931 lines, 24 definitions | `ROOT`, `run`, `main` only | B3.6 | read the file | `ROOT`, `run` and `main` only; 124 lines |
+| Clear layering | Modules importing `engine` | 7 | 0 | B3 | plan 8.7, second grep | 0: the grep prints nothing |
+| Clear layering | Intra-package import cycles | 1 (`demo` and `operations`) | 0 | B2.9 | `tests/test_module_layers.py` | 0: the 7 layering tests pass, and the transitional allowance is gone since B3.6 |
+| Short functions | Functions over 60 lines in `pipeline`, `runner`, `stages`, `evidence`, `retrieval` | `process` 259, `_generate` 112 | none | B5.5, B5.6 | section 7.3 command | none; the longest is `evidence.ground_claim` with 55 lines |
+| Correctness | Crashing entry points (F-01, F-02) | 2 | 0 | B1.7 | archive | 0: both scripts archived in B1.7; neither path exists |
+| Correctness | Fixes for F-03 to F-08 | open | done | B1, B3.4, B5.7 | plan steps | done: F-03 in B3.4, F-04 in B0.2, F-05 in B1.2, F-06 in B1.3, F-07 in B1.4, F-08 in B5.7 |
+| Performance | Offline demo wall time | 26.2 s | at most 10 s | B1.1 | plan 8.4 | 1.1 s plain (three runs, 1.09 to 1.15 s); 2.0 s under cProfile, where `evidence.character_reference` has 688 calls and 0.73 s cumulative time |
+| Performance | Offline suite wall time | about 70 s | at most 45 s, lock included (target, not a gate) | B1 to B5 | plan 8.4 | 8.3 to 8.5 s wall over three runs (241 tests, 8.0 to 8.1 s reported); the lock test takes 3.7 s |
+| Performance | `run_store.state` reads per call | all validation files | only new ones | B5.8 | test counting reads | only new or changed files: `test_state_reads_only_new_or_changed_validation_files` passes |
+| Conformance | Compatibility layers | 19 symlinks, 7 forwarders | 1 symlink, 0 forwarders | B4 | register, G2 | 1 symlink (CR-D08) and 0 forwarders: `git ls-files -s` lists one symlink, no tracked script's docstring begins with "Compatibility entry point", the register agrees, and rule check G2 reports 0 |
+| Conformance | Text I/O without encoding | 130 calls | 0 | B1.3 | plan 8.7, fifth grep | 0: the grep prints nothing |
+| Conformance | Working-directory roots in code | 2 | 0 | B6.1 | plan 8.7, fourth grep | 0: the grep prints nothing |
+| Conformance | Prompts outside assets (P7) | 1 file | 0 | B1.6 | archive | 0: `run_quality_screening_recovery.py` (R-02) was archived in B1.6, and no tracked `.txt` file lies outside `src/aimediator/assets/` |
+| Tests | Working-directory dependent tests | 1 | 0 | B0.2 | plan 8.5 | 0: 241 pass from a foreign directory, which stays empty |
+| Tests | Test files importing forwarders | 9 | 0 | B3.3 | plan 8.7, first grep | 0: the grep prints nothing |
+| Safety | Behavior lock | none | green after every step | B0 onward | plan 8.3 | green at HEAD (`465 keys, 0 differ`); in the progress table every step is green, except B0.1 and B0.2 (before the lock existed), the fixture creation (B0.3) and the regenerations CR-D12 authorized (B5.11, and the E-5 keys in B6.3 and B6.4) |
+
+The other results of B7.5, item 1:
+
+- Gates (plan 8.1): the tree was clean before each step; 241 tests pass;
+  the rule check reports `Total: 0`, with P4 reading the v1.4 floor of 241.
+- Installed-wheel acceptance (plan 8.2): `"passed": true`,
+  `"commands": 18`, Python 3.14.8, NumPy 2.4.6.
+- Foreign working directory (plan 8.5): 241 pass, and the directory stays
+  empty.
+- Greps (plan 8.7): the first, second, fourth and fifth print nothing. The
+  third was due before B4.3. Read as the decision found in B4.1 directs, its
+  narrowed command prints nothing. The plain command prints 40 lines: the
+  asset-relative names in the package, the experiment scripts and
+  `tests/test_balance_analysis.py`, the routing asset, the G8 test tree, and
+  9 lines in the restructuring's plan documents.
+- Function length (blueprint 7.3): 10 functions over 60 lines, none in the
+  five modules above, and all in blueprint 1.2's list of functions that may
+  remain: `review.load_run` 136, `operations.analyze` 110,
+  `reporting.export_report` 105, `collection/balanced.main` 101,
+  `quality_scoring.score_group` 88, `engine.run` 76,
+  `collection/client.get` 74, `collection/screening.main` 69,
+  `collection/expansion.main` 66 and `evidence_quality.qualify` 61. Four
+  are longer than at `7282f49`: B1.4 (the F-07 lock handling) took
+  `balanced.main` from 95 to 101 and `expansion.main` from 63 to 66, and
+  B7.1 (one statement per line) took `score_group` from 71 to 88 and
+  `screening.main` from 65 to 69. Blueprint 1.2 gives the collectors as
+  "63 to 95" lines, measured at `7282f49`.
+- Plan section 0 items at HEAD: 202 tracked files; the package has 29
+  top-level modules (3,937 lines) and the `collection/` subpackage 8 files
+  (879 lines); `scripts/` has no top-level files, `collect/` 4 files (32
+  lines), `experiments/` 13 (1,276) and `maintenance/` 3 (1,110); the two
+  slowest tests are the lock (3.7 s) and the presentation demo test (1.1 s).
 
 ## Deferred
