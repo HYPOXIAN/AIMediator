@@ -12,9 +12,19 @@ from pathlib import Path
 import time
 
 import sys
-sys.path.insert(1, str(Path(__file__).resolve().parents[1]))  # scripts/ holds the registered forwarding shells
-import evidence_quality as q
-import run_balance_analysis as m
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
+from aimediator import evidence_quality as q
+from aimediator.common import sha as digest, strict_json, write as write_json
+from aimediator.evidence import character_reference, evidence_units
+from aimediator.inference import api
+from aimediator.resources import asset_path, module_path
+from aimediator.run_store import code_manifest
+from aimediator.runner import Runner
+
+ROOT = Path(__file__).resolve().parents[2]
+ASSETS = ('configs/balance-review-policy.json', 'configs/evidence-quality-policy.json',
+          'configs/local-language-routing.json', 'data/glossary.json', 'prompts/evidence-quality.en.txt',
+          'prompts/evidence-quality.zh.txt')
 
 RETAINED_ROUTES = {'opinion_only', 'mechanism_evidence', 'system_evidence'}
 NAMES = {'opinion_only': '一般意见统计', 'mechanism_evidence': '角色机制候选',
@@ -25,7 +35,7 @@ def classify(row, relevance, quality_record=None):
     original = row['text_original']
     common = {'comment_id': row['record_id'], 'language': row['language'],
               'source_url': row.get('source_url'), 'text_original': original,
-              'content_sha256': m.digest(original.encode()), 'relevance_record': relevance}
+              'content_sha256': digest(original.encode()), 'relevance_record': relevance}
     if not relevance['agreement']:
         pending = (relevance.get('model_uncertain') is True or
                    relevance.get('retrieval_review_uncertain') is True)
@@ -58,7 +68,7 @@ def export_results(folder, rows):
     groups = {key: [r for r in rows if r['decision'] == key] for key in ('retained','excluded','review')}
     assert sum(map(len, groups.values())) == len(rows)
     for key, group in groups.items():
-        m.write_json(folder/(key+'-comments.json'), group)
+        write_json(folder/(key+'-comments.json'), group)
         jsonl(folder/(key+'-comments.jsonl'), group)
         heading = {'retained':'保留的数据','excluded':'整条剔除的数据','review':'待复核的数据'}[key]
         lines = ['# '+heading, '', '本实验只筛选证据用途，不证明机制真实或适合任何版本。原文未改写。', '']
@@ -80,10 +90,10 @@ def export_results(folder, rows):
     portions = [{ 'comment_id': r['comment_id'], 'source_url':r['source_url'],
                  'whole_comment_decision':r['decision'], 'fragment': p}
                 for r in rows for p in r['excluded_fragments']]
-    m.write_json(folder/'excluded-fragments.json', portions)
-    m.write_json(folder/'all-classifications.json', rows)
+    write_json(folder/'excluded-fragments.json', portions)
+    write_json(folder/'all-classifications.json', rows)
     records = [r['quality_record'] for r in rows if r['quality_record']]
-    m.write_json(folder/'evidence-quality.json', records)
+    write_json(folder/'evidence-quality.json', records)
     summary = {'input_comments':len(rows), 'mutually_exclusive_comment_counts':{key:len(value) for key,value in groups.items()},
         'partial_retained_comments':sum(r['partial'] for r in rows),
         'quality_assessed':len(records), 'quality_completed':sum(r['status']=='completed' for r in records),
@@ -98,13 +108,13 @@ def export_results(folder, rows):
         'mechanism_status':'Candidates only; no new extraction, claim audit, source review, official identity or version verification.',
         'scope':'Existing 100-comment bilingual group; frozen prior relevance, fresh live quality; not a fresh full RAG run.',
         'accuracy':None, 'human_ground_truth':False}
-    m.write_json(folder/'summary.json', summary)
+    write_json(folder/'summary.json', summary)
     return summary
 
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--group',type=Path,default=m.ROOT/'data/evaluation/balance-silver-v1/labels.jsonl')
+    p.add_argument('--group',type=Path,default=ROOT/'data/evaluation/balance-silver-v1/labels.jsonl')
     p.add_argument('--from-run',type=Path,required=True)
     p.add_argument('--out',type=Path,required=True)
     p.add_argument('--base-url',default='http://127.0.0.1:11434')
@@ -113,7 +123,7 @@ def main():
     if not 1<=args.workers<=4:raise ValueError('workers must be in [1,4]')
     group_bytes=args.group.read_bytes()
     # Use membership only. Never send old relevance/stance expectations to models.
-    ids=[m.strict_json(line)['comment_id'] for line in group_bytes.decode().splitlines() if line.strip()]
+    ids=[strict_json(line)['comment_id'] for line in group_bytes.decode().splitlines() if line.strip()]
     if len(ids)!=len(set(ids)):raise ValueError('Duplicate group IDs')
     source_bytes=(args.from_run/'source-snapshot.json').read_bytes()
     relevance_bytes=(args.from_run/'relevance.json').read_bytes()
@@ -121,39 +131,42 @@ def main():
     decisions={r['comment_id']:r for r in json.loads(relevance_bytes)}
     if not set(ids)<=set(sources) or not set(ids)<=set(decisions):raise ValueError('Incomplete frozen source/relevance coverage')
     rows=[sources[cid] for cid in ids]
-    routing=json.loads((m.ROOT/'configs/local-language-routing.json').read_text(encoding='utf-8'))
+    routing=json.loads(asset_path('configs/local-language-routing.json').read_text(encoding='utf-8'))
     models={v['language']:name for name,v in routing['models'].items()}
-    tags={r['name']:r['digest'] for r in m.api(args.base_url,'/api/tags')['models']}
+    tags={r['name']:r['digest'] for r in api(args.base_url,'/api/tags')['models']}
     if any(models.get(r['language']) not in tags for r in rows):raise ValueError('A required local language model is missing')
     policy=q.load_policy()
-    prompts={'quality':{lang:(m.ROOT/f'prompts/evidence-quality.{lang}.txt').read_text(encoding='utf-8') for lang in ('en','zh')}}
-    files=['scripts/run_balance_analysis.py','scripts/evidence_quality.py','scripts/balance_policy.py',
-           'scripts/experiments/run_quality_screening_experiment.py','configs/evidence-quality-policy.json','configs/balance-review-policy.json','data/glossary.json']
-    identity={'version':'existing-group-quality-screen-v1','group_sha256':m.digest(group_bytes),
-        'source_sha256':m.digest(source_bytes),'relevance_sha256':m.digest(relevance_bytes),
+    prompts={'quality':{lang:asset_path(f'prompts/evidence-quality.{lang}.txt').read_text(encoding='utf-8') for lang in ('en','zh')}}
+    identity={'version':'existing-group-quality-screen-v1','group_sha256':digest(group_bytes),
+        'source_sha256':digest(source_bytes),'relevance_sha256':digest(relevance_bytes),
         'comment_ids':ids,'policy':policy,'prompts':prompts,
-        'code_and_data_sha256':{name:m.digest((m.ROOT/name).read_bytes()) for name in files},
+        'script_sha256':digest(Path(__file__).read_bytes()),'package_code_sha256':code_manifest()['modules'],
+        'asset_sha256':{name:digest(asset_path(name).read_bytes()) for name in ASSETS},
         'models':{models[lang]:tags[models[lang]] for lang in {r['language'] for r in rows}},
         'mode':'quality_only_using_frozen_relevance'}
     folder.mkdir(parents=True,exist_ok=True);manifest=folder/'manifest.json'
     if manifest.exists():
         if json.loads(manifest.read_text(encoding='utf-8'))['identity']!=identity:raise ValueError('Changed inputs/code: choose a new output directory')
     else:
-        m.write_json(manifest,{'identity':identity,'created_at_utc':datetime.now(timezone.utc).isoformat(),
+        write_json(manifest,{'identity':identity,'created_at_utc':datetime.now(timezone.utc).isoformat(),
             'group_path':str(args.group.resolve()),'frozen_relevance_run':str(args.from_run.resolve()),
             'labels_used_for_model_decisions':False,'workers':args.workers,
             'limits':'Not independent accuracy evaluation. No retrieval, extraction or engineering design.'})
-        m.write_json(folder/'source-snapshot.json',rows)
-        m.write_json(folder/'relevance.json',[decisions[cid] for cid in ids])
-        for name in files:(folder/('snapshot-'+Path(name).name)).write_bytes((m.ROOT/name).read_bytes())
-    runner=m.Runner(args.base_url,folder,prompts,identity,policy)
+        write_json(folder/'source-snapshot.json',rows)
+        write_json(folder/'relevance.json',[decisions[cid] for cid in ids])
+        (folder/('snapshot-'+Path(__file__).name)).write_bytes(Path(__file__).read_bytes())
+        for name in ('configs/evidence-quality-policy.json','configs/balance-review-policy.json','data/glossary.json'):
+            (folder/('snapshot-'+Path(name).name)).write_bytes(asset_path(name).read_bytes())
+        snapshot=folder/'code-snapshot';snapshot.mkdir(exist_ok=True)
+        for name in identity['package_code_sha256']:(snapshot/name).write_bytes(module_path(name).read_bytes())
+    runner=Runner(args.base_url,folder,prompts,identity,policy)
     def process(row):
         cid=row['record_id'];decision=decisions[cid]
         if not decision['agreement']:return classify(row,decision)
-        units=m.evidence_units(row['text_original']);attempts=[];record=None
+        units=evidence_units(row['text_original']);attempts=[];record=None
         for attempt in range(policy['max_attempts']):
             data={'source':row,'comments':[{'comment_id':cid,'units':units}],
-                'language':row['language'],'character_normalization_reference':m.character_reference(row['text_original']),
+                'language':row['language'],'character_normalization_reference':character_reference(row['text_original']),
                 'quality_contract':identity,'attempt':attempt+1}
             parsed,meta=runner.generate(models[row['language']],row['language'],'quality',data,[cid]);attempts.append(meta)
             if parsed is not None:
@@ -168,14 +181,14 @@ def main():
         futures={pool.submit(process,row):row['record_id'] for row in rows}
         for future in as_completed(futures):
             result=future.result();completed[result['comment_id']]=result
-            m.write_json(folder/'progress.json',{'completed':len(completed),'input':len(rows),
+            write_json(folder/'progress.json',{'completed':len(completed),'input':len(rows),
                 'elapsed_seconds':time.monotonic()-start,'decisions':dict(Counter(r['decision'] for r in completed.values()))})
-            m.write_json(folder/'screening-progress.json',[completed[cid] for cid in ids if cid in completed])
+            write_json(folder/'screening-progress.json',[completed[cid] for cid in ids if cid in completed])
             print(json.dumps({'completed':len(completed),'input':len(rows),'comment_id':result['comment_id'],
                 'decision':result['decision'],'quality_status':result['quality_status']},ensure_ascii=False),flush=True)
     summary=export_results(folder,[completed[cid] for cid in ids])
     summary['elapsed_seconds']=time.monotonic()-start
-    m.write_json(folder/'summary.json',summary)
+    write_json(folder/'summary.json',summary)
     print(json.dumps(summary,ensure_ascii=False,indent=2),flush=True)
 
 

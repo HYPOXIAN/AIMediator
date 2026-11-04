@@ -8,8 +8,12 @@ import json
 import os
 from pathlib import Path
 import re
+import sys
 import time
 import urllib.request
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
+from aimediator.resources import asset_path
 
 ROOT=Path(__file__).resolve().parents[2]
 FIELDS={'comment_id','language','claims','emotional_tone'}
@@ -191,7 +195,7 @@ def main():
         if sha(template.encode())!=metadata['prompt_sha256'] or sha((folder/'cases.json').read_bytes())!=metadata['cases_sha256']:
             raise ValueError('Frozen prompt or cases changed')
     else:
-        folder.mkdir(parents=True,exist_ok=False);cases=prepare_cases(args.dataset);template=(ROOT/'src/aimediator/assets/prompts/extract-grounded-feedback.txt').read_text(encoding='utf-8');save_json(folder/'cases.json',cases);(folder/'prompt.txt').write_text(template,encoding='utf-8');(folder/'runner.py').write_text(Path(__file__).read_text(encoding='utf-8'),encoding='utf-8')
+        folder.mkdir(parents=True,exist_ok=False);cases=prepare_cases(args.dataset);template=asset_path('prompts/extract-grounded-feedback.txt').read_text(encoding='utf-8');save_json(folder/'cases.json',cases);(folder/'prompt.txt').write_text(template,encoding='utf-8');(folder/'runner.py').write_text(Path(__file__).read_text(encoding='utf-8'),encoding='utf-8')
         metadata={'started_at_utc':dt.datetime.now(dt.timezone.utc).isoformat(),'models':args.models,'model_digests':{m:digests[m] for m in args.models},'ollama_version':local_request('/api/version'),'dataset_path':str(args.dataset),'dataset_sha256':sha(args.dataset.read_bytes()),'cases_sha256':sha((folder/'cases.json').read_bytes()),'prompt_sha256':sha(template.encode()),'options':{'temperature':0,'seed':42,'num_ctx':4096,'num_predict':520,'num_gpu':0,'num_thread':min(8,os.cpu_count() or 4)},'generation_mode':'local structured JSON schema plus evidence references','case_count':len(cases),'real_reviews':10,'empty_controls':2,'selection':'Purposive initial diagnostics, not random or held-out; expectations are not included in the model request.','hardware_note':'CPU explicitly selected after earlier GPU backend failures; no speed comparison claimed.'};save_json(folder/'metadata.json',metadata)
     results=[]
     for model in args.models:
