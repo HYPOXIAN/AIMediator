@@ -1299,6 +1299,53 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   ([B4 work order](../plans/code-restructuring-handoffs/b4-layer-removal-and-docs.md)),
   from `restructure-b3`; blockers: none.
 
+### 2026-11-04 B4-1 (implementation)
+
+- Steps: B4.1 to B4.5 (`62a9c74`, `03d6f2f`, `65ce0c5`, the series
+  `d5eecce`, `59a0b66`, then `99d4c49`); none started and stashed.
+- State: HEAD is this entry's commit (parent `99d4c49`); tests 221 (222
+  less the B4.2 test); lock green, fixture unchanged since
+  `restructure-b0`; rule check 0. Suite 9.6 s. Plan 8.5: 221 pass from a
+  foreign directory, which stays empty. Plan 8.2: `"passed": true`,
+  `"commands": 18`; the wheel's 27 modules equal the checkout. `ls -A`
+  shows no `prompts`, `scripts/` has no tracked file at its top level, and
+  one symlink remains (`cases.json`). Plan 8.7 greps 1, 2 and 5 and the
+  B4.2 grep print nothing; grep 3 matches, outside the planning documents,
+  only asset-relative names, and the narrowed command prints nothing. The
+  commit hygiene check prints nothing. The boundary check from
+  `restructure-b3` prints `data/processed/glossary-vectors/manifest.json`
+  (`376403a`, E-2) and `tests/test_cli_product.py` (`16412d4`, E-3), both
+  changed at the owner's instruction.
+- Findings:
+  - Three escalations, each answered by the owner during the session with
+    the recommended option and applied in its own commit: E-2, the
+    glossary index manifest named the glossary forwarder (`376403a`);
+    E-3, `test_cli_product` read a deleted prompt link built by string
+    concatenation (`16412d4`); E-4, this record reached the D7 size limit
+    (`D7_JUSTIFIED` in `check_rules.py`, `2127d63`, a deviation from plan
+    4.4 that the owner authorized).
+  - Two decisions found during execution, registered in B4.1 before B4.3
+    and open to the owner: the reading of plan 8.7, third grep, and the
+    archive form of the deleted symlinks.
+  - Archives: `~/Archives/AIMediator/scripts/20261104-forwarders/` (6
+    files) and `.../20261104-compatibility-links/` (`SYMLINKS.txt`, 18
+    links), each with a checked `SHA256SUMS`.
+  - Deviations noted in the step rows: B4.1 also updated four passages
+    beyond the listed lines (R1); dated design sentences name the old
+    scripts by file name only, because the B4.2 grep covers
+    `docs/design`; `G3_ALLOWED` had one comment line for `prompts`, not
+    two. The B4.3 work was stashed during E-3 and E-4 and restored; a
+    path-limited stash also carried the index, so restoring it conflicted
+    in this record, which was kept at its committed version, and the
+    restored B4.3 paths equal the stash.
+  - For the owner's review: the v1.3 wording (G3, P3, and the P7
+    consequence of B4.3); ADR 0002; the document changes of B4.1 and B4.3;
+    the register; and the E-4 checker change. The session ran past
+    midnight, so its notes, headers and the v1.3 effective date read
+    2026-11-04.
+- Next: B4-V (verification of B4, sets `restructure-b4-review`);
+  blockers: none.
+
 ## Batch results
 
 ## Deferred
