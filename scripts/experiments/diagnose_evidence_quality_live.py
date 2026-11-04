@@ -31,7 +31,9 @@ def main():
     p.add_argument('--comment-id',action='append',required=True)
     p.add_argument('--out',type=Path,required=True)
     p.add_argument('--base-url',default='http://127.0.0.1:11434')
-    args=p.parse_args();folder=args.out.resolve();policy=q.load_policy()
+    args=p.parse_args()
+    folder=args.out.resolve()
+    policy=q.load_policy()
     source_bytes=(args.admission_run/'source-snapshot.json').read_bytes()
     admission_bytes=(args.admission_run/'relevance.json').read_bytes()
     sources={r['record_id']:r for r in json.loads(source_bytes)}
@@ -59,21 +61,34 @@ def main():
         raise ValueError('Diagnostic identity changed; use a new output directory')
     write_json(manifest,{'identity':identity,'scope':'Fixed historical admissions only; no fresh retrieval or human effectiveness validation.'})
     write_json(folder/'source-snapshot.json',rows)
-    (folder/Path(__file__).name).write_bytes(Path(__file__).read_bytes());snapshot=folder/'code-snapshot';snapshot.mkdir(exist_ok=True)
-    for name in identity['package_code_sha256']:(snapshot/name).write_bytes(module_path(name).read_bytes())
+    (folder/Path(__file__).name).write_bytes(Path(__file__).read_bytes())
+    snapshot=folder/'code-snapshot'
+    snapshot.mkdir(exist_ok=True)
+    for name in identity['package_code_sha256']:
+        (snapshot/name).write_bytes(module_path(name).read_bytes())
     runner=Runner(args.base_url,folder,prompts,identity,policy,log=lambda text:print(text,flush=True))
-    quality_records=[];trace=[];comparison=[]
+    quality_records=[]
+    trace=[]
+    comparison=[]
     for row in rows:
-        cid=row['record_id'];lang=row['language'];model=by_lang[lang];units=evidence_units(row['text_original']);attempts=[];record=None
+        cid=row['record_id']
+        lang=row['language']
+        model=by_lang[lang]
+        units=evidence_units(row['text_original'])
+        attempts=[]
+        record=None
         for attempt in range(policy['max_attempts']):
             data={'source':row,'comments':[{'comment_id':cid,'units':units}],
                 'language':lang,'character_normalization_reference':character_reference(row['text_original']),
                 'quality_contract':policy,'attempt':attempt+1}
-            annotation,meta=runner.generate(model,lang,'quality',data,[cid]);attempts.append(meta)
+            annotation,meta=runner.generate(model,lang,'quality',data,[cid])
+            attempts.append(meta)
             trace.append({'stage':'quality','comment_id':cid,'attempt':attempt+1,**meta})
             if annotation is not None:
-                record=q.qualify(annotation,row,units,policy);break
-        record=record or q.failed_record(row,units,attempts,policy);record['attempts']=attempts
+                record=q.qualify(annotation,row,units,policy)
+                break
+        record=record or q.failed_record(row,units,attempts,policy)
+        record['attempts']=attempts
         quality_records.append(record)
         write_json(folder/'evidence-quality.json',quality_records)
         for mode in ('shadow','enforce'):
@@ -87,7 +102,8 @@ def main():
                     stage_prompts[stage][lang]+='\n'+identity['enforce_prompts'][stage][lang]
             mode_runner=Runner(args.base_url,folder/mode,stage_prompts,{**identity,'mode':mode},policy,log=lambda text:print(text,flush=True))
             parsed,meta=extract(mode_runner,model,lang,row,allowed_points=allowed if mode=='enforce' else None)
-            trace.append({'stage':'extract','mode':mode,'comment_id':cid,**meta});claims=[]
+            trace.append({'stage':'extract','mode':mode,'comment_id':cid,**meta})
+            claims=[]
             for r in audit(mode_runner,model,lang,row,parsed['assessments'][0]['claims'] if parsed else [],
                            {e['canonical_name'] for e in character_reference()},quality_record=record if mode=='enforce' else None):
                 entry={'claim_id':f"{cid}:{r['index']}",'comment_id':cid,'claim':r['enriched'] or r['claim'],'errors':r['errors']}
@@ -109,4 +125,5 @@ def main():
         'limitations':['No fresh embedding/relevance run.','No semantic accuracy estimate.','Model-proposed spans/points need human review.']})
 
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    main()

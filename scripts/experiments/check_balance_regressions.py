@@ -17,10 +17,12 @@ ROOT = workspace_root()
 
 
 def replay(cases, prior_claims):
-    characters={e['canonical_name'] for e in character_reference()};results=[]
+    characters={e['canonical_name'] for e in character_reference()}
+    results=[]
     for case in cases:
         errors,enriched=ground_claim(case['proposed_claim'],case['source'],characters)
-        old=prior_claims.get(case['case_id']);old_support=(old or {}).get('supported')
+        old=prior_claims.get(case['case_id'])
+        old_support=(old or {}).get('supported')
         brief=prepare_briefs([{**case['proposed_claim'],'claim_id':case['case_id'],
                               'comment_id':case['source']['record_id']}])['briefs'][0]
         results.append({'case_id':case['case_id'],'category':case['category'],
@@ -41,9 +43,13 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--baseline',type=Path,required=True)
     p.add_argument('--out',type=Path,required=True)
-    args=p.parse_args();fixture=ROOT/'data/evaluation/balance-regressions-v1/cases.json'
-    cases=strict_json(fixture.read_text(encoding='utf-8'));audit={r['claim_id']:r.get('audit') for r in strict_json((args.baseline/'audit-progress.json').read_text(encoding='utf-8'))}
-    output=replay(cases,audit);output['fixtures_sha256']=digest(fixture.read_bytes());write_json(args.out,output)
+    args=p.parse_args()
+    fixture=ROOT/'data/evaluation/balance-regressions-v1/cases.json'
+    cases=strict_json(fixture.read_text(encoding='utf-8'))
+    audit={r['claim_id']:r.get('audit') for r in strict_json((args.baseline/'audit-progress.json').read_text(encoding='utf-8'))}
+    output=replay(cases,audit)
+    output['fixtures_sha256']=digest(fixture.read_bytes())
+    write_json(args.out,output)
     reviews=strict_json((args.baseline/'source-review-decisions.json').read_text(encoding='utf-8'))
     selected={c['case_id']:reviews['decisions'][c['case_id']] for c in cases}
     proposals={c['case_id']:{'comment_id':c['source']['record_id'],'claim':c['proposed_claim'],'model':'prior-model-fixture'} for c in cases}
@@ -60,4 +66,5 @@ def main():
     print({k:v for k,v in output.items() if k!='cases'})
 
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    main()

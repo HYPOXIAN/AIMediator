@@ -13,9 +13,14 @@ from aimediator.evidence import character_candidates, character_reference, chara
 
 
 def followups(decisions,sources):
-    by_id={r['record_id']:r for r in sources};rows=[];attribution=[]
+    by_id={r['record_id']:r for r in sources}
+    rows=[]
+    attribution=[]
     for decision in decisions:
-        identity=decision['comment_id'];source=by_id[identity];reasons=[];scope=[]
+        identity=decision['comment_id']
+        source=by_id[identity]
+        reasons=[]
+        scope=[]
         reference=character_reference(source['text_original'])
         candidates=character_candidates(source['text_original'],reference)
         retained,excluded=attributed_candidates(source['text_original'],reference,candidates)
@@ -30,8 +35,11 @@ def followups(decisions,sources):
         if decision['agreement']:
             for entry in load_policy()['source_literal_characters']:
                 for term in character_terms(entry):
-                    if term_matches(term,source['text_original']):names.append(term)
-            if names:scope.append('identity');reasons.append('source_literal_official_identity_unverified')
+                    if term_matches(term,source['text_original']):
+                        names.append(term)
+            if names:
+                scope.append('identity')
+                reasons.append('source_literal_official_identity_unverified')
         if scope:
             rows.append({'comment_id':identity,'review_scope':scope,'reasons':reasons,
                 'admitted_for_extraction':decision['agreement'],'decision_changed':False,
@@ -43,11 +51,15 @@ def followups(decisions,sources):
 
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--run',type=Path,required=True);p.add_argument('--out',type=Path);args=p.parse_args()
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--run',type=Path,required=True)
+    p.add_argument('--out',type=Path)
+    args=p.parse_args()
     result=followups(strict_json((args.run/'relevance.json').read_text(encoding='utf-8')),strict_json((args.run/'source-snapshot.json').read_text(encoding='utf-8')))
     write_json(args.out or args.run/'review-followups.json',result)
     print({'total':result['total'],'scope_counts':result['scope_counts'],
            'attribution_exclusion_count':len(result['attribution_exclusions']),'decision_overrides':False})
 
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    main()

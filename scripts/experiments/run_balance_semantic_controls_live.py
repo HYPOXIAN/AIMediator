@@ -46,10 +46,13 @@ def main():
     if path.exists() and strict_json(path.read_text(encoding='utf-8')) != json.loads(json.dumps(identity)):
         raise ValueError('Control identity changed; use a new output directory')
     write_json(path,identity)
-    runner=Runner(args.base_url,args.out,prompts,log=lambda text:print(text,flush=True));runner.runtime_options=identity['runtime_options']
-    results=[];characters={e['canonical_name'] for e in character_reference()}
+    runner=Runner(args.base_url,args.out,prompts,log=lambda text:print(text,flush=True))
+    runner.runtime_options=identity['runtime_options']
+    results=[]
+    characters={e['canonical_name'] for e in character_reference()}
     for lang,category,text,expected in FIXTURES:
-        cid='synthetic-'+lang+'-'+category;model=models[lang]
+        cid='synthetic-'+lang+'-'+category
+        model=models[lang]
         source={'record_id':cid,'text_original':text,'source_url':None}
         parsed,meta=extract(runner,model,lang,source)
         checks=[{'claim':r['enriched'] or r['claim'],'source_errors':r['errors'],'audit':r['audit'],'verify_request':r['audit_meta']}
@@ -65,4 +68,5 @@ def main():
     print(f"Semantic controls: {report['passed']}/{report['total']}",flush=True)
 
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    main()

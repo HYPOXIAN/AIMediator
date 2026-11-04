@@ -33,7 +33,8 @@ def read_labels(folder, source_rows):
 
 
 def relevance_metrics(labels, predictions):
-    counts = Counter(); failures = []
+    counts = Counter()
+    failures = []
     for label in labels:
         if label['relevance'] == 'uncertain':
             counts['excluded_uncertain'] += 1
@@ -45,7 +46,8 @@ def relevance_metrics(labels, predictions):
         actual = predictions.get(identity) is True
         key = 'true_positive' if expected and actual else 'false_negative' if expected else 'false_positive' if actual else 'true_negative'
         counts[key] += 1
-        if expected != actual: failures.append({'comment_id': identity, 'expected': expected, 'actual': actual})
+        if expected != actual:
+            failures.append({'comment_id': identity, 'expected': expected, 'actual': actual})
     tp, fp, fn, tn = (counts[k] for k in ('true_positive', 'false_positive', 'false_negative', 'true_negative'))
     return {**{k: counts[k] for k in ('true_positive','false_positive','false_negative','true_negative','excluded_uncertain','missing_predictions')},
         'precision': tp/(tp+fp) if tp+fp else None, 'recall': tp/(tp+fn) if tp+fn else None,
@@ -55,7 +57,8 @@ def relevance_metrics(labels, predictions):
 
 def calibrate(labels, retrieved, sources):
     development = [r for r in labels if r['split'] == 'development']
-    by_id = {r['comment_id']: r for r in retrieved}; text = {r['record_id']:r['text_original'] for r in sources}
+    by_id = {r['comment_id']: r for r in retrieved}
+    text = {r['record_id']:r['text_original'] for r in sources}
     options = []
     for margin in (0.0,0.01,0.02,0.03,0.04,0.06,0.08,0.12):
         statuses = {l['comment_id']: triage_retrieval(by_id[l['comment_id']], text[l['comment_id']], margin)[0] for l in development}
@@ -87,9 +90,12 @@ def main():
     p.add_argument('--baseline',type=Path,required=True)
     p.add_argument('--candidate',type=Path)
     p.add_argument('--out',type=Path,required=True)
-    args=p.parse_args();sources=strict_json((args.baseline/'source-snapshot.json').read_text(encoding='utf-8'))
-    labels,manifest=read_labels(args.labels,sources);retrieval=strict_json((args.baseline/'retrieval.json').read_text(encoding='utf-8'))
-    fit=calibrate(labels,retrieval,sources);write_json(args.out/'calibration.json',fit)
+    args=p.parse_args()
+    sources=strict_json((args.baseline/'source-snapshot.json').read_text(encoding='utf-8'))
+    labels,manifest=read_labels(args.labels,sources)
+    retrieval=strict_json((args.baseline/'retrieval.json').read_text(encoding='utf-8'))
+    fit=calibrate(labels,retrieval,sources)
+    write_json(args.out/'calibration.json',fit)
     baseline=strict_json((args.baseline/'relevance.json').read_text(encoding='utf-8'))
     candidate=strict_json((args.candidate/'relevance.json').read_text(encoding='utf-8')) if args.candidate else None
     if args.candidate:
@@ -98,7 +104,8 @@ def main():
             raise ValueError('Candidate source dataset differs from frozen evaluation sources')
         read_labels(args.labels,strict_json((args.candidate/'source-snapshot.json').read_text(encoding='utf-8')))
         policy=strict_json((args.candidate/'review-policy-snapshot.json').read_text(encoding='utf-8'))
-        if policy['retrieval_borderline_margin']!=fit['selected_margin']:raise ValueError('Candidate did not use development-calibrated margin')
+        if policy['retrieval_borderline_margin']!=fit['selected_margin']:
+            raise ValueError('Candidate did not use development-calibrated margin')
     result={'reviewer_type':'agent','independent_human_gold':False,'label_manifest':manifest,
         'selection_warning':manifest['selection'],'metrics':evaluate(labels,baseline,candidate,fit['selected_margin'],retrieval,sources),
         'limitations':['Same-agent silver review is correlated with previous debugging; this is not independent model accuracy.',
@@ -108,4 +115,5 @@ def main():
     print(json.dumps({'selected_margin':fit['selected_margin'],'calibration_objective_met':fit['objective_met'],'metrics':result['metrics']},indent=2))
 
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    main()

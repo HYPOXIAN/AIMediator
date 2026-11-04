@@ -76,9 +76,11 @@ def export_results(folder, rows):
             lines += ['## '+row['comment_id'], '',
                       '语言：'+row['language']+'；阶段：'+row['decision_stage']+'；结果：'+row['reason'], '',
                       '原文：', '', *['> '+line for line in row['text_original'].splitlines()], '']
-            if row.get('source_url'): lines += ['[来源]('+row['source_url']+')','']
+            if row.get('source_url'):
+                lines += ['[来源]('+row['source_url']+')','']
             for kind,label in [('retained_fragments','保留片段'),('excluded_fragments','剔除片段'),('review_fragments','待复核片段')]:
-                if not row[kind]:continue
+                if not row[kind]:
+                    continue
                 lines += ['### '+label, '']
                 for item in row[kind]:
                     lines += [NAMES[item['route']]+'；原因：'+item['reason'], '']
@@ -119,22 +121,27 @@ def main():
     p.add_argument('--out',type=Path,required=True)
     p.add_argument('--base-url',default='http://127.0.0.1:11434')
     p.add_argument('--workers',type=int,default=3)
-    args=p.parse_args();folder=args.out.resolve()
-    if not 1<=args.workers<=4:raise ValueError('workers must be in [1,4]')
+    args=p.parse_args()
+    folder=args.out.resolve()
+    if not 1<=args.workers<=4:
+        raise ValueError('workers must be in [1,4]')
     group_bytes=args.group.read_bytes()
     # Use membership only. Never send old relevance/stance expectations to models.
     ids=[strict_json(line)['comment_id'] for line in group_bytes.decode().splitlines() if line.strip()]
-    if len(ids)!=len(set(ids)):raise ValueError('Duplicate group IDs')
+    if len(ids)!=len(set(ids)):
+        raise ValueError('Duplicate group IDs')
     source_bytes=(args.from_run/'source-snapshot.json').read_bytes()
     relevance_bytes=(args.from_run/'relevance.json').read_bytes()
     sources={r['record_id']:r for r in json.loads(source_bytes)}
     decisions={r['comment_id']:r for r in json.loads(relevance_bytes)}
-    if not set(ids)<=set(sources) or not set(ids)<=set(decisions):raise ValueError('Incomplete frozen source/relevance coverage')
+    if not set(ids)<=set(sources) or not set(ids)<=set(decisions):
+        raise ValueError('Incomplete frozen source/relevance coverage')
     rows=[sources[cid] for cid in ids]
     routing=json.loads(asset_path('configs/local-language-routing.json').read_text(encoding='utf-8'))
     models={v['language']:name for name,v in routing['models'].items()}
     tags={r['name']:r['digest'] for r in api(args.base_url,'/api/tags')['models']}
-    if any(models.get(r['language']) not in tags for r in rows):raise ValueError('A required local language model is missing')
+    if any(models.get(r['language']) not in tags for r in rows):
+        raise ValueError('A required local language model is missing')
     policy=q.load_policy()
     prompts={'quality':{lang:asset_path(f'prompts/evidence-quality.{lang}.txt').read_text(encoding='utf-8') for lang in ('en','zh')}}
     identity={'version':'existing-group-quality-screen-v1','group_sha256':digest(group_bytes),
@@ -144,9 +151,11 @@ def main():
         'asset_sha256':{name:digest(asset_path(name).read_bytes()) for name in ASSETS},
         'models':{models[lang]:tags[models[lang]] for lang in {r['language'] for r in rows}},
         'mode':'quality_only_using_frozen_relevance'}
-    folder.mkdir(parents=True,exist_ok=True);manifest=folder/'manifest.json'
+    folder.mkdir(parents=True,exist_ok=True)
+    manifest=folder/'manifest.json'
     if manifest.exists():
-        if json.loads(manifest.read_text(encoding='utf-8'))['identity']!=identity:raise ValueError('Changed inputs/code: choose a new output directory')
+        if json.loads(manifest.read_text(encoding='utf-8'))['identity']!=identity:
+            raise ValueError('Changed inputs/code: choose a new output directory')
     else:
         write_json(manifest,{'identity':identity,'created_at_utc':datetime.now(timezone.utc).isoformat(),
             'group_path':str(args.group.resolve()),'frozen_relevance_run':str(args.from_run.resolve()),
@@ -157,30 +166,40 @@ def main():
         (folder/('snapshot-'+Path(__file__).name)).write_bytes(Path(__file__).read_bytes())
         for name in ('configs/evidence-quality-policy.json','configs/balance-review-policy.json','data/glossary.json'):
             (folder/('snapshot-'+Path(name).name)).write_bytes(asset_path(name).read_bytes())
-        snapshot=folder/'code-snapshot';snapshot.mkdir(exist_ok=True)
-        for name in identity['package_code_sha256']:(snapshot/name).write_bytes(module_path(name).read_bytes())
+        snapshot=folder/'code-snapshot'
+        snapshot.mkdir(exist_ok=True)
+        for name in identity['package_code_sha256']:
+            (snapshot/name).write_bytes(module_path(name).read_bytes())
     runner=Runner(args.base_url,folder,prompts,identity,policy,log=lambda text:print(text,flush=True))
     def process(row):
-        cid=row['record_id'];decision=decisions[cid]
-        if not decision['agreement']:return classify(row,decision)
-        units=evidence_units(row['text_original']);attempts=[];record=None
+        cid=row['record_id']
+        decision=decisions[cid]
+        if not decision['agreement']:
+            return classify(row,decision)
+        units=evidence_units(row['text_original'])
+        attempts=[]
+        record=None
         for attempt in range(policy['max_attempts']):
             data={'source':row,'comments':[{'comment_id':cid,'units':units}],
                 'language':row['language'],'character_normalization_reference':character_reference(row['text_original']),
                 'quality_contract':identity,'attempt':attempt+1}
-            parsed,meta=runner.generate(models[row['language']],row['language'],'quality',data,[cid]);attempts.append(meta)
+            parsed,meta=runner.generate(models[row['language']],row['language'],'quality',data,[cid])
+            attempts.append(meta)
             if parsed is not None:
                 record=q.qualify(parsed,row,units,policy)
-                if not record['errors']:break
+                if not record['errors']:
+                    break
                 record=None
         record=record or q.failed_record(row,units,attempts,policy)
         record.update(attempts=attempts,model=models[row['language']],observation_only=False)
         return classify(row,decision,record)
-    completed={};start=time.monotonic()
+    completed={}
+    start=time.monotonic()
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
         futures={pool.submit(process,row):row['record_id'] for row in rows}
         for future in as_completed(futures):
-            result=future.result();completed[result['comment_id']]=result
+            result=future.result()
+            completed[result['comment_id']]=result
             write_json(folder/'progress.json',{'completed':len(completed),'input':len(rows),
                 'elapsed_seconds':time.monotonic()-start,'decisions':dict(Counter(r['decision'] for r in completed.values()))})
             write_json(folder/'screening-progress.json',[completed[cid] for cid in ids if cid in completed])
@@ -192,4 +211,5 @@ def main():
     print(json.dumps(summary,ensure_ascii=False,indent=2),flush=True)
 
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    main()
