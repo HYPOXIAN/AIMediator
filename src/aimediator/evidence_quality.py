@@ -10,6 +10,7 @@ from pathlib import Path
 import unicodedata
 
 from .resources import asset_path
+from .schema import NULLABLE_NONEMPTY_STRING, STRING, enum, quality_obj, schema_errors
 POLICY_PATH = asset_path('configs/evidence-quality-policy.json')
 ROUTES = ('exclude', 'opinion_only', 'mechanism_evidence', 'system_evidence', 'review')
 REASONS = ('empty_venting', 'general_strength', 'concrete_mechanic_condition',
@@ -29,17 +30,6 @@ def load_policy():
     return policy
 
 
-def obj(properties):
-    return {'type': 'object', 'properties': properties, 'required': list(properties),
-            'additionalProperties': False}
-
-
-def enum(values):
-    return {'type': 'string', 'enum': list(values)}
-
-
-STRING = {'type': 'string', 'minLength': 1}
-NULL_STRING = {'type': ['string', 'null'], 'minLength': 1}
 SCOPES = ('character_balance', 'system_balance', 'unrelated', 'uncertain')
 KINDS = ('pure_emotion', 'general_opinion', 'concrete_feedback', 'other', 'uncertain')
 
@@ -47,55 +37,21 @@ KINDS = ('pure_emotion', 'general_opinion', 'concrete_feedback', 'other', 'uncer
 def annotation_schema(ids):
     if len(ids) != 1:
         raise ValueError('Quality annotation requires exactly one comment')
-    return obj({'comment_id': enum(ids),
-        'segments': {'type': 'array', 'items': obj({
+    return quality_obj({'comment_id': enum(ids),
+        'segments': {'type': 'array', 'items': quality_obj({
             'segment_id': STRING, 'evidence_id': STRING,
             'start': {'type': 'integer', 'minimum': 0},
             'end': {'type': 'integer', 'minimum': 1}, 'quote': STRING,
             'scope': enum(SCOPES), 'content_kind': enum(KINDS),
             'emotional_tone': {'type': 'boolean'}, 'reason_code': enum(REASONS)})},
-        'information_points': {'type': 'array', 'items': obj({
+        'information_points': {'type': 'array', 'items': quality_obj({
             'point_id': STRING,
             'segment_ids': {'type': 'array', 'items': STRING, 'minItems': 1, 'uniqueItems': True},
             'scope': enum(('character_balance', 'system_balance', 'uncertain')),
             'detail_level': enum(('general', 'concrete', 'uncertain')),
             'stance': enum(('explicit_request', 'strength_assessment', 'observation', 'uncertain')),
             'direction': enum(('buff', 'nerf', 'keep', 'unclear')),
-            'character_literal': NULL_STRING, 'mechanic_literal': NULL_STRING})}})
-
-
-def schema_errors(value, schema, path='$'):
-    errors = []
-    if 'enum' in schema and value not in schema['enum']:
-        errors.append(path + ': value outside enum')
-    kind = schema.get('type')
-    kinds = kind if isinstance(kind, list) else [kind] if kind else []
-    types = {'object': lambda v: isinstance(v, dict), 'array': lambda v: isinstance(v, list),
-             'string': lambda v: isinstance(v, str), 'null': lambda v: v is None,
-             'boolean': lambda v: type(v) is bool, 'integer': lambda v: type(v) is int,
-             'number': lambda v: type(v) in (float, int)}
-    if kinds and not any(types[k](value) for k in kinds):
-        return errors + [path + ': wrong type']
-    if isinstance(value, dict) and kind == 'object':
-        properties = schema['properties']
-        if set(schema.get('required', [])) - set(value):
-            errors.append(path + ': missing keys')
-        if schema.get('additionalProperties') is False and set(value) - set(properties):
-            errors.append(path + ': extra keys')
-        for key in set(value) & set(properties):
-            errors.extend(schema_errors(value[key], properties[key], path + '.' + key))
-    if isinstance(value, list) and kind == 'array':
-        if not schema.get('minItems', 0) <= len(value) <= schema.get('maxItems', float('inf')):
-            errors.append(path + ': wrong item count')
-        if schema.get('uniqueItems') and len({json.dumps(v, sort_keys=True) for v in value}) != len(value):
-            errors.append(path + ': duplicate items')
-        for i, item in enumerate(value):
-            errors.extend(schema_errors(item, schema['items'], f'{path}[{i}]'))
-    if isinstance(value, str) and len(value) < schema.get('minLength', 0):
-        errors.append(path + ': empty string')
-    if type(value) in (int, float) and not schema.get('minimum', -float('inf')) <= value <= schema.get('maximum', float('inf')):
-        errors.append(path + ': outside bounds')
-    return errors
+            'character_literal': NULLABLE_NONEMPTY_STRING, 'mechanic_literal': NULLABLE_NONEMPTY_STRING})}})
 
 
 def weight(text):

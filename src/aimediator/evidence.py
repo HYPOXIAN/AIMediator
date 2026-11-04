@@ -5,12 +5,12 @@ import re
 from .balance_policy import (attributed_candidates, direction_action_conflicts, identity_alias_allowed,
                              load_policy, numeric_request_supported, term_matches)
 from .resources import glossary
-from .schema import BOOL, NULL_STRING, STRING, arr, obj
+from .schema import BOOL, NULLABLE_STRING, STRING, arr, obj
 
 PARAMETER = obj({k: v for k, v in [
-    ('metric', STRING), ('current', NULL_STRING), ('proposed', NULL_STRING),
-    ('delta', NULL_STRING), ('unit', NULL_STRING), ('evidence_id', STRING)]})
-CLAIM = obj({'character': STRING, 'target': NULL_STRING,
+    ('metric', STRING), ('current', NULLABLE_STRING), ('proposed', NULLABLE_STRING),
+    ('delta', NULLABLE_STRING), ('unit', NULLABLE_STRING), ('evidence_id', STRING)]})
+CLAIM = obj({'character': STRING, 'target': NULLABLE_STRING,
              'direction': {'enum': ['buff', 'nerf', 'keep', 'unclear']},
              'recommendation': STRING, 'specificity': {'enum': ['qualitative_only', 'source_numeric']},
              'parameters': arr(PARAMETER), 'evidence_ids': arr(STRING), 'uncertain': BOOL})
