@@ -620,6 +620,12 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
 - **Blocked**: B4.3, and through it B4.4 (G3 needs `prompts/` gone) and
   B4.5. The B4.3 work in progress is stashed as
   `WIP Step B4.3: escalation E-3`.
+- **Answer**: the owner, 2026-11-04, given to session B4-1: option (a).
+  B4-1 changed the expression at the owner's instruction in its own
+  `chore` commit, which also records this answer, after the E-4 commit
+  that made the record committable again, then restored the stashed
+  B4.3 work and finished B4.3. The commit lies outside the B4 boundary,
+  so the B4-V boundary check prints `tests/test_cli_product.py` for it.
 
 ### E-4 The change record reaches the D7 size limit (B4.3)
 

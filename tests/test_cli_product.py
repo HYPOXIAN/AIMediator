@@ -334,7 +334,7 @@ class ProductTests(unittest.TestCase):
     def test_existing_script_and_package_use_same_prompt_bytes(self):
         from aimediator.operations import prompts_for
         for lang in ('en','zh'):
-            self.assertEqual(prompts_for('off')['extract'][lang],(Path(__file__).resolve().parents[1]/('prompts/summarize-balance.'+lang+'.txt')).read_text(encoding='utf-8'))
+            self.assertEqual(prompts_for('off')['extract'][lang],asset_path('prompts/summarize-balance.'+lang+'.txt').read_text(encoding='utf-8'))
 
     def test_interrupted_audit_exports_complete_pending_proposals(self):
         original=self.transport.chat
