@@ -586,8 +586,11 @@ than guessing:
     `requests/`, Markdown, CSV and JSONL files.
 4. Everything else must be byte-stable. Do not exclude whole files, except the
 
-   empty `.writer.lock`. List every exclusion and every volatile key in the
-    change record.
+   empty `.writer.lock` and the files that hold only code or code hashes
+    (`*-snapshot.py`, `code-manifest.json`). For those, the lock checks that
+    they exist and replaces their content digest with a placeholder: they
+    change with every code edit and carry no behavior. List every exclusion
+    and every volatile key in the change record.
 
 ### 5.4 Self-test (record the results in the change record)
 

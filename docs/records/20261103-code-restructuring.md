@@ -247,6 +247,21 @@ in the checkout, the lock was run, and the file was restored with
 
 ## Decisions found during execution
 
+### Code-only lock exemptions in plan 5.3 item 4 (found by B0-V)
+
+- **Question**: plan 5.3 item 4 allows only `.writer.lock` as a whole-file
+  exclusion. The B0 handoff also exempts the code-only files
+  `*-snapshot.py` and `code-manifest.json`, and the lock does so (see the
+  B0-V note). Which wording holds?
+- **Answer**: the owner, 2026-11-03, given to session B0-V: reword plan 5.3
+  item 4 to allow the code-only exemptions. B0-V made the correction at
+  the owner's instruction in its own `docs` commit, which also records
+  this answer. The lock and its fixture are unchanged.
+- **Effect on B1**: the commit follows the `restructure-b0` tag. The B1
+  boundary check, run from `restructure-b0`, therefore prints
+  `docs/plans/code-restructuring.md` for this commit. That line is
+  expected and is not a B1 change.
+
 ## Escalations
 
 ### E-1 Baseline of "Test files importing forwarders" (B0.4)
