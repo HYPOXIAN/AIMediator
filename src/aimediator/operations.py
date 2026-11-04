@@ -67,7 +67,7 @@ def analyze(input_path=None, out=None, cfg=None, resume=None, env_file=None, tra
             raise Failure(4, 'Saved resume identity/snapshot is missing or invalid; start a new run') from None
         validate(cfg)
         if transport is None and manifest['execution_provenance'] == 'agent_authored_synthetic_fixture_transports':
-            from .demo import FixtureTransport
+            from .fixture_transport import FixtureTransport
             transport = FixtureTransport(cfg)
         current_state = read(folder / 'run-state.json')
         completed = current_state['run_state'] == 'completed'
