@@ -138,6 +138,15 @@ class RunState:
     coverage: list = field(default_factory=list)
 
 
+def triage(state, retrieval):
+    """Start one relevance decision per retrieved comment and triage it by its retrieval scores."""
+    state.decisions = {d['comment_id']: {**d, 'model_related': None, 'agreement': False} for d in retrieval}
+    for decision in state.decisions.values():
+        status, reasons = triage_retrieval(decision, state.by_id[decision['comment_id']]['text_original'],
+                                           load_policy()['retrieval_borderline_margin'])
+        decision.update(retrieval_triage=status, retrieval_triage_reasons=reasons)
+
+
 def process(args, rows, routing, models, prompts, quality_identity, quality_policy,
             identity, embedding_config=None, runner_factory=Runner, retrieval_service=retrieve):
     """Shared orchestration with explicit inputs and injected inference boundaries."""
@@ -150,11 +159,7 @@ def process(args, rows, routing, models, prompts, quality_identity, quality_poli
     state.runner = runner_factory(state.args.base_url, state.folder, prompts, state.quality_identity,
                                   state.quality_policy)
     state.runner.runtime_options = state.identity.get('runtime_options', {})
-    state.decisions = {d['comment_id']: {**d, 'model_related': None, 'agreement': False} for d in retrieval}
-    for decision in state.decisions.values():
-        status, reasons = triage_retrieval(decision, state.by_id[decision['comment_id']]['text_original'],
-                                           load_policy()['retrieval_borderline_margin'])
-        decision.update(retrieval_triage=status, retrieval_triage_reasons=reasons)
+    triage(state, retrieval)
     reference = character_reference()
     state.characters = {e['canonical_name'] for e in reference}
     for model in state.models:
