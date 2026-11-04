@@ -298,6 +298,26 @@ def extract_claims(state, model, language, selected):
         write_json(state.folder / 'quarantined-claims.json', state.quarantine)
 
 
+def audit_claims(state, model, language):
+    """Audit each claim of the model alone and quarantine unsupported ones; write the progress after each audit."""
+    # Audit in a separate context, with original spans, never the generator's rationale.
+    pending = [c for c in state.claims if c['model'] == model]
+    for batch in batches(pending, count=1):
+        parsed, meta = state.runner.generate(model, language, 'verify',
+            {'claims': batch, 'original_comment': state.by_id[batch[0]['comment_id']]['text_original']},
+                                             [c['claim_id'] for c in batch])
+        state.trace.append({'model': model, 'stage': 'verify', **meta})
+        verdicts = {v['claim_id']: v for v in parsed['verdicts']} if parsed else {}
+        for entry in batch:
+            verdict = verdicts.get(entry['claim_id'])
+            entry['audit'] = verdict
+            if verdict is None or not verdict['supported']:
+                state.quarantine.append({**entry, 'stage': 'semantic_audit',
+                    'errors': [verdict['reason'] if verdict else 'Audit failed; fail closed']})
+        write_json(state.folder / 'audit-progress.json', state.claims)
+        write_json(state.folder / 'quarantined-claims.json', state.quarantine)
+
+
 def process(args, rows, routing, models, prompts, quality_identity, quality_policy,
             identity, embedding_config=None, runner_factory=Runner, retrieval_service=retrieve):
     """Shared orchestration with explicit inputs and injected inference boundaries."""
@@ -330,22 +350,7 @@ def process(args, rows, routing, models, prompts, quality_identity, quality_poli
             if getattr(state.args, 'quality_only', False):
                 continue
         extract_claims(state, model, language, selected)
-        # Audit in a separate context, with original spans, never the generator's rationale.
-        pending = [c for c in state.claims if c['model'] == model]
-        for batch in batches(pending, count=1):
-            parsed, meta = state.runner.generate(model, language, 'verify',
-                {'claims': batch, 'original_comment': state.by_id[batch[0]['comment_id']]['text_original']},
-                                                 [c['claim_id'] for c in batch])
-            state.trace.append({'model': model, 'stage': 'verify', **meta})
-            verdicts = {v['claim_id']: v for v in parsed['verdicts']} if parsed else {}
-            for entry in batch:
-                verdict = verdicts.get(entry['claim_id'])
-                entry['audit'] = verdict
-                if verdict is None or not verdict['supported']:
-                    state.quarantine.append({**entry, 'stage': 'semantic_audit',
-                        'errors': [verdict['reason'] if verdict else 'Audit failed; fail closed']})
-            write_json(state.folder / 'audit-progress.json', state.claims)
-            write_json(state.folder / 'quarantined-claims.json', state.quarantine)
+        audit_claims(state, model, language)
     accepted = [{**e['claim'], 'claim_id': e['claim_id'], 'comment_id': e['comment_id'],
                  'model': e['model'], 'semantic_audit': e['audit']} for e in state.claims
                 if (e.get('audit') or {}).get('supported')]
