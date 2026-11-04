@@ -586,6 +586,41 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   `data/processed/glossary-vectors/manifest.json` for it. B4.2 then ran
   as written.
 
+### E-3 A test reads a deleted prompt link (B4.3)
+
+- **Step**: B4.3.
+- **Question**: with the 18 links deleted in the working tree,
+  `test_cli_product.test_existing_script_and_package_use_same_prompt_bytes`
+  errors with `FileNotFoundError`. Line 337 reads its expected bytes from
+  the checkout path `prompts/summarize-balance.<lang>.txt`, built by string
+  concatenation (`'prompts/summarize-balance.'+lang+'.txt'`), so the plan
+  8.7 third grep, the B0.4 count and the register's "Used by" cells all
+  missed it. A wider scan of `src`, `scripts` and `tests` for the removed
+  directory names outside `asset_path` finds no other user. This is the
+  second trigger of work order B4, section 6: a deleted path still used
+  outside the planning documents. The file is outside the B4 boundary. How
+  is the test handled?
+- **Options**:
+  - (a) The owner authorizes one `chore` commit, before B4.3, that changes
+    only the expected side of line 337 to
+    `asset_path('prompts/summarize-balance.'+lang+'.txt')`, the file the
+    link points to (`asset_path` is already imported). The assertion and
+    the test count stay; the test still checks that `prompts_for('off')`
+    hands the packaged summarize prompt to extraction byte for byte. B4.3
+    then runs as written.
+  - (b) Delete the test, whose subject, the checkout path used by the old
+    scripts, no longer exists: 220 tests, so B4 becomes -2 against the -1
+    of blueprint 1.3.
+  - (c) Keep `prompts/summarize-balance.{en,zh}.txt` registered until the
+    test changes. `prompts/` stays, so B4.4 (G3) and B4-V checklist item 2
+    cannot pass.
+- **Recommendation**: (a). The test keeps its value with the single
+  source, the change is one expression, a revert undoes it, and the
+  behavior lock is not involved.
+- **Blocked**: B4.3, and through it B4.4 (G3 needs `prompts/` gone) and
+  B4.5. The B4.3 work in progress is stashed as
+  `WIP Step B4.3: escalation E-3`.
+
 ## Verification notes
 
 ### 2026-11-03 B0-V
