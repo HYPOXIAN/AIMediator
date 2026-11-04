@@ -53,6 +53,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | B2.7 | done | 217 | green | Pure move of `retrieve` into the new `retrieval.py`, which imports `json`, `numpy`, `glossary_vectors`, `digest` and `write_json` from `common`, `api` from `inference` and `anchors` from `resources` (all inside its plan 4.2 row), and holds `POS, NEG = anchors()` at module level, so the function body is unchanged; B5.10 makes it lazy. The `POS, NEG = anchors()` line left `engine.py`, which imports `NEG`, `POS` and `retrieve` from `retrieval` and keeps every import line, `from .resources import anchors` included; 558 to 511 lines. `anchors()` now runs once at import, in `retrieval`. Move check from `af5c247`: `same` for all 11 definitions, none changed intentionally. `json.dumps([POS, NEG])` is byte-identical before (from `engine`) and after (from `retrieval`); `engine.retrieve`, `engine.POS` and `engine.NEG` are the `retrieval` objects |
 | B2.8 | done | 217 | green | Pure move of `VERSION`, `relevance_agrees`, `batches`, `aggregate`, `quality_source_counts`, `build_full_coverage`, `validate_modes` and `process` into the new `pipeline.py`, which imports `collections.Counter`, `json`, `evidence_quality` as `quality`, `load_policy` (the review policy), `retrieval_review_agrees` and `triage_retrieval` from `balance_policy`, `write_json` from `common`, `character_reference`, `evidence_units` and `ground_claim` from `evidence`, `retrieve` from `retrieval` and `Runner` from `runner` (all inside its plan 4.2 row). The defaults of `process` are `runner.Runner` and `retrieval.retrieve`. `engine.py` imports the eight names back and now holds only the docstring, its import lines (all kept), `ROOT`, the `schema_errors` wrapper, `run`, `main` and the `__main__` guard; 511 to 153 lines. Its docstring gains a paragraph saying that the facade is removed in B3.6; `main` uses the docstring as the argparse description, so only that description in `python3 -m aimediator.engine --help` changes. Move check from `9ffb4fe`: `same` for all 10 definitions, none changed intentionally. `pipeline.VERSION` is `balance-evidence-v2`, and each `engine` name is the `pipeline` object |
 | B2.9 | done | 217 | green | Pure move of `FixtureTransport` from `demo.py` into the new `fixture_transport.py`, which imports `json`, `numpy`, `read` from `common`, `character_candidates` and `character_reference` from `evidence`, `Transport` from `inference`, and `anchors` and `asset_path` from `resources` (all inside its plan 4.2 row). Intentionally changed, qualified names only: `FixtureTransport` (`api`: `engine.NEG` to `anchors()[1]`, which the work order prescribes because the table does not allow `fixture_transport` to import `retrieval`; `chat`: `engine.character_candidates` and `engine.character_reference` to the `evidence` names). With those three replacements applied to the old class, both ASTs are identical. `anchors()` now runs once per embedded text in the fixture's `api`; B5.10 caches it. `demo.py` imports `FixtureTransport` from the new module and drops the imports the move left unused: `inference.Transport` (the table forbids `demo -> inference`), `json`, `numpy` and `engine`; the unused `pathlib.Path` was unused before and stays. `operations.py` imports `FixtureTransport` from `fixture_transport` inside `analyze`, which breaks the `demo` and `operations` cycle. `demo.FixtureTransport` is the same class, so the tests and the lock that import it are unchanged. Move check from `5c7a359`: `engine.py` 3 of 3 `same`; `demo.py` `same demo` and `CHANGED FixtureTransport`. Plan 8.7 grep 2: 29 lines in 5 modules (32 in 6 before) |
+| B2.10 | done | 222 | green | New `tests/test_module_layers.py` (+5). It holds the plan 4.2 table copied row by row (27 rows; a scratch parse of the plan gives identical rows), allows `__version__` for every module, and has the transitional allowance (`engine` may import any module; `review`, `reporting`, `operations`, `evaluation`, `demo` and `legacy_review` may import `engine`), marked for removal in B3.6. It parses every top-level module under `Path(__file__).resolve().parents[1] / 'src/aimediator'` with `ast.walk`, so imports inside functions count: relative `ImportFrom` (the first module component, or the imported names when the module is `None`), `import aimediator.<x>`, and also the absolute `from aimediator[.<x>] import` form, which no module uses today. Tests: the scanner on a synthetic source with every form; every module file is in the table, and no subpackage exists yet (B6.2 must extend the test on purpose); `__init__.py` imports nothing from the package (decision found during execution, below); every edge is allowed; no cycle. At HEAD: no violation, no cycle. On the tree of `5c7a359` (before B2.9) it reports exactly `demo -> inference (line 9)`, `operations -> demo (line 70)` and the cycle `demo -> operations -> demo`. Scratch copies with `from . import engine` added to `stages.py`, with an unlisted module, or with an import in `__init__.py` fail as expected |
 
 ## Baseline measurements (B0.4)
 
@@ -347,6 +348,26 @@ mentions.
 - **Status**: implemented in B1.7 under plan section 1, item 8. For the
   same reason, the B1.6 and B1.7 change-log lines point to this record for
   the file names instead of naming them.
+
+### `__init__.py` and the module table (found in B2.10)
+
+- **Question**: the B2.10 test asserts that every module file appears in
+  the plan 4.2 table. `src/aimediator/__init__.py` has no row: it defines
+  only `__version__` and imports nothing. Plan 4.2 says that a table change
+  needs a registered decision. How is `__init__.py` handled?
+- **Options**: (a) treat `__init__.py` as the package itself, the source of
+  the `__version__` that every module may import: leave it out of the
+  coverage assertion, and give it its own assertion that it has no
+  intra-package import. The copied table stays identical to plan 4.2.
+  (b) Add an `__init__` row with no allowed import to the plan table and to
+  the test's copy. The plan is outside the B2 boundary. (c) Leave the
+  coverage assertion failing until the owner decides.
+- **Recommendation**: (a). The test is as strict as under (b), no document
+  outside the boundary changes, a revert of the B2.10 commit undoes it, the
+  lock stays green, and no rule changes.
+- **Status**: implemented in B2.10 under plan section 1, item 8. The owner
+  may reject it; (b) would then be a plan correction and a one-row change
+  of the test.
 
 ## Escalations
 
