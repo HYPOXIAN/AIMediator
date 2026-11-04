@@ -16,6 +16,7 @@ import urllib.request
 from zoneinfo import ZoneInfo
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
+from aimediator.common import write as write_json
 from aimediator.resources import workspace_root
 
 ROOT = workspace_root()
@@ -47,16 +48,6 @@ def load_youtube_key(path):
 
 def utc_now():
     return dt.datetime.now(dt.timezone.utc).isoformat()
-
-
-def write_json(path, value):
-    temporary = path.with_name(path.name + ".tmp")
-    with temporary.open("w", encoding="utf-8") as stream:
-        json.dump(value, stream, ensure_ascii=False, indent=2)
-        stream.write("\n")
-        stream.flush()
-        os.fsync(stream.fileno())
-    temporary.replace(path)
 
 
 def retry_delay(value, now=None):
