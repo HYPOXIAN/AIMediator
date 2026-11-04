@@ -1,9 +1,76 @@
-"""Injected production transports with durable finite attempt budgets."""
+"""Ollama HTTP calls and injected production transports with durable finite attempt budgets."""
+import json
+import re
 import urllib.request
 from urllib.error import HTTPError
 import numpy as np
-from . import engine
-from .common import Failure, canonical, read, sha, write
+from . import glossary_vectors
+from .common import Failure, canonical, read, sha, strict_json, write
+
+
+def api(base, endpoint, payload=None):
+    data = None if payload is None else json.dumps(payload, ensure_ascii=False).encode()
+    request = urllib.request.Request(base + endpoint, data=data,
+                                     headers={'Content-Type': 'application/json'})
+    with urllib.request.urlopen(request, timeout=1800) as response:
+        return json.load(response)
+
+
+def repeated_claim(output, allowed_ids):
+    scopes = [(match.start(), match.group(1)) for match in
+              re.finditer(r'(?<!\\)"([^"]+)"\s*:', output) if match.group(1) in allowed_ids]
+    seen = set()
+    decoder = json.JSONDecoder()
+    for match in re.finditer(r'\{\s*"character"\s*:', output):
+        try:
+            claim, _ = decoder.raw_decode(output, match.start())
+        except ValueError:
+            continue
+        parents = [identity for position, identity in scopes if position < match.start()]
+        if not parents:
+            continue
+        signature = (parents[-1], json.dumps(claim, sort_keys=True, ensure_ascii=False))
+        if signature in seen:
+            return True
+        seen.add(signature)
+    return False
+
+
+def streamed_chat(base, payload, partial_path, timeout=1800):
+    request = urllib.request.Request(base + '/api/chat',
+        data=json.dumps(payload, ensure_ascii=False).encode(), headers={'Content-Type': 'application/json'})
+    parts, last, whitespace = [], {}, 0
+    with partial_path.open('w', encoding='utf-8') as log, urllib.request.urlopen(request, timeout=timeout) as response:
+        for line in response:
+            if not line.strip():
+                continue
+            chunk = json.loads(line)
+            fragment = chunk.get('message', {}).get('content', '')
+            parts.append(fragment)
+            log.write(fragment)
+            log.flush()
+            whitespace = whitespace + len(fragment) if fragment and fragment.isspace() else 0
+            last = chunk
+            if whitespace > 256:
+                last = {**chunk, 'done': False, 'done_reason': 'whitespace_loop'}
+                break
+            if 'assessments' in payload['format']['properties']:
+                assessment_schema = payload['format']['properties']['assessments']
+                if assessment_schema.get('type') == 'object':
+                    allowed = set(assessment_schema['properties'])
+                    identities = [key for key in re.findall(r'(?<!\\)"([^"]+)"\s*:', ''.join(parts)) if key in allowed]
+                else:
+                    identities = re.findall(r'(?<!\\)"comment_id"\s*:\s*"([^"]+)"', ''.join(parts))
+                if len(identities) != len(set(identities)):
+                    last = {**chunk, 'done': False, 'done_reason': 'duplicate_comment_loop'}
+                    break
+                if assessment_schema.get('type') == 'object' and repeated_claim(''.join(parts), allowed):
+                    last = {**chunk, 'done': False, 'done_reason': 'duplicate_claim_loop'}
+                    break
+            if chunk.get('done'):
+                break
+    return {**last, 'message': {'role': 'assistant', 'content': ''.join(parts)}}
+
 
 
 class Transport:
@@ -16,7 +83,7 @@ class Transport:
         data = canonical(payload) if payload is not None else None
         req = urllib.request.Request(url, data=data, headers={'Content-Type': 'application/json', **(headers or {})})
         with urllib.request.urlopen(req, timeout=timeout or self.cfg['request_timeout']) as response:
-            return engine.strict_json(response.read().decode('utf-8'))
+            return strict_json(response.read().decode('utf-8'))
 
     def tags(self):
         return self._json(self.cfg['base_url'] + '/api/tags', timeout=self.cfg['connection_timeout'])
@@ -61,7 +128,7 @@ class Transport:
             if len(rows) != len(texts) or sorted(r.get('index', -1) for r in rows) != list(range(len(texts))):
                 raise ValueError('Missing or duplicate embedding indexes')
             rows.sort(key=lambda r: r['index'])
-            vectors = engine.glossary_vectors.normalize([r['embedding'] for r in rows])
+            vectors = glossary_vectors.normalize([r['embedding'] for r in rows])
             return {'vectors': vectors.tolist(), 'usage': result.get('usage', {})}
         if self.folder:
             result = self._durable(self.folder / 'requests' / 'embedding' / sha(canonical(request)), request, call, 4)
@@ -74,7 +141,7 @@ class Transport:
         request = {'base_url': base, 'payload': payload}
         try:
             return self._durable(directory, request,
-                lambda: engine.streamed_chat(base, payload, partial_path, timeout=self.cfg['request_timeout']))
+                lambda: streamed_chat(base, payload, partial_path, timeout=self.cfg['request_timeout']))
         except Failure:
             return {'done': False, 'done_reason': 'attempt_budget_exhausted',
                     'message': {'content': ''}, 'error': 'Persistent transport attempt budget exhausted'}
@@ -96,7 +163,7 @@ def probe(cfg, transport, require_embedding=True):
             else:
                 result = transport.api(cfg['base_url'], '/api/embed', {'model': cfg['embedding']['model'],
                                        'input': ['SF6 balance diagnostic'], 'truncate': False, 'keep_alive': '10m'})
-                matrix = engine.glossary_vectors.normalize(result['embeddings'])
+                matrix = glossary_vectors.normalize(result['embeddings'])
                 if len(matrix) != 1:
                     raise ValueError('Invalid probe row count')
         return installed

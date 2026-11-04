@@ -25,75 +25,12 @@ from .balance_policy import (POLICY_PATH, load_policy, term_matches, identity_al
                             direction_action_conflicts, attributed_candidates)
 
 from .resources import asset_path, glossary, module_path
+from .inference import api, repeated_claim, streamed_chat
 from .schema import BOOL, NULL_STRING, STRING, arr, obj
 from .evidence import (CLAIM, PARAMETER, character_candidates, character_reference, evidence_units,
                        ground_claim, numeric_tokens)
 ROOT = Path.cwd()
 VERSION = 'balance-evidence-v2'
-
-
-def api(base, endpoint, payload=None):
-    data = None if payload is None else json.dumps(payload, ensure_ascii=False).encode()
-    request = urllib.request.Request(base + endpoint, data=data,
-                                     headers={'Content-Type': 'application/json'})
-    with urllib.request.urlopen(request, timeout=1800) as response:
-        return json.load(response)
-
-
-def repeated_claim(output, allowed_ids):
-    scopes = [(match.start(), match.group(1)) for match in
-              re.finditer(r'(?<!\\)"([^"]+)"\s*:', output) if match.group(1) in allowed_ids]
-    seen = set()
-    decoder = json.JSONDecoder()
-    for match in re.finditer(r'\{\s*"character"\s*:', output):
-        try:
-            claim, _ = decoder.raw_decode(output, match.start())
-        except ValueError:
-            continue
-        parents = [identity for position, identity in scopes if position < match.start()]
-        if not parents:
-            continue
-        signature = (parents[-1], json.dumps(claim, sort_keys=True, ensure_ascii=False))
-        if signature in seen:
-            return True
-        seen.add(signature)
-    return False
-
-
-def streamed_chat(base, payload, partial_path, timeout=1800):
-    request = urllib.request.Request(base + '/api/chat',
-        data=json.dumps(payload, ensure_ascii=False).encode(), headers={'Content-Type': 'application/json'})
-    parts, last, whitespace = [], {}, 0
-    with partial_path.open('w', encoding='utf-8') as log, urllib.request.urlopen(request, timeout=timeout) as response:
-        for line in response:
-            if not line.strip():
-                continue
-            chunk = json.loads(line)
-            fragment = chunk.get('message', {}).get('content', '')
-            parts.append(fragment)
-            log.write(fragment)
-            log.flush()
-            whitespace = whitespace + len(fragment) if fragment and fragment.isspace() else 0
-            last = chunk
-            if whitespace > 256:
-                last = {**chunk, 'done': False, 'done_reason': 'whitespace_loop'}
-                break
-            if 'assessments' in payload['format']['properties']:
-                assessment_schema = payload['format']['properties']['assessments']
-                if assessment_schema.get('type') == 'object':
-                    allowed = set(assessment_schema['properties'])
-                    identities = [key for key in re.findall(r'(?<!\\)"([^"]+)"\s*:', ''.join(parts)) if key in allowed]
-                else:
-                    identities = re.findall(r'(?<!\\)"comment_id"\s*:\s*"([^"]+)"', ''.join(parts))
-                if len(identities) != len(set(identities)):
-                    last = {**chunk, 'done': False, 'done_reason': 'duplicate_comment_loop'}
-                    break
-                if assessment_schema.get('type') == 'object' and repeated_claim(''.join(parts), allowed):
-                    last = {**chunk, 'done': False, 'done_reason': 'duplicate_claim_loop'}
-                    break
-            if chunk.get('done'):
-                break
-    return {**last, 'message': {'role': 'assistant', 'content': ''.join(parts)}}
 
 
 def schema_for(stage, ids, data=None):
