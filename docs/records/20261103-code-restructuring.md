@@ -2369,6 +2369,44 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   ([B7 work order](../plans/code-restructuring-handoffs/b7-readability-and-acceptance.md)),
   from `restructure-b6`; blockers: none.
 
+### 2026-11-04 B7-1 (implementation)
+
+- Steps: B7.1, a series of four commits (`25e1486`, `949c316`, `ccf146c`
+  and `8bfb79b`), and B7.2 (`ec3e5d4`); none started and stashed.
+- State: HEAD is this entry's commit (parent `ec3e5d4`); tests 241; lock
+  green, fixture unchanged since `restructure-b6` (`465 keys, 0 differ`);
+  rule check 0. Suite 8.1 s (wall 8.4 s). Plan 8.5: 241 pass from a
+  foreign directory, which stays empty. Plan 8.2: `"passed": true`,
+  `"commands": 18`, after B7.1 and again after B7.2. The boundary check
+  from `restructure-b6`, the commit hygiene check and plan 8.7 greps 1,
+  2, 4 and 5 print nothing. Each of the three B7.1 commits that change
+  code is AST-equal to its parent for all 16 changed files.
+- Findings:
+  - Decision found during execution (`949c316`): the frozen pilot
+    `run_grounded_feedback_live.py` stays out of the style normalization,
+    because plan 4.4 and 4.5 keep it frozen, while CR-D11 and the work
+    order's group 2 cover `scripts/experiments/`. Implemented; it changes
+    no file, and the owner may reject it. Its 23 hits are the only ones
+    left in `src/` and `scripts/`.
+  - Plan 4.4 lists `verify_cli_install.py` as unchanged by the
+    restructuring, but the work order names it as group 4. It is not
+    frozen, so B7.1 normalized it, and plan 8.2 passes with it. Group 3
+    (`scripts/collect/`) needed no commit.
+  - The hits came from a token and AST scan, which is stricter than the
+    work order's grep. The splitter was a throwaway script in scratch, and
+    no formatter was installed.
+  - B7.1 lengthened two functions that blueprint 1.2 keeps on purpose:
+    `quality_scoring.score_group` from 71 to 88 lines and
+    `collection/screening.main` from 65 to 69. The five metric modules are
+    unaffected.
+  - B7.2 also annotated the few private helpers of the nine modules, so
+    each module is hinted throughout. It added only hints, docstrings and
+    standard-library imports.
+  - No escalation.
+- Next: B7.3, session B7-2
+  ([B7 work order](../plans/code-restructuring-handoffs/b7-readability-and-acceptance.md));
+  blockers: none.
+
 ## Batch results
 
 ## Deferred
