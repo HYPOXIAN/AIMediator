@@ -2119,6 +2119,43 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   ([B6 work order](../plans/code-restructuring-handoffs/b6-research-code.md));
   blockers: none.
 
+### 2026-11-04 B6-2 (implementation)
+
+- Steps: B6.3 (`d772943`) and B6.4, a series of two commits (`805ffb0`
+  and `e41aaec`); none started and stashed.
+- State: HEAD is this entry's commit (parent `e41aaec`); tests 241 (237,
+  plus 4 in B6.4); lock updated by CR-D12 at the owner's answer to E-5,
+  green; rule check 0. Suite 8.1 s. Plan 8.5: 241 pass from a foreign
+  directory, which stays empty. Plan 8.2: `"passed": true`,
+  `"commands": 18`, and the wheel lists `aimediator/design_briefs.py`,
+  `aimediator/diagnostics.py` and the eight `aimediator/collection/`
+  files, and nothing under `data/raw` and no `.env`. The boundary check
+  from `restructure-b5`, the commit hygiene check and plan 8.7 fourth grep
+  print nothing. The `--help` output of all 17 scripts in `collect/` and
+  `experiments/` is byte-identical to the session start.
+- Findings:
+  - Escalation E-5 (`787263b`): each new top-level module adds three
+    existence-only lock keys, `L2:<mode>/code-snapshot/<module>.py`,
+    because B5.11 (CR-D12) snapshots every top-level module, while the
+    work order forbade fixture changes. The owner answered in this
+    session: option (a). The fixture changed only by the six keys of
+    `design_briefs.py` and `diagnostics.py`; B6-V reads checklist item 5
+    that way.
+  - Decision found during execution (`805ffb0`): the controls script
+    keeps its own audit, because it verifies claims that fail grounding
+    (two of its four requests), which `diagnostics.audit` would skip.
+    Implemented; the owner may reject it.
+  - Request equivalence: the lists are equal for the four
+    `run_balance_*_live.py` scripts and, beyond the work order, for
+    `diagnose_evidence_quality_live.py` on the packaged fixture cases,
+    with and without claims that fail grounding. Live reruns were not
+    performed.
+  - `2f3ec2a` fixed the table cell of the B6.3 progress row, whose code
+    span contained pipes.
+- Next: B6-V (verification)
+  ([B6 work order](../plans/code-restructuring-handoffs/b6-research-code.md));
+  blockers: none.
+
 ## Batch results
 
 ## Deferred
