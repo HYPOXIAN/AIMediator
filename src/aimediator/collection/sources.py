@@ -146,13 +146,13 @@ def youtube(client, store, settings):
             print(json.dumps({"platform": "youtube", "video_id": video_id, "saved": sum(r["platform"] == "youtube" for r in store.rows)}), flush=True)
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=Path, default=ROOT / "configs/feedback-collection.json")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--env-file", type=Path)
     parser.add_argument("--platforms", nargs="+", choices=["steam", "bluesky", "youtube"], default=["steam", "bluesky", "youtube"])
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     if args.env_file:
         try:
             load_youtube_key(args.env_file)

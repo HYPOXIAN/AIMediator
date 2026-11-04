@@ -52,7 +52,7 @@ def select_balanced(rows, per_language, reviews=None):
     return selected, counts
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config', type=Path, default=ROOT/'configs/feedback-collection-balanced.json')
     parser.add_argument('--out', type=Path, required=True)
@@ -60,7 +60,7 @@ def main():
     parser.add_argument('--env-file', type=Path, default=ROOT/'.env')
     parser.add_argument('--review-decisions', type=Path)
     parser.add_argument('--screen-only', action='store_true', help='Reselect from saved raw evidence without network requests')
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     if not 250 <= args.per_language <= 350:
         parser.error('Choose 250..350 per language (500..700 total)')
     STATE.mkdir(parents=True, exist_ok=True)

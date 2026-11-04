@@ -26,13 +26,13 @@ def kept_counts(store, overrides):
     return counts
 
 
-def main():
+def main(argv=None):
     parser=argparse.ArgumentParser()
     parser.add_argument('--base',type=Path,default=ROOT/'data/raw/feedback/20261015-initial')
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--english',type=int,default=220)
     parser.add_argument('--chinese',type=int,default=120)
-    args=parser.parse_args()
+    args=parser.parse_args(argv)
     if args.base.resolve()==args.output.resolve():
         parser.error('Expansion must use a separate directory')
     STATE.mkdir(parents=True,exist_ok=True)

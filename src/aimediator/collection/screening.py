@@ -103,14 +103,14 @@ def write_rows(path, rows):
     temporary.replace(path)
 
 
-def main():
+def main(argv=None):
     import argparse,collections,datetime as dt,hashlib
     parser=argparse.ArgumentParser()
     parser.add_argument('--input',type=Path,required=True)
     parser.add_argument('--output',type=Path)
     parser.add_argument('--language-corrections',type=Path)
     parser.add_argument('--overrides',type=Path,default=ROOT/'configs/feedback-screening-overrides.json')
-    args=parser.parse_args();output=args.output or args.input/'screened'
+    args=parser.parse_args(argv);output=args.output or args.input/'screened'
     if output.resolve()==args.input.resolve():
         parser.error('Output must differ from the original source directory')
     union,members,hashes=load_sources(args.input)
