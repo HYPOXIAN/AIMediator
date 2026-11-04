@@ -514,6 +514,22 @@ mentions.
 - Result: accepted, tag `restructure-b1-review`. The owner's review and
   the `restructure-b1` tag follow in a closure session (blueprint 6.4).
 
+### 2026-11-03 B1 owner review
+
+- Recorded by the closure session B1-2 at `aab2fb3`
+  (`restructure-b1-review`).
+- Outcome: the owner accepted all three review items of the B1-V note:
+  1. Archived files and their two locations: accepted.
+  2. Timings: accepted.
+  3. The two decisions found during execution (the encoding grep line in
+     `review.py`, B1.3; the register mentions outside the B1.7 rows, B1.7):
+     both accepted as implemented.
+- Rejected items: none, so there are no fix-up steps.
+- Gates at `aab2fb3`, run again by B1-2: tree clean, no stash; 217 tests
+  OK; rule check `Total: 0`; lock `378 keys, 0 differ`.
+- Result: batch B1 closed, tag `restructure-b1` on this commit. B2 starts
+  from it.
+
 ## Session log
 
 ### 2026-11-03 B0-1 (implementation)
@@ -575,6 +591,18 @@ mentions.
 - Next: the owner's B1 review, then a closure session that records it and
   sets `restructure-b1` (blueprint 6.4); B2.1, session B2-1, starts from
   that tag. Blockers: the owner's review.
+
+### 2026-11-03 B1-2 (closure)
+
+- Steps: none (closure); none started and stashed.
+- State: HEAD is this entry's commit (parent `aab2fb3`), tagged
+  `restructure-b1`; tests 217; lock green, fixture unchanged; rule check 0.
+- Findings: the owner accepted every B1 review item, including both
+  decisions found during execution (see "2026-11-03 B1 owner review"). No
+  fix-up steps, no escalations.
+- Next: B2.1, session B2-1
+  ([B2 work order](../plans/code-restructuring-handoffs/b2-engine-split.md)),
+  from `restructure-b1`; blockers: none.
 
 ## Batch results
 
