@@ -1,12 +1,19 @@
+import functools
 import json,re
 from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
-from aimediator.resources import asset_path, workspace_root
+from aimediator.resources import glossary, workspace_root
 ROOT=workspace_root()
-G=json.loads(asset_path('data/glossary.json').read_text(encoding='utf-8'))
-NAMES=[e['canonical_name'] for e in G['entries'] if e['category']=='character']+['Arjun','Viper','Bison','Akuma','Gouki','Gief','Honda','Deejay','Chun','Luke','Guile','Cammy']
-CHAR_EN=re.compile(r'\b(?:'+ '|'.join(re.escape(x) for x in NAMES)+r')\b',re.I)
+
+
+@functools.lru_cache(maxsize=1)
+def _char_en():
+    """Return the English character-name pattern, built from the packaged glossary on first use."""
+    names=[e['canonical_name'] for e in glossary()['entries'] if e['category']=='character']+['Arjun','Viper','Bison','Akuma','Gouki','Gief','Honda','Deejay','Chun','Luke','Guile','Cammy']
+    return re.compile(r'\b(?:'+ '|'.join(re.escape(x) for x in names)+r')\b',re.I)
+
+
 CHAR_ZH=re.compile('隆|卢克|傑米|杰米|春丽|春麗|古烈|盖尔|蓋爾|朱莉|蛛俐|肯|布兰卡|布蘭卡|达尔西姆|達爾錫|本田|迪杰|迪傑|曼侬|曼儂|玛丽莎|瑪麗莎|桑吉|莉莉|嘉米|嘉蜜|阿鬼|豪鬼|维加|維加|特瑞|不知火舞|艾琳娜|沙加特|沙盖特|毒蛇|阿里克斯|英格丽德|雅思敏|阿俊|阿军|印度人|阿三|老桑|将军|將軍|警察|狮子|獅子|阿光|阿杜')
 GAME=re.compile(r'\bsf\s*6\b|street\s*fighter|街霸|街头霸王|街頭霸王|快打旋風|ストリートファイター',re.I)
 OTHER=re.compile(r'\b(?:tekken|mortal kombat|mk1|mk11|guilty gear|dragon ball|league of legends|elden ring|cyberpunk|gta|yakuza|batman|zelda|granblue)\b|铁拳|鐵拳|真人快打|英雄联盟|英雄聯盟|蠻王|蛮王|黑客.{0,20}义体|银手|魔强统一战',re.I)
@@ -27,7 +34,7 @@ SPECIFIC=re.compile(r'\b(?:hit[ -]?box|hurt[ -]?box|frame[ -]?(?:data|advantage|
 
 
 def classify_rules(row):
- text=row['text_original'];char=bool(CHAR_EN.search(text) or CHAR_ZH.search(text));game=bool(GAME.search(text));explicit=EXPLICIT.search(text);mech=MECH.search(text);qual=QUAL.search(text)
+ text=row['text_original'];char=bool(_char_en().search(text) or CHAR_ZH.search(text));game=bool(GAME.search(text));explicit=EXPLICIT.search(text);mech=MECH.search(text);qual=QUAL.search(text)
  if re.search(r'top[ -]?tier.{0,16}(?:editing|thumbnail|reviewing|video production)',text,re.I) and not COMBAT_MECH.search(text) and not char:return 'exclude','creator_video_or_review_meta_discussion',[]
  if re.search(r'(?:balance.{0,60}nostalgia|nostalgia.{0,90}balance)',text,re.I) and not COMBAT_MECH.search(text):return 'exclude','presentation_cosmetics_or_story',[]
  if explicit and re.search(r'(?:buff|nerf).{0,20}(?:graphics|soundtrack|outfits?|visuals?)',text,re.I) and not COMBAT_MECH.search(text) and not char:return 'exclude','presentation_cosmetics_or_story',[]
