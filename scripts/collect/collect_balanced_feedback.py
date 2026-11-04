@@ -1,16 +1,8 @@
-"""Collect fresh feedback using existing sources, then freeze a balanced coarse set."""
-import argparse
-from collections import Counter
-from copy import deepcopy
-import fcntl
-import hashlib
-import json
+"""Entry point for the balanced feedback collection (aimediator.collection.balanced)."""
 from pathlib import Path
-
-import collect_feedback as c
-import screen_feedback as s
-from aimediator.collection.balanced import main, retained, reviewed_rows, select_balanced
-
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
+from aimediator.collection.balanced import main
 
 if __name__ == '__main__':
     raise SystemExit(main())
