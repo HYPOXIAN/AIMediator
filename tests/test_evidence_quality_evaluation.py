@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts/experiments'
 import evidence_quality as q
 import run_balance_analysis as m
 from evaluate_evidence_quality import evaluate,proportion,prepare_dataset
-from test_evidence_quality import case,qualified
+from support import case,qualified
 
 
 def label(c,provenance='silver'):

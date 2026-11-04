@@ -16,17 +16,7 @@ import evidence_quality as q
 import run_balance_analysis as m
 from prepare_balance_design import prepare_briefs
 from review_balance_sources import apply_review, proposal_hash
-
-ROOT = Path(__file__).resolve().parents[1]
-CASES = json.loads((ROOT / 'data/evaluation/evidence-quality-synthetic-v1/cases.json').read_text(encoding='utf-8'))
-
-
-def case(category, language='en'):
-    return copy.deepcopy(next(c for c in CASES if c['category'] == category and c['source']['language'] == language))
-
-
-def qualified(c):
-    return q.qualify(c['annotation'], c['source'], m.evidence_units(c['source']['text_original']))
+from support import CASES, case, qualified
 
 
 def numeric_claim():
