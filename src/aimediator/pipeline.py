@@ -348,6 +348,38 @@ def summarize(state, accepted):
             'No numerical targets are invented; qualitative comments cannot supply exact engineering values.']}
 
 
+def report_quality(state, accepted, report):
+    """Write the shadow or enforce quality artifacts and add them to the report."""
+    records = list(state.quality_records.values())
+    routed = [{**r, 'source_url': q['source_url'], 'content_sha256': q['content_sha256'],
+               'quality_status': q['status'], 'language': q['language'], 'model': q.get('model'),
+               'policy_version': q['policy_version'], 'errors': q['errors'],
+               'quality_request_ids': [a['request_id'] for a in q.get('attempts', [])],
+               'observation_only': state.quality_mode == 'shadow'}
+              for q in records for r in q['routing']]
+    opinions = quality.summarize_opinions(records, character_reference('\n'.join(r['text_original'] for r in state.rows)))
+    systems = [r for r in routed if r['route'] == 'system_evidence']
+    review = [r for r in routed if r['route'] == 'review']
+    exclusions = [r for r in routed if r['route'] == 'exclude']
+    quality_summary = {'mode': state.quality_mode, 'comments_assessed': len(records),
+        'completed': sum(q['status'] == 'completed' for q in records),
+        'failed': sum(q['status'] == 'failed' for q in records),
+        'route_comment_counts': {route: len({r['comment_id'] for r in routed if r['route'] == route}) for route in quality.ROUTES},
+        'route_item_counts': dict(Counter(r['route'] for r in routed)),
+        'counting_note': 'Mixed comments overlap across routes; never sum groups as players.',
+        'source_counts': quality_source_counts(records, accepted),
+        'accuracy_validation': 'not_established; deterministic checks are not semantic accuracy'}
+    for name, value in [('evidence-quality', records), ('quality-routing', routed),
+            ('quality-review-queue', review), ('quality-summary', quality_summary),
+            ('opinion-summary', opinions), ('system-feedback', systems), ('quality-exclusions', exclusions)]:
+        write_json(state.folder / (name + '.json'), value)
+    if state.quality_mode == 'enforce':
+        report.update(opinion_summary=opinions, system_feedback=systems,
+                      quality_review_queue=review, quality_exclusions=exclusions)
+    else:
+        report['quality_observation_artifacts'] = ['quality-summary.json', 'opinion-summary.json', 'system-feedback.json']
+
+
 def assemble(state):
     """Build the summary and the report, write the final artifacts, print the summary and return the report."""
     accepted = [{**e['claim'], 'claim_id': e['claim_id'], 'comment_id': e['comment_id'],
@@ -369,34 +401,7 @@ def assemble(state):
     write_json(state.folder / 'full-pipeline-coverage.json', full_coverage)
     report['full_pipeline_coverage'] = full_coverage
     if state.quality_mode != 'off':
-        records = list(state.quality_records.values())
-        routed = [{**r, 'source_url': q['source_url'], 'content_sha256': q['content_sha256'],
-                   'quality_status': q['status'], 'language': q['language'], 'model': q.get('model'),
-                   'policy_version': q['policy_version'], 'errors': q['errors'],
-                   'quality_request_ids': [a['request_id'] for a in q.get('attempts', [])],
-                   'observation_only': state.quality_mode == 'shadow'}
-                  for q in records for r in q['routing']]
-        opinions = quality.summarize_opinions(records, character_reference('\n'.join(r['text_original'] for r in state.rows)))
-        systems = [r for r in routed if r['route'] == 'system_evidence']
-        review = [r for r in routed if r['route'] == 'review']
-        exclusions = [r for r in routed if r['route'] == 'exclude']
-        quality_summary = {'mode': state.quality_mode, 'comments_assessed': len(records),
-            'completed': sum(q['status'] == 'completed' for q in records),
-            'failed': sum(q['status'] == 'failed' for q in records),
-            'route_comment_counts': {route: len({r['comment_id'] for r in routed if r['route'] == route}) for route in quality.ROUTES},
-            'route_item_counts': dict(Counter(r['route'] for r in routed)),
-            'counting_note': 'Mixed comments overlap across routes; never sum groups as players.',
-            'source_counts': quality_source_counts(records, accepted),
-            'accuracy_validation': 'not_established; deterministic checks are not semantic accuracy'}
-        for name, value in [('evidence-quality', records), ('quality-routing', routed),
-                ('quality-review-queue', review), ('quality-summary', quality_summary),
-                ('opinion-summary', opinions), ('system-feedback', systems), ('quality-exclusions', exclusions)]:
-            write_json(state.folder / (name + '.json'), value)
-        if state.quality_mode == 'enforce':
-            report.update(opinion_summary=opinions, system_feedback=systems,
-                          quality_review_queue=review, quality_exclusions=exclusions)
-        else:
-            report['quality_observation_artifacts'] = ['quality-summary.json', 'opinion-summary.json', 'system-feedback.json']
+        report_quality(state, accepted, report)
     write_json(state.folder / 'relevance.json', list(state.decisions.values()))
     write_json(state.folder / 'validated-claims.json', accepted)
     write_json(state.folder / 'quarantined-claims.json', state.quarantine)
