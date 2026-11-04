@@ -4,6 +4,7 @@ from contextlib import contextmanager
 from datetime import datetime, timezone
 import fcntl
 from importlib.resources import files
+import os
 from pathlib import Path
 import platform
 import numpy as np
@@ -68,12 +69,33 @@ def initialize(folder, raw, rows, cfg, installed, provenance):
     state(folder, 'created', 'preflight')
 
 
+# Validation files already read by _completed_requests, for the last run folder
+# only: path -> (stat signature, sort key, request directory, completed).
+_validations = {}
+
+
+def _completed_requests(folder):
+    """Return the request directories whose validation.json has no errors, reading only new or changed files."""
+    known = _validations.pop(str(folder), {})
+    _validations.clear()
+    entries = []
+    for path in (folder / 'requests').rglob('validation.json'):
+        info = os.stat(path)
+        # Writers replace files (common.write), so a rewrite also changes the inode.
+        signature = (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns)
+        entry = known.get(str(path))
+        if entry is None or entry[0] != signature:
+            relative = path.relative_to(folder)
+            entry = (signature, relative.parts, str(relative.parent), not read(path).get('errors'))
+        entries.append((str(path), entry))
+    _validations[str(folder)] = dict(entries)
+    # The paths share the folder prefix, so ordering by parts is the order of sorted paths.
+    return [entry[2] for _, entry in sorted(entries, key=lambda item: item[1][1]) if entry[3]]
+
+
 def state(folder, status, stage, reason=None):
     previous = read(folder / 'run-state.json') if (folder / 'run-state.json').exists() else {}
-    completed = []
-    for path in sorted((folder / 'requests').rglob('validation.json')):
-        if not read(path).get('errors'):
-            completed.append(str(path.parent.relative_to(folder)))
+    completed = _completed_requests(folder)
     write(folder / 'run-state.json', {**previous, 'schema_version': 'aimediator-state-v1',
           'run_state': status, 'stage': stage, 'updated_at_utc': now(), 'reason': reason,
           'requested_stop_stage': read(folder / 'resolved-config.json')['stop_after'],
