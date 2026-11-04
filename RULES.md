@@ -1,6 +1,6 @@
 # AIMediator Project Rules
 
-Version 1.3 · Effective 2026-11-04 · Approved by the project owner.
+Version 1.4 · Effective 2026-11-04 · Approved by the project owner.
 
 This file is the highest-level convention for the project's structure. Every
 rule has a **Check**: the way compliance is verified. Rule IDs are stable; cite
@@ -189,7 +189,7 @@ README "Layout" section.
   (Ollama and similar) are stored separately, marked, and excluded from the
   default suite.
 - Every reorganization step keeps the suite passing with at least the recorded
-  baseline count (192 on 2026-11-03; a baseline change is recorded with its
+  baseline count (241 on 2026-11-04; a baseline change is recorded with its
   reason in a change record).
 - Tests do not depend on historical run results under `reports/`.
 
@@ -259,3 +259,6 @@ README "Layout" section.
   directory is empty since step B4.3 removed the last compatibility links.
   P3: states what experiment scripts may keep. P7: root `configs/` no longer
   holds compatibility links.
+- 2026-11-04 v1.4 — Owner decision CR-D10 of the code restructuring plan.
+  P4: the test floor rises from 192 to 241, the count at the end of the code
+  restructuring, so later work cannot drop tests silently.
