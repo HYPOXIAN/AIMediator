@@ -2,46 +2,23 @@
 
 Dependencies: Python 3.9+, numpy, local Ollama. All requests and raw responses are
 content-addressed and resumable; model-written quotes are never trusted.
-
-This module also re-exports the names moved to schema, evidence, inference,
-stages, runner, retrieval and pipeline. That facade is removed in step B3.6
-of the code restructuring.
 """
 import argparse
-import copy
-from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from functools import partial
 import json
 from pathlib import Path
-import re
-import time
-import urllib.request
 
-import numpy as np
 from . import evidence_quality as quality
 from . import glossary_vectors
-from .common import sha as digest, strict_json, write as write_json
-from .resources import anchors
-from .balance_policy import (POLICY_PATH, load_policy, term_matches, identity_alias_allowed,
-                            numeric_request_supported, triage_retrieval, retrieval_review_agrees,
-                            direction_action_conflicts, attributed_candidates)
-
-from .resources import asset_path, glossary, module_path
-from .inference import api, repeated_claim, streamed_chat
-from .schema import BOOL, NULL_STRING, STRING, arr, obj
-from .evidence import (CLAIM, PARAMETER, character_candidates, character_reference, evidence_units,
-                       ground_claim, numeric_tokens)
-from .stages import exact_coverage, schema_for
+from .common import sha as digest, write as write_json
+from .balance_policy import POLICY_PATH, load_policy
+from .resources import asset_path, module_path
+from .inference import api
 from .runner import Runner
 from .retrieval import NEG, POS, retrieve
-from .pipeline import (VERSION, aggregate, batches, build_full_coverage, process, quality_source_counts,
-                       relevance_agrees, validate_modes)
+from .pipeline import VERSION, process, validate_modes
 ROOT = Path.cwd()
-
-
-def schema_errors(value, schema, path='$'):
-    return quality.schema_errors(value, schema, path)
 
 
 def run(args, *, api_transport=None, chat_transport=None, embed_transport=None, retrieval_service=None):

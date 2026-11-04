@@ -44,11 +44,6 @@ ALLOWED = {module: frozenset(imports) for modules, imports in TABLE for module i
 # Every module may import aimediator.__version__ (plan 4.2).
 EVERYWHERE = frozenset({'__version__'})
 
-# Transitional allowance, B2.10 to B3.6 only (plan 4.2); B3.6 removes it:
-# engine may import any module, and these modules may still import engine.
-FACADE = 'engine'
-FACADE_USERS = frozenset({'review', 'reporting', 'operations', 'evaluation', 'demo', 'legacy_review'})
-
 # __init__.py is the package itself, the source of __version__, and has no
 # row: it may not import from the package at all (change record, decision
 # found in B2.10).
@@ -82,9 +77,7 @@ def package_imports():
 
 
 def allowed(module, target):
-    if target in EVERYWHERE or target in ALLOWED.get(module, ()):
-        return True
-    return module == FACADE or (target == FACADE and module in FACADE_USERS)
+    return target in EVERYWHERE or target in ALLOWED.get(module, ())
 
 
 class ModuleLayers(unittest.TestCase):
