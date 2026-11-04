@@ -380,8 +380,8 @@ def report_quality(state, accepted, report):
         report['quality_observation_artifacts'] = ['quality-summary.json', 'opinion-summary.json', 'system-feedback.json']
 
 
-def assemble(state):
-    """Build the summary and the report, write the final artifacts, print the summary and return the report."""
+def assemble(state, log=None):
+    """Build the summary and the report, write the final artifacts, log the summary text and return the report."""
     accepted = [{**e['claim'], 'claim_id': e['claim_id'], 'comment_id': e['comment_id'],
                  'model': e['model'], 'semantic_audit': e['audit']} for e in state.claims
                 if (e.get('audit') or {}).get('supported')]
@@ -408,13 +408,14 @@ def assemble(state):
     write_json(state.folder / 'request-trace.json', state.trace)
     write_json(state.folder / 'summary.json', summary)
     write_json(state.folder / 'balance-report.json', report)
-    print(json.dumps(summary, ensure_ascii=False, indent=2), flush=True)
+    if log is not None:
+        log(json.dumps(summary, ensure_ascii=False, indent=2))
     return report
 
 
 def process(args, rows, routing, models, prompts, quality_identity, quality_policy,
-            identity, embedding_config=None, runner_factory=Runner, retrieval_service=retrieve):
-    """Shared orchestration with explicit inputs and injected inference boundaries."""
+            identity, embedding_config=None, runner_factory=Runner, retrieval_service=retrieve, log=None):
+    """Shared orchestration with explicit inputs and injected inference boundaries; log receives the summary text."""
     state = RunState(args, rows, models, quality_identity, quality_policy, identity,
                      folder=args.out.resolve(), routes=routing['models'], quality_mode=args.evidence_quality)
     state.by_id = {r['record_id']: r for r in state.rows}
@@ -445,4 +446,4 @@ def process(args, rows, routing, models, prompts, quality_identity, quality_poli
                 continue
         extract_claims(state, model, language, selected)
         audit_claims(state, model, language)
-    return assemble(state)
+    return assemble(state, log)

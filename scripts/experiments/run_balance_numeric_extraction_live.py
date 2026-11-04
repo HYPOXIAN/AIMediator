@@ -27,7 +27,7 @@ def main():
         'runtime_options':{'num_gpu':args.num_gpu} if args.num_gpu is not None else {}}
     path=args.out/'manifest.json'
     if path.exists() and strict_json(path.read_text(encoding='utf-8'))!=identity:raise ValueError('Control identity changed; use a new output directory')
-    write_json(path,identity);runner=Runner(args.base_url,args.out,prompts);runner.runtime_options=identity['runtime_options'];results=[]
+    write_json(path,identity);runner=Runner(args.base_url,args.out,prompts,log=lambda text:print(text,flush=True));runner.runtime_options=identity['runtime_options'];results=[]
     for language,model,text in [('en','llama3.1:latest',"Please reduce Ryu's Hadoken damage from 600 to 500."),('zh','qwen2.5:7b','请将隆的波动拳伤害从600降到500。')]:
         record_id='synthetic-extraction-'+language;row={'record_id':record_id,'text_original':text,'source_url':None}
         data={'comments':[{'comment_id':record_id,'units':evidence_units(text)}],'character_normalization_reference':character_reference(text)}

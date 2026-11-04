@@ -17,7 +17,7 @@ def main():
     args = parser.parse_args()
     prompts = {'verify': {language: asset_path(f'prompts/verify-balance.{language}.txt').read_text(encoding='utf-8')
                           for language in ('en', 'zh')}}
-    runner = Runner(args.base_url, args.out, prompts)
+    runner = Runner(args.base_url, args.out, prompts, log=lambda text: print(text, flush=True))
     if args.num_gpu is not None:
         runner.runtime_options = {'num_gpu': args.num_gpu}
     results = []

@@ -60,7 +60,7 @@ def main():
     write_json(folder/'source-snapshot.json',rows)
     (folder/Path(__file__).name).write_bytes(Path(__file__).read_bytes());snapshot=folder/'code-snapshot';snapshot.mkdir(exist_ok=True)
     for name in identity['package_code_sha256']:(snapshot/name).write_bytes(module_path(name).read_bytes())
-    runner=Runner(args.base_url,folder,prompts,identity,policy)
+    runner=Runner(args.base_url,folder,prompts,identity,policy,log=lambda text:print(text,flush=True))
     quality_records=[];trace=[];comparison=[]
     for row in rows:
         cid=row['record_id'];lang=row['language'];model=by_lang[lang];units=evidence_units(row['text_original']);attempts=[];record=None
@@ -84,7 +84,7 @@ def main():
             if mode=='enforce':
                 for stage in ('extract','verify'):
                     stage_prompts[stage][lang]+='\n'+identity['enforce_prompts'][stage][lang]
-            mode_runner=Runner(args.base_url,folder/mode,stage_prompts,{**identity,'mode':mode},policy)
+            mode_runner=Runner(args.base_url,folder/mode,stage_prompts,{**identity,'mode':mode},policy,log=lambda text:print(text,flush=True))
             data={'comments':[{'comment_id':cid,'units':units}],
                   'character_normalization_reference':character_reference(row['text_original'])}
             if mode=='enforce':data['comments'][0]['allowed_quality_points']=allowed

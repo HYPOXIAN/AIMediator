@@ -9,7 +9,7 @@ from .resources import anchors
 POS, NEG = anchors()
 
 
-def retrieve(rows, base, folder, model, embedding_config=None, api_transport=None, embed_transport=None):
+def retrieve(rows, base, folder, model, embedding_config=None, api_transport=None, embed_transport=None, log=None):
     instruction = 'Instruct: Retrieve the description matching the topic and intent of this Street Fighter 6 player comment.\nQuery: '
     texts = POS + NEG + [instruction + r['text_original'] for r in rows]
     matrices = []
@@ -38,7 +38,8 @@ def retrieve(rows, base, folder, model, embedding_config=None, api_transport=Non
         if (norm == 0).any():
             raise ValueError('Zero embedding vector')
         matrices.append(matrix / norm)
-        print(f'Embedding {min(start + 8, len(texts))}/{len(texts)}', flush=True)
+        if log is not None:
+            log(f'Embedding {min(start + 8, len(texts))}/{len(texts)}')
     vectors = np.concatenate(matrices)
     similarities = vectors[20:] @ vectors[:20].T
     decisions = []

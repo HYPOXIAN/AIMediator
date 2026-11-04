@@ -128,7 +128,7 @@ def legacy_dataset(root):
 
 
 def run_legacy(root, dataset, mode):
-    """Run ``engine.run`` in one quality mode into ``root/mode``; return what it printed."""
+    """Run ``engine.run`` in one quality mode into ``root/mode`` with the printer of ``engine.main``; return what it printed."""
     from aimediator import engine
     from aimediator.config import defaults
     from aimediator.demo import FixtureTransport
@@ -138,7 +138,8 @@ def run_legacy(root, dataset, mode):
                            evidence_quality=mode, quality_only=False, relevance_only=False)
     stdout = io.StringIO()
     with contextlib.redirect_stdout(stdout):
-        engine.run(args, api_transport=fixture_api(transport), chat_transport=transport.chat)
+        engine.run(args, api_transport=fixture_api(transport), chat_transport=transport.chat,
+                   log=lambda text: print(text, flush=True))
     return stdout.getvalue()
 
 

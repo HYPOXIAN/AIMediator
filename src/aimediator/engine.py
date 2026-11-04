@@ -21,7 +21,7 @@ from .pipeline import VERSION, process, validate_modes
 ROOT = Path.cwd()
 
 
-def run(args, *, api_transport=None, chat_transport=None, embed_transport=None, retrieval_service=None):
+def run(args, *, api_transport=None, chat_transport=None, embed_transport=None, retrieval_service=None, log=None):
     quality_mode = validate_modes(args)
     quality_policy = quality.load_policy() if quality_mode != 'off' else None
     folder = args.out.resolve()
@@ -88,12 +88,11 @@ def run(args, *, api_transport=None, chat_transport=None, embed_transport=None, 
         (folder / 'quality-module-snapshot.py').write_bytes((module_path('evidence_quality.py')).read_bytes())
         (folder / 'runner-snapshot.py').write_bytes(module_path('engine.py').read_bytes())
         (folder / 'policy-module-snapshot.py').write_bytes((module_path('balance_policy.py')).read_bytes())
-    runner_factory = Runner if chat_transport is None else partial(Runner, chat_transport=chat_transport)
+    runner_factory = partial(Runner, chat_transport=chat_transport, log=log)
     if retrieval_service is None:
-        retrieval_service = retrieve if api_transport is None and embed_transport is None else partial(
-            retrieve, api_transport=api_transport, embed_transport=embed_transport)
+        retrieval_service = partial(retrieve, api_transport=api_transport, embed_transport=embed_transport, log=log)
     return process(args, rows, routing, models, prompts, quality_identity,
-                   quality_policy, identity, embedding_config, runner_factory, retrieval_service)
+                   quality_policy, identity, embedding_config, runner_factory, retrieval_service, log=log)
 
 
 def main():
@@ -114,7 +113,7 @@ def main():
         validate_modes(args)
     except ValueError as exc:
         parser.error(str(exc))
-    run(args)
+    run(args, log=lambda text: print(text, flush=True))
 
 
 if __name__ == '__main__':

@@ -1,6 +1,4 @@
 """Operational services; new product runs never implicitly resume."""
-import contextlib
-import io
 from pathlib import Path
 import sys
 from types import SimpleNamespace
@@ -121,9 +119,8 @@ def analyze(input_path=None, out=None, cfg=None, resume=None, env_file=None, tra
                     print('retrieval: %d/%d comments' % (len(result),len(values[0])), file=sys.stderr, flush=True)
                 return result
             embedding_cfg = {'url': cfg['embedding']['endpoint'], 'model': cfg['embedding']['model']} if cfg['embedding']['provider'] == 'configured' else None
-            with contextlib.redirect_stdout(io.StringIO()):
-                pipeline.process(args, rows, cfg['routing'], list(cfg['routing']['models']), prompts,
-                    quality_identity, policy, engine_identity, embedding_cfg, runner_factory, retrieve)
+            pipeline.process(args, rows, cfg['routing'], list(cfg['routing']['models']), prompts,
+                quality_identity, policy, engine_identity, embedding_cfg, runner_factory, retrieve)
             ledger = store.coverage(folder, rows)
             write(folder / 'full-pipeline-coverage.json', ledger)
             failures = store.technical_failures(folder, ledger)

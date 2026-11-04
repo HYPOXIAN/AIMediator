@@ -32,7 +32,7 @@ def main():
         for language,t in langs.items():
             if digest(t.encode())!=old['identity']['prompts'][stage][language]:raise ValueError('Relevance prompt changed')
     original=strict_json((args.from_run/'relevance.json').read_text(encoding='utf-8'));decisions={r['comment_id']:{**r,'model_related':None,'model_uncertain':True,'agreement':False,'retrieval_review_related':None,'retrieval_review_uncertain':True} for r in original}
-    trace=strict_json((args.from_run/'request-trace.json').read_text(encoding='utf-8'));runner=Runner('http://no-network.invalid',args.out,prompts,chat_transport=no_inference);verified=[]
+    trace=strict_json((args.from_run/'request-trace.json').read_text(encoding='utf-8'));runner=Runner('http://no-network.invalid',args.out,prompts,chat_transport=no_inference,log=lambda text:print(text,flush=True));verified=[]
     for entry in trace:
         stage='relevance' if entry['stage']=='relevance_refinement' else entry['stage'];folder=args.from_run/'requests'/stage/entry['request_id'];target=args.out/'requests'/stage/entry['request_id'];shutil.copytree(folder,target,dirs_exist_ok=True)
         request=strict_json((folder/'request.json').read_text(encoding='utf-8'));data=strict_json(request['messages'][1]['content']);ids=[c['comment_id'] for c in data['comments']]

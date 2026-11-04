@@ -47,7 +47,7 @@ def main():
     path=args.out/'manifest.json'
     if path.exists() and strict_json(path.read_text(encoding='utf-8'))!=identity:raise ValueError('Live run identity changed; choose a new directory')
     write_json(path,identity);write_json(args.out/'prompt-snapshot.json',prompts)
-    runner=Runner(args.base_url,args.out,prompts);runner.runtime_options=identity['runtime_options'];characters={r['canonical_name'] for r in character_reference()};results=[]
+    runner=Runner(args.base_url,args.out,prompts,log=lambda text:print(text,flush=True));runner.runtime_options=identity['runtime_options'];characters={r['canonical_name'] for r in character_reference()};results=[]
     for case in CASES:
         record_id=case['comment_id'];source=sources[record_id];language=source['language'];model='llama3.1:latest' if language=='en' else 'qwen2.5:7b'
         if record_id not in admitted:

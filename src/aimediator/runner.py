@@ -9,12 +9,14 @@ from .stages import normalize, options, prepare, schema_for
 
 
 class Runner:
-    def __init__(self, base, folder, prompts, quality_identity=None, quality_policy=None, chat_transport=None, progress=None):
+    def __init__(self, base, folder, prompts, quality_identity=None, quality_policy=None, chat_transport=None, progress=None,
+                 log=None):
         self.base, self.folder, self.prompts = base, folder, prompts
         self.quality_identity = quality_identity
         self.quality_policy = quality_policy
         self.runtime_options = {}
         self.progress = progress
+        self.log = log
         self.chat_transport = chat_transport
 
     def cached_single_ids(self, model, language, stage):
@@ -94,7 +96,8 @@ class Runner:
                     'error': 'Unreadable cached response: ' + str(exc)}}
         else:
             write_json(request_path, payload)
-            print(f'{stage}: {model}, {len(ids)} items', flush=True)
+            if self.log is not None:
+                self.log(f'{stage}: {model}, {len(ids)} items')
             start = time.monotonic()
             if stage == 'quality' and (folder / 'partial-output.txt').exists():
                 partial = folder / 'partial-output.txt'

@@ -159,7 +159,7 @@ def main():
             (folder/('snapshot-'+Path(name).name)).write_bytes(asset_path(name).read_bytes())
         snapshot=folder/'code-snapshot';snapshot.mkdir(exist_ok=True)
         for name in identity['package_code_sha256']:(snapshot/name).write_bytes(module_path(name).read_bytes())
-    runner=Runner(args.base_url,folder,prompts,identity,policy)
+    runner=Runner(args.base_url,folder,prompts,identity,policy,log=lambda text:print(text,flush=True))
     def process(row):
         cid=row['record_id'];decision=decisions[cid]
         if not decision['agreement']:return classify(row,decision)
