@@ -560,6 +560,119 @@ mentions.
 - Result: batch B1 closed, tag `restructure-b1` on this commit. B2 starts
   from it.
 
+### 2026-11-03 B2-V
+
+- Range: `restructure-b1..e52f3ac`; 12 commits. B2-1 made B2.1 to B2.4
+  (`cfae9ae`, `4a28223`, `f4bf0f5`, `eb18a64`) and the session-log entry
+  `18a3771`; B2-2 made B2.5 to B2.10 (`a2a96c4`, `af5c247`, `9ffb4fe`,
+  `5c7a359`, `7f0213e`, `2fa9304`) and the session-log entry `e52f3ac`.
+  All checks ran on `e52f3ac`. Old trees were extracted with `git archive`
+  outside the checkout.
+- Checks:
+  1. Boundary and commit hygiene (blueprint 7.2): pass. The boundary check
+     from `restructure-b1` prints nothing. The 18 changed paths are
+     `engine.py`, `inference.py`, `demo.py`, `operations.py` (one import
+     line inside `analyze`) and the seven new modules; the four test files
+     of B2.2 and the new `test_module_layers.py`;
+     `replay_balance_admission.py`, changed in B2.2 only; and this record.
+     The hygiene check prints nothing: every commit has a `Step:` or
+     `Session:` line, and none has an attribution line. No commit has a
+     `Decision:` line, because none is in force for B2.
+  2. Move check for the whole batch (plan 8.6): pass. From
+     `restructure-b1`, `engine.py` gives `same` for 23 definitions and
+     `CHANGED run`, and `demo.py` gives `same demo` and
+     `CHANGED FixtureTransport`. `run` is the B2.1 signature change, which
+     plan B2.1 and blueprint 3.3 prescribe. The B2.1 commit body names
+     `engine.run` and describes the change, which meets this item: B2.1 is
+     not a move. From `cfae9ae`, all 24 definitions are `same`, so no later
+     step changed `run`. The B2.9 commit body lists the three
+     `FixtureTransport` replacements as intentional, and B2.4 lists those
+     of `Transport` and `probe` in `inference.py`. With the replacements
+     applied to the old source, each AST is identical. On the extracted
+     tree of each commit, the move check from its parent reports
+     `CHANGED` only for the names that commit lists. Further checks:
+     23 of the 27 moved definitions are byte-identical in source text, and
+     the other four differ only by the listed replacements and B2.1. All
+     21 comments of the old `engine.py` and `demo.py` survive. Each global
+     name a moved definition uses resolves to the same object as at
+     `restructure-b1`, with two prescribed exceptions: `Runner` calls
+     `evidence_quality.schema_errors` (work order B2.6; the `engine`
+     wrapper delegates to it with the same arguments and default), and
+     `main` reads the extended docstring (B2.8). The import-source check
+     prints `True True True`: `pipeline.load_policy` is the review policy,
+     and `stages.obj` and `evidence.obj` are `schema.obj`. Every name of
+     the old `engine` namespace is still in `engine`, and the 29 moved
+     names are the same objects as in their new modules.
+  3. Lock: pass. `git diff restructure-b0..HEAD -- tests/fixtures/` prints
+     nothing, `python3 tests/behavior_lock.py` prints `378 keys, 0 differ`,
+     and plan 8.3 passes. The lock also prints `378 keys, 0 differ` on the
+     extracted tree of each of the 12 commits.
+  4. B2.2 grep and layering test: pass. The grep prints nothing, and no
+     remaining `patch` in `tests/` or `scripts/` reaches a module global
+     of a moved function. `tests/test_module_layers.py` passes its 5 tests
+     with no violation and no cycle. Its table equals plan 4.2 row by row
+     (27 rows), and its transitional allowance matches the plan's. The
+     test is live: on the tree of `5c7a359` it reports exactly
+     `demo -> inference (line 9)`, `operations -> demo (line 70)` and the
+     cycle `demo -> operations -> demo`. On scratch copies of HEAD it
+     fails for `from . import engine` in `stages.py`, for a
+     function-level `from .pipeline import` in `retrieval.py` (a cycle),
+     for `import aimediator.engine` in `schema.py` and for an unlisted
+     module.
+  5. Gates, foreign directory and wheel: pass. Tree clean, no stash; 222
+     tests OK (217 plus the 5 layering tests; blueprint 1.3 expects 1 or
+     more; P4 floor 192); rule check `Total: 0`. The only warnings are the
+     two known `ResourceWarning`s from `test_collect_feedback.py`. Plan
+     8.5: 222 tests OK from a foreign temporary directory, which stays
+     empty. Plan 8.2, with the build directory outside the checkout:
+     `"passed": true`, `"commands": 18` (Python 3.14.8, NumPy 2.4.6). The
+     wheel's 27 `aimediator/*.py` files equal the checkout files, with
+     none missing and none extra.
+  6. `engine.py`: pass. 153 lines (931 at `restructure-b1`). Apart from
+     import lines it holds the module docstring, `ROOT = Path.cwd()`, the
+     `schema_errors` wrapper, `run`, `main` and the `__main__` guard.
+     Plan B2.8 requires the docstring, and the guard was already there: it
+     makes `python3 -m aimediator.engine` run. All 16 import statements of
+     `restructure-b1` remain, and the facade lines are added. The `--help`
+     text differs from `restructure-b1` only by the B2.8 sentence in the
+     description; the options are unchanged.
+- Measurements: tests 222 in 9.1 s (wall 9.5 s); demo 3.0 s under
+  cProfile, 1.67 s plain; lock green, 4.4 s run alone.
+- Notes:
+  - Batch checks of blueprint 7.1 beyond the checklist. The profile names
+    `evidence.py:34(character_reference)`: 688 calls, 0.74 s cumulative.
+    Plan 8.7: the fifth grep, the only one due, prints nothing; the second
+    grep (due after B3.1) prints 29 lines in 5 modules. The progress table
+    has rows B2.1 to B2.10, all `done` with lock `green`. The signatures of
+    the nine B2 modules match blueprint 3.3, apart from the parts it
+    schedules for B5.2, B5.3, B5.5, B5.7 and B5.10. Blueprint 4.1: all 73
+    tracked `.py` files under `src/`, `tests/` and `scripts/` parse as
+    Python 3.9; `pyproject.toml` is unchanged; the new modules use
+    relative imports with no star import, keep the aliases `digest`,
+    `write_json`, `strict_json` and `quality`, and each has a module
+    docstring.
+  - Decision found during execution: `__init__.py` and the module table
+    (B2.10), option (a). The conditions of plan section 1, item 8 hold: a
+    revert of `2fa9304` undoes it (one new test file and record text), the
+    lock stays green, `RULES.md` is unchanged and nothing is deleted. It
+    is implemented, not bypassed. B2 has no owner review point. The owner
+    may still reject it; option (b) would then be a plan correction and a
+    one-row change of the test.
+  - For B5: the 7.3 metric lists 9 functions, the 8 of the B0.4 baseline
+    under their new modules (`pipeline.process` 259, `runner._generate`
+    112, `engine.run` 82, which was 78 before B2.1) plus
+    `evidence.ground_claim` at 61 lines. `ground_claim` grew from 60 to 61
+    lines in B1.2 (`0bddb94`), and B2.3 moved it unchanged. Blueprint 7.3
+    allows no function over 60 lines in `evidence` after B5, and section
+    1.2 does not list `ground_claim`. This is not a B2 finding.
+  - Still open for the owner, and not caused by B2:
+    `replay_balance_admission.py` builds its `Runner` without
+    `quality_identity` (B2-1 session-log entry). Its `no_inference`
+    transport takes the same three positional arguments that `Runner`
+    passes to `streamed_chat`, so it raises the same `RuntimeError` as
+    the patch it replaced.
+- Result: accepted, tag `restructure-b2`.
+
 ## Session log
 
 ### 2026-11-03 B0-1 (implementation)
@@ -692,6 +805,19 @@ mentions.
   touched: the `replay_balance_admission.py` identity item from the B2-1
   entry.
 - Next: B2-V (verification of B2, sets `restructure-b2`); blockers: none.
+
+### 2026-11-03 B2-V (verification)
+
+- Steps: none (verification); none started and stashed.
+- State: HEAD is the verification-note commit (parent `e52f3ac`), tagged
+  `restructure-b2`; tests 222; lock green, fixture unchanged; rule check 0.
+- Findings: none. All six checklist items pass; no fix-up steps and no
+  escalations. The B2.10 decision (`__init__.py` and the module table) is
+  implemented and open to the owner. `evidence.ground_claim` (61 lines) is
+  noted for B5.
+- Next: B3.1, session B3-1
+  ([B3 work order](../plans/code-restructuring-handoffs/b3-callers-and-tests.md)),
+  from `restructure-b2`; blockers: none.
 
 ## Batch results
 
