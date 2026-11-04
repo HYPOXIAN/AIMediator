@@ -38,6 +38,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | B0.3 | done | 223 | green (fixture created) | Behavior lock L1 to L4 and its self-test; see "Behavior lock (B0.3)". Suite 123 s, of which the lock takes about 51 s |
 | B0.4 | done | 223 | green | Baseline measured again, with the wheel acceptance and the foreign-directory run; see "Baseline measurements (B0.4)". Escalation E-1 (not blocking) |
 | B1.1 | done | 224 | green | P-01: `resources.glossary()` (`lru_cache(maxsize=1)`); `character_reference` and `ground_claim` use it. New test `test_character_reference_returns_new_objects`. Plan 8.4: demo 3.1 s under cProfile (1.7 s plain), `engine.character_reference` 688 calls, 0.77 s cumulative; suite 224 in 8.5 s (wall 9.3 s), lock 4.3 s alone |
+| B1.2 | done | 224 | green | F-05: the span check in `ground_claim` raises `AssertionError('Evidence span differs from the original text')` explicitly, so it survives `python -O`. The CLI still maps it to exit code 1 with the message `Unexpected internal error (AssertionError)` |
 
 ## Baseline measurements (B0.4)
 

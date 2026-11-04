@@ -475,7 +475,8 @@ def ground_claim(claim, row, characters):
             'normalization_status': 'source_literal_unverified' if unverified else 'glossary_reference',
             'glossary_target_patch': glossary().get('target_patch')}
     for item in enriched['evidence']:
-        assert item['text'] == row['text_original'][item['start']:item['end']]
+        if item['text'] != row['text_original'][item['start']:item['end']]:
+            raise AssertionError('Evidence span differs from the original text')
     return errors, enriched
 
 
