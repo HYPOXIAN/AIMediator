@@ -1686,6 +1686,47 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
     it; the `Runner` progress `print` is in `Runner._response` (B5-1).
 - Next: B5.7, session B5-3; blockers: none.
 
+### 2026-11-04 B5-3 (implementation)
+
+- Steps: B5.7 to B5.11 (`00d4920`, `9d908e3`, `6ffcddc`, `b862d48`,
+  `550ade1`); none started and stashed.
+- State: HEAD is this entry's commit (parent `550ade1`); tests 233 (230,
+  plus 1 each in B5.8, B5.10 and B5.11); lock updated by CR-D12 in
+  `550ade1`, the only fixture commit since `restructure-b4` (81 added L2
+  existence-only keys); rule check 0. Suite 8.4 s. Plan 8.5: 233 pass
+  from a foreign directory, which stays empty. Plan 8.2:
+  `"passed": true`, `"commands": 18`. The boundary check from
+  `restructure-b4`, the commit hygiene check and plan 8.7 greps 1, 2
+  and 5 print nothing. The blueprint 7.3 metric lists nothing in
+  `pipeline`, `runner`, `stages`, `evidence` or `retrieval`, only the
+  six functions that blueprint 1.2 leaves: `engine.run` 76,
+  `evidence_quality.qualify` 61, `operations.analyze` 110,
+  `quality_scoring.score_group` 71, `reporting.export_report` 105 and
+  `review.load_run` 136.
+- Findings:
+  - No decision found during execution, no escalation. B5.7 keeps the
+    console text: 18 captured stdout and stderr traces of `engine.run`
+    and `operations.analyze` are byte-identical before and after. It
+    also drops the `contextlib` import of `operations`, which only
+    `redirect_stdout` used.
+  - B5.8 keeps the `rglob` listing of the request directories, so
+    `state` reads only new or changed files (100,000 to 2,000 reads and
+    6.56 to 1.98 s for 50 calls on 2,000 files), but the listing still
+    grows with the square of the request count. In the 600-comment
+    fixture run of B5.9, `state` takes 16.9 s (54 %) of 31.2 s, against
+    82.7 s (85 %) of 97.5 s before B5.8; with a live model that is about
+    14 ms per request. For the owner: removing the listing needs request
+    IDs from the progress callback, whose signature blueprint 3.3 keeps;
+    a candidate for later work, not done.
+  - B5.9: measured, not needed (`build_full_coverage` 2.6 to 2.8 % of
+    the run).
+  - B5.11: the lock's `CODE_ONLY` pattern also covers
+    `code-snapshot/*.py` (existence only), added under "Exemptions".
+  - The three decisions found during execution in B5-1 are still open
+    to the owner. Fix-up steps that B5-V records start at B5.F2.
+- Next: B5-V (verification of B5, sets `restructure-b5`); blockers:
+  none.
+
 ## Batch results
 
 ## Deferred
