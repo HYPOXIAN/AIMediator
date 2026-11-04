@@ -2,7 +2,7 @@
 
 - Type: Design
 - Status: Active
-- Updated: 2026-11-03
+- Updated: 2026-11-04
 - Applies to: evidence-quality module v1 (`evidence-quality-policy.json` v1); written 2026-10-26 as its pre-implementation specification
 - Related: [emotion-quantification-and-evidence-isolation.md](emotion-quantification-and-evidence-isolation.md), a description of the implemented module
 - Translated 2026-11 from the Chinese original (commit `3ceb123`); only the language changed.
@@ -30,21 +30,21 @@ Exclusion means exclusion from a stated analysis use; the original comment is no
 
 The following is the state observed at handoff; reread the relevant files before implementing:
 
-- `scripts/run_balance_analysis.py`: `run()` performs retrieval, review, extraction, source binding, separate-context audit and aggregation. The new stage goes after relevance `agreement=True` and before `prepared`/`extraction_queue` are built.
+- `run_balance_analysis.py`: `run()` performs retrieval, review, extraction, source binding, separate-context audit and aggregation. The new stage goes after relevance `agreement=True` and before `prepared`/`extraction_queue` are built. Note (2026-11-04): this and the other script names without a directory in this section and in section 3 were files directly under `scripts/`. The runner is now `aimediator.engine`, run as `python3 -m aimediator.engine` (it needs `pip install -e .` or `PYTHONPATH=src`); the stages are in `aimediator.pipeline`. The forwarding scripts left at the old paths were removed on 2026-11-04, code restructuring step B4.2 (CR-D05).
 - `evidence_units()` already gives the original text evidence IDs such as `E1` and Unicode code-point `[start,end)` offsets; keep these IDs and do not renumber them after cleaning.
 - `schema_for()` and `Runner.generate()` currently know only the existing stages. The fallback branch of the latter treats a result as extraction assessments; the new stage needs an explicit schema and parsing branch.
 - For non-extraction stages, `Runner.generate()` currently has only `num_predict` 256, which does not suit full segment annotation; the new stage configures its own output budget, batching and truncation handling.
-- The scope of `prompts/relevance.{zh,en}.txt` and `prompts/retrieval-review.{zh,en}.txt` covers characters and the competitive system, and explicitly keeps emotional opinions that have content.
-- The current full flow uses `prompts/summarize-balance.{zh,en}.txt`, not the old `src/aimediator/assets/prompts/extract-grounded-feedback.txt`. Do not change only the old prompt and then claim the main flow is integrated.
+- The scope of `src/aimediator/assets/prompts/relevance.{zh,en}.txt` and `src/aimediator/assets/prompts/retrieval-review.{zh,en}.txt` covers characters and the competitive system, and explicitly keeps emotional opinions that have content.
+- The current full flow uses `src/aimediator/assets/prompts/summarize-balance.{zh,en}.txt`, not the old `src/aimediator/assets/prompts/extract-grounded-feedback.txt`. Do not change only the old prompt and then claim the main flow is integrated.
 - In the current extraction, `character` is a required string; the Chinese prompt returns pure system opinions as empty. Implement the new system outlet separately; do not pretend the existing character schema already supports system evidence.
 - `aggregate()` currently groups by character and buff/nerf and counts unique comment IDs, but it does not yet distinguish general opinions from mechanism evidence, and does not aggregate keep/unclear. The existing counts must not be described as numbers of independent players or as overall consensus.
 - `scripts/experiments/prepare_balance_design.py` already requires source review, identity, an explicit target, versioned data and so on. The new eligibility decision may only add to these gates, not replace them.
-- `scripts/balance_policy.py` and `configs/balance-review-policy.json` contain the existing identity, retrieval and numerical rules. Keep their semantics.
+- `balance_policy.py` and `src/aimediator/assets/configs/balance-review-policy.json` contain the existing identity, retrieval and numerical rules. Keep their semantics. Note (2026-11-04): the module is now `aimediator.balance_policy`.
 - `docs/archive/next-development-plan.md` and `docs/records/20261022-balance-review-v2.md` describe existing limitations; the frozen silver labels and admission experiment must not be overwritten.
 
 ## 3. Segment annotation and output contract
 
-Suggested additions: a pure-logic module `scripts/evidence_quality.py`, a policy file `configs/evidence-quality-policy.json` and bilingual prompts `prompts/evidence-quality.{zh,en}.txt`. Follow the repository's current scripts architecture.
+Suggested additions: a pure-logic module `evidence_quality.py`, a policy file `evidence-quality-policy.json` and bilingual prompts `evidence-quality.{zh,en}.txt`. Follow the repository's current scripts architecture. Note (2026-11-04): implemented as `aimediator.evidence_quality`, `src/aimediator/assets/configs/evidence-quality-policy.json` and `src/aimediator/assets/prompts/evidence-quality.{zh,en}.txt`. The CLI moved them into the package, and the code restructuring removed the old script and root paths (CR-D05, CR-D07).
 
 ### 3.1 The model only annotates; the program decides
 

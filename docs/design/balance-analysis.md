@@ -2,20 +2,23 @@
 
 - Type: Design
 - Status: Active
-- Updated: 2026-11-03
-- Applies to: balance pipeline `aimediator.engine` (`scripts/run_balance_analysis.py`); dataset `data/raw/feedback/20261015-expanded`
+- Updated: 2026-11-04
+- Applies to: balance pipeline `aimediator.engine` (`python3 -m aimediator.engine`); dataset `data/raw/feedback/20261015-expanded`
 
-The current full-corpus test runner is `scripts/run_balance_analysis.py`. It uses
-all records in the expanded canonical screened dataset, not the historical
-50-comment retrieval sample or the 32-comment direction experiment.
+The current full-corpus test runner is `python3 -m aimediator.engine`, run from
+the project root. Like `python3 -m aimediator.legacy_review` below, it needs the
+checkout package on the import path: `pip install -e .`, or `PYTHONPATH=src`
+before the command. It uses all records in the expanded canonical screened
+dataset, not the historical 50-comment retrieval sample or the 32-comment
+direction experiment.
 
 ## Prompts and routing
 
-- `prompts/summarize-balance.zh.txt`: Chinese instructions for `qwen2.5:7b`.
-- `prompts/summarize-balance.en.txt`: equivalent English instructions for `llama3.1:latest`.
-- `prompts/relevance.{zh,en}.txt`: topic-agreement review before extraction.
-- `prompts/verify-balance.{zh,en}.txt`: claim entailment audit after extraction.
-- `configs/local-language-routing.json`: model, language, and prompt assignments.
+- `src/aimediator/assets/prompts/summarize-balance.zh.txt`: Chinese instructions for `qwen2.5:7b`.
+- `src/aimediator/assets/prompts/summarize-balance.en.txt`: equivalent English instructions for `llama3.1:latest`.
+- `src/aimediator/assets/prompts/relevance.{zh,en}.txt`: topic-agreement review before extraction.
+- `src/aimediator/assets/prompts/verify-balance.{zh,en}.txt`: claim entailment audit after extraction.
+- `src/aimediator/assets/configs/local-language-routing.json`: model, language, and prompt assignments.
 
 Descriptions follow the original language; JSON keys, direction enums and
 normalized character names are shared. Original comments are never translated
@@ -26,7 +29,7 @@ those experiments; they are not used by the new batch pipeline.
 ## Run and resume
 
 ```sh
-python3 scripts/run_balance_analysis.py --out runs/balance-v2-full
+python3 -m aimediator.engine --out runs/balance-v2-full
 python3 -m unittest discover -s tests -v
 python3 scripts/experiments/run_balance_controls_live.py --out runs/balance-v2-full/synthetic-controls
 ```
@@ -167,7 +170,7 @@ full original comment and save fingerprinted decisions in
 `source-review-decisions.json` with `reviewer_type` explicitly `agent` or `human`.
 
 ```sh
-python3 scripts/review_balance_sources.py \
+python3 -m aimediator.legacy_review \
   --run runs/<run> \
   --decisions runs/<run>/source-review-decisions.json
 ```

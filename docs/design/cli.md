@@ -2,7 +2,7 @@
 
 - Type: Design
 - Status: Active
-- Updated: 2026-11-03
+- Updated: 2026-11-04
 - Applies to: `aimediator` 0.1.0 CLI (V1); written 2026-10-28 as its implementation specification
 
 Design date: 2026-10-28, America/Los_Angeles.
@@ -72,21 +72,36 @@ inspect the relevant manifest before treating any recorded count as current.
 Current implementation:
 
 - `src/aimediator/__init__.py` is a placeholder. There is no `pyproject.toml`.
-- `scripts/run_balance_analysis.py` owns retrieval, relevance, quality modes,
+- `run_balance_analysis.py` owns retrieval, relevance, quality modes,
   extraction, source binding, semantic audit, aggregation, caching, and coverage.
-- `scripts/evidence_quality.py` implements span validation and deterministic
+  Note (2026-11-04): this and the other script names without a directory in
+  this list were files directly under `scripts/`. Their code moved into the
+  package with the CLI; the forwarding scripts left at their paths were removed
+  on 2026-11-04, code restructuring step B4.2 (CR-D05). This runner is now
+  `aimediator.engine`, with the pipeline in `aimediator.pipeline` and the
+  modules it calls, and runs as `python3 -m aimediator.engine`. The
+  `python3 -m` commands in this section need `pip install -e .` or
+  `PYTHONPATH=src`.
+- `evidence_quality.py` implements span validation and deterministic
   information-point routing. `off`, `shadow`, `enforce`, and quality-only already exist.
-- `scripts/balance_policy.py` owns existing identity, retrieval, and numeric rules.
-- `scripts/review_balance_sources.py` applies fingerprinted agent/human decisions
+  Note (2026-11-04): now `aimediator.evidence_quality`.
+- `balance_policy.py` owns existing identity, retrieval, and numeric rules.
+  Note (2026-11-04): now `aimediator.balance_policy`.
+- `review_balance_sources.py` applies fingerprinted agent/human decisions
   to all complete proposals, including quarantined proposals. Its current CLI
-  writes derived review files into the run directory.
+  writes derived review files into the run directory. Note (2026-11-04): now
+  `aimediator.legacy_review`, run as `python3 -m aimediator.legacy_review`.
 - `scripts/experiments/prepare_balance_design.py` separates evidence from engineering readiness.
-- `scripts/evaluate_evidence_quality.py` supplies annotation preparation and quality
+- `evaluate_evidence_quality.py` supplies annotation preparation and quality
   scoring. `scripts/experiments/evaluate_balance_review.py` is a different, frozen-silver
-  retrieval experiment; it is not an arbitrary-dataset evaluator.
-- `scripts/glossary_vectors.py` supplies a separate glossary index and configured
+  retrieval experiment; it is not an arbitrary-dataset evaluator. Note
+  (2026-11-04): now `aimediator.quality_scoring`, run as
+  `python3 -m aimediator.quality_scoring`.
+- `glossary_vectors.py` supplies a separate glossary index and configured
   embedding transport. The main runner performs topic-prototype retrieval; the
   existence of a glossary index does not mean that index powers this stage.
+  Note (2026-11-04): now `aimediator.glossary_vectors`, run as
+  `python3 -m aimediator.glossary_vectors`.
 - `scripts/experiments/demo_evidence_quality.py` had authored annotation replay and mocked
   end-to-end examples, using monkeypatches. Note (2026-11-03): archived on
   2026-11-03, code restructuring step B1.7; it had stopped working when the
@@ -464,6 +479,9 @@ the transition, retain an implementation in place until its callers/tests are
 migrated; the final wheel must not depend on `scripts/`, repository `sys.path`
 injection, or the original checkout. Update monkeypatch seams consciously;
 keep assertions and frozen expectations, not tests that only re-export names.
+Note (2026-11-04): the code restructuring removed these adapters; the research
+commands keep their defaults and flags as `python3 -m aimediator.<module>`
+(CR-D05).
 
 Concrete migration seams:
 

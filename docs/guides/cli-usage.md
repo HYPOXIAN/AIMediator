@@ -2,7 +2,7 @@
 
 - Type: Guide
 - Status: Active
-- Updated: 2026-11-03
+- Updated: 2026-11-04
 - Applies to: `aimediator` 0.1.0 (Linux, Python 3.9+)
 
 V1 supports Linux and Python 3.9+. Install the wheel into a virtual environment;
@@ -179,8 +179,10 @@ product CLI.
 
 ## Quality evaluation
 
-Prepare labels with the existing `scripts/evaluate_evidence_quality.py prepare`
-research command, then explicitly align/adjudicate points and freeze splits.
+Prepare labels with the research command
+`python3 -m aimediator.quality_scoring prepare` (from the checkout root; see
+"Research commands and validation scope" below), then explicitly
+align/adjudicate points and freeze splits.
 The product adapter scores the supplied labels against the specified run:
 
 ```sh
@@ -213,15 +215,20 @@ run when inputs/code/resources/runtime/model identity changes or budgets are
 exhausted. Export partial reports with their visible partial label. Never edit
 historical snapshots or reports to make a check pass.
 
-## Compatibility and validation scope
+## Research commands and validation scope
 
-Existing research script flags/defaults and implicit legacy resume stay at the
-compatibility boundary. They call the same package logic in-process. The script
-adapters bootstrap `src` only for checkout use and preserve script-level test
-patching; the installed CLI requires neither scripts nor repository path hacks.
-Active paired prompts/policies/glossary live once in `src/aimediator/assets`;
-original checkout paths are compatibility symlinks. Historical experimental
-resources, data, frozen labels and reports remain unchanged.
+The research commands are package modules run with `python3 -m`:
+`aimediator.engine` (the full-corpus runner, with its implicit legacy resume),
+`aimediator.legacy_review`, `aimediator.quality_scoring` and
+`aimediator.glossary_vectors`. They keep their flags and defaults and call the
+same package logic in-process. From a checkout they need the package on the
+import path: `pip install -e .`, or `PYTHONPATH=src` before the command. The
+scripts under `scripts/collect/` and `scripts/experiments/` put the checkout's
+`src` on the path themselves. The installed CLI requires neither scripts nor
+repository path hacks. Active paired prompts/policies/glossary live once in
+`src/aimediator/assets`; original checkout paths are compatibility symlinks.
+Historical experimental resources, data, frozen labels and reports remain
+unchanged.
 
 The offline engineering gates do not establish semantic accuracy, absence of
 emotion bias, community-wide consensus, patch truth or release-ready balance

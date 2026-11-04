@@ -56,14 +56,17 @@ Documentation is in English (RULES.md D8). Chinese appears only as corpus
 content: source feedback, quoted evidence, glossary terms and aliases, and
 model inputs and outputs. Original evidence must retain its meaning.
 
-## Research and compatibility commands
+## Research commands
 
-The research pipeline that the CLI packages is also available as scripts,
-run from the project root:
+The research pipeline that the CLI packages is also available as package
+modules and scripts, run from the project root. The modules need the checkout
+package on the import path: install it with `pip install -e .`, or put
+`PYTHONPATH=src` before the command.
 
-- `scripts/run_balance_analysis.py` and the other scripts directly under
-  `scripts/`: compatibility entry points for the package, listed in
-  [the compatibility register](docs/reference/compatibility-layers.md).
+- `python3 -m aimediator.engine`: the full-corpus balance runner.
+- `python3 -m aimediator.legacy_review`, `python3 -m aimediator.quality_scoring`
+  and `python3 -m aimediator.glossary_vectors`: source review of a runner
+  output, quality annotation and scoring, and the glossary vector index.
 - `scripts/collect/`: bounded public-feedback collection and screening.
 - `scripts/experiments/`: evaluation, regression, diagnostic and live-model
   experiments.
@@ -87,7 +90,7 @@ AIMediator/
 ├── .gitignore           # Ignored locations (RULES.md G4)
 ├── src/aimediator/      # CLI, engine and packaged resources
 ├── tests/               # Offline automated tests
-├── scripts/             # Compatibility entry points
+├── scripts/             # Collection, experiment and maintenance scripts
 │   ├── collect/         # Feedback collection and screening
 │   ├── experiments/     # Evaluations, diagnostics, live experiments
 │   └── maintenance/     # Rule check, hook, install verification

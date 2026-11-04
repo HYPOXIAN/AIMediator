@@ -2,11 +2,12 @@
 
 - Type: Reference
 - Status: Active
-- Updated: 2026-11-03
+- Updated: 2026-11-04
 - Applies to: `data/processed/glossary-vectors/`; `aimediator.glossary_vectors`
 
-The index uses every entry and every alias in `data/glossary.json`, including
-pending candidates. Index inclusion does not approve a candidate. The separate
+The index uses every entry and every alias in
+`src/aimediator/assets/data/glossary.json`, including pending candidates. Index
+inclusion does not approve a candidate. The separate
 `~/Archives/AIMediator/docs-data/low-alias-review.*` proposals are not imported.
 
 Each glossary entry is one retrieval document containing its identity, character,
@@ -22,11 +23,13 @@ Configuration comes from `.env` (or same-name environment variables):
 configuration file is not changed. Credentials are not saved to index metadata.
 The API receives the glossary documents and any search query submitted.
 
-Requires Python and NumPy. From the project root:
+Requires Python and NumPy, and the checkout package on the import path
+(`pip install -e .`, or `PYTHONPATH=src` before the command). From the project
+root:
 
 ```bash
-python scripts/glossary_vectors.py build
-python scripts/glossary_vectors.py search '隆的波掌击' --scope Ryu --top-k 5
+python3 -m aimediator.glossary_vectors build
+python3 -m aimediator.glossary_vectors search '隆的波掌击' --scope Ryu --top-k 5
 ```
 
 The build stores data in `data/processed/glossary-vectors/`:

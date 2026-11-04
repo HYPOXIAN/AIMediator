@@ -2,7 +2,7 @@
 
 - Type: Record
 - Status: Active
-- Updated: 2026-11-03
+- Updated: 2026-11-04
 - Applies to: commit `7282f49` and later; `RULES.md` v1.2 and later amendments
 
 The single change record of the code restructuring
@@ -60,6 +60,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | B3.4 | done | 222 | green | CR-D06 (F-03). Three commits: live (`2251a75`), offline research (`5c7ba45`), and `run_quality_screening_experiment` with `run_grounded_feedback_live`. Every experiment script starts with the plan 4.3 bootstrap (`sys.path.insert(0, <checkout>/src)`, replacing the line that put `scripts/` on the path) and imports `aimediator` modules; the forwarder names map as in B3.3, and sibling imports of `prepare_balance_design` stay (blueprint 3.6). Prompts and configs are read with `asset_path`; the pilot reads its prompt with `asset_path` instead of the checkout path of the same file (CR-D02: bootstrap and asset path only). `--prompt-dir` of `run_balance_regression_live.py` defaults to `asset_path('prompts')`. Identities follow blueprint 3.6, key by key in "Experiment identities (B3.4)" below. `ROOT`: four scripts imported it from the `engine` facade, where it is `Path.cwd()`; they now define `ROOT = Path(__file__).resolve().parents[2]` until B6.1 (`check_balance_regressions`, `evaluate_balance_review`, `prepare_balance_design`, `run_quality_screening_experiment`), so their data defaults name the same files when run from the checkout root and no longer depend on the current directory elsewhere. The other scripts used `ROOT` only for forwarder, prompt or config paths and no longer need one. `replay_balance_admission` drops its unused `triage_retrieval` and `load_policy` imports and calls `balance_policy.retrieval_review_agrees`. Checks: all 13 scripts print `--help` with exit 0 from a foreign directory, which stays empty. Every script except the pilot was run offline before and after (a scratch harness stubbing `api` and `Runner` in the script, on fixture runs): apart from the identity and snapshot fields in the table and the wall-clock fields, every output file is identical; the `asset_sha256` values equal the asset digests, and the module snapshots equal `package_code_sha256`. Plan 8.7 grep 1 prints nothing |
 | B3.5 | done | 222 | green | `scripts/collect/screen_feedback.py` starts with the plan 4.3 bootstrap and loads `G` from `asset_path('data/glossary.json')` instead of the `data/glossary.json` symlink (the same file). Its local `ROOT` stays for the `--overrides` default. Lock target L4 unchanged: `378 keys, 0 differ`. The four collectors print `--help` with exit 0 from a foreign directory; `collect_balanced_feedback` and `expand_feedback` import `screen_feedback` as before |
 | B3.6 | done | 222 | green | The facade is gone: `engine.py` drops the re-exported names, the `schema_errors` wrapper and every import that only the moved code used (`copy`, `Counter`, `defaultdict`, `re`, `time`, `urllib.request`, `numpy`, `strict_json`, `anchors`, `glossary` and seven `balance_policy` names). It keeps the imports `run` and `main` use and holds the docstring, `ROOT`, `run`, `main` and the `__main__` guard; 153 to 130 lines. The B2.8 docstring paragraph about the facade is removed, so the docstring and the `python3 -m aimediator.engine --help` text equal `restructure-b1` again. `run` and `main` have the same AST as before, every global name they load resolves, and no import is unused. `tests/test_module_layers.py` loses the transitional allowance (`FACADE`, `FACADE_USERS`); `allowed` checks the table only, 5 tests pass, and a scratch copy with `from . import engine` in `review.py` fails with `review -> engine (line 5)`. Plan 8.7 greps 1 and 2 print nothing. Plan 8.5: 222 pass from a foreign directory. Plan 8.2: `"passed": true`, `"commands": 18`; the wheel's 27 modules equal the checkout |
+| B4.1 | done | 222 | green | CR-D05 (D9): living documents name the package commands and asset paths. `README.md`: section "Research commands" lists `python3 -m aimediator.engine`, `.legacy_review`, `.quality_scoring` and `.glossary_vectors` and says once that they need `pip install -e .` or `PYTHONPATH=src`; its "Layout" line for `scripts/` reads "Collection, experiment and maintenance scripts" (plan B4.1 names "Layout"; the `prompts/` and `configs/` lines are B4.3). `guides/cli-usage.md`: the quality-label command, and the section "Compatibility and validation scope" becomes "Research commands and validation scope" (its symlink sentence stays for B4.3). `design/balance-analysis.md`: lines 6, 8, 29 and 170 (168 at `7282f49`), and the five prompt and routing paths as `src/aimediator/assets/...`. `design/cli.md` section 2 and `design/evidence-quality.md` lines 33, 42 and 47 keep their dated sentences with dated notes (2026-11-04) naming the module and command. The B4.2 grep covers `docs/design`, unlike the B1.7 grep, so those sentences name the old scripts by file name only (`run_balance_analysis.py`), as the B1.7 note in `balance-analysis.md` already did; the first note of each section says they were files directly under `scripts/`. Beyond the listed lines, for R1 under CR-D07: `design/evidence-quality.md` lines 37 and 38 (prompt paths in brace form, which the plan 8.7 grep does not match) cite the asset paths; `reference/glossary-vector-index.md` line 8 and `reference/glossary.md` line 46 cite `src/aimediator/assets/data/glossary.json` (both are "Used by" entries of the `data/glossary.json` register row); and `design/cli.md` section 5 gets one dated note on its instruction to keep compatibility adapters. All five documented commands print `--help` with exit 0 under `PYTHONPATH=src`; their options equal the forwarders' (only the program name differs). D5 0; the B4.2 grep prints only the six register rows that B4.2 removes |
 
 ## Baseline measurements (B0.4)
 
@@ -442,6 +443,58 @@ mentions.
   `run_balance_numeric_extraction_live`, `run_balance_regression_live`,
   `run_balance_semantic_controls_live` and `diagnose_evidence_quality_live`
   (table in "Experiment identities (B3.4)").
+
+### Reading of plan 8.7, third grep, after B4.3 (found in B4.1)
+
+- **Question**: work order B4.3 says that afterwards the third grep "may
+  match only the planning documents". Its pattern also matches names
+  relative to `src/aimediator/assets/`, which never resolve through the
+  root links: the `asset_path(...)` arguments in the package
+  (`balance_policy`, `config`, `engine`, `evidence_quality`,
+  `glossary_vectors`, `resources`), in `screen_feedback.py` and in
+  `tests/test_balance_analysis.py`; the `ASSETS` tuples and the snapshot
+  loop of six experiment scripts, each name read with `asset_path`; the
+  `prompt` values inside the packaged asset
+  `src/aimediator/assets/configs/local-language-routing.json`, which no code
+  reads; and one synthetic path in the temporary tree of the G8 test in
+  `tests/test_check_rules.py`. The B3-2 session-log entry reported this for
+  B4. How is the B4.3 condition read?
+- **Options**: (a) read it as "no match outside the planning documents names
+  a root link path": every remaining match must resolve against the assets
+  directory or lie in a test's temporary tree, checked with the narrowed
+  command below, which must print nothing; (b) rename the asset-relative
+  names, which changes code, an asset (plan stop condition) and experiment
+  identities; (c) leave the condition unmet for the owner to waive.
+- **Recommendation**: (a). It checks what R1 asks, that nothing uses the
+  link paths, changes no file, and leaves the plan's command as it is.
+- **Status**: registered before B4.3 and applied in its check; open to the
+  owner. Measured in B4.1: the narrowed command prints only
+  `README.md` line 110 and the 18 register rows, which B4.3 removes.
+
+```sh
+git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-policy|evidence-quality-policy|local-language-routing)\.json|data/glossary\.json)" -- src scripts tests README.md docs/guides docs/design docs/reference ':!src/aimediator/assets' | grep -vE "asset_path\('|^scripts/[a-z_/]+\.py:[0-9]+:( *ASSETS = \(| +'(configs|data|prompts)/| +for name in \('configs/)|^tests/test_check_rules\.py:[0-9]+: +'prompts/relevance\.en\.txt', 'README\.md'"
+```
+
+### Archive form of the deleted symlinks (found in B4.1)
+
+- **Question**: plan section 1, item 9 asks for a copy of every deleted
+  tracked file in `~/Archives/AIMediator/scripts/<YYYYMMDD>-<topic>/` with a
+  `SHA256SUMS` file. B4.3 deletes 18 symlinks. A symlink's only content is
+  its target path; a copied link dangles in the archive, and `sha256sum`
+  cannot read it. How are the links archived?
+- **Options**: (a) as the reorganization baseline backup did
+  (`SYMLINKS.txt`, see the reorganization record): one line
+  `<path> -> <target>` per link, from the link's git blob, in a file listed
+  in `SHA256SUMS`; (b) recreate the links in the archive, which
+  `sha256sum -c` cannot check; (c) no archive copy, only git history and
+  this record.
+- **Recommendation**: (a). The full content of every link is kept outside
+  git in a file that `sha256sum -c` checks. It follows an existing
+  precedent, changes nothing in the checkout, and leaves behavior and
+  `RULES.md` unchanged. The six forwarders of B4.2 are regular files and
+  are copied as item 9 says.
+- **Status**: registered before B4.3 and applied in it, under plan
+  section 1, item 8; open to the owner.
 
 ## Escalations
 

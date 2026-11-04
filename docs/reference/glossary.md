@@ -2,7 +2,7 @@
 
 - Type: Reference
 - Status: Active
-- Updated: 2026-11-03
+- Updated: 2026-11-04
 - Applies to: `src/aimediator/assets/data/glossary.json`; target patch 08.03.2026 Update
 
 Collection: 849 entries, 4332 aliases, and 157 ambiguous alias records; 31
@@ -43,8 +43,8 @@ the archived review dump and have not been applied to this glossary or runtime d
 
 ## Integration rules
 
-- Load data/glossary.json; select relevant concepts rather than placing the full
-  dictionary in every prompt.
+- Load `src/aimediator/assets/data/glossary.json`; select relevant concepts
+  rather than placing the full dictionary in every prompt.
 - Normalize names in extracted fields; preserve original comment evidence
   unchanged.
 - System, Mechanic, Tactic, Input, and Normal Move terms require no Ryu subject.
