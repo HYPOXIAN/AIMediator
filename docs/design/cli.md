@@ -472,7 +472,8 @@ src/aimediator/
   assets/
     prompts/               # active paired prompts and quality appendices
     configs/               # routing and policies
-    data/glossary.json
+    data/
+      glossary.json        # bilingual character glossary
     retrieval-anchors.json # exact positive and negative anchor texts
     fixtures/              # authored, synthetic, redistributable examples
 ```
