@@ -2410,6 +2410,49 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   ([B7 work order](../plans/code-restructuring-handoffs/b7-readability-and-acceptance.md));
   blockers: none.
 
+### 2026-11-04 B7-2 (implementation)
+
+- Steps: B7.3 (`cd351fa`, and the follow-up `05812d0`), B7.4 (`75adaa1`)
+  and B7.5 item 1 (`8d892c6`); none started and stashed.
+- State: HEAD is this entry's commit (parent `8d892c6`); tests 241; lock
+  green, fixture unchanged since `restructure-b6` (`465 keys, 0 differ`);
+  rule check 0, with P4 reading the v1.4 floor of 241. Suite 8.3 to 8.5 s
+  wall; demo 1.1 s. Plan 8.2: `"passed": true`, `"commands": 18`. Plan
+  8.5: 241 pass from a foreign directory, which stays empty. The boundary
+  check from `restructure-b6` and the commit hygiene check print nothing.
+- Findings:
+  - B7.3: blueprint 3.1 places `design_briefs`, `diagnostics` and
+    `collection.*` outside run identities, but only `collection/` is.
+    `run_store.code_manifest` and the legacy `shared_code_sha256` and
+    `code-snapshot/` cover every top-level module, as E-5 found.
+    `docs/design/cli.md` section 5 states what the code does; no code
+    changed.
+  - B7.3: the paragraph on the difference from the original target names
+    more than the work order lists: `schema`, the modules the CLI
+    implementation had added (`common`, `legacy_review`,
+    `quality_scoring`, `glossary_vectors`, `presentation`, `engine`), and
+    the glossary's asset path. The README intro no longer says that the
+    CLI uses "the existing Python engine". The register's "Used by" cell of
+    the remaining link adds `README.md` and ADR 0002.
+  - B7.3: the first layout block named `data/glossary.json` under
+    `assets/`, which the narrowed third grep (decision found in B4.1)
+    printed; `05812d0` lists the file on its own line, and the grep prints
+    nothing.
+  - B7.5: four functions of blueprint 1.2's list are longer than at
+    `7282f49`, from B1.4 and B7.1. `collection/balanced.main` has 101
+    lines, above the "63 to 95" that blueprint 1.2 gives for the
+    collectors. The five metric modules are unaffected.
+  - For B7-V: checklist item 4 expects the lock fixture "unchanged since
+    B5.11", but B6.3 and B6.4 changed it by the six E-5 keys that the
+    owner authorized. It is unchanged since `e41aaec`, and B6-V read its
+    own fixture item the same way.
+  - For the owner's final review: the `RULES.md` v1.4 wording and the
+    floor of 241, the acceptance table, `docs/design/cli.md` section 5 and
+    the README "Layout".
+  - No escalation.
+- Next: B7-V (verification) from `restructure-b6`, then the owner's final
+  review and session B7-3 (closure); blockers: none.
+
 ## Batch results
 
 ### Acceptance (B7.5, item 1)
