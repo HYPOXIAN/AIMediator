@@ -1648,6 +1648,38 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   - No escalation.
 - Next: B5.6, session B5-2; blockers: none.
 
+### 2026-11-04 B5-2 (implementation)
+
+- Steps: B5.6, a series of ten commits (`21fa7e2`, `dbd3ab0`, `37bee39`,
+  `a3eba07`, `04ecb5c`, `a6d386e`, `81eb1cb`, `c11eae8`, `1268b74`,
+  `96750d6`); none started and stashed.
+- State: HEAD is this entry's commit (parent `96750d6`); tests 230; lock
+  green, fixture unchanged since `restructure-b0`; rule check 0. Suite
+  8.7 s. Plan 8.5: 230 pass from a foreign directory, which stays empty.
+  Plan 8.2: `"passed": true`, `"commands": 18`. The boundary check from
+  `restructure-b4` and the commit hygiene check print nothing. The
+  blueprint 7.3 metric lists nothing in `pipeline`, `runner`, `stages`,
+  `evidence` or `retrieval`, only six functions that blueprint 1.2
+  leaves over 60 lines: `engine.run` 73, `evidence_quality.qualify` 61,
+  `operations.analyze` 111, `quality_scoring.score_group` 71,
+  `reporting.export_report` 105 and `review.load_run` 136.
+- Findings:
+  - `pipeline.process` has 34 lines. Its stage functions are the seven
+    that blueprint 3.3 suggests (`triage`, `review_retrieval`,
+    `admit_relevance`, `assess_quality`, `extract_claims`,
+    `audit_claims`, `assemble`) plus two helpers of `assemble`,
+    `summarize` and `report_quality`; the longest is `extract_claims`
+    with 47 lines. The write schedule of blueprint 3.4 is unchanged: the
+    commit diffs, an AST inline check per commit and a scratch write
+    trace over 119 offline phases agree (B5.6 row).
+  - One domain comment moved to the extraction payload it describes
+    (blueprint 4.1, item 8; B5.6 row). No decision found during
+    execution, no escalation.
+  - For B5.7 (session B5-3): the summary `print` is now in
+    `pipeline.assemble`, so the `log` that `process` gains has to reach
+    it; the `Runner` progress `print` is in `Runner._response` (B5-1).
+- Next: B5.7, session B5-3; blockers: none.
+
 ## Batch results
 
 ## Deferred
