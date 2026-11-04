@@ -249,6 +249,55 @@ def assess_quality(state, model, language, selected):
         write_json(state.folder / 'request-trace.json', state.trace)
 
 
+def extract_claims(state, model, language, selected):
+    """Extract claims and bind them to their sources, splitting failed batches; write the progress after each batch."""
+    # Evidence units contain the entire original text in order. Do not send
+    # a second copy of the full text, which wastes context and GPU memory.
+    prepared = [{'comment_id': r['record_id'], 'units': evidence_units(r['text_original'])}
+                for r in selected]
+    if state.quality_mode == 'enforce':
+        prepared = [{**r, 'allowed_quality_points': quality.allowed_points(state.quality_records[r['comment_id']])}
+                    for r in prepared if quality.allowed_points(state.quality_records[r['comment_id']])]
+    extraction_queue = list(batches(prepared, count=4, chars=9000 if language == 'en' else 4000))
+    while extraction_queue:
+        batch = extraction_queue.pop(0)
+        parsed, meta = state.runner.generate(model, language, 'extract',
+            {'comments': batch, 'character_normalization_reference': character_reference('\n'.join(state.by_id[r['comment_id']]['text_original'] for r in batch))},
+            [r['comment_id'] for r in batch])
+        state.trace.append({'model': model, 'stage': 'extract', **meta})
+        if not parsed:
+            if len(batch) > 1:
+                extraction_queue[0:0] = [[item] for item in batch]
+                continue
+            state.coverage.extend({'comment_id': r['comment_id'], 'model': model,
+                                   'disposition': 'generation_failed', 'claims_generated': 0} for r in batch)
+            continue
+        for assessment in parsed['assessments']:
+            record_id = assessment['comment_id']
+            state.coverage.append({'comment_id': record_id, 'model': model,
+                'disposition': assessment['disposition'], 'claims_generated': len(assessment['claims'])})
+            consistent = (assessment['disposition'] == 'extracted') == bool(assessment['claims'])
+            for i, claim in enumerate(assessment['claims']):
+                errors, enriched = ground_claim(claim, state.by_id[record_id], state.characters)
+                if state.quality_mode == 'enforce':
+                    quality_errors, qualification = quality.bind_claim(claim, state.quality_records[record_id],
+                        character_reference(state.by_id[record_id]['text_original']))
+                    errors.extend(quality_errors)
+                    if enriched is not None:
+                        enriched['evidence_quality'] = qualification
+                if not consistent:
+                    errors.append('Disposition and claims disagree')
+                envelope = {'claim_id': record_id + ':' + str(i + 1), 'comment_id': record_id,
+                            'model': model, 'claim': enriched or claim}
+                if errors:
+                    state.quarantine.append({**envelope, 'stage': 'source_binding', 'errors': errors})
+                else:
+                    state.claims.append(envelope)
+        write_json(state.folder / 'extraction-coverage.json', state.coverage)
+        write_json(state.folder / 'claims-before-audit.json', state.claims)
+        write_json(state.folder / 'quarantined-claims.json', state.quarantine)
+
+
 def process(args, rows, routing, models, prompts, quality_identity, quality_policy,
             identity, embedding_config=None, runner_factory=Runner, retrieval_service=retrieve):
     """Shared orchestration with explicit inputs and injected inference boundaries."""
@@ -273,8 +322,6 @@ def process(args, rows, routing, models, prompts, quality_identity, quality_poli
             continue
         selected = [state.by_id[d['comment_id']] for d in state.decisions.values()
                     if d['language'] == language and d['agreement']]
-        # Evidence units contain the entire original text in order. Do not send
-        # a second copy of the full text, which wastes context and GPU memory.
         write_json(state.folder / 'full-pipeline-coverage.json', build_full_coverage(
             state.rows, state.decisions, state.routes, state.models, state.quality_records, state.coverage, [],
             state.quarantine, state.quality_mode, state.args))
@@ -282,49 +329,7 @@ def process(args, rows, routing, models, prompts, quality_identity, quality_poli
             assess_quality(state, model, language, selected)
             if getattr(state.args, 'quality_only', False):
                 continue
-        prepared = [{'comment_id': r['record_id'], 'units': evidence_units(r['text_original'])}
-                    for r in selected]
-        if state.quality_mode == 'enforce':
-            prepared = [{**r, 'allowed_quality_points': quality.allowed_points(state.quality_records[r['comment_id']])}
-                        for r in prepared if quality.allowed_points(state.quality_records[r['comment_id']])]
-        extraction_queue = list(batches(prepared, count=4, chars=9000 if language == 'en' else 4000))
-        while extraction_queue:
-            batch = extraction_queue.pop(0)
-            parsed, meta = state.runner.generate(model, language, 'extract',
-                {'comments': batch, 'character_normalization_reference': character_reference('\n'.join(state.by_id[r['comment_id']]['text_original'] for r in batch))},
-                [r['comment_id'] for r in batch])
-            state.trace.append({'model': model, 'stage': 'extract', **meta})
-            if not parsed:
-                if len(batch) > 1:
-                    extraction_queue[0:0] = [[item] for item in batch]
-                    continue
-                state.coverage.extend({'comment_id': r['comment_id'], 'model': model,
-                                       'disposition': 'generation_failed', 'claims_generated': 0} for r in batch)
-                continue
-            for assessment in parsed['assessments']:
-                record_id = assessment['comment_id']
-                state.coverage.append({'comment_id': record_id, 'model': model,
-                    'disposition': assessment['disposition'], 'claims_generated': len(assessment['claims'])})
-                consistent = (assessment['disposition'] == 'extracted') == bool(assessment['claims'])
-                for i, claim in enumerate(assessment['claims']):
-                    errors, enriched = ground_claim(claim, state.by_id[record_id], state.characters)
-                    if state.quality_mode == 'enforce':
-                        quality_errors, qualification = quality.bind_claim(claim, state.quality_records[record_id],
-                            character_reference(state.by_id[record_id]['text_original']))
-                        errors.extend(quality_errors)
-                        if enriched is not None:
-                            enriched['evidence_quality'] = qualification
-                    if not consistent:
-                        errors.append('Disposition and claims disagree')
-                    envelope = {'claim_id': record_id + ':' + str(i + 1), 'comment_id': record_id,
-                                'model': model, 'claim': enriched or claim}
-                    if errors:
-                        state.quarantine.append({**envelope, 'stage': 'source_binding', 'errors': errors})
-                    else:
-                        state.claims.append(envelope)
-            write_json(state.folder / 'extraction-coverage.json', state.coverage)
-            write_json(state.folder / 'claims-before-audit.json', state.claims)
-            write_json(state.folder / 'quarantined-claims.json', state.quarantine)
+        extract_claims(state, model, language, selected)
         # Audit in a separate context, with original spans, never the generator's rationale.
         pending = [c for c in state.claims if c['model'] == model]
         for batch in batches(pending, count=1):
