@@ -12,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'src'))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts/collect'))
 import collect_balanced_feedback as b
 from aimediator import evidence, evidence_quality, retrieval, stages
+from aimediator.collection import balanced
 from aimediator.runner import Runner
 import numpy as np
 
@@ -104,7 +105,7 @@ class BalancedCollectionTests(unittest.TestCase):
             argv = ['collect_balanced_feedback.py', '--out', str(state / 'out')]
             with (state / 'feedback-collector.lock').open('a', encoding='utf-8') as held:
                 fcntl.flock(held, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                with patch.object(b.c, 'STATE', state), patch.object(sys, 'argv', argv), \
+                with patch.object(balanced, 'STATE', state), patch.object(sys, 'argv', argv), \
                         patch('sys.stderr', new_callable=io.StringIO) as stderr:
                     with self.assertRaises(SystemExit) as raised:
                         b.main()
