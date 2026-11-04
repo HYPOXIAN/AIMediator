@@ -1658,6 +1658,176 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
       candidate for later work.
 - Result: accepted, tag `restructure-b5`. B6 starts from it.
 
+### 2026-11-04 B6-V
+
+- Range: `restructure-b5..19d5def`; 22 commits: B6.1 (`5d7cd54`), B6.2 as
+  a series of 14 commits (`ec91455` to `faaf44c`), B6.3 (`d772943`) and
+  B6.4 as a series of two commits (`805ffb0` and `e41aaec`), plus the
+  session-log entries of B6-1 (`3680b0c`) and B6-2 (`19d5def`), the
+  escalation E-5 (`787263b`) and the B6.3 table fix (`2f3ec2a`). Every
+  check ran on `19d5def`. The trees of `restructure-b5` and `d772943` were
+  extracted with `git archive` outside the checkout.
+- Checks:
+  1. Boundary and commit hygiene: pass. The boundary check from
+     `restructure-b5`, with the work order's pattern, prints nothing; all
+     39 changed paths lie inside it. The hygiene check prints nothing,
+     and no added line in the range carries an attribution. All 18 step
+     commits have their `Step:` and `Decision:` lines (CR-D09 for B6.1,
+     CR-D01 for the B6.2 series, CR-D02 for B6.3 and B6.4, plus CR-D12
+     with E-5 in `d772943` and `e41aaec`), and the other four commits
+     have `Session:`. No `refs/original` is left by the `filter-branch`
+     rewrite that B6-1 reports, and `restructure-b5` is an ancestor of
+     HEAD.
+     - Collector behavior, which the boundary forbids changing: plan 8.6,
+       run with each collector script at `restructure-b5` as the old file
+       and the `collection/` modules as the new files, prints `same` for
+       every definition except the recorded ones:
+       - `classify_rules` (the `_char_en()` call);
+       - the four `main` functions (`argv=None` and `parse_args(argv)`,
+         plus the dropped `c.` and `collector.` prefixes in `balanced`
+         and `expansion`), which are AST-equal after normalizing those
+         edits;
+       - `write_json`, which is now `common.write`.
+
+       `HOSTS` and the other 17 screening constants are equal. `ROOT` and
+       `STATE` use `workspace_root()`. `G`, `NAMES` and `CHAR_EN` are
+       replaced by `_char_en()`, which builds the same expression.
+  2. Root and foreign directory: pass. Plan 8.7, fourth grep, prints
+     nothing, and so do greps 1, 2 and 5 and the narrowed third grep of
+     the B4.1 decision. Plan 8.5: 241 OK from a foreign temporary
+     directory, which stays empty. A root probe (scratch) compared 14
+     values at `restructure-b5` and HEAD: `engine.ROOT`,
+     `glossary_vectors.ROOT` and `DEFAULT_INDEX`, the collectors' `ROOT`
+     and `STATE`, and the `ROOT` of five experiment scripts. Run from each
+     tree's root, all 14 are equal. Run from a foreign directory, only
+     `engine.ROOT`, `glossary_vectors.ROOT` and `DEFAULT_INDEX` differ:
+     they now name the checkout instead of the working directory, the
+     intended change of CR-D09. The work order's escalation trigger did
+     not occur.
+  3. G2 and P3: pass. `check_rules.py --rule G2 --rule P3` reports 0 for
+     both. No first docstring line of the 19 scripts begins with
+     "Compatibility entry point". The four collector scripts begin
+     "Entry point for ...", naming their `aimediator.collection` module,
+     followed by the plan 4.3 bootstrap, the import of `main` and
+     `raise SystemExit(main())`.
+  4. Help output: pass. `collect/` and `experiments/` hold the same 17
+     scripts as at `restructure-b5`. Each ran with `--help` from an empty
+     directory, once from the `restructure-b5` tree and once from the
+     checkout. Stdout, stderr and the exit code (0) are byte-identical
+     for all 17, and no output names a path.
+  5. Lock: pass, under the E-5 reading of this item. The fixture changed
+     only in `d772943` and `e41aaec`. Both have `CR-D12 (escalation E-5)`
+     in their `Decision:` line and list the added paths in their bodies.
+     Parsed as JSON, the fixture goes from 459 to 465 keys: none removed
+     or changed, and six added. The added keys are exactly
+     `L2:<mode>/code-snapshot/design_briefs.py` and
+     `L2:<mode>/code-snapshot/diagnostics.py` for the three modes, each
+     `<exempt: existence only>`. `tests/behavior_lock.py` changed only in
+     `95e7b50`, where the L4 harness now imports `classify_rules` from
+     `aimediator.collection.screening`; `tests/test_behavior_lock.py` did
+     not change. `python3 tests/behavior_lock.py` prints
+     `465 keys, 0 differ`, and plan 8.3 passes.
+  6. Request equivalence: pass. "Request equivalence (B6.4)" records the
+     lists of the four `run_balance_*_live.py` scripts, and states that
+     they are equal before and after. Rerun independently with a
+     separate harness (scratch, not committed):
+     - Procedure: the work order's (`runpy.run_path` with a patched
+       `sys.argv`, `aimediator.inference.api` returning tags, and
+       `aimediator.runner.streamed_chat` replaced by a fake), but with a
+       different fake and admission run.
+     - The fake reads each request's response schema. Extraction returns
+       one claim on the first allowed character and the first unit, a
+       second claim with " 999" appended to the recommendation, and a
+       numeric claim where the schema allows parameters. The audit
+       returns `supported`.
+     - The admission run has the six case IDs, with five admitted.
+     - Trees: `restructure-b5`, `d772943` (before B6.4) and HEAD.
+
+     The sorted `request.json` SHA-256 lists are equal in all three
+     trees for every script:
+     - controls: 4 requests;
+     - numeric: 6 requests (2 extraction, 4 verify);
+     - regression: 10 requests (5 extraction, 5 verify);
+     - semantic: 14 requests (8 extraction, 6 verify).
+
+     Every script except controls also took the no-verify path (2, 4
+     and 6 claims with grounding errors). The result, progress and
+     prompt-snapshot files (compared without `elapsed_seconds` and
+     `request_id`) and the console text are equal too. The controls
+     list, which no fake influences, matches the four recorded hashes
+     exactly. Live reruns were not performed.
+  7. Layering: pass. `test_module_layers` passes its 7 tests. The table
+     has the plan 4.2 rows for `design_briefs` (none), `diagnostics`
+     (`evidence`, `evidence_quality`, `runner`) and `collection.*`
+     (`common`, `resources`, other `collection` modules). The scanner maps
+     the eight `collection/` files to `collection.*` and resolves their
+     relative imports. The edges at HEAD are: `diagnostics` to `evidence`
+     and `evidence_quality`; none for `design_briefs`; `collection`
+     modules only to `common`, `resources` and each other. On a scratch
+     copy, each of these mutations made a test fail:
+     - a forbidden import added to `design_briefs` (`common`),
+       `diagnostics` (`pipeline`) or `collection.client` (`evidence`,
+       inside a function) fails `test_every_import_is_allowed`;
+     - an unlisted subpackage fails
+       `test_every_module_file_is_in_the_table`.
+
+     The import-without-reads test also imports the `collection`
+     modules.
+  8. Gates and wheel: pass. Tree clean, no stash. 241 tests OK in 8.8 s
+     (wall 9.1 s). The collected test IDs differ from `restructure-b5`
+     only by 8 added tests (3 in B6.1, 1 in B6.2 and 4 in B6.4), and none
+     is removed. Rule check `Total: 0`. The only warnings are the two
+     known `ResourceWarning`s for unclosed `HTTPError` objects. Plan 8.2:
+     `"passed": true`, `"commands": 18` (Python 3.14.8, NumPy 2.4.6).
+     `python3 -m zipfile -l` lists the eight `aimediator/collection/`
+     files, `aimediator/design_briefs.py` and `aimediator/diagnostics.py`,
+     nothing under `data/raw` and no `.env`. The wheel's 37 modules and
+     21 asset files match the checkout byte for byte. Installed outside a
+     checkout, `engine.ROOT`, `collection.sources.ROOT` and
+     `workspace_root()` are the working directory.
+- Measurements: tests 241 in 8.8 s (wall 9.1 s); demo 2.0 s under
+  cProfile, 1.05 s plain; `evidence.character_reference` 688 calls,
+  0.75 s cumulative; lock green (465 keys), 3.9 s run alone.
+- Notes:
+  - Batch checks of blueprint 7.1 beyond the checklist:
+    - All 82 tracked `.py` files under `src/`, `tests/` and `scripts/`
+      parse with the Python 3.9 grammar, and none has a star import.
+    - Neither the analysis modules of blueprint 4.1, item 5, nor
+      `design_briefs` and `diagnostics` contain `print`.
+    - The progress table has rows B6.1 to B6.4, all `done`. B6.1 and
+      B6.2 have lock `green`; B6.3 and B6.4 have
+      `updated by CR-D12 (E-5)`.
+    - The blueprint 7.3 metric lists the six functions of blueprint 1.2
+      and the four moved collector functions: `balanced.main` 101,
+      `client.Client.get` 74, `expansion.main` 66 and `screening.main`
+      65 lines. Each has the same length as at `restructure-b5`, and
+      blueprint 1.2 keeps them (63 to 95 lines at `7282f49`;
+      `balanced.main` grew to 101 lines in B1.4, `58e90b3`).
+  - The diffs match blueprint 3.3:
+    - `workspace_root()` requires both markers, is evaluated at call
+      time and delegates to `_workspace_root(candidate)`.
+    - The `collection` modules hold every listed name, the four tool
+      modules take `main(argv=None)`, and `STATE` is
+      `workspace_root() / 'runs/state'`.
+    - The `design_briefs` and `diagnostics` signatures are as stated,
+      and `extract` keeps the scripts' key order.
+    - The four scripts map the neutral records to their former keys. The
+      envelope keys they drop (`model` in the numeric and regression
+      scripts, `errors` in `diagnose`) are not read by `stages.prepare`,
+      which builds the verify data from `claim`, `original_comment` and
+      the claim ID.
+    - `diagnose` now appends its verify trace entries after `audit`
+      returns. It writes the trace only after each mode, so the file is
+      unchanged.
+  - None of the triggers in work order section 6 occurred: the
+    collector move check and help output (items 1 and 4), the request
+    lists (item 6) and the root probe (item 2) cover them.
+  - Still open to the owner, none of them blocking:
+    - the two decisions found during execution in B6 (the B6.2 commit
+      series and the controls script's own audit);
+    - the earlier open items named in the B5-V note.
+- Result: accepted, tag `restructure-b6`. B7 starts from it.
+
 ## Session log
 
 ### 2026-11-03 B0-1 (implementation)
@@ -2155,6 +2325,21 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
 - Next: B6-V (verification)
   ([B6 work order](../plans/code-restructuring-handoffs/b6-research-code.md));
   blockers: none.
+
+### 2026-11-04 B6-V (verification)
+
+- Steps: none (verification); none started and stashed.
+- State: HEAD is the verification-note commit (parent `19d5def`), tagged
+  `restructure-b6`; tests 241; lock green, fixture changed only by the
+  six E-5 keys in `d772943` and `e41aaec`; rule check 0.
+- Findings: none. All eight checklist items pass, with no fix-up steps
+  and no escalations. The request lists were rerun with a separate
+  harness at `restructure-b5`, `d772943` and HEAD, and they are equal.
+  Still open to the owner, none of them blocking: the two decisions
+  found during execution in B6.
+- Next: B7.1, session B7-1
+  ([B7 work order](../plans/code-restructuring-handoffs/b7-readability-and-acceptance.md)),
+  from `restructure-b6`; blockers: none.
 
 ## Batch results
 
