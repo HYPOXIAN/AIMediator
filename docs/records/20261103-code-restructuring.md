@@ -416,6 +416,33 @@ mentions.
   may reject it; (b) would then be a plan correction and a one-row change
   of the test.
 
+### Scope of `asset_sha256` (found in B3.4)
+
+- **Question**: blueprint 3.6 asks for `asset_sha256` "for every asset the
+  script reads". Several scripts read assets only through package
+  functions: `character_reference`, `ground_claim` and the `verify` stage
+  of `Runner` read `data/glossary.json` and
+  `configs/balance-review-policy.json`, and `evidence_quality.load_policy`
+  reads `configs/evidence-quality-policy.json`. Do those reads count?
+- **Options**: (a) count them: list every asset whose content can change
+  the script's results, read directly or through the package; (b) list
+  only the assets the script opens itself.
+- **Recommendation**: (a). It is what F-03 asks of an identity, which must
+  detect every change that can alter results, and `engine.run` already
+  hashes the glossary and the review policy although `engine` reads
+  neither directly. Assets read only at import time and unused by the
+  script (the retrieval anchors) are not listed. The prompts that
+  `run_balance_regression_live` reads from `--prompt-dir` stay identified
+  by their content digests.
+- **Status**: implemented in B3.4 under plan section 1, item 8: a revert
+  of the three B3.4 commits undoes it, the lock stays green, `RULES.md` is
+  unchanged and nothing is deleted. It was registered with the B3-2
+  session-log entry, after the B3.4 commits instead of before them. The
+  owner may choose (b); that would shorten the `asset_sha256` lists of
+  `run_balance_numeric_extraction_live`, `run_balance_regression_live`,
+  `run_balance_semantic_controls_live` and `diagnose_evidence_quality_live`
+  (table in "Experiment identities (B3.4)").
+
 ## Escalations
 
 ### E-1 Baseline of "Test files importing forwarders" (B0.4)
@@ -886,6 +913,52 @@ mentions.
   names, `test_cli_product.py` also used a facade name
   (`engine.evidence_units`) and was changed in the third B3.3 commit.
 - Next: B3.4, session B3-2; blockers: none.
+
+### 2026-11-03 B3-2 (implementation)
+
+- Steps: B3.4 (the series `2251a75`, `5c7ba45`, `d544ddd`), B3.5
+  (`c386d4f`), B3.6 (`53edafb`); none started and stashed. B3-1 and B3-2
+  ran one after the other in the same agent conversation.
+- State: HEAD is this entry's commit (parent `53edafb`); tests 222, the
+  same count per module as at `restructure-b2`; lock green, fixture
+  unchanged since `restructure-b0`; rule check 0. Suite 8.9 s. Plan 8.7
+  greps 1 and 2 print nothing, and the layering test passes without the
+  allowance. All 13 experiment scripts and the 4 collectors print
+  `--help` with exit 0 from a foreign directory. Plan 8.5: 222 pass from
+  a foreign directory, which stays empty. Plan 8.2: `"passed": true`,
+  `"commands": 18`. The boundary check from `restructure-b2` and the
+  commit hygiene check print nothing, and each B3.4 commit names CR-D06.
+  All 74 tracked `.py` files under `src/`, `tests/` and `scripts/` parse
+  as Python 3.9. `engine.py` has 130 lines.
+- Findings:
+  - One decision found during execution, implemented and open to the
+    owner: the scope of `asset_sha256` (B3.4). It was registered after
+    the B3.4 commits, not before them.
+  - Within CR-D06, for the owner's attention:
+    `run_quality_screening_experiment` sends its identity to the model as
+    `quality_contract`, so each quality request's user content changes
+    by exactly the identity fields (about 2.3 KB more; see "Experiment
+    identities (B3.4)"). This is not the escalation trigger, because
+    nothing beyond the identity fields changes. No other script puts its
+    identity into a request.
+  - `ROOT`: four scripts took it from the `engine` facade
+    (`Path.cwd()`) and now define it from their own path, as the work
+    order prescribes. Their data defaults name the same files when run
+    from the checkout root (B3.4 row).
+  - For B4: plan 8.7, third grep, cannot tell asset-relative names
+    (`asset_path('configs/...')`, the B3.4 `ASSETS` tuples) from root
+    symlink paths. It already matched the package's own `asset_path`
+    calls at `restructure-b2` (`engine.py`, `balance_policy.py`,
+    `config.py` and others). The B4 condition "matches only the planning
+    documents" after B4.3 needs a narrower pattern or an agreed reading.
+    The grep is not due in B3.
+  - Still open for the owner and not touched:
+    `replay_balance_admission.py` builds its `Runner` without
+    `quality_identity` (B2-1 entry). B3.4 replaced only the forwarder
+    hashes in its output, because passing an identity to `Runner` would
+    change the script's logic.
+  - No escalations.
+- Next: B3-V (verification of B3, sets `restructure-b3`); blockers: none.
 
 ## Batch results
 
