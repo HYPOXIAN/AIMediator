@@ -42,9 +42,11 @@ No cloud service, new data collection or additional package installation is used
 The separate control command tests two requested numerical changes and two
 numerical coincidences in English/Chinese. Its synthetic sources are explicitly
 labeled and never included in community counts or the engineering report.
-The compatibility command `run_local_direction_comparison.py` now invokes this
+The compatibility command `run_local_direction_comparison.py` invoked this
 full pipeline, with `--run-name` selecting a new run directory under `runs/`
-(default `local-direction-comparison`).
+(default `local-direction-comparison`). Note (2026-11-03): archived on
+2026-11-03, code restructuring step B1.7; it had stopped working when the
+evidence-quality stage was added.
 
 ## Admission before judgment
 

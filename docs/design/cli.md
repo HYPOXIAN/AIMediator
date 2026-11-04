@@ -87,8 +87,10 @@ Current implementation:
 - `scripts/glossary_vectors.py` supplies a separate glossary index and configured
   embedding transport. The main runner performs topic-prototype retrieval; the
   existence of a glossary index does not mean that index powers this stage.
-- `scripts/experiments/demo_evidence_quality.py` has authored annotation replay and mocked
-  end-to-end examples, currently using monkeypatches.
+- `scripts/experiments/demo_evidence_quality.py` had authored annotation replay and mocked
+  end-to-end examples, using monkeypatches. Note (2026-11-03): archived on
+  2026-11-03, code restructuring step B1.7; it had stopped working when the
+  evidence-quality stage was added.
 
 Migration hazards verified in the code:
 

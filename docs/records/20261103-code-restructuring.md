@@ -43,6 +43,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | B1.4 | done | 225 | green | F-07: `collect_balanced_feedback.py` reports a held lock with `parser.error('Another collector is running in this project')`. In all three collectors, everything after the lock open sits in `try`/`finally: lock.close()`; the statements are otherwise unchanged (AST check). New test `test_held_collector_lock_is_reported_through_the_parser` (+1). Checked by hand with a held lock: before, each collector left its lock handle unclosed (1 `ResourceWarning` each); after, none. The suite still shows only the two known HTTPError warnings |
 | B1.5 | done | 226 | green | New `tests/test_console_output.py` (+1): runs the L2 producer in `enforce` and compares stdout exactly: 8 `Embedding <n>/58` lines, then per model (`llama3.1:latest`, `qwen2.5:7b`) 35 `<stage>: <model>, <n> items` lines, then the summary JSON (indent 2). Two runs in different directories print identical text with no time, path or hash, so nothing is normalized. The L2 producer is split into `legacy_dataset` and `run_legacy` (one mode, returns stdout); the lock reports `378 keys, 0 differ` |
 | B1.6 | done | 217 | green | CR-D03: four quality-screening scripts and their two test files (9 tests) archived to `~/Archives/AIMediator/scripts/20261103-quality-screening/` with `SHA256SUMS` (checked) and removed; see "Archive and deletions". Register: "Used by" cells of `configs/local-language-routing.json`, `scripts/evidence_quality.py` and `scripts/run_balance_analysis.py` updated, change-log line added. The change-log line points to this record instead of naming the files, because the B1.7 grep covers `docs/reference` |
+| B1.7 | done | 217 | green | CR-D04 (F-01, F-02): `scripts/run_local_direction_comparison.py` and `scripts/experiments/demo_evidence_quality.py` archived to `~/Archives/AIMediator/scripts/20261103-broken-entry-points/` with `SHA256SUMS` (checked) and removed. Register, in the same commit: R3 row removed; both scripts dropped from the "Used by" cells of `scripts/run_balance_analysis.py`, `scripts/evidence_quality.py` and the `cases.json` symlink; change-log line added (19 symlinks, 6 forwarding scripts); two more mentions reworded (decision found during execution). Dated notes in `design/balance-analysis.md` and `design/cli.md`, whose sentences now use the past tense. The B1.7 grep and the plan 8.7 fifth grep print nothing; G2 and P3 report 0 |
 
 ## Baseline measurements (B0.4)
 
@@ -256,6 +257,8 @@ in the checkout, the lock was run, and the file was restored with
 | `scripts/experiments/run_quality_screening_recovery.py` | same | `62521df7d54939303c10e1bec221742788064e8c7f8ba06e602f541a3a23d795` | One-off recovery of that experiment; holds two prompts outside the assets (R-05, R-02, CR-D03) | B1.6 |
 | `tests/test_quality_screening_compact.py` | same | `dffa9ed52be0a7d521bc079b65ac9ca5bb0a41f00f7a09a590c1887b0c699743` | 4 tests of the archived `run_quality_screening_recovery.py` (CR-D03) | B1.6 |
 | `tests/test_quality_screening_recovery.py` | same | `b05f3300cd0fb403c3909d2394e735b6941359f16841e135257496ebbf8c3ef1` | 5 tests of the archived `resume_quality_screening_local.py` (CR-D03) | B1.6 |
+| `scripts/run_local_direction_comparison.py` | `~/Archives/AIMediator/scripts/20261103-broken-entry-points/` | `23aba938006dc4ac8c1e45c7f6e03d24bd2a71f7d8c177b03810ec01a4355147` | Broken wrapper, registered under R3 (F-01: `AttributeError` on `args.evidence_quality`); CR-D04 | B1.7 |
+| `scripts/experiments/demo_evidence_quality.py` | same | `463edad8a19da97601d9e47016628d7a2ec15b2c42d92029f0591185fe4d4f98` | Broken demo (F-02: `TypeError` from its retrieval stub), superseded by `aimediator demo`; CR-D04 | B1.7 |
 
 B1.6: the copies were taken from `99d57a9`, so the scripts include the B1.3
 encoding keywords; the earlier bytes are in git history. `sha256sum -c
@@ -269,6 +272,20 @@ register (updated in the same commit), and two frozen curated summaries,
 `reports/quality-screening-existing-100-recovered-v2/summary/recovery.md`.
 Those cite the pre-reorganization command paths (`scripts/<name>.py`) as
 provenance of the experiment that CR-D03 names, and stay unchanged (P2).
+
+B1.7: the copies were taken from `12cd026`. `sha256sum -c SHA256SUMS`
+passed in the archive directory, and each entry equals the SHA-256 of the
+blob at `12cd026`. No code, test or configuration used either script.
+Before the deletion, `git grep` found the two names, apart from the planning
+documents, in: the register and the two design documents (updated in the
+same commit); the frozen records `20261026-evidence-quality-implementation.md`
+and `20261103-reorganization.md`, and the archived reorganization plan;
+`data/raw/feedback/20261015-expanded/manifest.json`, whose consumer list
+names the wrapper (`--dataset` default); and
+`reports/evidence-quality-verification-v1/summary/verification.json`, which
+records the demo script's SHA-256 under its pre-reorganization path.
+`data/raw/` and `reports/` are frozen (P1, P2) and keep these historical
+mentions.
 
 ## Decisions found during execution
 
@@ -304,6 +321,23 @@ provenance of the experiment that CR-D03 names, and stay unchanged (P2).
   no rule or content changes.
 - **Status**: implemented in B1.3 under plan section 1, item 8. The owner
   may reject it at the B1 review.
+
+### Register mentions outside the B1.7 rows (found in B1.7)
+
+- **Question**: the B1.7 grep of the B1 work order covers `docs/reference`
+  and must print nothing after B1.7. Besides the row and the "Used by"
+  cells that the work order names, the register named the wrapper in two
+  more places: the inventory paragraph and the batch 3 review (P3-D01)
+  change-log entry. How are they handled?
+- **Options**: (a) reword both to describe the wrapper without its file
+  name, pointing to the B1.7 change-log entry; (b) leave them, so that the
+  grep prints two lines, which the owner would have to waive.
+- **Recommendation**: (a). The register is a living reference document
+  inside the B1 boundary. Both passages keep their meaning, a revert
+  undoes the change, and nothing outside the register changes.
+- **Status**: implemented in B1.7 under plan section 1, item 8. For the
+  same reason, the B1.6 and B1.7 change-log lines point to this record for
+  the file names instead of naming them.
 
 ## Escalations
 

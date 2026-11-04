@@ -16,9 +16,10 @@ are not removed during the reorganization.
 
 Inventory taken 2026-11-03 with `find . -type l` (excluding `.git/`) and a
 search for the docstring "Compatibility entry point": 18 symlinks and 7
-forwarding scripts. The plan expected 6 forwarding scripts; the seventh,
-`scripts/run_local_direction_comparison.py`, is a wrapper with its own
-arguments rather than a pure forwarder (see its row).
+forwarding scripts. The plan expected 6 forwarding scripts; the seventh, the
+wrapper for the historical 32-comment direction comparison, had its own
+arguments rather than being a pure forwarder. It was archived in code
+restructuring step B1.7 (see the change log).
 
 "Used by" lists tracked code and documents that name the path, found with
 `git grep` at commit `0d390c4` and updated in batch 3 for the scripts that
@@ -49,7 +50,7 @@ Documents are listed by path under `docs/`; `README.md` is the root README.
 | `configs/evidence-quality-policy.json` | `../src/aimediator/assets/configs/evidence-quality-policy.json` | scripts: `run_quality_screening_experiment.py`; docs: `design/evidence-quality.md`, `records/20261026-evidence-quality-implementation.md` | R1 |
 | `configs/local-language-routing.json` | `../src/aimediator/assets/configs/local-language-routing.json` | scripts: `diagnose_evidence_quality_live.py`, `run_quality_screening_experiment.py`; docs: `design/balance-analysis.md` | R1 |
 | `data/glossary.json` | `../src/aimediator/assets/data/glossary.json` | scripts: `run_quality_screening_experiment.py`, `screen_feedback.py`; docs: `README.md`, `archive/readme-research-history.md`, `records/20261022-alias-review.md`, `reference/glossary.md`, `reference/glossary-vector-index.md` | R1 |
-| `data/evaluation/evidence-quality-synthetic-v1/cases.json` | `../../../src/aimediator/assets/fixtures/cases.json` | scripts: `experiments/demo_evidence_quality.py`; tests: `test_evidence_quality.py`; `tests/test_evaluation_sets.py` checks it against `cases_sha256` in the set's `manifest.json`; docs: `records/20261026-evidence-quality-implementation.md` | R1 |
+| `data/evaluation/evidence-quality-synthetic-v1/cases.json` | `../../../src/aimediator/assets/fixtures/cases.json` | tests: `test_evidence_quality.py`; `tests/test_evaluation_sets.py` checks it against `cases_sha256` in the set's `manifest.json`; docs: `records/20261026-evidence-quality-implementation.md` | R1 |
 
 ## Symlinks to packaged prompts
 
@@ -81,11 +82,10 @@ implementation.
 | ---- | --------- | ------- | ------- |
 | `scripts/balance_policy.py` | `aimediator.balance_policy` | tests: `test_balance_review_pipeline.py`; scripts: `evaluate_balance_review.py`, `export_balance_review_followups.py`, `replay_balance_admission.py`; file hashed into run identities by `diagnose_evidence_quality_live.py`, `run_balance_regression_live.py`, `run_quality_screening_experiment.py`, `run_balance_numeric_extraction_live.py`; docs: `design/cli.md`, `design/evidence-quality.md` | R2 |
 | `scripts/evaluate_evidence_quality.py` | `aimediator.quality_scoring` (runs `main()` when executed) | tests: `test_evidence_quality_evaluation.py`; docs: `design/cli.md`, `guides/cli-usage.md`, `records/20261026-evidence-quality-implementation.md` | R2 |
-| `scripts/evidence_quality.py` | `aimediator.evidence_quality` | tests: `test_evidence_quality.py`, `test_evidence_quality_evaluation.py`, `test_quality_screening_experiment.py`; scripts: `demo_evidence_quality.py`, `diagnose_evidence_quality_live.py`, `run_quality_screening_experiment.py` (several also hash the file); docs: `design/cli.md`, `design/evidence-quality.md`, `records/20261026-evidence-quality-implementation.md` | R2 |
+| `scripts/evidence_quality.py` | `aimediator.evidence_quality` | tests: `test_evidence_quality.py`, `test_evidence_quality_evaluation.py`, `test_quality_screening_experiment.py`; scripts: `diagnose_evidence_quality_live.py`, `run_quality_screening_experiment.py` (both also hash the file); docs: `design/cli.md`, `design/evidence-quality.md`, `records/20261026-evidence-quality-implementation.md` | R2 |
 | `scripts/glossary_vectors.py` | `aimediator.glossary_vectors` (runs `main()` when executed) | docs: `archive/readme-research-history.md`, `design/cli.md`, `reference/glossary-vector-index.md` (documented commands) | R2 |
 | `scripts/review_balance_sources.py` | `aimediator.legacy_review` (runs `main()` when executed) | tests: `test_balance_source_review.py`, `test_evidence_quality.py`; scripts: `check_balance_regressions.py`, `review_balance_live.py`; docs: `design/balance-analysis.md`, `design/cli.md`, `records/20261026-evidence-quality-implementation.md` | R2 |
-| `scripts/run_balance_analysis.py` | `aimediator.engine` (runs `main()` when executed) | tests: `test_balance_analysis.py`, `test_balance_review_pipeline.py`, `test_balanced_collection.py`, `test_evidence_quality.py`, `test_evidence_quality_evaluation.py`, `test_quality_screening_experiment.py`; scripts (14): `check_balance_regressions.py`, `demo_evidence_quality.py`, `diagnose_evidence_quality_live.py`, `evaluate_balance_review.py`, `export_balance_review_followups.py`, `prepare_balance_design.py`, `replay_balance_admission.py`, `review_balance_live.py`, `run_balance_regression_live.py`, `run_local_direction_comparison.py`, `run_quality_screening_experiment.py`, `run_balance_controls_live.py`, `run_balance_numeric_extraction_live.py`, `run_balance_semantic_controls_live.py`; docs: `README.md`, `archive/readme-research-history.md`, `design/balance-analysis.md`, `design/cli.md`, `design/evidence-quality.md`, `records/20261026-evidence-quality-implementation.md`, `records/20261027-balanced-validation.md` | R2 |
-| `scripts/run_local_direction_comparison.py` | `run_balance_analysis.run` (that is, `aimediator.engine.run`), with its own arguments; replaces the historical 32-comment experiment command | docs: `design/balance-analysis.md` | R3 |
+| `scripts/run_balance_analysis.py` | `aimediator.engine` (runs `main()` when executed) | tests: `test_balance_analysis.py`, `test_balance_review_pipeline.py`, `test_balanced_collection.py`, `test_evidence_quality.py`, `test_evidence_quality_evaluation.py`, `test_quality_screening_experiment.py`; scripts (12): `check_balance_regressions.py`, `diagnose_evidence_quality_live.py`, `evaluate_balance_review.py`, `export_balance_review_followups.py`, `prepare_balance_design.py`, `replay_balance_admission.py`, `review_balance_live.py`, `run_balance_regression_live.py`, `run_quality_screening_experiment.py`, `run_balance_controls_live.py`, `run_balance_numeric_extraction_live.py`, `run_balance_semantic_controls_live.py`; docs: `README.md`, `archive/readme-research-history.md`, `design/balance-analysis.md`, `design/cli.md`, `design/evidence-quality.md`, `records/20261026-evidence-quality-implementation.md`, `records/20261027-balanced-validation.md` | R2 |
 
 ## Change log
 
@@ -97,8 +97,9 @@ implementation.
   `data/evaluation/evidence-quality-synthetic-v1/cases.json`, which replaced a
   byte-identical copy of the packaged fixture (plan section 7, decision 9).
   The register now lists 19 symlinks and 7 forwarding scripts.
-- 2026-11-03 (batch 3 review, P3-D01): `scripts/run_local_direction_comparison.py`
-  writes to `runs/<run name>` instead of `reports/<run name>`, and its
+- 2026-11-03 (batch 3 review, P3-D01): the direction-comparison wrapper
+  (archived since, see the B1.7 entry) writes to `runs/<run name>` instead
+  of `reports/<run name>`, and its
   `--run-name` default is `local-direction-comparison` instead of the dated
   `balance-evidence-20261022` (G7). The layer stays registered under R3.
 - 2026-11-03 (batch 4): "Used by" document paths updated for the moves into
@@ -110,3 +111,11 @@ implementation.
   `~/Archives/AIMediator/scripts/20261103-quality-screening/` and dropped
   (names in the [code restructuring change record](../records/20261103-code-restructuring.md),
   "Archive and deletions"). No layer changed.
+- 2026-11-03 (code restructuring step B1.7, CR-D04): the direction-comparison
+  wrapper (R3) and the evidence-quality demo script were archived to
+  `~/Archives/AIMediator/scripts/20261103-broken-entry-points/`; both had
+  stopped working when the evidence-quality stage was added (names in the
+  [code restructuring change record](../records/20261103-code-restructuring.md),
+  "Archive and deletions"). The wrapper's row is removed, and both scripts
+  are dropped from "Used by". The register now lists 19 symlinks and 6
+  forwarding scripts; no layer uses R3 any more.
