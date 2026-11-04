@@ -2,8 +2,11 @@
 import argparse
 from pathlib import Path
 import sys
-sys.path.insert(1, str(Path(__file__).resolve().parents[1]))  # scripts/ holds the registered forwarding shells
-from run_balance_analysis import ROOT, Runner, ground_claim, write_json
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
+from aimediator.common import write as write_json
+from aimediator.evidence import ground_claim
+from aimediator.resources import asset_path
+from aimediator.runner import Runner
 
 
 def main():
@@ -12,7 +15,7 @@ def main():
     parser.add_argument('--base-url', default='http://127.0.0.1:11434')
     parser.add_argument('--num-gpu', type=int)
     args = parser.parse_args()
-    prompts = {'verify': {language: (ROOT / f'prompts/verify-balance.{language}.txt').read_text(encoding='utf-8')
+    prompts = {'verify': {language: asset_path(f'prompts/verify-balance.{language}.txt').read_text(encoding='utf-8')
                           for language in ('en', 'zh')}}
     runner = Runner(args.base_url, args.out, prompts)
     if args.num_gpu is not None:

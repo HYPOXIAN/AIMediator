@@ -2,19 +2,26 @@
 import argparse
 from pathlib import Path
 import sys
-sys.path.insert(1, str(Path(__file__).resolve().parents[1]))  # scripts/ holds the registered forwarding shells
-from run_balance_analysis import (ROOT,Runner,strict_json,write_json,digest,api,
-    evidence_units,character_reference,ground_claim)
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
+from aimediator.common import sha as digest, strict_json, write as write_json
+from aimediator.evidence import character_reference, evidence_units, ground_claim
+from aimediator.inference import api
+from aimediator.resources import asset_path
+from aimediator.run_store import code_manifest
+from aimediator.runner import Runner
+
+ASSETS = ('configs/balance-review-policy.json', 'data/glossary.json', 'prompts/summarize-balance.en.txt',
+          'prompts/summarize-balance.zh.txt', 'prompts/verify-balance.en.txt', 'prompts/verify-balance.zh.txt')
 
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--out',type=Path,required=True)
     p.add_argument('--base-url',default='http://127.0.0.1:11434');p.add_argument('--num-gpu',type=int);args=p.parse_args()
-    prompts={stage:{lang:(ROOT/f'prompts/{name}.{lang}.txt').read_text(encoding='utf-8') for lang in ('en','zh')}
+    prompts={stage:{lang:asset_path(f'prompts/{name}.{lang}.txt').read_text(encoding='utf-8') for lang in ('en','zh')}
         for stage,name in [('extract','summarize-balance'),('verify','verify-balance')]}
     tags=api(args.base_url,'/api/tags')['models'];installed={r['name']:r['digest'] for r in tags}
-    identity={'script_sha256':digest(Path(__file__).read_bytes()),'runner_sha256':digest((ROOT/'scripts/run_balance_analysis.py').read_bytes()),
-        'policy_module_sha256':digest((ROOT/'scripts/balance_policy.py').read_bytes()),
+    identity={'script_sha256':digest(Path(__file__).read_bytes()),'package_code_sha256':code_manifest()['modules'],
+        'asset_sha256':{name:digest(asset_path(name).read_bytes()) for name in ASSETS},
         'models':{m:installed[m] for m in ('llama3.1:latest','qwen2.5:7b')},
         'prompts':{s:{l:digest(t.encode()) for l,t in langs.items()} for s,langs in prompts.items()},
         'runtime_options':{'num_gpu':args.num_gpu} if args.num_gpu is not None else {}}

@@ -4,8 +4,16 @@ import json
 from pathlib import Path
 
 import sys
-sys.path.insert(1, str(Path(__file__).resolve().parents[1]))  # scripts/ holds the registered forwarding shells
-import run_balance_analysis as m
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
+from aimediator.common import sha as digest, strict_json, write as write_json
+from aimediator.evidence import character_reference, evidence_units, ground_claim
+from aimediator.inference import api
+from aimediator.resources import asset_path
+from aimediator.run_store import code_manifest
+from aimediator.runner import Runner
+
+ASSETS = ('configs/balance-review-policy.json', 'data/glossary.json', 'prompts/summarize-balance.en.txt',
+          'prompts/summarize-balance.zh.txt', 'prompts/verify-balance.en.txt', 'prompts/verify-balance.zh.txt')
 
 FIXTURES = [
     ('en', 'negated_nerf', 'Do not nerf Ken.', [('Ken','keep')]),
@@ -25,27 +33,28 @@ def main():
     p.add_argument('--base-url',default='http://127.0.0.1:11434')
     p.add_argument('--num-gpu',type=int,default=99)
     args=p.parse_args()
-    prompts={s:{l:(m.ROOT/f'prompts/{name}.{l}.txt').read_text(encoding='utf-8') for l in ('en','zh')}
+    prompts={s:{l:asset_path(f'prompts/{name}.{l}.txt').read_text(encoding='utf-8') for l in ('en','zh')}
         for s,name in [('extract','summarize-balance'),('verify','verify-balance')]}
     models={'en':'llama3.1:latest','zh':'qwen2.5:7b'}
-    tags={r['name']:r['digest'] for r in m.api(args.base_url,'/api/tags')['models']}
+    tags={r['name']:r['digest'] for r in api(args.base_url,'/api/tags')['models']}
     identity={'kind':'synthetic_semantic_controls_not_community_evidence','fixtures':FIXTURES,
-        'script_sha256':m.digest(Path(__file__).read_bytes()),'runner_sha256':m.digest((m.ROOT/'scripts/run_balance_analysis.py').read_bytes()),
+        'script_sha256':digest(Path(__file__).read_bytes()),'package_code_sha256':code_manifest()['modules'],
+        'asset_sha256':{name:digest(asset_path(name).read_bytes()) for name in ASSETS},
         'models':{n:tags[n] for n in models.values()},'prompts':prompts,'runtime_options':{'num_gpu':args.num_gpu}}
     path=args.out/'manifest.json'
-    if path.exists() and m.strict_json(path.read_text(encoding='utf-8')) != json.loads(json.dumps(identity)):
+    if path.exists() and strict_json(path.read_text(encoding='utf-8')) != json.loads(json.dumps(identity)):
         raise ValueError('Control identity changed; use a new output directory')
-    m.write_json(path,identity)
-    runner=m.Runner(args.base_url,args.out,prompts);runner.runtime_options=identity['runtime_options']
-    results=[];characters={e['canonical_name'] for e in m.character_reference()}
+    write_json(path,identity)
+    runner=Runner(args.base_url,args.out,prompts);runner.runtime_options=identity['runtime_options']
+    results=[];characters={e['canonical_name'] for e in character_reference()}
     for lang,category,text,expected in FIXTURES:
         cid='synthetic-'+lang+'-'+category;model=models[lang]
         source={'record_id':cid,'text_original':text,'source_url':None}
-        data={'comments':[{'comment_id':cid,'units':m.evidence_units(text)}],
-            'character_normalization_reference':m.character_reference(text)}
+        data={'comments':[{'comment_id':cid,'units':evidence_units(text)}],
+            'character_normalization_reference':character_reference(text)}
         parsed,meta=runner.generate(model,lang,'extract',data,[cid]);checks=[]
         for i,claim in enumerate(parsed['assessments'][0]['claims'] if parsed else [],1):
-            errors,enriched=m.ground_claim(claim,source,characters)
+            errors,enriched=ground_claim(claim,source,characters)
             audit=None;verify_request=None
             if not errors:
                 item={'claim_id':cid+':'+str(i),'comment_id':cid,'claim':enriched}
@@ -56,10 +65,10 @@ def main():
         passed=parsed is not None and observed==set(expected) and all(not c['source_errors'] and (c['audit'] or {}).get('supported') and c['claim']['parameters']==[] and c['claim']['specificity']=='qualitative_only' for c in checks)
         results.append({'kind':'synthetic_control_not_community_evidence','language':lang,'category':category,
             'text_original':text,'expected_pairs':expected,'passed':passed,'claims':checks,'extract_request':meta})
-        m.write_json(args.out/'progress.json',results)
+        write_json(args.out/'progress.json',results)
     report={'kind':'eight_synthetic_semantic_controls_not_accuracy','passed':sum(r['passed'] for r in results),'total':len(results),'cases':results,
         'limitation':'Eight deliberately constructed diagnostics, not independent real-source accuracy; excluded from community counts.'}
-    m.write_json(args.out/'results.json',report)
+    write_json(args.out/'results.json',report)
     print(f"Semantic controls: {report['passed']}/{report['total']}",flush=True)
 
 
