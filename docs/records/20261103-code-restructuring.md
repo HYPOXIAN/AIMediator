@@ -628,6 +628,63 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
 - **Status**: implemented in B5.5 under plan section 1, item 8. The owner
   may reject it.
 
+### Commit series of B6.2 (found in B6.2)
+
+- **Question**: the B6 work order orders B6.2 as one commit per module
+  (`screening`, `client`, `store`, `sources`, `export`, `balanced`,
+  `expansion`), then a commit that makes the scripts thin, then the test
+  migration, with the gates after every commit. Four facts make that order
+  fail the gates:
+  1. `tests/test_module_layers.py` fails on any module in a subpackage
+     (`test_every_module_file_is_in_the_table`), and its scanner resolves
+     relative imports as if every module were top-level, so
+     `from .client import Halt` inside `collection/` reads as `client`.
+  2. The B5.10 test imports every module under `src/aimediator` with file
+     reads refused, and `screen_feedback.py` parses the glossary at import
+     (P-04, which B5.10 left to B6.2).
+  3. `main` of `collect_feedback.py`, which goes to `sources`, calls
+     `export`, so moving `sources` before `export` would leave the package
+     calling code that is still in a script.
+  4. The four collector tests reach the code through the script modules
+     (`m.Store`, `m.time`, `m.ZoneInfo`, `b.c.STATE`). Thin scripts before
+     the migration break them. Once `balanced.main` moves,
+     `patch.object(b.c, 'STATE', ...)` no longer reaches it, and the lock
+     test would run the collector with the real state directory and could
+     send network requests.
+
+  How is the series ordered?
+- **Options**: (a) the series below; (b) the work order's order as written,
+  with failing gates between commits and a test that can reach the network;
+  (c) one commit for the whole step, which gives up one module per commit.
+
+  Series (a), every commit with `Step: B6.2`:
+  1. `chore`: the layering test maps subpackage modules to the
+     `collection.*` row and resolves relative imports from the module's own
+     package. The table is unchanged; one scanner test is added.
+  2. `refactor`: `screen_feedback.py` builds its English character pattern
+     on first use, from `resources.glossary()` (the same parsed file), so
+     importing it reads no file. The pattern and lock target L4 are
+     unchanged.
+  3. `refactor`: the collectors' `write_json` becomes `common.write`, after
+     the bytes are confirmed on a fixture.
+  4. One commit per module, in the order `screening`, `client`, `store`,
+     `export`, `sources`, `balanced`, `expansion`: `export` comes before
+     `sources` because `sources.main` calls it. Each script imports the
+     moved names back and keeps its other lines, as the `engine` facade
+     did in B2. The `balanced` commit also points the lock test's one
+     `STATE` patch at `aimediator.collection.balanced`, the module that
+     then reads it, so the test stays offline.
+  5. `refactor`: the four tool modules take `main(argv=None)` (blueprint
+     3.3).
+  6. `chore`: the test migration, with the L4 harness.
+  7. `refactor`: the thin scripts.
+- **Recommendation**: (a). Every commit passes the gates and holds one kind
+  of operation, except the one patch line in the `balanced` commit, which
+  keeps the test offline. A revert undoes each commit, the lock stays
+  green, and no rule changes.
+- **Status**: implemented in B6.2 under plan section 1, item 8. The owner
+  may reject it.
+
 ## Escalations
 
 ### E-1 Baseline of "Test files importing forwarders" (B0.4)
