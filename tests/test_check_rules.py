@@ -58,7 +58,7 @@ class TestGlobalRules(CheckRulesTestCase):
                 self.write(name)
             else:
                 (self.root / name).mkdir()
-        self.assertEqual(self.paths('G3'), ['notes', 'stray.txt'])
+        self.assertEqual(self.paths('G3'), ['notes', 'prompts', 'stray.txt'])
 
     def test_g7_flags_home_paths_but_not_prose_placeholders(self):
         self.write('docs/a.md', 'see %s/file\n' % HOME)
