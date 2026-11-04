@@ -423,6 +423,97 @@ mentions.
     in the same order as `records.jsonl`, so L4 covers plan 5.2 in full.
 - Result: accepted, tag `restructure-b0`.
 
+### 2026-11-03 B1-V
+
+- Range: `restructure-b0..9cab5e0`; 9 commits. `0d8e6b1` is the plan
+  correction the owner told B0-V to make (`Session: B0-V`); B1-1 made B1.1
+  to B1.7 (`131e7d2`, `0bddb94`, `abe48a0`, `58e90b3`, `99d57a9`,
+  `12cd026`, `aca3fb5`) and the session-log entry `9cab5e0`. All checks
+  ran on `9cab5e0`.
+- Checks:
+  1. Boundary and commit hygiene (blueprint 7.2): pass. The boundary check
+     prints one line, `docs/plans/code-restructuring.md`, from `0d8e6b1`.
+     That line is expected (first entry under "Decisions found during
+     execution"); no B1 commit changes a path outside the pattern. Every
+     commit has a `Step:` or `Session:` line, B1.6 and B1.7 name `CR-D03`
+     and `CR-D04`, and none has an attribution line.
+  2. Diff review: pass. `git diff restructure-b0..HEAD -- src` changes
+     `resources.py` (`glossary()` with `lru_cache(maxsize=1)` and a
+     one-line docstring), `engine.py` and `review.py`. In `engine.py`,
+     `character_reference` and `glossary_target_patch` use `glossary()`,
+     the two `glossary_sha256` reads of file bytes are unchanged, and the
+     span check raises `AssertionError('Evidence span differs from the
+     original text')` with no `assert` left. The `review.py` change only
+     moves `encoding='utf-8'` to the first line of one `write_text` call,
+     with the same text and receiver (second entry under "Decisions found
+     during execution"). An AST comparison of `abe48a0` with its parent,
+     ignoring `encoding='utf-8'` keywords, gives identical trees for the
+     other 32 files and 145 added keywords. `git diff -w` of `58e90b3`
+     shows only the `BlockingIOError` handler with `parser.error`, the
+     `try`/`finally: lock.close()` around the rest of each collector's
+     `main`, and the new test. The other script changes are the eight
+     deletions. The changes match blueprint 3.3 (`resources`, `evidence`)
+     and 4.1: the glossary's `target_patch` is a string, so `ground_claim`
+     shares no mutable object with the cache, and every changed or added
+     Python file parses as Python 3.9.
+  3. Gates (plan 8.1): pass. Tree clean, no stash; 217 tests OK, the
+     expected count `223 + 1 + 1 + 1 - 9` with the B1.4 test; rule check
+     `Total: 0`. The only warnings are the two known `ResourceWarning`s
+     from the simulated HTTP errors 429 and 403 in
+     `test_collect_feedback.py`.
+  4. Lock: pass. `git diff restructure-b0..HEAD -- tests/fixtures/` prints
+     nothing, `python3 tests/behavior_lock.py` prints `378 keys, 0 differ`,
+     and plan 8.3 passes. B1.5 split the L2 producer into `legacy_dataset`
+     and `run_legacy` in the test-only `tests/behavior_lock.py`; the lock
+     inputs are unchanged. `test_console_output.py` imports
+     `behavior_lock` as `test_behavior_lock.py` does: it is the lock's
+     producer module, not a test module (blueprint 4.2).
+  5. Archives: pass. `sha256sum -c SHA256SUMS` reports OK for the 6 files
+     in `~/Archives/AIMediator/scripts/20261103-quality-screening/` and the
+     2 files in `~/Archives/AIMediator/scripts/20261103-broken-entry-points/`.
+     Each entry equals the SHA-256 of the blob at the parent of its
+     deleting commit (`99d57a9`, `12cd026`) and the hash under "Archive and
+     deletions", which lists all eight paths with location, reason and
+     step. The existing `~/Archives/AIMediator/scripts/SHA256SUMS` (12
+     entries) still verifies and was last modified before B1 began.
+  6. Greps and rules: pass. The B1.7 grep and the plan 8.7 fifth grep
+     print nothing. The handoff's whole-call AST check prints exactly the
+     four expected calls (`self.opener.open`, `tarfile.open` and the two
+     `'wb'` opens), and the only other `open(` lines without an encoding
+     are the string fixture at `test_check_rules.py` lines 354 to 356.
+     Outside the grep's scope, the archived names appear only in the
+     planning documents, the dated notes of the two design documents, the
+     frozen records, the archived reorganization plan, and the frozen
+     files under `data/raw/` and `reports/` that "Archive and deletions"
+     explains. G2 and P3 report 0. The register lists 19 symlinks (19
+     tracked) and 6 forwarding scripts, and has no R3 row.
+  7. Timing (plan 8.4): pass. Demo 3.0 s under cProfile and 1.68 s plain
+     (limit 10 s; 26.2 s at entry); `engine.character_reference` 688
+     calls, 0.76 s cumulative (limit 1 s). Suite time under Measurements.
+  8. Wheel and foreign directory: pass. Plan 8.2, with the build directory
+     outside the checkout, prints `"passed": true` and `"commands": 18`
+     (Python 3.14.8, NumPy 2.4.6). Plan 8.5: 217 tests OK from a foreign
+     temporary directory, which stays empty.
+- Measurements: tests 217 in 9.1 s (wall 9.6 s; 118 s at entry); demo
+  3.0 s under cProfile, 1.68 s plain; lock green, 4.3 s run alone.
+- Owner review items (work order section 5):
+  1. Archived files and their two locations: the four quality-screening
+     scripts and their two test files in
+     `~/Archives/AIMediator/scripts/20261103-quality-screening/` (B1.6,
+     CR-D03), and `scripts/run_local_direction_comparison.py` and
+     `scripts/experiments/demo_evidence_quality.py` in
+     `~/Archives/AIMediator/scripts/20261103-broken-entry-points/` (B1.7,
+     CR-D04). Paths, hashes and reasons are under "Archive and deletions".
+  2. Timings: demo 1.68 s plain and 3.0 s under cProfile (26.2 s at
+     entry); suite 217 tests in 9.1 s (118 s at entry).
+  3. The two decisions found during execution in B1: the encoding grep
+     line in `review.py` (B1.3) and the register mentions outside the B1.7
+     rows (B1.7). Both are implemented under plan section 1, item 8; a
+     revert undoes either, and the owner may reject either. There were no
+     escalations in B1.
+- Result: accepted, tag `restructure-b1-review`. The owner's review and
+  the `restructure-b1` tag follow in a closure session (blueprint 6.4).
+
 ## Session log
 
 ### 2026-11-03 B0-1 (implementation)
@@ -472,6 +563,18 @@ mentions.
   commit `0d8e6b1`; no B1 path. No escalations.
 - Next: B1-V (verification of B1, sets `restructure-b1-review`); blockers:
   none.
+
+### 2026-11-03 B1-V (verification)
+
+- Steps: none (verification).
+- State: HEAD is the verification-note commit (parent `9cab5e0`), tagged
+  `restructure-b1-review`; tests 217; lock green, fixture unchanged; rule
+  check 0.
+- Findings: none. All eight checklist items pass; no fix-up steps and no
+  escalations. The owner review items are listed in the B1-V note.
+- Next: the owner's B1 review, then a closure session that records it and
+  sets `restructure-b1` (blueprint 6.4); B2.1, session B2-1, starts from
+  that tag. Blockers: the owner's review.
 
 ## Batch results
 
