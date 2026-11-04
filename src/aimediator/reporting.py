@@ -4,7 +4,7 @@ import html
 from pathlib import Path
 import re
 from urllib.parse import urlsplit, quote
-from . import engine
+from . import evidence, evidence_quality
 from .common import canonical, new_path, read, sha, write
 from .review import load_run, load_overlay
 
@@ -77,8 +77,8 @@ def export_report(run, out, review=None):
     groups, unresolved = groups_for(claims, sources)
     quality = data['quality']
     routed = [r for q in quality for r in q['routing']]
-    reference = engine.character_reference('\n'.join(r['text_original'] for r in sources.values()))
-    quality_views = {'opinion_summary': engine.quality.summarize_opinions(quality, reference),
+    reference = evidence.character_reference('\n'.join(r['text_original'] for r in sources.values()))
+    quality_views = {'opinion_summary': evidence_quality.summarize_opinions(quality, reference),
                      'system_feedback': [r for r in routed if r['route'] == 'system_evidence'],
                      'exclusions': [r for r in routed if r['route'] == 'exclude'],
                      'review_queue': [r for r in routed if r['route'] == 'review']}
@@ -152,7 +152,7 @@ def export_report(run, out, review=None):
     if mode == 'off':
         lines += ['Quality unassessed. No missing general/system concerns are inferred.']
     else:
-        for route in engine.quality.ROUTES:
+        for route in evidence_quality.ROUTES:
             items = [r for r in routed if r['route'] == route]
             lines += ['', '### ' + route, '']
             for item in items:

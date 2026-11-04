@@ -1,5 +1,5 @@
 """Explicit-source adapter to the existing quality scorer."""
-from . import engine
+from . import evidence, evidence_quality
 from .common import Failure, new_path, read, sha, write
 from .quality_scoring import evaluate
 from .review import load_run
@@ -30,10 +30,10 @@ def evaluate_quality(run, labels_path, out):
             raise Failure(2, 'Point matches require explicitly labeled gold points')
         segments = label.get('segments')
         if segments is not None:
-            schema = engine.quality.annotation_schema([label['comment_id']])['properties']['segments']
-            if engine.schema_errors(segments, schema) or len({s['segment_id'] for s in segments}) != len(segments):
+            schema = evidence_quality.annotation_schema([label['comment_id']])['properties']['segments']
+            if evidence_quality.schema_errors(segments, schema) or len({s['segment_id'] for s in segments}) != len(segments):
                 raise Failure(2, 'Invalid gold segment schema or duplicate segment IDs')
-            units = {u['evidence_id']: u for u in engine.evidence_units(source['text_original'])}
+            units = {u['evidence_id']: u for u in evidence.evidence_units(source['text_original'])}
             for segment in segments:
                 unit = units.get(segment['evidence_id'])
                 if not unit or not unit['start'] <= segment['start'] < segment['end'] <= unit['end']:
@@ -43,7 +43,7 @@ def evaluate_quality(run, labels_path, out):
             for point in points:
                 if (not {'point_id', 'route', 'segment_ids'} <= set(point)
                         or not isinstance(point['point_id'], str) or not point['point_id']
-                        or point['route'] not in engine.quality.ROUTES
+                        or point['route'] not in evidence_quality.ROUTES
                         or not isinstance(point['segment_ids'], list) or not point['segment_ids']
                         or len(set(point['segment_ids'])) != len(point['segment_ids'])
                         or not set(point['segment_ids']) <= segment_ids):

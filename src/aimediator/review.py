@@ -2,7 +2,7 @@
 import copy
 import csv
 from pathlib import Path
-from . import engine
+from . import balance_policy, evidence, evidence_quality
 from .common import Failure, canonical, new_path, read, sha, write
 from .legacy_review import apply_review, proposal_hash
 
@@ -60,7 +60,7 @@ def load_run(folder):
     if len({r['comment_id'] for r in relevance}) != len(relevance) or any(r['comment_id'] not in sources for r in relevance):
         raise Failure(2, 'Invalid relevance source coverage')
     for row in relevance:
-        if row.get('agreement') is True and not engine.relevance_agrees(row, {
+        if row.get('agreement') is True and not balance_policy.retrieval_review_agrees(row, {
                 'related': row.get('model_related'), 'uncertain': row.get('model_uncertain')}):
             raise Failure(2, 'Saved relevance admission lacks required retrieval/model agreement')
     admitted = {r['comment_id'] for r in relevance if r.get('agreement') is True}
@@ -78,8 +78,8 @@ def load_run(folder):
             if q['status'] == 'failed' and (not q.get('errors') or any(r.get('route') != 'review' for r in q.get('routing', []))):
                 raise Failure(2, 'Failed quality annotation cannot supply eligible evidence')
             if q['status'] == 'completed':
-                errors = engine.quality.validate_annotation(q['annotation'], sources[cid], engine.evidence_units(sources[cid]['text_original']))
-                recomputed = engine.quality.qualify(q['annotation'], sources[cid], engine.evidence_units(sources[cid]['text_original']))
+                errors = evidence_quality.validate_annotation(q['annotation'], sources[cid], evidence.evidence_units(sources[cid]['text_original']))
+                recomputed = evidence_quality.qualify(q['annotation'], sources[cid], evidence.evidence_units(sources[cid]['text_original']))
                 if errors or q['routing'] != recomputed['routing'] or q.get('routes_present') != recomputed['routes_present']:
                     raise Failure(2, 'Quality annotation/routing is not source-bound')
             qrecords[cid] = q
@@ -107,22 +107,22 @@ def load_run(folder):
     entries += list(pending.values())
     for e in entries:
         c = e.get('claim')
-        if not isinstance(c, dict) or not set(engine.CLAIM['properties']) <= set(c):
+        if not isinstance(c, dict) or not set(evidence.CLAIM['properties']) <= set(c):
             continue  # Malformed generations remain diagnostics, never editable invented claims.
-        core = {k: c[k] for k in engine.CLAIM['properties']}
-        if engine.schema_errors(core, engine.CLAIM):
+        core = {k: c[k] for k in evidence.CLAIM['properties']}
+        if evidence_quality.schema_errors(core, evidence.CLAIM):
             continue
         cid, claim_id = e['comment_id'], e['claim_id']
         if claim_id in proposals or cid not in sources or cid not in admitted:
             raise Failure(2, 'Duplicate, foreign or unadmitted proposal')
-        errors, enriched = engine.ground_claim(core, sources[cid], {r['canonical_name'] for r in engine.character_reference()})
+        errors, enriched = evidence.ground_claim(core, sources[cid], {r['canonical_name'] for r in evidence.character_reference()})
         if c.get('evidence') is not None and enriched is not None and c['evidence'] != enriched['evidence']:
             errors.append('Saved evidence differs from immutable original source')
         if raw['evidence_quality_mode'] == 'enforce':
             record = qrecords.get(cid)
             if not record:
                 raise Failure(2, 'Enforce proposal has no same-comment quality record')
-            binding, qualification = engine.quality.bind_claim(c, record, engine.character_reference(sources[cid]['text_original']))
+            binding, qualification = evidence_quality.bind_claim(c, record, evidence.character_reference(sources[cid]['text_original']))
             errors += binding
             if not binding and c.get('evidence_quality') != qualification:
                 errors.append('Saved quality qualification differs from source-bound annotation')
@@ -203,7 +203,7 @@ def import_review(run, decisions_path, out):
             raise Failure(4, 'Reviewed proposal fingerprint mismatch')
     try:
         accepted, excluded = apply_review(data['proposals'], envelope['decisions'], data['sources'], data['admitted'],
-                                         {r['canonical_name'] for r in engine.character_reference()})
+                                         {r['canonical_name'] for r in evidence.character_reference()})
     except (ValueError, TypeError, KeyError) as exc:
         raise Failure(2, 'Review validation failed: ' + str(exc)) from None
     accepted = decorate_review(data, accepted)
@@ -225,7 +225,7 @@ def import_review(run, decisions_path, out):
 def decorate_review(data, accepted):
     for c in accepted:
         original = data['proposals'][c['claim_id']]
-        changed = any(c[k] != original['claim'][k] for k in engine.CLAIM['properties'])
+        changed = any(c[k] != original['claim'][k] for k in evidence.CLAIM['properties'])
         c['original_model_claim'] = copy.deepcopy(original['claim'])
         c['automatic_errors'] = original['automatic_errors']
         c['automatic_accepted'] = original['automatic_accepted']
@@ -257,7 +257,7 @@ def load_overlay(data, path):
     # Re-run source/quality validation and reconstruct every derived field, including
     # evidence spans, original proposals and audit eligibility, before export.
     expected, rejected = apply_review(data['proposals'], decisions['decisions'], data['sources'], data['admitted'],
-                                     {r['canonical_name'] for r in engine.character_reference()})
+                                     {r['canonical_name'] for r in evidence.character_reference()})
     expected = decorate_review(data, expected)
     if canonical(expected) != canonical(claims) or canonical(rejected) != canonical(exclusions):
         raise Failure(4, 'Review overlay differs from validated source decisions')

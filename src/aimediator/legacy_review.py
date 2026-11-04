@@ -9,8 +9,10 @@ import copy
 import json
 from . import evidence_quality as quality
 from pathlib import Path
-from .engine import (CLAIM, ROOT, aggregate, digest, ground_claim,
-                                 schema_errors, strict_json, write_json, character_reference)
+from .common import sha as digest, strict_json, write as write_json
+from .evidence import CLAIM, character_reference, ground_claim
+from .evidence_quality import schema_errors
+from .pipeline import aggregate
 
 
 def proposal_hash(claim):

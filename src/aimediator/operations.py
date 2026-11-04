@@ -4,7 +4,7 @@ import io
 from pathlib import Path
 import sys
 from types import SimpleNamespace
-from . import engine
+from . import balance_policy, evidence_quality, pipeline, retrieval, runner
 from .common import Failure, canonical, input_rows, new_path, read, sha, write
 from .config import credential, resolve, validate
 from .inference import Transport, probe
@@ -17,7 +17,7 @@ def preflight(cfg, input_path=None, out=None):
     for name in store.resource_manifest():
         if not asset_path(name).is_file():
             raise Failure(3, 'Packaged resource unavailable: ' + name)
-    engine.quality.load_policy()
+    evidence_quality.load_policy()
     rows = input_rows(Path(input_path).read_bytes()) if input_path else None
     if out:
         new_path(out)
@@ -104,8 +104,8 @@ def analyze(input_path=None, out=None, cfg=None, resume=None, env_file=None, tra
             mode = cfg['evidence_quality']
             prompts = prompts_for(mode)
             write(folder / 'prompt-snapshot.json', prompts)
-            write(folder / 'review-policy-snapshot.json', engine.load_policy())
-            policy = engine.quality.load_policy() if mode != 'off' else None
+            write(folder / 'review-policy-snapshot.json', balance_policy.load_policy())
+            policy = evidence_quality.load_policy() if mode != 'off' else None
             write(folder / 'quality-policy-snapshot.json', policy)
             manifest = read(folder / 'manifest.json')
             args = SimpleNamespace(out=folder, base_url=cfg['base_url'], embedding_model=cfg['embedding']['model'],
@@ -122,18 +122,18 @@ def analyze(input_path=None, out=None, cfg=None, resume=None, env_file=None, tra
                           file=sys.stderr, flush=True)
 
             def runner_factory(*values):
-                return engine.Runner(*values, chat_transport=transport.chat, progress=progress)
+                return runner.Runner(*values, chat_transport=transport.chat, progress=progress)
 
             def retrieve(*values):
                 if not quiet:
                     print('retrieval: 0/%d comments' % len(values[0]), file=sys.stderr, flush=True)
-                result = engine.retrieve(*values, api_transport=transport.api, embed_transport=transport.embed)
+                result = retrieval.retrieve(*values, api_transport=transport.api, embed_transport=transport.embed)
                 if not quiet:
                     print('retrieval: %d/%d comments' % (len(result),len(values[0])), file=sys.stderr, flush=True)
                 return result
             embedding_cfg = {'url': cfg['embedding']['endpoint'], 'model': cfg['embedding']['model']} if cfg['embedding']['provider'] == 'configured' else None
             with contextlib.redirect_stdout(io.StringIO()):
-                engine.process(args, rows, cfg['routing'], list(cfg['routing']['models']), prompts,
+                pipeline.process(args, rows, cfg['routing'], list(cfg['routing']['models']), prompts,
                     quality_identity, policy, engine_identity, embedding_cfg, runner_factory, retrieve)
             ledger = store.coverage(folder, rows)
             write(folder / 'full-pipeline-coverage.json', ledger)
