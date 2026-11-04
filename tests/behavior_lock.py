@@ -21,7 +21,6 @@ in a commit that a plan section 9 decision authorizes (plan section 5.5).
 import argparse
 import contextlib
 import hashlib
-import importlib.util
 import io
 import json
 from pathlib import Path
@@ -182,11 +181,8 @@ def screening_texts():
 
 def screening_digest():
     """L4: digest of the JSON list of ``classify_rules`` results (rules only, no network)."""
-    spec = importlib.util.spec_from_file_location(
-        'behavior_lock_screen_feedback', ROOT / 'scripts/collect/screen_feedback.py')
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    results = [module.classify_rules({'text_original': text}) for text in screening_texts()]
+    from aimediator.collection.screening import classify_rules
+    results = [classify_rules({'text_original': text}) for text in screening_texts()]
     return sha256(json.dumps(results, ensure_ascii=False).encode('utf-8'))
 
 

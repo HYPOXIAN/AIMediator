@@ -9,8 +9,6 @@ import unittest
 from unittest.mock import Mock, patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'src'))
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts/collect'))
-import collect_balanced_feedback as b
 from aimediator import evidence, evidence_quality, retrieval, stages
 from aimediator.collection import balanced
 from aimediator.runner import Runner
@@ -55,25 +53,25 @@ class BalancedCollectionTests(unittest.TestCase):
                 row(3, 'en', 'Great video!', '2026-10-28'),
                 row(4, 'zh', '请削弱肯', '2026-10-26'),
                 row(5, 'en', 'Buff Manon.', '2026-10-25')]
-        selected, counts = b.select_balanced(rows, 1)
+        selected, counts = balanced.select_balanced(rows, 1)
         self.assertEqual(dict(counts), {'en': 1, 'zh': 1})
         self.assertEqual({r['record_id'] for r in selected}, {'2', '4'})
         self.assertEqual(rows[1]['text_original'], selected[0]['text_original'])
 
     def test_shortage_is_visible_and_not_padded_with_irrelevance(self):
-        selected, counts = b.select_balanced([row(1, 'en', 'Great video!', '2026-10-27')], 300)
+        selected, counts = balanced.select_balanced([row(1, 'en', 'Great video!', '2026-10-27')], 300)
         self.assertEqual(selected, [])
         self.assertEqual(counts['zh'], 0)
 
     def test_language_reviews_preserve_original_and_reject_stale_text(self):
         original = row(1, 'en', '加强曼侬', '2026-10-27')
         review = {'1': {'language': 'zh', 'text_sha256': hashlib.sha256(original['text_original'].encode()).hexdigest()}}
-        selected, counts = b.select_balanced([original], 1, review)
+        selected, counts = balanced.select_balanced([original], 1, review)
         self.assertEqual(counts['zh'], 1)
         self.assertEqual(original['language'], 'en')
         original['text_original'] = 'changed'
         with self.assertRaises(ValueError):
-            b.select_balanced([original], 1, review)
+            balanced.select_balanced([original], 1, review)
 
     def test_configured_embedding_never_calls_ollama_and_saves_no_key(self):
         cfg = {'url': 'https://embedding.test/v1/embeddings', 'model': 'fixture', 'key': 'SECRET'}
@@ -102,13 +100,13 @@ class BalancedCollectionTests(unittest.TestCase):
     def test_held_collector_lock_is_reported_through_the_parser(self):
         with tempfile.TemporaryDirectory() as temp:
             state = Path(temp)
-            argv = ['collect_balanced_feedback.py', '--out', str(state / 'out')]
+            argv = ['--out', str(state / 'out')]
             with (state / 'feedback-collector.lock').open('a', encoding='utf-8') as held:
                 fcntl.flock(held, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                with patch.object(balanced, 'STATE', state), patch.object(sys, 'argv', argv), \
+                with patch.object(balanced, 'STATE', state), \
                         patch('sys.stderr', new_callable=io.StringIO) as stderr:
                     with self.assertRaises(SystemExit) as raised:
-                        b.main()
+                        balanced.main(argv)
         self.assertEqual(raised.exception.code, 2)
         self.assertIn('Another collector is running in this project', stderr.getvalue())
 
