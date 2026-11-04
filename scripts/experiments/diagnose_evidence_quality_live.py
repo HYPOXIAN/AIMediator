@@ -11,7 +11,8 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
 from aimediator import evidence_quality as q
 from aimediator.common import sha as digest, write as write_json
-from aimediator.evidence import character_reference, evidence_units, ground_claim
+from aimediator.diagnostics import audit, extract
+from aimediator.evidence import character_reference, evidence_units
 from aimediator.inference import api
 from aimediator.resources import asset_path, module_path
 from aimediator.run_store import code_manifest
@@ -85,21 +86,14 @@ def main():
                 for stage in ('extract','verify'):
                     stage_prompts[stage][lang]+='\n'+identity['enforce_prompts'][stage][lang]
             mode_runner=Runner(args.base_url,folder/mode,stage_prompts,{**identity,'mode':mode},policy,log=lambda text:print(text,flush=True))
-            data={'comments':[{'comment_id':cid,'units':units}],
-                  'character_normalization_reference':character_reference(row['text_original'])}
-            if mode=='enforce':data['comments'][0]['allowed_quality_points']=allowed
-            parsed,meta=mode_runner.generate(model,lang,'extract',data,[cid])
+            parsed,meta=extract(mode_runner,model,lang,row,allowed_points=allowed if mode=='enforce' else None)
             trace.append({'stage':'extract','mode':mode,'comment_id':cid,**meta});claims=[]
-            for i,claim in enumerate(parsed['assessments'][0]['claims'] if parsed else []):
-                errors,enriched=ground_claim(claim,row,{e['canonical_name'] for e in character_reference()})
-                if mode=='enforce':
-                    errs,qualification=q.bind_claim(claim,record,character_reference(row['text_original']));errors+=errs
-                    if enriched:enriched['evidence_quality']=qualification
-                entry={'claim_id':f'{cid}:{i+1}','comment_id':cid,'claim':enriched or claim,'errors':errors}
-                if not errors:
-                    audited,meta=mode_runner.generate(model,lang,'verify',{'claims':[entry],'original_comment':row['text_original']},[entry['claim_id']])
-                    trace.append({'stage':'verify','mode':mode,'comment_id':cid,**meta})
-                    entry['audit']=audited['verdicts'][0] if audited else None
+            for r in audit(mode_runner,model,lang,row,parsed['assessments'][0]['claims'] if parsed else [],
+                           {e['canonical_name'] for e in character_reference()},quality_record=record if mode=='enforce' else None):
+                entry={'claim_id':f"{cid}:{r['index']}",'comment_id':cid,'claim':r['enriched'] or r['claim'],'errors':r['errors']}
+                if not r['errors']:
+                    trace.append({'stage':'verify','mode':mode,'comment_id':cid,**r['audit_meta']})
+                    entry['audit']=r['audit']
                 claims.append(entry)
             comparison.append({'comment_id':cid,'mode':mode,'claims':claims,'status':'completed' if parsed else 'generation_failed'})
             write_json(folder/'mode-comparison.json',comparison)

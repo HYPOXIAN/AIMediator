@@ -6,7 +6,8 @@ from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
 from aimediator.common import sha as digest, strict_json, write as write_json
-from aimediator.evidence import character_reference, evidence_units, ground_claim
+from aimediator.diagnostics import audit, extract
+from aimediator.evidence import character_reference
 from aimediator.inference import api
 from aimediator.resources import asset_path
 from aimediator.run_store import code_manifest
@@ -50,17 +51,9 @@ def main():
     for lang,category,text,expected in FIXTURES:
         cid='synthetic-'+lang+'-'+category;model=models[lang]
         source={'record_id':cid,'text_original':text,'source_url':None}
-        data={'comments':[{'comment_id':cid,'units':evidence_units(text)}],
-            'character_normalization_reference':character_reference(text)}
-        parsed,meta=runner.generate(model,lang,'extract',data,[cid]);checks=[]
-        for i,claim in enumerate(parsed['assessments'][0]['claims'] if parsed else [],1):
-            errors,enriched=ground_claim(claim,source,characters)
-            audit=None;verify_request=None
-            if not errors:
-                item={'claim_id':cid+':'+str(i),'comment_id':cid,'claim':enriched}
-                verdict,verify_request=runner.generate(model,lang,'verify',{'claims':[item],'original_comment':text},[item['claim_id']])
-                audit=verdict['verdicts'][0] if verdict else None
-            checks.append({'claim':enriched or claim,'source_errors':errors,'audit':audit,'verify_request':verify_request})
+        parsed,meta=extract(runner,model,lang,source)
+        checks=[{'claim':r['enriched'] or r['claim'],'source_errors':r['errors'],'audit':r['audit'],'verify_request':r['audit_meta']}
+            for r in audit(runner,model,lang,source,parsed['assessments'][0]['claims'] if parsed else [],characters)]
         observed={(c['claim']['character'],c['claim']['direction']) for c in checks}
         passed=parsed is not None and observed==set(expected) and all(not c['source_errors'] and (c['audit'] or {}).get('supported') and c['claim']['parameters']==[] and c['claim']['specificity']=='qualitative_only' for c in checks)
         results.append({'kind':'synthetic_control_not_community_evidence','language':lang,'category':category,

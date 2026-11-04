@@ -80,6 +80,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | B6.1 | done | 236 | green | CR-D09 (R-03): `resources.workspace_root()` returns `Path(__file__).resolve().parents[2]` when that directory holds both `RULES.md` and `pyproject.toml`, and `Path.cwd()` otherwise, evaluated at call time; the marker check is the private `_workspace_root(candidate)`, and both functions have a one-line docstring. Users: `engine.ROOT`, `glossary_vectors.ROOT` (and through it `DEFAULT_INDEX`), the `ROOT` of eight scripts (`collect_feedback`, `expand_feedback`, `screen_feedback`, `check_balance_regressions`, `evaluate_balance_review`, `prepare_balance_design`, `run_quality_screening_experiment` and `run_grounded_feedback_live`), and `STATE = workspace_root() / "runs/state"` in `collect_feedback`; `collect_balanced_feedback` keeps `ROOT = c.ROOT`, and it and `expand_feedback` use `c.STATE` and `collector.STATE`. Existing bootstrap lines are kept; `collect_feedback` and `expand_feedback` had none and gain the plan 4.3 bootstrap (`expand_feedback` also `import sys`) to import `workspace_root`. New tests in `tests/test_refactored_boundaries.py` (+3): both branches of `_workspace_root` (both markers give the candidate; no marker, or only `RULES.md`, gives the working directory), and `workspace_root()` equals the checkout. A scratch probe (module globals through `runpy.run_path`) compared 13 root values before and after: from the checkout root all are unchanged; from a foreign directory the 10 script values are unchanged, and `engine.ROOT`, `glossary_vectors.ROOT` and `DEFAULT_INDEX` now name the checkout instead of that directory, the intended change. The documented commands run from the project root (README "Research commands"), so none resolves differently and the work order's escalation trigger did not occur. From a foreign directory, the work order's `python3 -c` command prints the checkout path, and the parser defaults of `python3 -m aimediator.engine` (`--dataset`, `--out`, `--env-file`) and of `glossary_vectors` (`--env`, `--index`) point into the checkout. Plan 8.5: 236 pass, and the foreign directory stays empty. Plan 8.7 fourth grep prints nothing. All 17 scripts in `collect/` and `experiments/` print `--help` with exit 0 from a foreign directory |
 | B6.2 | done | 237 | green | CR-D01 (R-01, U-06, U-07, P-04), a series of 14 commits in the order of the decision found in B6.2 (registered first, `ec91455`). Package `src/aimediator/collection/`, an `__init__.py` and seven modules with the names of blueprint 3.3: `screening` (the patterns, `classify_rules`, `classify`, `load_sources`, `write_rows`, `main`, `ROOT`), `client` (`HOSTS`, `load_youtube_key`, `utc_now`, `retry_delay`, `Halt`, `RestrictedRedirect`, `Client`), `store` (`Store`), `export` (`export`), `sources` (`guess_language`, `timestamp`, `steam`, `bluesky`, `youtube`, `main`, `ROOT`, `STATE = workspace_root() / "runs/state"`), `balanced` (`reviewed_rows`, `retained`, `select_balanced`, `main`, with the script's docstring, which `--help` prints; `ROOT` and `STATE` from `sources`, as `c.ROOT` and `c.STATE` were) and `expansion` (`kept_counts`, `main`, `ROOT`; `STATE` from `sources`). They import only `common`, `resources` and each other (plan 4.2 row); `balanced` and `expansion` keep the aliases `s` and `screener` for `screening`. Plan 8.6 on every move commit: all definitions `same`, except `main` of `balanced` (19 `c.<name>` references) and of `expansion` (12 `collector.<name>` references), intentionally changed in module-qualified names only and AST-equal with the prefix removed; the moved module constants are equal (18 in `screening`, `HOSTS`, `ROOT`, `STATE`). Before the moves: the layering test maps subpackage modules to the `collection.*` row and resolves their relative imports (+1 test, table unchanged, edges of every top-level module unchanged); `_char_en()` builds the English character pattern from `resources.glossary()` on first use (same pattern text and flags), so importing the screening code reads no file, which completes P-04; `write_json` is `common.write` (U-06), confirmed first: the 16 collector JSON files under `data/raw` and a synthetic value give the same bytes with both writers, and `common.write` additionally creates a missing parent directory and raises `ValueError` for NaN or infinity, which the old writer wrote as `NaN` or `Infinity`. `load_youtube_key` stays separate from `config.env_values` (U-07). The four tool modules take `main(argv=None)`. Tests: `test_collect_feedback`, `test_screen_feedback`, `test_balanced_collection` and `test_expand_feedback` import the package; `os`, `time`, `dt`, `ZoneInfo` and `urllib` go through `aimediator.collection.client`, and the YouTube test's `os.environ` through `sources`; the screening and lock tests pass `argv` to `main`. The lock test's `STATE` patch moved to `aimediator.collection.balanced` in the `balanced` commit; run with socket connections refused, it stays offline and creates no `runs/state` in the checkout. Lock: the L4 harness imports `classify_rules` from `aimediator.collection.screening`, the fixture is unchanged since `restructure-b5` (empty diff), `459 keys, 0 differ`. Thin scripts: the docstring `Entry point for ... (aimediator.collection.<module>).`, the plan 4.3 bootstrap, `from aimediator.collection.<module> import main` and `raise SystemExit(main())`; exit codes are unchanged (`collect_feedback` used `sys.exit`, and `screen_feedback`'s `main` returns `None`, exit 0). Meaning change: the screening summary's `script_sha256` now hashes `collection/screening.py`, because `main` and its `Path(__file__)` moved with the code. The `--help` output of all 17 scripts in `collect/` and `experiments/`, run from an empty directory, is byte-identical to `restructure-b5`, exit codes included, and every parser action (destination, default, required, options, choices, type, nargs) is identical once each tree's root is normalized. G2 and P3 report 0, and no script docstring begins with "Compatibility entry point". Plan 8.2: `"passed": true`, `"commands": 18`; `python3 -m zipfile -l` lists the eight `aimediator/collection/` files and nothing under `data/raw` and no `.env`; installed outside a checkout, `sources.ROOT` and `engine.ROOT` are the working directory. Plan 8.5: 237 pass, and the foreign directory stays empty. Plan 8.7 fourth grep prints nothing. `run_store.code_manifest` and the B5.11 snapshot list top-level modules only, so `collection/` stays outside run identities and the L2 lock keys (plan 4.1). Commit messages: `filter-branch` added the missing `Decision: CR-D01` line to the first four commits of the series before anything was pushed (trees unchanged) |
 | B6.3 | done | 237 | updated by CR-D12 (E-5) | CR-D02: `src/aimediator/design_briefs.py` holds `validate_move_data`, `quality_design_errors` and `prepare_briefs`, copied unchanged from `scripts/experiments/prepare_balance_design.py`, with a module docstring and `import re`; it imports nothing from the package (plan 4.2 row). The script keeps its docstring (`--help` prints it), `ROOT` and `main()`, imports `prepare_briefs` from `aimediator.design_briefs` and drops its `import re`. `check_balance_regressions.py`, `review_balance_live.py`, `test_balance_review_pipeline.py` and `test_evidence_quality.py` import from `aimediator.design_briefs` instead of the sibling script; `test_evidence_quality` drops its `scripts/experiments` path line, which only that import used. Plan 8.6 with the script at `787263b` as the old file and the module plus the script as the new files: `same` for all four definitions (`main`, `prepare_briefs`, `quality_design_errors`, `validate_move_data`). The script's output, run from the old tree and the new one on synthetic claim lists (ready and blocked briefs, `--quality-mode enforce`, a v3 report input, a missing adjudication file), is byte-identical, console line included. Lock: the new top-level module adds `L2:<mode>/code-snapshot/design_briefs.py` for the three modes (existence only), escalated as E-5 and rewritten at the owner's answer with `--write` (459 to 462 keys, nothing else changed). The `--help` output of all 17 scripts in `collect/` and `experiments/` is byte-identical to the session start. Plan 8.5: 237 pass, the foreign directory stays empty. Plan 8.7 fourth grep prints nothing. The changed files parse with the Python 3.9 grammar |
+| B6.4 | done | 241 | updated by CR-D12 (E-5) | CR-D02 (U-08), a series of two commits: the decision found during execution (`805ffb0`, the controls script keeps its own audit), then this commit. `src/aimediator/diagnostics.py` holds `extract(runner, model, language, row, *, allowed_points=None)` and `audit(runner, model, language, row, claims, characters, *, quality_record=None)` as blueprint 3.3 states, each with a one-line docstring, and imports `character_reference`, `evidence_units` and `ground_claim` from `evidence` and `bind_claim` from `evidence_quality` (plan 4.2 row). `extract` sends `comments` (`comment_id`, `units`, then `allowed_quality_points` when given) and `character_normalization_reference` for `[record_id]`. `audit` numbers the claims from 1, runs `ground_claim`, then, with a quality record, `bind_claim` with `character_reference(text)` (its errors appended, its qualification set as `evidence_quality` on the enriched claim), and sends `verify` with the envelope `claim_id`, `comment_id`, `claim` only when no error remains. `run_balance_numeric_extraction_live`, `run_balance_semantic_controls_live`, `run_balance_regression_live` and `diagnose_evidence_quality_live` call `extract` and `audit`, map the records to their former keys (`claim` as the enriched or the raw claim, `errors` or `source_errors`, `audit`, `audit_request` or `verify_request`; `diagnose` keeps `claim_id`, `comment_id`, `claim` and `errors`, sets `audit` only for claims without errors, and appends their `verify` trace entries after the extraction entry, as before) and drop the imports they no longer use. `run_balance_controls_live` is unchanged (decision found in B6.4). The former envelopes of the numeric and regression scripts also carried `model`, and that of `diagnose` carried `errors`; `stages.prepare` reads only the claim, the original comment and the claim ID, so the request bytes are the same. Request equivalence: see "Request equivalence (B6.4)"; the lists are equal for the four `run_balance_*_live.py` scripts and for `diagnose`. Tests: `tests/test_diagnostics.py` (+4) injects a fake chat transport into `Runner`: the extraction request text with and without allowed points, byte for byte against the former inline construction; `verify` only for claims without errors; the verify payload equal to one sent with the former inline envelope (with `model`); binding to a quality record. Lock: the new top-level module adds `L2:<mode>/code-snapshot/diagnostics.py` for the three modes (existence only), rewritten at the owner's answer to E-5 (462 to 465 keys, nothing else changed); since `restructure-b5` the fixture changed only by the six keys of B6.3 and B6.4. The `--help` output of all 17 scripts is byte-identical to the session start. Plan 8.5: 241 pass, the foreign directory stays empty. Plan 8.7 fourth grep prints nothing. The changed files parse with the Python 3.9 grammar. Live reruns were not performed |
 
 ## Baseline measurements (B0.4)
 
@@ -324,6 +325,84 @@ Consequences, all within CR-D06:
   9.9 KB that already holds both quality prompts and the policy. The
   quality context is 16,384 tokens. No other script puts its identity
   into a request, so their request bytes are unchanged.
+
+## Request equivalence (B6.4)
+
+A temporary harness (scratch, not committed) ran each script as the B6 work
+order describes: `runpy.run_path(<script>, run_name='__main__')` with a
+patched `sys.argv`; `aimediator.inference.api` returning fixture tags for
+`llama3.1:latest` and `qwen2.5:7b`; and `aimediator.runner.streamed_chat`
+replaced by a fake. The fake's extraction returns one claim built from the
+first evidence unit (the first allowed character, no target, `nerf`, the
+unit text as recommendation, `qualitative_only`, no parameters), and its
+audit returns `supported`. The regression script read a synthetic admission
+run: `source-snapshot.json` with its six case IDs (four English, two
+Chinese), `relevance.json` with five admitted and one not admitted, and the
+`manifest.json` that its identity hashes. "Before" is the tree at `d772943`
+(after B6.3), "after" is the tree of the B6.4 commit. Each run is a separate
+process started from the scratch directory.
+
+The lists are the sorted SHA-256 values of every `request.json` under
+`--out`. They are equal before and after for every script. The regression
+and semantic runs take both the verify path and the no-verify path (claims
+with grounding errors). The console text and the result files
+(`results.json`, `progress.json`, `prompt-snapshot.json`, compared without
+`elapsed_seconds` and `request_id`) are also equal; only `manifest.json`,
+whose identity hashes the code, differs.
+
+```text
+run_balance_controls_live (4)
+  09388eadebc18a7887a828d34d76c8a135ff96e0aec0bfea6a4aa6ffbc03cef0
+  1488524116ed6de0e8b89c48a6054bdd6de4e94c9daa7399e27a1829edd19719
+  3fee4a1290895555caf5434f9a5ac20e7f977753907c77686907a0bc4fb7d6dd
+  a473e5b661ad8487198da9b6cfc0354533c81f717c030b682a7bfad9cfac29f3
+run_balance_numeric_extraction_live (4)
+  051c7583e3b3444c1ee15fbc5532a71b0d5f7bf9dcbaefcaab98d64cc9eb443d
+  2078442470739a5821c4f9725c7d327453dad1037ab0b53996de3702ef61efe9
+  2d6770fc1100e9763656dadd48950032c6946349fc874fc2521a9ca24dfb9e95
+  7f7d22f7e8b74287ab025b011169898d89646477bee86abad2819391d43530be
+run_balance_regression_live (9)
+  0bd25dafd80109baa979f58b02147800b8da8247b85f3c9f3767a19558822355
+  149e67799c377a374d362e505069107bc925f6cd53efc6eca952bd88efa4e0b2
+  18755398e04fde21bff241833bc473ccbf55145ad5b08aae239e2ff3666f48a9
+  2548350fdc45c1c1813023397ac916215a7ca4ea67c104aa0f391ac884718dc1
+  3151c351cb8a827fe73f883a1fee9032f28c501e6d6f0353ac4a81933c5a45cf
+  705a2f68977273b9a4ff24cfc837043577043c0cc03761c822d0646ee7734750
+  97aa67abd7738eaeae6d3f319eb8df60fefa7c2f899dd710b1c4e653c92eb8d6
+  e57de266ed6233e026f53aefc90d85d8d0cdb00c821dd22e1988173e0ce5b698
+  ebbd6b86032fe110e1f9ba8df311ae7a989f10c389655b9a0c7ddb3b583a7db4
+run_balance_semantic_controls_live (14)
+  07296b3f356dec350d45ae9ad346f9043f087f7b5a62831e8fcca076b5793928
+  07a481a2bedf9626109a6d8f374589a7f4a3ebddfb4f524ed78546b276c191ce
+  10fc422a126cf750ec22a26d3f5e74b5bfd6727ee2dc9fed258dedf87dda5b72
+  2085332eea38779b83fc0a8552655b8003ca8719a91c5697d984dea52603b18d
+  24d3dff4ae12e8a60d2cd213b23561dbea27bce7238c307945daaea663aced7f
+  65bf60e7bd3c976ae672865f39e3208be529f807434a234fb4e3acb81243bbbd
+  9d0e798f27626809c717590b0a39bf4571032bdef220f027ba4b78e79f87dcf6
+  9ea5e130c33e9c6c4d7334b71d5bd9431de07a5e16c371cbe9beb1a6ada16c27
+  9f3f71f800fe417b460c1ae36f3444549ba4b10ebcdda6abbd808ece5251c81f
+  c94aafcaf728ddf0b3dcc8b0eb4ff48566e2da6b228f10c1d1082a29bb629de1
+  d2d08a244b43dbfaa0224b86d5da92d4e0458e4274d50d25d714f91ac8f5e886
+  d410006ba641376aa4e1010801e22e4af6d51aad494c2c71c2b89ff1d8985472
+  dd0e7e712e0a85ee7d251115b211dc410bac1bd8eb5530f783e1be566159e4d0
+  fa4f493f70b872de9539aa02bc3f57714c10357f5022fc9ec8dd48ebb077258f
+```
+
+Beyond the work order, `diagnose_evidence_quality_live.py` ran the same way
+on a synthetic admission run of the 38 packaged fixture cases, all admitted
+and selected, with `FixtureTransport.chat` as the fake. It sends 140
+requests (quality, shadow and enforce extraction, audits); the SHA-256 of
+the newline-joined sorted list is
+`cb9f4cca55a870cf0a5dd5703bce83447439fed9b17b082edb54384707137aae` before
+and after. `mode-comparison.json`, `request-trace.json`,
+`evidence-quality.json`, `diagnostic-summary.json`, `source-snapshot.json`
+(compared as above) and the console text are equal. A second run appended
+to each non-empty extraction a copy of its first claim with " 999" added
+to the recommendation, so 42 claims fail grounding and take the no-verify
+path: the same 140 requests and equal outputs. The script's own
+`code-snapshot/` gains `diagnostics.py`, because it copies every package
+module (B3.4). Live reruns against local models were not performed (plan
+B6.4).
 
 ## Archive and deletions
 

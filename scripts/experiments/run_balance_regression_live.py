@@ -10,7 +10,8 @@ from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
 from aimediator.common import sha as digest, strict_json, write as write_json
-from aimediator.evidence import character_reference, evidence_units, ground_claim
+from aimediator.diagnostics import audit, extract
+from aimediator.evidence import character_reference
 from aimediator.inference import api
 from aimediator.resources import asset_path
 from aimediator.run_store import code_manifest
@@ -52,16 +53,9 @@ def main():
         record_id=case['comment_id'];source=sources[record_id];language=source['language'];model='llama3.1:latest' if language=='en' else 'qwen2.5:7b'
         if record_id not in admitted:
             results.append({**case,'passed':False,'status':'not_admitted_no_extraction','comment_id':record_id});continue
-        data={'comments':[{'comment_id':record_id,'units':evidence_units(source['text_original'])}],
-              'character_normalization_reference':character_reference(source['text_original'])}
-        parsed,meta=runner.generate(model,language,'extract',data,[record_id]);checks=[]
-        for index,c in enumerate(parsed['assessments'][0]['claims'] if parsed else [],1):
-            errors,enriched=ground_claim(c,source,characters);audit=None;audit_meta=None
-            if not errors:
-                envelope={'claim_id':record_id+':'+str(index),'comment_id':record_id,'model':model,'claim':enriched}
-                verdict,audit_meta=runner.generate(model,language,'verify',{'claims':[envelope],'original_comment':source['text_original']},[envelope['claim_id']])
-                audit=verdict['verdicts'][0] if verdict else None
-            checks.append({'claim':enriched or c,'source_errors':errors,'audit':audit,'audit_request':audit_meta})
+        parsed,meta=extract(runner,model,language,source)
+        checks=[{'claim':r['enriched'] or r['claim'],'source_errors':r['errors'],'audit':r['audit'],'audit_request':r['audit_meta']}
+            for r in audit(runner,model,language,source,parsed['assessments'][0]['claims'] if parsed else [],characters)]
         pairs={(r['claim']['character'],r['claim']['direction']) for r in checks}
         missing=[list(pair) for pair in case['required'] if tuple(pair) not in pairs]
         forbidden=[r['claim']['character'] for r in checks if r['claim']['character'] in case['forbidden']]

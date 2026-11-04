@@ -4,7 +4,7 @@ from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
 from aimediator.common import sha as digest, strict_json, write as write_json
-from aimediator.evidence import character_reference, evidence_units, ground_claim
+from aimediator.diagnostics import audit, extract
 from aimediator.inference import api
 from aimediator.resources import asset_path
 from aimediator.run_store import code_manifest
@@ -30,16 +30,11 @@ def main():
     write_json(path,identity);runner=Runner(args.base_url,args.out,prompts,log=lambda text:print(text,flush=True));runner.runtime_options=identity['runtime_options'];results=[]
     for language,model,text in [('en','llama3.1:latest',"Please reduce Ryu's Hadoken damage from 600 to 500."),('zh','qwen2.5:7b','请将隆的波动拳伤害从600降到500。')]:
         record_id='synthetic-extraction-'+language;row={'record_id':record_id,'text_original':text,'source_url':None}
-        data={'comments':[{'comment_id':record_id,'units':evidence_units(text)}],'character_normalization_reference':character_reference(text)}
-        parsed,meta=runner.generate(model,language,'extract',data,[record_id]);checks=[]
-        for index,c in enumerate(parsed['assessments'][0]['claims'] if parsed else [],1):
-            errors,enriched=ground_claim(c,row,{'Ryu'});audit=None;audit_meta=None
-            if not errors:
-                envelope={'claim_id':record_id+':'+str(index),'comment_id':record_id,'model':model,'claim':enriched}
-                verdict,audit_meta=runner.generate(model,language,'verify',{'claims':[envelope],'original_comment':text},[envelope['claim_id']])
-                audit=verdict['verdicts'][0] if verdict else None
+        parsed,meta=extract(runner,model,language,row);checks=[]
+        for r in audit(runner,model,language,row,parsed['assessments'][0]['claims'] if parsed else [],{'Ryu'}):
+            c=r['claim']
             numeric_ok=c['character']=='Ryu' and c['direction']=='nerf' and c['specificity']=='source_numeric' and any(parameter['current']=='600' and parameter['proposed']=='500' for parameter in c['parameters'])
-            checks.append({'claim':enriched or c,'errors':errors,'audit':audit,'audit_request':audit_meta,'numeric_roles_correct':numeric_ok})
+            checks.append({'claim':r['enriched'] or c,'errors':r['errors'],'audit':r['audit'],'audit_request':r['audit_meta'],'numeric_roles_correct':numeric_ok})
         passed=parsed is not None and len(checks)==1 and all(r['numeric_roles_correct'] and not r['errors'] and (r['audit'] or {}).get('supported') is True for r in checks)
         results.append({'kind':'synthetic_control_not_community_evidence','language':language,'model':model,'source':text,'passed':passed,'checks':checks,'extraction_request':meta})
         write_json(args.out/'progress.json',results)
