@@ -1,14 +1,14 @@
 {
   "dataset": "glossary-vectors",
   "type": "processed (reproducible)",
-  "generating_command": "python3 scripts/glossary_vectors.py build",
+  "generating_command": "python3 -m aimediator.glossary_vectors build",
   "needs": "an embedding endpoint configured in .env (key names in .env.example)",
   "source": "src/aimediator/assets/data/glossary.json (through the data/glossary.json link)",
   "current_identity": "b24f264326f371c891f313e67196e211f311e978035fec42f2d811104eb7fe3d",
   "built_from_source_sha256": "5d2eca7b1ca6a32ecddc9fb78a84baffad8a408bb04cae1965963069e2f25d90",
   "source_note": "Built before batch 3 changed two evidence_file paths in glossary.json; concept and alias texts are unchanged, but a rebuild gets a new identity because the identity includes the source hash.",
   "consumers": [
-    "scripts/glossary_vectors.py search",
+    "python3 -m aimediator.glossary_vectors search",
     "src/aimediator/glossary_vectors.py (DEFAULT_INDEX)"
   ],
   "manifest_written": "2026-11-03 (batch 3, RULES.md P1)",

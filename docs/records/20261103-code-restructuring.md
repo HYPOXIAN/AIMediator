@@ -555,6 +555,13 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   instruction for rebuilding the data.
 - **Blocked**: B4.2, and B4.5, whose ADR records the removal of the
   layers. B4.3 and B4.4 do not depend on B4.2.
+- **Answer**: the owner, 2026-11-04, given to session B4-1: option (a).
+  B4-1 changed the two values at the owner's instruction in its own
+  `data` commit, which also records this answer; the rest of the
+  manifest, the `source` value included, is unchanged. The commit lies
+  outside the B4 boundary, so the B4-V boundary check prints
+  `data/processed/glossary-vectors/manifest.json` for it. B4.2 then ran
+  as written.
 
 ## Verification notes
 
