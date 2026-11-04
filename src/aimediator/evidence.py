@@ -54,6 +54,21 @@ def numeric_tokens(text):
     return re.findall(r'[+-]?\d+(?:\.\d+)?%?', text)
 
 
+def _character_identity(character, text):
+    """Return the identity record of a claimed character in its source, or None without a reference entry."""
+    entry = next((e for e in character_reference(text) if e['canonical_name'] == character), None)
+    if not entry:
+        return None
+    # The Chinese label is tried first here, unlike character_terms; it decides the recorded literal.
+    literal = next((t for t in [entry.get('chinese_label'), entry['canonical_name']]
+                    + [a['text'] for a in entry['aliases']] if term_matches(t, text)), None)
+    unverified = entry.get('normalization_status') == 'source_literal_unverified'
+    return {'source_literal': literal,
+            'canonical_name': None if unverified else character,
+            'normalization_status': 'source_literal_unverified' if unverified else 'glossary_reference',
+            'glossary_target_patch': glossary().get('target_patch')}
+
+
 def ground_claim(claim, row, characters):
     """Check identity-bound spans and numeric presence; entailment is audited later."""
     units = {u['evidence_id']: u for u in evidence_units(row['text_original'])}
@@ -101,17 +116,9 @@ def ground_claim(claim, row, characters):
     enriched = {**claim, 'evidence': [{**u, 'comment_id': row['record_id'],
         'source_url': row.get('source_url')} for u in selected]}
     enriched['source_review_required'] = True
-    entry = next((e for e in character_reference(row['text_original'])
-                  if e['canonical_name'] == claim['character']), None)
-    if entry:
-        # The Chinese label is tried first here, unlike character_terms; it decides the recorded literal.
-        literal = next((t for t in [entry.get('chinese_label'), entry['canonical_name']]
-                        + [a['text'] for a in entry['aliases']] if term_matches(t, row['text_original'])), None)
-        unverified = entry.get('normalization_status') == 'source_literal_unverified'
-        enriched['character_identity'] = {'source_literal': literal,
-            'canonical_name': None if unverified else claim['character'],
-            'normalization_status': 'source_literal_unverified' if unverified else 'glossary_reference',
-            'glossary_target_patch': glossary().get('target_patch')}
+    identity = _character_identity(claim['character'], row['text_original'])
+    if identity is not None:
+        enriched['character_identity'] = identity
     for item in enriched['evidence']:
         if item['text'] != row['text_original'][item['start']:item['end']]:
             raise AssertionError('Evidence span differs from the original text')
