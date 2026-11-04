@@ -19,7 +19,6 @@ from . import evidence_quality as quality
 from . import glossary_vectors
 from .common import sha as digest, strict_json, write as write_json
 from .resources import anchors
-POS, NEG = anchors()
 from .balance_policy import (POLICY_PATH, load_policy, term_matches, identity_alias_allowed,
                             numeric_request_supported, triage_retrieval, retrieval_review_agrees,
                             direction_action_conflicts, attributed_candidates)
@@ -31,6 +30,7 @@ from .evidence import (CLAIM, PARAMETER, character_candidates, character_referen
                        ground_claim, numeric_tokens)
 from .stages import exact_coverage, schema_for
 from .runner import Runner
+from .retrieval import NEG, POS, retrieve
 ROOT = Path.cwd()
 VERSION = 'balance-evidence-v2'
 
@@ -54,53 +54,6 @@ def batches(rows, count=12, chars=18000):
         size += length
     if batch:
         yield batch
-
-
-def retrieve(rows, base, folder, model, embedding_config=None, api_transport=None, embed_transport=None):
-    instruction = 'Instruct: Retrieve the description matching the topic and intent of this Street Fighter 6 player comment.\nQuery: '
-    texts = POS + NEG + [instruction + r['text_original'] for r in rows]
-    matrices = []
-    for start in range(0, len(texts), 8):
-        batch = texts[start:start + 8]
-        cache_identity = {'model': model, 'texts': batch}
-        if embedding_config:
-            cache_identity['endpoint'] = embedding_config['url']
-        identity = digest(json.dumps(cache_identity, ensure_ascii=False).encode())
-        path = folder / 'embeddings' / (identity + '.json')
-        if path.exists():
-            record = json.loads(path.read_text(encoding='utf-8'))
-        else:
-            if embedding_config:
-                vectors, usage = (embed_transport or glossary_vectors.embed)(embedding_config, batch)
-                result = {'embeddings': vectors.tolist()}
-            else:
-                result = (api_transport or api)(base, '/api/embed', {'model': model, 'input': batch,
-                                               'truncate': False, 'keep_alive': '10m'})
-            record = {'model': model, 'texts': batch, 'embeddings': result['embeddings']}
-            write_json(path, record)
-        matrix = np.asarray(record['embeddings'], dtype=np.float32)
-        if matrix.ndim != 2 or len(matrix) != len(batch) or not np.isfinite(matrix).all():
-            raise ValueError('Invalid embedding matrix')
-        norm = np.linalg.norm(matrix, axis=1, keepdims=True)
-        if (norm == 0).any():
-            raise ValueError('Zero embedding vector')
-        matrices.append(matrix / norm)
-        print(f'Embedding {min(start + 8, len(texts))}/{len(texts)}', flush=True)
-    vectors = np.concatenate(matrices)
-    similarities = vectors[20:] @ vectors[:20].T
-    decisions = []
-    for row, scores in zip(rows, similarities):
-        positive = float(np.sort(scores[:10])[-3:].mean())
-        negative = float(np.sort(scores[10:])[-3:].mean())
-        order = np.argsort(-scores)
-        decisions.append({'comment_id': row['record_id'], 'language': row['language'],
-            'positive_score': positive, 'negative_score': negative, 'margin': positive - negative,
-            'retrieval_related': positive > negative,
-            'references': [{'topic_id': ('P' + str(int(i) + 1) if i < 10 else 'N' + str(int(i) - 9)),
-                            'text': (POS + NEG)[int(i)], 'cosine': float(scores[i]),
-                            'class': 'related' if i < 10 else 'unrelated'} for i in order[:4]]})
-    write_json(folder / 'retrieval.json', decisions)
-    return decisions
 
 
 def aggregate(claims, quality_enforced=False):
