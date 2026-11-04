@@ -1,5 +1,6 @@
 """Shared analysis orchestration: relevance, evidence quality, extraction, source audit and report."""
 from collections import Counter
+from dataclasses import dataclass, field
 import json
 
 from . import evidence_quality as quality
@@ -113,37 +114,61 @@ def validate_modes(args):
     return mode
 
 
+@dataclass
+class RunState:
+    """The inputs, the runner and the accumulated results that the stages of one run share."""
+    args: object
+    rows: list
+    models: list
+    quality_identity: object
+    quality_policy: object
+    identity: dict
+    folder: object
+    routes: dict
+    quality_mode: str
+    by_id: dict = None
+    eligible: list = None
+    runner: object = None
+    decisions: dict = None
+    characters: set = None
+    quality_records: dict = field(default_factory=dict)
+    trace: list = field(default_factory=list)
+    claims: list = field(default_factory=list)
+    quarantine: list = field(default_factory=list)
+    coverage: list = field(default_factory=list)
+
+
 def process(args, rows, routing, models, prompts, quality_identity, quality_policy,
             identity, embedding_config=None, runner_factory=Runner, retrieval_service=retrieve):
     """Shared orchestration with explicit inputs and injected inference boundaries."""
-    folder, routes = args.out.resolve(), routing['models']
-    quality_mode = args.evidence_quality
-    by_id = {r['record_id']: r for r in rows}
-    eligible = [r for r in rows if any(routes[m]['language'] == r['language'] for m in models)]
-    retrieval = retrieval_service(eligible, args.base_url, folder, args.embedding_model, embedding_config)
-    runner = runner_factory(args.base_url, folder, prompts, quality_identity, quality_policy)
-    runner.runtime_options = identity.get('runtime_options', {})
-    quality_records = {}
-    trace, claims, quarantine, coverage = [], [], [], []
-    decisions = {d['comment_id']: {**d, 'model_related': None, 'agreement': False} for d in retrieval}
-    for decision in decisions.values():
-        status, reasons = triage_retrieval(decision, by_id[decision['comment_id']]['text_original'],
+    state = RunState(args, rows, models, quality_identity, quality_policy, identity,
+                     folder=args.out.resolve(), routes=routing['models'], quality_mode=args.evidence_quality)
+    state.by_id = {r['record_id']: r for r in state.rows}
+    state.eligible = [r for r in state.rows if any(state.routes[m]['language'] == r['language'] for m in state.models)]
+    retrieval = retrieval_service(state.eligible, state.args.base_url, state.folder, state.args.embedding_model,
+                                  embedding_config)
+    state.runner = runner_factory(state.args.base_url, state.folder, prompts, state.quality_identity,
+                                  state.quality_policy)
+    state.runner.runtime_options = state.identity.get('runtime_options', {})
+    state.decisions = {d['comment_id']: {**d, 'model_related': None, 'agreement': False} for d in retrieval}
+    for decision in state.decisions.values():
+        status, reasons = triage_retrieval(decision, state.by_id[decision['comment_id']]['text_original'],
                                            load_policy()['retrieval_borderline_margin'])
         decision.update(retrieval_triage=status, retrieval_triage_reasons=reasons)
     reference = character_reference()
-    characters = {e['canonical_name'] for e in reference}
-    for model in models:
-        language = routes[model]['language']
-        language_rows = [d for d in decisions.values() if d['language'] == language]
+    state.characters = {e['canonical_name'] for e in reference}
+    for model in state.models:
+        language = state.routes[model]['language']
+        language_rows = [d for d in state.decisions.values() if d['language'] == language]
         queued = [d for d in language_rows if d['retrieval_triage'] == 'review_queue']
-        cached = runner.cached_single_ids(model, language, 'retrieval_review')
+        cached = state.runner.cached_single_ids(model, language, 'retrieval_review')
         review_batches = [[d] for d in queued if d['comment_id'] in cached]
         review_batches += list(batches([d for d in queued if d['comment_id'] not in cached], count=8, chars=10000))
         for batch in review_batches:
-            data = {'comments': [{'comment_id': d['comment_id'], 'text': by_id[d['comment_id']]['text_original'],
+            data = {'comments': [{'comment_id': d['comment_id'], 'text': state.by_id[d['comment_id']]['text_original'],
                                   'retrieved_topics': d['references']} for d in batch]}
-            parsed, meta = runner.generate(model, language, 'retrieval_review', data, [d['comment_id'] for d in batch])
-            trace.append({'model': model, 'stage': 'retrieval_review', **meta})
+            parsed, meta = state.runner.generate(model, language, 'retrieval_review', data, [d['comment_id'] for d in batch])
+            state.trace.append({'model': model, 'stage': 'retrieval_review', **meta})
             reviewed = {d['comment_id']: d for d in parsed['decisions']} if parsed else {}
             for decision in batch:
                 item = reviewed.get(decision['comment_id'], {})
@@ -153,10 +178,10 @@ def process(args, rows, routing, models, prompts, quality_identity, quality_poli
                                 initial_retrieval_review_uncertain=item.get('uncertain', True))
                 if len(batch) > 1 and (item.get('related') is not True or item.get('uncertain') is not False):
                     record_id = decision['comment_id']
-                    single = {'comments': [{'comment_id': record_id, 'text': by_id[record_id]['text_original'],
+                    single = {'comments': [{'comment_id': record_id, 'text': state.by_id[record_id]['text_original'],
                                             'retrieved_topics': decision['references']}]}
-                    retry, meta = runner.generate(model, language, 'retrieval_review', single, [record_id])
-                    trace.append({'model': model, 'stage': 'retrieval_review', 'refinement': True, **meta})
+                    retry, meta = state.runner.generate(model, language, 'retrieval_review', single, [record_id])
+                    state.trace.append({'model': model, 'stage': 'retrieval_review', 'refinement': True, **meta})
                     result = retry['decisions'][0] if retry else {}
                     decision.update(retrieval_review_related=result.get('related'),
                                     retrieval_review_uncertain=result.get('uncertain', True))
@@ -164,14 +189,14 @@ def process(args, rows, routing, models, prompts, quality_identity, quality_poli
             d.get('retrieval_review_related') is True and d.get('retrieval_review_uncertain') is False)]
         for batch in batches(candidates, count=8, chars=10000):
             data = {'comments': [{'comment_id': d['comment_id'],
-                'text': by_id[d['comment_id']]['text_original'], 'retrieved_topics': d['references']} for d in batch]}
-            parsed, meta = runner.generate(model, language, 'relevance', data, [d['comment_id'] for d in batch])
-            trace.append({'model': model, 'stage': 'relevance', **meta})
+                'text': state.by_id[d['comment_id']]['text_original'], 'retrieved_topics': d['references']} for d in batch]}
+            parsed, meta = state.runner.generate(model, language, 'relevance', data, [d['comment_id'] for d in batch])
+            state.trace.append({'model': model, 'stage': 'relevance', **meta})
             if parsed:
                 for item in parsed['decisions']:
-                    decisions[item['comment_id']].update(model_related=item['related'],
+                    state.decisions[item['comment_id']].update(model_related=item['related'],
                         model_uncertain=item['uncertain'], model_reason=item['reason'],
-                        agreement=relevance_agrees(decisions[item['comment_id']], item))
+                        agreement=relevance_agrees(state.decisions[item['comment_id']], item))
         # Recheck every rejection alone: short ordered arrays can still drift
         # semantically across comments. Preserve the initial result for review.
         for decision in candidates:
@@ -182,42 +207,44 @@ def process(args, rows, routing, models, prompts, quality_identity, quality_poli
                 continue
             decision['refinement_performed'] = True
             record_id = decision['comment_id']
-            data = {'comments': [{'comment_id': record_id, 'text': by_id[record_id]['text_original'],
+            data = {'comments': [{'comment_id': record_id, 'text': state.by_id[record_id]['text_original'],
                                   'retrieved_topics': decision['references']}]}
-            parsed, meta = runner.generate(model, language, 'relevance', data, [record_id])
-            trace.append({'model': model, 'stage': 'relevance_refinement', **meta})
+            parsed, meta = state.runner.generate(model, language, 'relevance', data, [record_id])
+            state.trace.append({'model': model, 'stage': 'relevance_refinement', **meta})
             if parsed:
                 item = parsed['decisions'][0]
                 decision.update(model_related=item['related'], model_uncertain=item['uncertain'],
                     model_reason=item['reason'], agreement=relevance_agrees(decision, item))
-        write_json(folder / 'relevance.json', list(decisions.values()))
-        write_json(folder / 'review-queue.json', [d for d in decisions.values()
+        write_json(state.folder / 'relevance.json', list(state.decisions.values()))
+        write_json(state.folder / 'review-queue.json', [d for d in state.decisions.values()
                    if d['retrieval_triage'] == 'review_queue' and not d['agreement']])
-        if getattr(args, 'relevance_only', False):
+        if getattr(state.args, 'relevance_only', False):
             continue
-        selected = [by_id[d['comment_id']] for d in decisions.values()
+        selected = [state.by_id[d['comment_id']] for d in state.decisions.values()
                     if d['language'] == language and d['agreement']]
         # Evidence units contain the entire original text in order. Do not send
         # a second copy of the full text, which wastes context and GPU memory.
-        write_json(folder / 'full-pipeline-coverage.json', build_full_coverage(rows, decisions, routes, models, quality_records, coverage, [], quarantine, quality_mode, args))
-        if quality_mode != 'off':
+        write_json(state.folder / 'full-pipeline-coverage.json', build_full_coverage(
+            state.rows, state.decisions, state.routes, state.models, state.quality_records, state.coverage, [],
+            state.quarantine, state.quality_mode, state.args))
+        if state.quality_mode != 'off':
             for row in selected:
                 record_id = row['record_id']
                 units = evidence_units(row['text_original'])
                 attempts = []
                 result = None
-                for attempt in range(quality_policy['max_attempts']):
+                for attempt in range(state.quality_policy['max_attempts']):
                     data = {'comments': [{'comment_id': record_id, 'units': units}],
                         'source': row, 'language': language,
                         'character_normalization_reference': character_reference(row['text_original']),
-                        'quality_contract': quality_identity, 'attempt': attempt + 1}
+                        'quality_contract': state.quality_identity, 'attempt': attempt + 1}
                     # A retry is a new request/cache identity. Failed cached
                     # attempt 1 cannot masquerade as a fresh attempt 2.
-                    parsed, meta = runner.generate(model, language, 'quality', data, [record_id])
-                    trace.append({'model': model, 'stage': 'quality', 'comment_id': record_id,
-                                  'attempt': attempt + 1, **meta})
+                    parsed, meta = state.runner.generate(model, language, 'quality', data, [record_id])
+                    state.trace.append({'model': model, 'stage': 'quality', 'comment_id': record_id,
+                                        'attempt': attempt + 1, **meta})
                     if parsed is not None:
-                        result = quality.qualify(parsed, row, units, quality_policy)
+                        result = quality.qualify(parsed, row, units, state.quality_policy)
                         if result['errors']:
                             meta = {**meta, 'errors': result['errors']}
                         else:
@@ -225,43 +252,45 @@ def process(args, rows, routing, models, prompts, quality_identity, quality_poli
                             break
                     attempts.append(meta)
                     result = None
-                record = result or quality.failed_record(row, units, attempts, quality_policy)
-                record.update(attempts=attempts, model=model, observation_only=quality_mode == 'shadow')
-                quality_records[record_id] = record
-                write_json(folder / 'evidence-quality.json', list(quality_records.values()))
-                write_json(folder / 'full-pipeline-coverage.json', build_full_coverage(rows, decisions, routes, models, quality_records, coverage, [], quarantine, quality_mode, args))
-                write_json(folder / 'request-trace.json', trace)
-            if getattr(args, 'quality_only', False):
+                record = result or quality.failed_record(row, units, attempts, state.quality_policy)
+                record.update(attempts=attempts, model=model, observation_only=state.quality_mode == 'shadow')
+                state.quality_records[record_id] = record
+                write_json(state.folder / 'evidence-quality.json', list(state.quality_records.values()))
+                write_json(state.folder / 'full-pipeline-coverage.json', build_full_coverage(
+                    state.rows, state.decisions, state.routes, state.models, state.quality_records, state.coverage, [],
+                    state.quarantine, state.quality_mode, state.args))
+                write_json(state.folder / 'request-trace.json', state.trace)
+            if getattr(state.args, 'quality_only', False):
                 continue
         prepared = [{'comment_id': r['record_id'], 'units': evidence_units(r['text_original'])}
                     for r in selected]
-        if quality_mode == 'enforce':
-            prepared = [{**r, 'allowed_quality_points': quality.allowed_points(quality_records[r['comment_id']])}
-                        for r in prepared if quality.allowed_points(quality_records[r['comment_id']])]
+        if state.quality_mode == 'enforce':
+            prepared = [{**r, 'allowed_quality_points': quality.allowed_points(state.quality_records[r['comment_id']])}
+                        for r in prepared if quality.allowed_points(state.quality_records[r['comment_id']])]
         extraction_queue = list(batches(prepared, count=4, chars=9000 if language == 'en' else 4000))
         while extraction_queue:
             batch = extraction_queue.pop(0)
-            parsed, meta = runner.generate(model, language, 'extract',
-                {'comments': batch, 'character_normalization_reference': character_reference('\n'.join(by_id[r['comment_id']]['text_original'] for r in batch))},
+            parsed, meta = state.runner.generate(model, language, 'extract',
+                {'comments': batch, 'character_normalization_reference': character_reference('\n'.join(state.by_id[r['comment_id']]['text_original'] for r in batch))},
                 [r['comment_id'] for r in batch])
-            trace.append({'model': model, 'stage': 'extract', **meta})
+            state.trace.append({'model': model, 'stage': 'extract', **meta})
             if not parsed:
                 if len(batch) > 1:
                     extraction_queue[0:0] = [[item] for item in batch]
                     continue
-                coverage.extend({'comment_id': r['comment_id'], 'model': model,
-                                 'disposition': 'generation_failed', 'claims_generated': 0} for r in batch)
+                state.coverage.extend({'comment_id': r['comment_id'], 'model': model,
+                                       'disposition': 'generation_failed', 'claims_generated': 0} for r in batch)
                 continue
             for assessment in parsed['assessments']:
                 record_id = assessment['comment_id']
-                coverage.append({'comment_id': record_id, 'model': model,
+                state.coverage.append({'comment_id': record_id, 'model': model,
                     'disposition': assessment['disposition'], 'claims_generated': len(assessment['claims'])})
                 consistent = (assessment['disposition'] == 'extracted') == bool(assessment['claims'])
                 for i, claim in enumerate(assessment['claims']):
-                    errors, enriched = ground_claim(claim, by_id[record_id], characters)
-                    if quality_mode == 'enforce':
-                        quality_errors, qualification = quality.bind_claim(claim, quality_records[record_id],
-                            character_reference(by_id[record_id]['text_original']))
+                    errors, enriched = ground_claim(claim, state.by_id[record_id], state.characters)
+                    if state.quality_mode == 'enforce':
+                        quality_errors, qualification = quality.bind_claim(claim, state.quality_records[record_id],
+                            character_reference(state.by_id[record_id]['text_original']))
                         errors.extend(quality_errors)
                         if enriched is not None:
                             enriched['evidence_quality'] = qualification
@@ -270,51 +299,51 @@ def process(args, rows, routing, models, prompts, quality_identity, quality_poli
                     envelope = {'claim_id': record_id + ':' + str(i + 1), 'comment_id': record_id,
                                 'model': model, 'claim': enriched or claim}
                     if errors:
-                        quarantine.append({**envelope, 'stage': 'source_binding', 'errors': errors})
+                        state.quarantine.append({**envelope, 'stage': 'source_binding', 'errors': errors})
                     else:
-                        claims.append(envelope)
-            write_json(folder / 'extraction-coverage.json', coverage)
-            write_json(folder / 'claims-before-audit.json', claims)
-            write_json(folder / 'quarantined-claims.json', quarantine)
+                        state.claims.append(envelope)
+            write_json(state.folder / 'extraction-coverage.json', state.coverage)
+            write_json(state.folder / 'claims-before-audit.json', state.claims)
+            write_json(state.folder / 'quarantined-claims.json', state.quarantine)
         # Audit in a separate context, with original spans, never the generator's rationale.
-        pending = [c for c in claims if c['model'] == model]
+        pending = [c for c in state.claims if c['model'] == model]
         for batch in batches(pending, count=1):
-            parsed, meta = runner.generate(model, language, 'verify',
-                {'claims': batch, 'original_comment': by_id[batch[0]['comment_id']]['text_original']},
-                                           [c['claim_id'] for c in batch])
-            trace.append({'model': model, 'stage': 'verify', **meta})
+            parsed, meta = state.runner.generate(model, language, 'verify',
+                {'claims': batch, 'original_comment': state.by_id[batch[0]['comment_id']]['text_original']},
+                                                 [c['claim_id'] for c in batch])
+            state.trace.append({'model': model, 'stage': 'verify', **meta})
             verdicts = {v['claim_id']: v for v in parsed['verdicts']} if parsed else {}
             for entry in batch:
                 verdict = verdicts.get(entry['claim_id'])
                 entry['audit'] = verdict
                 if verdict is None or not verdict['supported']:
-                    quarantine.append({**entry, 'stage': 'semantic_audit',
+                    state.quarantine.append({**entry, 'stage': 'semantic_audit',
                         'errors': [verdict['reason'] if verdict else 'Audit failed; fail closed']})
-            write_json(folder / 'audit-progress.json', claims)
-            write_json(folder / 'quarantined-claims.json', quarantine)
+            write_json(state.folder / 'audit-progress.json', state.claims)
+            write_json(state.folder / 'quarantined-claims.json', state.quarantine)
     accepted = [{**e['claim'], 'claim_id': e['claim_id'], 'comment_id': e['comment_id'],
-                 'model': e['model'], 'semantic_audit': e['audit']} for e in claims
+                 'model': e['model'], 'semantic_audit': e['audit']} for e in state.claims
                 if (e.get('audit') or {}).get('supported')]
-    summary = {'version': VERSION, 'input_comments': len(rows),
-        'mode': identity['mode'],
-        'input_languages': dict(Counter(r['language'] for r in rows)),
-        'routed_comments': len(eligible), 'unsupported_or_unselected_language': len(rows) - len(eligible),
-        'retrieval_related': sum(d['retrieval_related'] for d in decisions.values()),
-        'retrieval_review_queued': sum(d['retrieval_triage'] == 'review_queue' for d in decisions.values()),
-        'retrieval_review_rescues': sum(d['agreement'] and not d['retrieval_related'] for d in decisions.values()),
-        'agreement_related': sum(d['agreement'] for d in decisions.values()),
-        'relevance_refinements': sum(d.get('refinement_performed', False) for d in decisions.values()),
-        'relevance_refinement_rescues': sum(d.get('refinement_performed', False) and d['agreement'] for d in decisions.values()),
-        'assessed_comments': len(coverage), 'generated_claims': sum(c['claims_generated'] for c in coverage),
-        'accepted_claims': len(accepted), 'quarantined_claims': len(quarantine),
+    summary = {'version': VERSION, 'input_comments': len(state.rows),
+        'mode': state.identity['mode'],
+        'input_languages': dict(Counter(r['language'] for r in state.rows)),
+        'routed_comments': len(state.eligible), 'unsupported_or_unselected_language': len(state.rows) - len(state.eligible),
+        'retrieval_related': sum(d['retrieval_related'] for d in state.decisions.values()),
+        'retrieval_review_queued': sum(d['retrieval_triage'] == 'review_queue' for d in state.decisions.values()),
+        'retrieval_review_rescues': sum(d['agreement'] and not d['retrieval_related'] for d in state.decisions.values()),
+        'agreement_related': sum(d['agreement'] for d in state.decisions.values()),
+        'relevance_refinements': sum(d.get('refinement_performed', False) for d in state.decisions.values()),
+        'relevance_refinement_rescues': sum(d.get('refinement_performed', False) and d['agreement'] for d in state.decisions.values()),
+        'assessed_comments': len(state.coverage), 'generated_claims': sum(c['claims_generated'] for c in state.coverage),
+        'accepted_claims': len(accepted), 'quarantined_claims': len(state.quarantine),
         'source_numeric_accepted': sum(c['specificity'] == 'source_numeric' for c in accepted),
         'qualitative_only_accepted': sum(c['specificity'] == 'qualitative_only' for c in accepted),
-        'failed_requests': sum(bool(t['errors']) for t in trace),
-        'final_generation_failed_comments': sum(c['disposition'] == 'generation_failed' for c in coverage),
-        'by_language': {lang: {'input': sum(r['language'] == lang for r in rows),
-            'retrieval_related': sum(d['language'] == lang and d['retrieval_related'] for d in decisions.values()),
-            'agreement_related': sum(d['language'] == lang and d['agreement'] for d in decisions.values()),
-            'accepted_claims': sum(by_id[c['comment_id']]['language'] == lang for c in accepted)} for lang in ('en', 'zh')},
+        'failed_requests': sum(bool(t['errors']) for t in state.trace),
+        'final_generation_failed_comments': sum(c['disposition'] == 'generation_failed' for c in state.coverage),
+        'by_language': {lang: {'input': sum(r['language'] == lang for r in state.rows),
+            'retrieval_related': sum(d['language'] == lang and d['retrieval_related'] for d in state.decisions.values()),
+            'agreement_related': sum(d['language'] == lang and d['agreement'] for d in state.decisions.values()),
+            'accepted_claims': sum(state.by_id[c['comment_id']]['language'] == lang for c in accepted)} for lang in ('en', 'zh')},
         'limitations': ['Automated semantic audit uses the same language-routed model in a separate context; not human ground truth.',
             'Retrieval prototypes and threshold are reused from the earlier experiment; no held-out relevance labels exist for the full corpus.',
             'Source binding proves quotation provenance, not gameplay truth or patch applicability.',
@@ -322,32 +351,32 @@ def process(args, rows, routing, models, prompts, quality_identity, quality_poli
             'Coverage accounts for every admitted comment; completeness of individual concerns still requires human review.',
             'No numerical targets are invented; qualitative comments cannot supply exact engineering values.']}
     unsupported = [{'comment_id': r['record_id'], 'language': r['language'],
-                    'reason': 'No configured language route'} for r in rows if r not in eligible]
-    report = {'summary': summary, 'character_adjustments': aggregate(accepted, quality_mode == 'enforce'),
+                    'reason': 'No configured language route'} for r in state.rows if r not in state.eligible]
+    report = {'summary': summary, 'character_adjustments': aggregate(accepted, state.quality_mode == 'enforce'),
         'release_status': 'requires_source_review_and_versioned_game_data',
         'unresolved_identity_claims': [c for c in accepted if c.get('character_identity', {}).get('normalization_status') == 'source_literal_unverified'],
         'other_supported_claims': [c for c in accepted if c['character'] is None or c['direction'] not in ('buff', 'nerf')],
-        'coverage': coverage, 'unsupported_languages': unsupported}
-    report['report_schema_version'] = 'balance-report-v3' if quality_mode == 'enforce' else VERSION
-    report['evidence_quality_mode'] = quality_mode
-    report['quality_assessment'] = 'enforced' if quality_mode == 'enforce' else 'observation_only' if quality_mode == 'shadow' else 'quality_not_assessed'
-    full_coverage = build_full_coverage(rows, decisions, routes, models, quality_records, coverage,
-                                        accepted, quarantine, quality_mode, args)
-    write_json(folder / 'full-pipeline-coverage.json', full_coverage)
+        'coverage': state.coverage, 'unsupported_languages': unsupported}
+    report['report_schema_version'] = 'balance-report-v3' if state.quality_mode == 'enforce' else VERSION
+    report['evidence_quality_mode'] = state.quality_mode
+    report['quality_assessment'] = 'enforced' if state.quality_mode == 'enforce' else 'observation_only' if state.quality_mode == 'shadow' else 'quality_not_assessed'
+    full_coverage = build_full_coverage(state.rows, state.decisions, state.routes, state.models, state.quality_records,
+                                        state.coverage, accepted, state.quarantine, state.quality_mode, state.args)
+    write_json(state.folder / 'full-pipeline-coverage.json', full_coverage)
     report['full_pipeline_coverage'] = full_coverage
-    if quality_mode != 'off':
-        records = list(quality_records.values())
+    if state.quality_mode != 'off':
+        records = list(state.quality_records.values())
         routed = [{**r, 'source_url': q['source_url'], 'content_sha256': q['content_sha256'],
                    'quality_status': q['status'], 'language': q['language'], 'model': q.get('model'),
                    'policy_version': q['policy_version'], 'errors': q['errors'],
                    'quality_request_ids': [a['request_id'] for a in q.get('attempts', [])],
-                   'observation_only': quality_mode == 'shadow'}
+                   'observation_only': state.quality_mode == 'shadow'}
                   for q in records for r in q['routing']]
-        opinions = quality.summarize_opinions(records, character_reference('\n'.join(r['text_original'] for r in rows)))
+        opinions = quality.summarize_opinions(records, character_reference('\n'.join(r['text_original'] for r in state.rows)))
         systems = [r for r in routed if r['route'] == 'system_evidence']
         review = [r for r in routed if r['route'] == 'review']
         exclusions = [r for r in routed if r['route'] == 'exclude']
-        quality_summary = {'mode': quality_mode, 'comments_assessed': len(records),
+        quality_summary = {'mode': state.quality_mode, 'comments_assessed': len(records),
             'completed': sum(q['status'] == 'completed' for q in records),
             'failed': sum(q['status'] == 'failed' for q in records),
             'route_comment_counts': {route: len({r['comment_id'] for r in routed if r['route'] == route}) for route in quality.ROUTES},
@@ -358,17 +387,17 @@ def process(args, rows, routing, models, prompts, quality_identity, quality_poli
         for name, value in [('evidence-quality', records), ('quality-routing', routed),
                 ('quality-review-queue', review), ('quality-summary', quality_summary),
                 ('opinion-summary', opinions), ('system-feedback', systems), ('quality-exclusions', exclusions)]:
-            write_json(folder / (name + '.json'), value)
-        if quality_mode == 'enforce':
+            write_json(state.folder / (name + '.json'), value)
+        if state.quality_mode == 'enforce':
             report.update(opinion_summary=opinions, system_feedback=systems,
                           quality_review_queue=review, quality_exclusions=exclusions)
         else:
             report['quality_observation_artifacts'] = ['quality-summary.json', 'opinion-summary.json', 'system-feedback.json']
-    write_json(folder / 'relevance.json', list(decisions.values()))
-    write_json(folder / 'validated-claims.json', accepted)
-    write_json(folder / 'quarantined-claims.json', quarantine)
-    write_json(folder / 'request-trace.json', trace)
-    write_json(folder / 'summary.json', summary)
-    write_json(folder / 'balance-report.json', report)
+    write_json(state.folder / 'relevance.json', list(state.decisions.values()))
+    write_json(state.folder / 'validated-claims.json', accepted)
+    write_json(state.folder / 'quarantined-claims.json', state.quarantine)
+    write_json(state.folder / 'request-trace.json', state.trace)
+    write_json(state.folder / 'summary.json', summary)
+    write_json(state.folder / 'balance-report.json', report)
     print(json.dumps(summary, ensure_ascii=False, indent=2), flush=True)
     return report
