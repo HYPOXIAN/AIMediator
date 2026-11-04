@@ -2,7 +2,7 @@
 
 - Type: Reference (index)
 - Status: Active
-- Updated: 2026-11-03
+- Updated: 2026-11-04
 - Applies to: every document under `docs/` (RULES.md D4)
 
 Every document under `docs/` is listed once, grouped by the categories of
@@ -30,6 +30,7 @@ RULES.md D1. Records, decisions and meeting notes are frozen once final
 | Document | Type | Status | Description |
 | -------- | ---- | ------ | ----------- |
 | [0001-package-as-single-runtime.md](decisions/0001-package-as-single-runtime.md) | Decision | Active | The `aimediator` package is the single runtime implementation; scripts import it. |
+| [0002-module-boundaries-and-entry-points.md](decisions/0002-module-boundaries-and-entry-points.md) | Decision | Active | Package modules in layers with an import table the tests enforce; research commands as `python3 -m aimediator.<module>`; compatibility layers removed. |
 
 ## Plans and status
 
