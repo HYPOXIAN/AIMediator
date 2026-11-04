@@ -7,6 +7,7 @@ import argparse
 import copy
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
+from functools import partial
 import json
 from pathlib import Path
 import re
@@ -565,7 +566,7 @@ def validate_modes(args):
     return mode
 
 
-def run(args):
+def run(args, *, api_transport=None, chat_transport=None, embed_transport=None, retrieval_service=None):
     quality_mode = validate_modes(args)
     quality_policy = quality.load_policy() if quality_mode != 'off' else None
     folder = args.out.resolve()
@@ -577,7 +578,7 @@ def run(args):
     routing = json.loads((asset_path('configs/local-language-routing.json')).read_text(encoding='utf-8'))
     routes = routing['models']
     models = [args.model] if args.model else list(routes)
-    tags = api(args.base_url, '/api/tags')['models']
+    tags = (api_transport or api)(args.base_url, '/api/tags')['models']
     installed = {m['name']: m['digest'] for m in tags}
     embedding_config = None
     if getattr(args, 'embedding_provider', 'ollama') == 'configured':
@@ -641,8 +642,12 @@ def run(args):
         (folder / 'quality-module-snapshot.py').write_bytes((module_path('evidence_quality.py')).read_bytes())
         (folder / 'runner-snapshot.py').write_bytes(module_path('engine.py').read_bytes())
         (folder / 'policy-module-snapshot.py').write_bytes((module_path('balance_policy.py')).read_bytes())
+    runner_factory = Runner if chat_transport is None else partial(Runner, chat_transport=chat_transport)
+    if retrieval_service is None:
+        retrieval_service = retrieve if api_transport is None and embed_transport is None else partial(
+            retrieve, api_transport=api_transport, embed_transport=embed_transport)
     return process(args, rows, routing, models, prompts, quality_identity,
-                   quality_policy, identity, embedding_config, Runner, retrieve)
+                   quality_policy, identity, embedding_config, runner_factory, retrieval_service)
 
 
 def process(args, rows, routing, models, prompts, quality_identity, quality_policy,
