@@ -608,6 +608,31 @@ mentions.
   ([B2 work order](../plans/code-restructuring-handoffs/b2-engine-split.md)),
   from `restructure-b1`; blockers: none.
 
+### 2026-11-03 B2-1 (implementation)
+
+- Steps: B2.1 to B2.4 (`cfae9ae`, `4a28223`, `f4bf0f5`, `eb18a64`); none
+  started and stashed.
+- State: HEAD is this entry's commit (parent `eb18a64`); tests 217; lock
+  green, fixture unchanged; rule check 0. Suite 9.1 s. Plan 8.5: 217 pass
+  from a foreign directory, which stays empty. The boundary check from
+  `restructure-b1` and the commit hygiene check print nothing. All 67
+  tracked and new `.py` files under `src/`, `tests/` and `scripts/` parse
+  as Python 3.9. `engine.py` has 759 lines (931 at entry).
+- Findings: no decisions found during execution and no escalations. The
+  cumulative move check from `restructure-b1` prints `same` for 23
+  definitions and `CHANGED run`. That is the B2.1 signature change, which
+  is not a move and is described in its commit body, so B2-V checklist
+  item 2 can read `run` as intentionally changed. Pre-existing and not
+  acted on: `replay_balance_admission.py` builds its `Runner` without
+  `quality_identity`, but `engine.run` always passes one. The script's
+  request identities therefore never match a run made by the current
+  runner, and it stops with `RuntimeError('Replay cannot run inference')`.
+  It did so in the same way before and after B2.2, on a relevance-only
+  fixture run. A fix would change the script's logic, which B2 does not
+  allow; where to place it is the owner's call (B3.4 revisits the
+  script's identity).
+- Next: B2.5, session B2-2; blockers: none.
+
 ## Batch results
 
 ## Deferred
