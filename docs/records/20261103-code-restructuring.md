@@ -42,6 +42,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | B1.3 | done | 224 | green | F-06: `encoding='utf-8'` added to 145 calls in 32 files: 142 `read_text`/`write_text` and the 3 text-mode collector lock opens (`Path.open('a')`). Found with an AST scan; each file's AST equals HEAD's apart from the added keyword. Plan 8.7 fifth grep: 0 lines (129 at entry); the `review.py` line is a decision found during execution. `open(` hits left without encoding: binary (`'rb'`, two `'wb'`), `tarfile.open`, and three lines inside a string fixture in `test_check_rules.py`. Left alone: `subprocess.run(..., text=True)` in `verify_cli_install.py`, which decodes the child's stdout in the child's locale. Under `LC_ALL=en_US.iso88591`: 224 pass (before B1.3: 36 failures, 7 errors) |
 | B1.4 | done | 225 | green | F-07: `collect_balanced_feedback.py` reports a held lock with `parser.error('Another collector is running in this project')`. In all three collectors, everything after the lock open sits in `try`/`finally: lock.close()`; the statements are otherwise unchanged (AST check). New test `test_held_collector_lock_is_reported_through_the_parser` (+1). Checked by hand with a held lock: before, each collector left its lock handle unclosed (1 `ResourceWarning` each); after, none. The suite still shows only the two known HTTPError warnings |
 | B1.5 | done | 226 | green | New `tests/test_console_output.py` (+1): runs the L2 producer in `enforce` and compares stdout exactly: 8 `Embedding <n>/58` lines, then per model (`llama3.1:latest`, `qwen2.5:7b`) 35 `<stage>: <model>, <n> items` lines, then the summary JSON (indent 2). Two runs in different directories print identical text with no time, path or hash, so nothing is normalized. The L2 producer is split into `legacy_dataset` and `run_legacy` (one mode, returns stdout); the lock reports `378 keys, 0 differ` |
+| B1.6 | done | 217 | green | CR-D03: four quality-screening scripts and their two test files (9 tests) archived to `~/Archives/AIMediator/scripts/20261103-quality-screening/` with `SHA256SUMS` (checked) and removed; see "Archive and deletions". Register: "Used by" cells of `configs/local-language-routing.json`, `scripts/evidence_quality.py` and `scripts/run_balance_analysis.py` updated, change-log line added. The change-log line points to this record instead of naming the files, because the B1.7 grep covers `docs/reference` |
 
 ## Baseline measurements (B0.4)
 
@@ -249,6 +250,25 @@ in the checkout, the lock was run, and the file was restored with
 
 | Path | Archive location | SHA256SUMS entry | Reason | Step |
 | ---- | ---------------- | ---------------- | ------ | ---- |
+| `scripts/experiments/present_quality_screening_results.py` | `~/Archives/AIMediator/scripts/20261103-quality-screening/` | `96d3ed447e0b58609e084b0d4221968c87886e6ec8fb507d2346a445ba7bb3a6` | One-off presentation of the finished 100-comment quality-screening experiment; emits a Cursor canvas TSX file (R-05, CR-D03) | B1.6 |
+| `scripts/experiments/protect_quality_screening_checkpoint.py` | same | `842c35712f8b801282fa7783bc201737964f94e8a13de649cde49245390af86a` | One-off checkpoint guard of that experiment (R-05, CR-D03) | B1.6 |
+| `scripts/experiments/resume_quality_screening_local.py` | same | `a44bc854fcd03865c647533d6e76a5281cd4c2495862ee88b0609410110b5766` | One-off resume of that experiment; patches `engine` at import (R-05, CR-D03) | B1.6 |
+| `scripts/experiments/run_quality_screening_recovery.py` | same | `62521df7d54939303c10e1bec221742788064e8c7f8ba06e602f541a3a23d795` | One-off recovery of that experiment; holds two prompts outside the assets (R-05, R-02, CR-D03) | B1.6 |
+| `tests/test_quality_screening_compact.py` | same | `dffa9ed52be0a7d521bc079b65ac9ca5bb0a41f00f7a09a590c1887b0c699743` | 4 tests of the archived `run_quality_screening_recovery.py` (CR-D03) | B1.6 |
+| `tests/test_quality_screening_recovery.py` | same | `b05f3300cd0fb403c3909d2394e735b6941359f16841e135257496ebbf8c3ef1` | 5 tests of the archived `resume_quality_screening_local.py` (CR-D03) | B1.6 |
+
+B1.6: the copies were taken from `99d57a9`, so the scripts include the B1.3
+encoding keywords; the earlier bytes are in git history. `sha256sum -c
+SHA256SUMS` passed in the archive directory, and each entry equals the
+SHA-256 of the blob at `99d57a9`. The existing `scripts/SHA256SUMS` was not
+touched. Before the deletion, `git grep` found the six names only in the
+two test files (which import two of the scripts and were archived with
+them), the planning documents, the frozen reorganization record, the
+register (updated in the same commit), and two frozen curated summaries,
+`reports/quality-screening-existing-100-v1/summary/recovery.md` and
+`reports/quality-screening-existing-100-recovered-v2/summary/recovery.md`.
+Those cite the pre-reorganization command paths (`scripts/<name>.py`) as
+provenance of the experiment that CR-D03 names, and stay unchanged (P2).
 
 ## Decisions found during execution
 
