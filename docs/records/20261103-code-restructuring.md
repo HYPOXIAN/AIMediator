@@ -263,6 +263,12 @@ in the checkout, the lock was run, and the file was restored with
   the same; only the baseline figure changes. The B0 boundary does not
   include the blueprint, so B0 does not correct it.
 - **Blocked**: nothing.
+- **Answer**: the owner, 2026-11-03, given to session B0-V: option (a),
+  correct the blueprint figure to 9. B0-V made the correction at the
+  owner's instruction in its own `docs` commit, which also records this
+  answer. The commit lies outside the B0 boundary (blueprint section 9:
+  corrections to the blueprint are `docs` commits that cite the reason).
+  Plan T-01 keeps its own figure and definition.
 
 ## Verification notes
 

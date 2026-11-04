@@ -129,7 +129,7 @@ the progress table.
 | Conformance | Working-directory roots in code | 2 | 0 | B6.1 | plan 8.7, fourth grep |
 | Conformance | Prompts outside assets (P7) | 1 file | 0 | B1.6 | archive |
 | Tests | Working-directory dependent tests | 1 | 0 | B0.2 | plan 8.5 |
-| Tests | Test files importing forwarders | 14 | 0 | B3.3 | plan 8.7, first grep |
+| Tests | Test files importing forwarders | 9 | 0 | B3.3 | plan 8.7, first grep |
 | Safety | Behavior lock | none | green after every step | B0 onward | plan 8.3 |
 
 ---
