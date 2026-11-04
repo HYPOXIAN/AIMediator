@@ -822,6 +822,27 @@ mentions.
   ([B3 work order](../plans/code-restructuring-handoffs/b3-callers-and-tests.md)),
   from `restructure-b2`; blockers: none.
 
+### 2026-11-03 B3-1 (implementation)
+
+- Steps: B3.1 to B3.3 (`4a3e113`, `267e62b`, and the series `d78a645`,
+  `fc06dc3`, `11f1464`); none started and stashed.
+- State: HEAD is this entry's commit (parent `11f1464`); tests 222, the
+  same count per module as at `restructure-b2`; lock green, fixture
+  unchanged; rule check 0. Suite 9.1 s. Plan 8.5: 222 pass from a foreign
+  directory, which stays empty. The boundary check from `restructure-b2`
+  and the commit hygiene check print nothing. Plan 8.7 grep 2 prints
+  nothing; grep 1 prints nothing under `tests` and still lists the
+  experiment scripts, which B3.4 changes.
+- Findings: no decisions found during execution and no escalations. B3.1
+  uses module-qualified names (`evidence.CLAIM`, `runner.Runner`) instead
+  of bare imports, because `operations.analyze` has a local `retrieve`
+  that calls `engine.retrieve`. `tests/support.py` holds only `CASES`,
+  `case` and `qualified`: the claim builders are used by
+  `test_evidence_quality.py` alone. Besides the two files the work order
+  names, `test_cli_product.py` also used a facade name
+  (`engine.evidence_units`) and was changed in the third B3.3 commit.
+- Next: B3.4, session B3-2; blockers: none.
+
 ## Batch results
 
 ## Deferred
