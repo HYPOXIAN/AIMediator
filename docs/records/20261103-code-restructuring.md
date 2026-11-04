@@ -449,6 +449,30 @@ mentions.
   (see the B0-V note). No fix-up steps.
 - Next: B1.1, session B1-1; blockers: none.
 
+### 2026-11-03 B1-1 (implementation)
+
+- Steps: B1.1 to B1.7 (`131e7d2`, `0bddb94`, `abe48a0`, `58e90b3`,
+  `99d57a9`, `12cd026`, `aca3fb5`); none started and stashed.
+- State: HEAD is this entry's commit (parent `aca3fb5`); tests 217; lock
+  green, fixture unchanged; rule check 0. Measured at `aca3fb5`: suite
+  8.4 s (wall 8.8 s; 118 s at entry), lock 4.1 s alone; demo 2.9 s under
+  cProfile and 1.6 s plain (26.2 s at entry); `engine.character_reference`
+  688 calls, 0.72 s cumulative. Plan 8.5: 217 pass from a foreign
+  directory. Plan 8.2: `"passed": true`, `"commands": 18`.
+- Findings: two decisions found during execution, both implemented under
+  plan section 1, item 8 and open to the owner at the B1 review: the
+  `review.py` line of the encoding grep (B1.3) and the register mentions
+  outside the B1.7 rows. The B1.4 test was added, so the count is
+  `223 + 1 + 1 + 1 - 9 = 217`. Archives: `~/Archives/AIMediator/scripts/20261103-quality-screening/`
+  (6 files) and `.../20261103-broken-entry-points/` (2 files), each with a
+  checked `SHA256SUMS`. Frozen mentions of the archived files remain in
+  `data/raw/` and `reports/` (see "Archive and deletions"). The boundary
+  check from `restructure-b0` prints only
+  `docs/plans/code-restructuring.md`, from the owner-instructed B0-V
+  commit `0d8e6b1`; no B1 path. No escalations.
+- Next: B1-V (verification of B1, sets `restructure-b1-review`); blockers:
+  none.
+
 ## Batch results
 
 ## Deferred
