@@ -318,39 +318,8 @@ def audit_claims(state, model, language):
         write_json(state.folder / 'quarantined-claims.json', state.quarantine)
 
 
-def process(args, rows, routing, models, prompts, quality_identity, quality_policy,
-            identity, embedding_config=None, runner_factory=Runner, retrieval_service=retrieve):
-    """Shared orchestration with explicit inputs and injected inference boundaries."""
-    state = RunState(args, rows, models, quality_identity, quality_policy, identity,
-                     folder=args.out.resolve(), routes=routing['models'], quality_mode=args.evidence_quality)
-    state.by_id = {r['record_id']: r for r in state.rows}
-    state.eligible = [r for r in state.rows if any(state.routes[m]['language'] == r['language'] for m in state.models)]
-    retrieval = retrieval_service(state.eligible, state.args.base_url, state.folder, state.args.embedding_model,
-                                  embedding_config)
-    state.runner = runner_factory(state.args.base_url, state.folder, prompts, state.quality_identity,
-                                  state.quality_policy)
-    state.runner.runtime_options = state.identity.get('runtime_options', {})
-    triage(state, retrieval)
-    reference = character_reference()
-    state.characters = {e['canonical_name'] for e in reference}
-    for model in state.models:
-        language = state.routes[model]['language']
-        language_rows = [d for d in state.decisions.values() if d['language'] == language]
-        review_retrieval(state, model, language, language_rows)
-        admit_relevance(state, model, language, language_rows)
-        if getattr(state.args, 'relevance_only', False):
-            continue
-        selected = [state.by_id[d['comment_id']] for d in state.decisions.values()
-                    if d['language'] == language and d['agreement']]
-        write_json(state.folder / 'full-pipeline-coverage.json', build_full_coverage(
-            state.rows, state.decisions, state.routes, state.models, state.quality_records, state.coverage, [],
-            state.quarantine, state.quality_mode, state.args))
-        if state.quality_mode != 'off':
-            assess_quality(state, model, language, selected)
-            if getattr(state.args, 'quality_only', False):
-                continue
-        extract_claims(state, model, language, selected)
-        audit_claims(state, model, language)
+def assemble(state):
+    """Build the summary and the report, write the final artifacts, print the summary and return the report."""
     accepted = [{**e['claim'], 'claim_id': e['claim_id'], 'comment_id': e['comment_id'],
                  'model': e['model'], 'semantic_audit': e['audit']} for e in state.claims
                 if (e.get('audit') or {}).get('supported')]
@@ -431,3 +400,39 @@ def process(args, rows, routing, models, prompts, quality_identity, quality_poli
     write_json(state.folder / 'balance-report.json', report)
     print(json.dumps(summary, ensure_ascii=False, indent=2), flush=True)
     return report
+
+
+def process(args, rows, routing, models, prompts, quality_identity, quality_policy,
+            identity, embedding_config=None, runner_factory=Runner, retrieval_service=retrieve):
+    """Shared orchestration with explicit inputs and injected inference boundaries."""
+    state = RunState(args, rows, models, quality_identity, quality_policy, identity,
+                     folder=args.out.resolve(), routes=routing['models'], quality_mode=args.evidence_quality)
+    state.by_id = {r['record_id']: r for r in state.rows}
+    state.eligible = [r for r in state.rows if any(state.routes[m]['language'] == r['language'] for m in state.models)]
+    retrieval = retrieval_service(state.eligible, state.args.base_url, state.folder, state.args.embedding_model,
+                                  embedding_config)
+    state.runner = runner_factory(state.args.base_url, state.folder, prompts, state.quality_identity,
+                                  state.quality_policy)
+    state.runner.runtime_options = state.identity.get('runtime_options', {})
+    triage(state, retrieval)
+    reference = character_reference()
+    state.characters = {e['canonical_name'] for e in reference}
+    for model in state.models:
+        language = state.routes[model]['language']
+        language_rows = [d for d in state.decisions.values() if d['language'] == language]
+        review_retrieval(state, model, language, language_rows)
+        admit_relevance(state, model, language, language_rows)
+        if getattr(state.args, 'relevance_only', False):
+            continue
+        selected = [state.by_id[d['comment_id']] for d in state.decisions.values()
+                    if d['language'] == language and d['agreement']]
+        write_json(state.folder / 'full-pipeline-coverage.json', build_full_coverage(
+            state.rows, state.decisions, state.routes, state.models, state.quality_records, state.coverage, [],
+            state.quarantine, state.quality_mode, state.args))
+        if state.quality_mode != 'off':
+            assess_quality(state, model, language, selected)
+            if getattr(state.args, 'quality_only', False):
+                continue
+        extract_claims(state, model, language, selected)
+        audit_claims(state, model, language)
+    return assemble(state)
