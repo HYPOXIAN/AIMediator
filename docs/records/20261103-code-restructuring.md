@@ -1320,6 +1320,130 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
 - Result: batch B4 closed, tag `restructure-b4` on this commit. B5 starts
   from it.
 
+### 2026-11-04 B5-V
+
+- Range: `restructure-b4..37f67a0`; 24 commits: B5.1 (`7c8085b`), B5.2
+  (`0625444`), B5.3 (`35bedaf`), B5.4 (`7aa981c`), B5.5 (`8cb6c9b`), the
+  fix-up step B5.F1 (`18cebca`), B5.6 as a series of ten commits
+  (`21fa7e2` to `96750d6`), B5.7 (`00d4920`), B5.8 (`9d908e3`), B5.9
+  (`6ffcddc`), B5.10 (`b862d48`) and B5.11 (`550ade1`), plus the
+  session-log entries of B5-1 (`ad3b3ec`), B5-2 (`7484128`) and B5-3
+  (`37f67a0`). Every check ran on `37f67a0`. The trees of
+  `restructure-b4` were extracted with `git archive` outside the
+  checkout.
+- Checks:
+  1. Boundary and commit hygiene: pass. The boundary check from
+     `restructure-b4`, with the work order's pattern, prints nothing; all
+     28 changed paths lie inside it. The hygiene check prints nothing,
+     and no added line in the range carries an attribution. All 21 step
+     commits have their `Step:` line, B5.11 also has
+     `Decision: CR-D12`, and the three session-log commits have
+     `Session:`. B5.6 is ten commits, each with `Step: B5.6`. Apart from
+     them, only B5.7 (`00d4920`) touches `pipeline.py`. The script edits
+     are the B5.3 site in `export_balance_review_followups.py` and the
+     B5.7 printer in the eight `Runner` constructions. No other script
+     builds a `Runner` or calls `retrieve` or `process`.
+  2. Lock: pass. The work order's `git log` lists only `550ade1`, the
+     B5.11 commit with `Decision: CR-D12`, and its body lists the added
+     paths. Parsed as JSON, the fixture goes from 378 to 459 keys, with
+     81 added and none removed or changed. The added keys are exactly
+     `L2:<off|shadow|enforce>/code-snapshot/<module>.py` for the 27
+     modules of `src/aimediator`, each `<exempt: existence only>`, and
+     the diff has no removed line. `tests/behavior_lock.py` changed only
+     in `00d4920` (`run_legacy` passes the `engine.main` printer) and in
+     `550ade1` (`CODE_ONLY` also matches `code-snapshot/*.py`).
+     `tests/test_behavior_lock.py` did not change.
+     `python3 tests/behavior_lock.py` prints `459 keys, 0 differ`, and
+     plan 8.3 passes.
+  3. Write schedule: pass. `process` at `restructure-b4` was read against
+     `pipeline.py` at HEAD, and every write point of blueprint 3.4 is
+     present, in order, with the same arguments:
+     - point 1: the retrieval service runs before the runner and the
+       model loop;
+     - point 2: `relevance.json` and `review-queue.json` end
+       `admit_relevance`, and the `relevance_only` continue follows it;
+     - point 3: the pre-quality coverage write stays in `process`;
+     - point 4: the three writes after each quality record are in
+       `assess_quality`, and the `quality_only` continue is inside the
+       same `quality_mode` check;
+     - points 5 and 6: the three writes after each extraction batch and
+       the two after each audit;
+     - point 7: the final coverage write is in `assemble`;
+     - point 8: the seven quality artifacts are written in their order
+       in `report_quality`;
+     - point 9: the six final writes come last, followed by the `log`
+       call with the summary text.
+
+     `pipeline.py` has no `try` block. As an independent check (scratch,
+     not committed), `pipeline.write_json` was wrapped at
+     `restructure-b4` and at HEAD over ten pipeline runs: `engine.run` in
+     `off`, `shadow` and `enforce`, `relevance_only`, `quality_only` in
+     `shadow` and `enforce`, a cached rerun in `enforce`, and the demo's
+     three `operations.analyze` runs. The two sequences of 1,477 writes
+     (path, value type and length) are identical.
+  4. Function length: pass. The blueprint 7.3 metric lists only the six
+     functions that blueprint 1.2 leaves: `engine.run` 76,
+     `evidence_quality.qualify` 61, `operations.analyze` 110,
+     `quality_scoring.score_group` 71, `reporting.export_report` 105 and
+     `review.load_run` 136. The longest functions in the five modules are
+     `pipeline.extract_claims` 47, `runner._generate` 39,
+     `stages.schema_for` 52, `evidence.ground_claim` 54 and
+     `retrieval.retrieve` 48.
+  5. Named tests: pass. `test_module_layers` passes its 6 tests, among
+     them the layering tests (`test_every_import_is_allowed`,
+     `test_imports_form_no_cycle`) and the import-without-I/O test
+     (`test_importing_every_module_reads_no_file`). The B1.5 console test
+     (`test_console_output`) passes. Its file is unchanged since
+     `99d57a9`, so it still expects the B1.5 text. The B5.8 read-count
+     test (`test_run_store`) passes. The I/O test leaves out `__main__`,
+     whose import runs the command line. Its only import, `cli`, is
+     covered.
+  6. Gates, timing, foreign directory and wheel: pass. Tree clean, no
+     stash. 233 tests OK in 7.8 s (wall 8.3 s), against the blueprint 2
+     target of at most 45 s with the lock included. The collected test
+     IDs differ from `restructure-b4` only by 12 added tests (B5.2 1,
+     B5.5 8, and 1 each in B5.8, B5.10 and B5.11), and none is removed.
+     Rule check `Total: 0`. The only warnings are the two known
+     `ResourceWarning`s for unclosed `HTTPError` objects. Plan 8.5: 233
+     OK from a foreign temporary directory, which stays empty. Plan 8.2:
+     `"passed": true`, `"commands": 18` (Python 3.14.8, NumPy 2.4.6).
+     The wheel's 27 modules and 21 asset files (15 of them prompts)
+     match the checkout byte for byte, and it has no `data/raw` and no
+     `.env`.
+- Measurements: tests 233 in 7.8 s (wall 8.3 s); demo 2.0 s under
+  cProfile, 1.00 s plain; `evidence.character_reference` 688 calls,
+  0.71 s cumulative; lock green (459 keys), 3.8 s run alone.
+- Notes:
+  - Batch checks of blueprint 7.1 beyond the checklist:
+    - Plan 8.7 greps 1, 2 and 5 print nothing, and so does the
+      narrowed third grep of the B4.1 decision. The fourth grep is not
+      due until B6.1.
+    - The analysis modules of blueprint 4.1, item 5, contain no
+      `print`. `operations` prints its progress lines to stderr only.
+    - All 71 tracked `.py` files under `src/`, `tests/` and `scripts/`
+      parse with the Python 3.9 grammar. None has a star import, and
+      `RunState` uses neither `slots` nor `kw_only`.
+    - The progress table has rows B5.1 to B5.11 and B5.F1, all `done`.
+      Every row has lock `green`, except B5.11, which has
+      `updated by CR-D12`.
+  - The diffs of `resources`, `schema`, `evidence`, `evidence_quality`,
+    `stages`, `runner`, `retrieval`, `pipeline`, `run_store`, `engine`
+    and `operations` match blueprint 3.3. The payload key order and the
+    order of the options (stage options, then `runtime_options`) in
+    `runner` match blueprint 3.5.
+  - None of the triggers in work order section 6 occurred. The lock
+    changed only in B5.11. The write schedule is unchanged. B5.9
+    measured 2.6 to 2.8 %, under its 10 % threshold. The console text is
+    unchanged: the B1.5 test passes, and B5-3 compared 18 traces.
+  - Still open to the owner, none of them blocking:
+    - the three decisions found during execution in B5-1
+      (`character_terms` in `balance_policy`, the term order of the
+      `ground_claim` literal, and `Runner._response`);
+    - the B5-3 finding that `run_store.state` still lists the request
+      directories on every call (54 % of the 600-comment fixture run), a
+      candidate for later work.
+- Result: accepted, tag `restructure-b5`. B6 starts from it.
+
 ## Session log
 
 ### 2026-11-03 B0-1 (implementation)
@@ -1726,6 +1850,20 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
     to the owner. Fix-up steps that B5-V records start at B5.F2.
 - Next: B5-V (verification of B5, sets `restructure-b5`); blockers:
   none.
+
+### 2026-11-04 B5-V (verification)
+
+- Steps: none (verification); none started and stashed.
+- State: HEAD is the verification-note commit (parent `37f67a0`), tagged
+  `restructure-b5`; tests 233; lock green, fixture changed only by
+  CR-D12 in `550ade1`; rule check 0.
+- Findings: none. All six checklist items pass, with no fix-up steps and
+  no escalations. Still open to the owner, none of them blocking: the
+  three decisions found during execution in B5-1, and the cost of the
+  `run_store.state` listing (B5-3).
+- Next: B6.1, session B6-1
+  ([B6 work order](../plans/code-restructuring-handoffs/b6-research-code.md)),
+  from `restructure-b5`; blockers: none.
 
 ## Batch results
 
