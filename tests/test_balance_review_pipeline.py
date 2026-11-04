@@ -10,8 +10,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts/experiments'
 from aimediator import evidence, pipeline, stages
 from aimediator.balance_policy import numeric_request_supported,triage_retrieval,direction_action_conflicts,attributed_candidates
 from aimediator.common import sha as digest
+from aimediator.design_briefs import prepare_briefs,validate_move_data
 from evaluate_balance_review import read_labels,calibrate,relevance_metrics
-from prepare_balance_design import prepare_briefs,validate_move_data
 from run_balance_regression_live import CASES
 from export_balance_review_followups import followups
 

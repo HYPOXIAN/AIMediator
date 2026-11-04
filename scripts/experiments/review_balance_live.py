@@ -7,10 +7,10 @@ from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
 from aimediator.common import sha as digest, strict_json, write as write_json
+from aimediator.design_briefs import prepare_briefs
 from aimediator.evidence import character_reference
 from aimediator.legacy_review import apply_review
 from aimediator.pipeline import aggregate
-from prepare_balance_design import prepare_briefs
 
 
 def main():

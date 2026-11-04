@@ -10,10 +10,9 @@ import unittest
 from unittest.mock import Mock, patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts/experiments'))
 from aimediator import engine, evidence, evidence_quality as q, pipeline
+from aimediator.design_briefs import prepare_briefs
 from aimediator.legacy_review import apply_review, proposal_hash
-from prepare_balance_design import prepare_briefs
 from support import CASES, case, qualified
 
 
