@@ -1,11 +1,11 @@
-"""Per-stage model response schemas and item coverage checks."""
+"""Per-stage request data, options, response schemas, response normalization and item coverage checks."""
 from collections import Counter
 import copy
 import re
 
 from . import evidence_quality as quality
 from .balance_policy import attributed_candidates
-from .evidence import CLAIM, character_candidates, numeric_tokens
+from .evidence import CLAIM, character_candidates, character_reference, numeric_tokens
 from .schema import arr, obj
 
 
@@ -65,3 +65,66 @@ def schema_for(stage, ids, data=None):
 
 def exact_coverage(rows, key, expected):
     return Counter(r[key] for r in rows) == Counter(expected)
+
+
+def prepare(stage, data, ids):
+    """Return the request data of a stage: the audit view for verify, data itself otherwise."""
+    if stage != 'verify':
+        return data
+    entry = data['claims'][0]
+    proposal = entry['claim']
+    original = data.get('original_comment') or '\n'.join(u['text'] for u in proposal['evidence'])
+    reference = character_reference(original)
+    candidates = character_candidates(original, reference)
+    # Confidence flags, model names and source URLs are not premises for
+    # entailment. Keep the original text separate from the proposal.
+    qualification = proposal.get('evidence_quality')
+    data = {'original_evidence': original,
+        'proposed_claim': {key: proposal[key] for key in ('character', 'target', 'direction', 'recommendation')},
+        'naming_reference': [e for e in reference if e['canonical_name'] in candidates],
+        'claim_id': ids[0]}
+    data['proposed_claim']['parameters'] = [
+        {key: parameter[key] for key in ('metric', 'current', 'proposed', 'delta', 'unit')}
+        for parameter in proposal['parameters']]
+    if qualification:
+        # Show source spans and original annotation semantics, never a
+        # passed-quality flag, emotion ratio or model confidence.
+        data['selected_source_segments'] = [{k: s[k] for k in
+            ('evidence_id', 'start', 'end', 'quote')} for s in qualification['selected_segments']]
+        data['selected_source_points'] = [{k: p[k] for k in
+            ('point_id', 'segment_ids', 'character_literal', 'mechanic_literal', 'stance', 'direction')}
+            for p in qualification['selected_points']]
+    return data
+
+
+def options(stage, quality_policy):
+    """Return the inference options of a stage request; Runner applies its runtime options afterwards."""
+    result = {'temperature': 0, 'seed': 42, 'num_ctx': 8192,
+              'num_predict': 4096 if stage == 'extract' else 256}
+    if stage == 'quality':
+        policy = quality_policy or quality.load_policy()
+        result.update(num_predict=policy['num_predict'], num_ctx=policy['num_ctx'])
+    return result
+
+
+def normalize(stage, parsed, ids, data):
+    """Turn a schema-valid response into the stage result; return (parsed or None, errors)."""
+    errors = []
+    if stage in ('relevance', 'retrieval_review'):
+        parsed = {'decisions': [{'comment_id': identity, 'related': status == 'related',
+            'uncertain': status == 'uncertain', 'reason': 'Ordered model status: ' + status}
+            for identity, status in zip(ids, parsed['decisions'])]}
+    elif stage == 'quality':
+        errors.extend(quality.validate_annotation(parsed, data['source'], data['comments'][0]['units']))
+    elif stage == 'verify':
+        status = parsed['support']
+        parsed = {'verdicts': [{'claim_id': ids[0], 'supported': status == 'supported',
+            'support_status': status, 'scope': 'selected_quality_segments_with_original_context' if data.get('selected_source_segments') else 'full_original_comment',
+            'reason': 'Model source-support status: ' + status}]}
+    else:
+        parsed = {'assessments': [{'comment_id': identity, **assessment,
+            'disposition': 'extracted' if assessment['claims'] else 'no_supported_character_claim'}
+            for identity, assessment in parsed['assessments'].items()]}
+        if not exact_coverage(parsed['assessments'], 'comment_id', ids):
+            errors.append('Missing or duplicated item IDs')
+    return (parsed if not errors else None), errors

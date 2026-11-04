@@ -69,6 +69,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | B5.2 | done | 222 | green | U-02: `schema.py` holds `obj`, `quality_obj` (the former `evidence_quality.obj`), `arr`, `enum`, `STRING`, `NULLABLE_STRING` (the former `schema.NULL_STRING`), `NULLABLE_NONEMPTY_STRING` (the former `evidence_quality.NULL_STRING`), `BOOL` and `schema_errors`. `evidence_quality` drops its builders, constants and validator, imports them from `schema`, and `annotation_schema` calls them by their `schema` names; `evidence` uses `NULLABLE_STRING`. `evidence_quality.schema_errors` stays importable, because the module uses it: `runner` may not import `schema` (plan 4.2), so its import and the other callers are unchanged. Checks: `schema_errors` and `enum` have the AST of the old functions, and `quality_obj` and `obj` return the old dictionaries; `json.dumps` of `PARAMETER`, `CLAIM`, `annotation_schema(['X'])` and `schema_for` for `extract` (with data and allowed points, and without data), `relevance`, `quality` and `verify` is byte-identical to `restructure-b4` (10,182 bytes). New `tests/test_schema.py` (+1) pins both object builders and both nullable constants as literal JSON; a scratch swap of two keys in `quality_obj` fails it. The work order's grep matches only the blueprint and the work order |
 | B5.3 | done | 222 | green | U-03: `evidence.character_terms(entry)` returns `[canonical_name, chinese_label] + alias texts`, unfiltered, with a one-line docstring. Four sites call it and keep their filtering: `evidence.character_candidates` (none), `evidence_quality.bind_claim` (`t and term_matches` inside `any`), `evidence_quality.summarize_opinions` (the same) and `scripts/experiments/export_balance_review_followups.py` (none). `evidence_quality` imports `evidence` at module level (plan 4.2 allows it; no cycle). Two listed sites keep their inline lists, each with a comment, as decisions found during execution: `balance_policy.attributed_candidates` (plan 4.2 forbids `balance_policy -> evidence`) and the `ground_claim` literal search (its order starts with the Chinese label and decides `source_literal`). Checks: on 64 entries (the glossary's character entries, the policy's source-literal characters and `character_reference('')`, which overlap), `character_terms` equals the old inline list; `character_candidates` gives results identical to `restructure-b4` on 431 texts (every `text_original` of the tracked evaluation sets and the packaged cases, plus five probes), against each text's own reference and the full one. The script prints `--help` from a foreign directory; `test_balance_review_pipeline` runs its `followups` |
 | B5.4 | done | 222 | green | U-04: `evidence_quality.bind_claim` calls `evidence.numeric_tokens` (imported at module level with `character_terms`) instead of its `numbers` lambda, and drops the function-level `import re` that only the lambda used. Before the edit, an AST scan confirmed that both `re.findall` patterns are `[+-]?\d+(?:\.\d+)?%?` with no flags. Check: the old `bind_claim` without the lambda and the import, with `numbers` renamed to `numeric_tokens`, has the AST of the new one (six calls) |
+| B5.5 | done | 230 | green | `stages` gains `prepare(stage, data, ids)` (the `verify` audit view; `data` itself for every other stage), `options(stage, quality_policy)` and `normalize(stage, parsed, ids, data)`, each with a one-line docstring; `stages` now also imports `character_reference` from `evidence`. `Runner._generate` calls `prepare`, builds the payload with `options(stage, self.quality_policy)`, applies `runtime_options`, computes the cache identity and the request folder, gets the response from the new private `Runner._response` (decision found during execution), repairs quality envelopes, runs `strict_json`, `schema_errors` and, when the schema check passes, `normalize` in the same `try` block, adds the incomplete-generation check and writes `validation.json`. `normalize` returns its own error list (schema errors are empty when it runs) and `None` with errors, which `Runner` returned anyway. `runner` drops its imports of `evidence`, `evidence_quality as quality` and `exact_coverage`. Checks: the body of `prepare` after its guard is AST-identical to the old `if stage == 'verify':` block, the branch chain of `normalize` to the old one inside the `try`, and the `if` of `_response` to the old cache and transport `if`; `options` gives the old dictionaries, key order included, for 5 stages with policies `None`, the loaded policy and a custom one. Lock green, including every request digest. New `tests/test_stages.py` (+8): `prepare` per stage and the `verify` view with and without original comment and selected quality spans; `options` per stage; `normalize` for `relevance` and `retrieval_review`, `quality` (valid and broken annotation), `verify` (both scopes) and `extract` (dispositions and coverage). Function lengths: `_generate` 39, `_response` 34, `prepare` 28, `normalize` 21, `options` 8. Plan 8.5: 230 pass from a foreign directory |
 
 ## Baseline measurements (B0.4)
 
@@ -590,6 +591,33 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   changes.
 - **Status**: implemented in B5.3 under plan section 1, item 8. The owner
   may choose (b).
+
+### Where the response journal of `Runner` lives (found in B5.5)
+
+- **Question**: the work order says that `Runner._generate` keeps the cache
+  identity and journal paths, the quality-stage repair of cache, transport
+  and envelope errors, the parse and validation `try` block, the
+  incomplete-generation check and `validation.json`. With `prepare`,
+  `options` and `normalize` moved to `stages`, `_generate` still has 69
+  lines, and blueprint 2 and 7.3 require no function over 60 lines in
+  `runner` after B5.5 (B5-V checklist item 4). Plan B5.5 says that
+  "`Runner` keeps the journal, the cache lookup, transport errors and the
+  validation record". How is `_generate` brought under the limit?
+- **Options**: (a) move the response acquisition (the cached read with its
+  quality repair, `request.json`, the progress line, the rename of an
+  interrupted partial, the transport call with its quality repair, and
+  `response.json`) into a private method `Runner._response(model, stage,
+  ids, folder, payload)`, called by `_generate` at the same point; every
+  other listed item stays in `_generate`; (b) keep `_generate` at 69 lines
+  and leave checklist item 4 to the owner; (c) compress statements to
+  reach 60 lines.
+- **Recommendation**: (a). It follows the plan's wording, which ranks above
+  the work order, and meets the length target: `_generate` has 39 lines and
+  `_response` 34. The moved statement is AST-identical, the journal is
+  written in the same order, a revert undoes it, the lock stays green, and
+  no rule changes. B5.7 replaces the `print` inside `_response`.
+- **Status**: implemented in B5.5 under plan section 1, item 8. The owner
+  may reject it.
 
 ## Escalations
 
