@@ -272,6 +272,65 @@ in the checkout, the lock was run, and the file was restored with
 
 ## Verification notes
 
+### 2026-11-03 B0-V
+
+- Range: `restructure-plan..72e47fc`; 5 commits. B0-1 made B0.1 to B0.4
+  (`1b2f572`, `ebdca39`, `3979a72`, `0b98ccc`). `72e47fc` is the blueprint
+  correction that answers E-1, which the owner told B0-V to make. All
+  checks ran on `0b98ccc`. The gates and check 1 ran again on `72e47fc`,
+  which changes only the blueprint and this record.
+- Checks:
+  1. Boundary and commit hygiene (blueprint 7.2): pass. Up to `0b98ccc`
+     the boundary check prints nothing; all 6 changed paths are inside the
+     pattern. Up to `72e47fc` it prints only
+     `docs/plans/code-restructuring-blueprint.md`, from the E-1 correction
+     the owner instructed. Every commit has a `Step:` or `Session:` line,
+     and none has an attribution line.
+  2. Plan 8.1 gates: pass. Tree clean, no stash; 223 tests OK (222 plus 1
+     lock test); rule check `Total: 0`. Same result at `72e47fc`.
+  3. Plan 8.5: pass. 223 tests OK from a foreign temporary directory, with
+     no error (F-04 fixed).
+  4. Lock independence: pass. Green twice in a row (50.1 s, 50.5 s). One
+     byte changed in `prompts/verify-balance.en.txt` (`l` to `L`; a
+     different prompt from the B0-1 self-test): red, 31 keys (L1 16, L2 14,
+     L3 1), including the digests of the `verify` `request.json` files.
+     Restored: green. `# lock probe` appended to `common.py`: green. Both
+     files restored with `git checkout --`; tree clean afterwards.
+  5. Fixture: pass. 378 keys with 2,204 values: 2,189 64-character hex
+     digests and 15 `<exempt: existence only>`. The keys are normalized
+     paths only. No corpus text.
+  6. Change record: pass. Twelve decision rows, with the CR-D06
+     confirmation. The lock section has the targets, discovery, volatile
+     keys, exemptions and self-test table. The baseline covers the eleven
+     section 0 items, the 7.3 metric and the five 8.7 greps. The progress
+     table is complete for B0.1 to B0.4. Spot checks at `0b98ccc` give the
+     same figures: 209 tracked files; 20 modules, 3,444 lines; 19
+     symlinks; grep line counts 42, 37, 55, 2 and 129; 9 test files in the
+     first grep, also at `7282f49`; the same 8 long functions.
+  7. Wheel acceptance (plan 8.2): pass. `"passed": true`,
+     `"commands": 18`, Python 3.14.8, NumPy 2.4.6.
+- Measurements: tests 223 in 118.0 s (wall 118.6 s; 125.6 s at
+  `72e47fc`); demo 28.0 s under cProfile (`engine.character_reference` 688
+  calls, 20.3 s cumulative); lock green, about 50 s run alone.
+- Notes:
+  - Standards (blueprint 4.1, 4.2): the B0 test files parse as Python 3.9.
+    The lock files pass `encoding='utf-8'` on every text read and write. No
+    8.7 grep is due yet, and the module-layer test comes in B2.10.
+  - Plan 5.3 item 4 allows only `.writer.lock` as a whole-file exclusion.
+    The B0 handoff also exempts the code-only files `*-snapshot.py` and
+    `code-manifest.json`, and their existence stays locked. B0-1 followed
+    the handoff, and the record lists both exemptions with their reasons.
+    The lock needs this: `runner-snapshot.py` is a byte copy of
+    `engine.py`, so every B2 move would otherwise turn it red. The
+    conflict is in wording only and has no behavior effect, so it is
+    recorded here and not escalated (blueprint section 0). Aligning plan
+    5.3 item 4 with the handoff is a plan correction for the owner.
+  - L4 reads three files. The only other tracked path under
+    `data/evaluation/` with `text_original` is the symlink
+    `evidence-quality-synthetic-v1/cases.json`. It holds the same 38 texts
+    in the same order as `records.jsonl`, so L4 covers plan 5.2 in full.
+- Result: accepted, tag `restructure-b0`.
+
 ## Session log
 
 ### 2026-11-03 B0-1 (implementation)
@@ -286,6 +345,17 @@ in the checkout, the lock was run, and the file was restored with
   handoff says, where plan 5.2 names `classify()`. No decisions found during
   execution.
 - Next: B0-V (verification of B0, sets `restructure-b0`); blockers: none.
+
+### 2026-11-03 B0-V (verification)
+
+- Steps: none (verification). The owner's E-1 correction is in `72e47fc`,
+  made at the owner's instruction.
+- State: HEAD is the verification-note commit (parent `72e47fc`), tagged
+  `restructure-b0`; tests 223; lock green; rule check 0.
+- Findings: E-1 answered and applied. One wording conflict between plan
+  5.3 item 4 and the B0 handoff on the lock exemptions; no behavior effect
+  (see the B0-V note). No fix-up steps.
+- Next: B1.1, session B1-1; blockers: none.
 
 ## Batch results
 
