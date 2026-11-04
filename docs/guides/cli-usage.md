@@ -226,9 +226,8 @@ import path: `pip install -e .`, or `PYTHONPATH=src` before the command. The
 scripts under `scripts/collect/` and `scripts/experiments/` put the checkout's
 `src` on the path themselves. The installed CLI requires neither scripts nor
 repository path hacks. Active paired prompts/policies/glossary live once in
-`src/aimediator/assets`; original checkout paths are compatibility symlinks.
-Historical experimental resources, data, frozen labels and reports remain
-unchanged.
+`src/aimediator/assets`. Historical experimental resources, data, frozen
+labels and reports remain unchanged.
 
 The offline engineering gates do not establish semantic accuracy, absence of
 emotion bias, community-wide consensus, patch truth or release-ready balance

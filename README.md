@@ -94,8 +94,7 @@ AIMediator/
 │   ├── collect/         # Feedback collection and screening
 │   ├── experiments/     # Evaluations, diagnostics, live experiments
 │   └── maintenance/     # Rule check, hook, install verification
-├── configs/             # Collection settings and policy compatibility links
-├── prompts/             # Packaged-prompt compatibility links
+├── configs/             # Collection settings
 ├── data/
 │   ├── raw/             # Collected datasets (ignored; manifests tracked)
 │   ├── processed/       # Glossary vector index (ignored; manifest tracked)
@@ -106,9 +105,11 @@ AIMediator/
 └── dist/                # Current wheel and sdist (ignored)
 ```
 
-- `src/aimediator/assets/` is the only source of prompts, policies, routing,
-  the glossary and fixtures; `configs/`, `prompts/` and `data/glossary.json`
-  keep compatibility links to it.
+- `src/aimediator/assets/` holds the only copy of the prompts, policies,
+  routing, the glossary and fixtures. One link to it remains:
+  `data/evaluation/evidence-quality-synthetic-v1/cases.json`, a member of a
+  frozen evaluation set, listed in the
+  [compatibility register](docs/reference/compatibility-layers.md).
 - `data/raw/` is read-only source data; each dataset has a `manifest.json`.
 - `reports/<name>/` keeps a `manifest.json` and a curated `summary/`; full run
   contents are in the external archive named by the manifest.

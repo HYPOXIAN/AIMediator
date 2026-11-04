@@ -1,1 +1,0 @@
-../src/aimediator/assets/prompts/quality-extract.en.txt

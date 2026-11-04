@@ -33,7 +33,9 @@ Documents are listed by path under `docs/`; `README.md` is the root README.
 - **R1 (asset links)**: every code user reads the resource through
   `aimediator.resources.asset_path()` or has been archived, every document cites
   the `src/aimediator/assets/` path, and no tracked file names the link path
-  any more.
+  any more. Reading (owner decision CR-D07 of the code restructuring): R1
+  counts code, tests, configuration and living documents only. Frozen
+  records and the archive keep their historical paths (D3).
 - **R2 (pure forwarding scripts)**: every importer imports
   `aimediator.<module>` directly or has been archived, every documented
   command for the script has been replaced by a package entry point, and no
@@ -46,30 +48,12 @@ Documents are listed by path under `docs/`; `README.md` is the root README.
 
 | Path | Points to | Used by | Removal |
 | ---- | --------- | ------- | ------- |
-| `configs/balance-review-policy.json` | `../src/aimediator/assets/configs/balance-review-policy.json` | scripts: `replay_balance_admission.py`, `run_balance_regression_live.py`, `run_quality_screening_experiment.py`; docs: `records/20261022-balance-review-v2.md`, `design/evidence-quality.md` | R1 |
-| `configs/evidence-quality-policy.json` | `../src/aimediator/assets/configs/evidence-quality-policy.json` | scripts: `run_quality_screening_experiment.py`; docs: `design/evidence-quality.md`, `records/20261026-evidence-quality-implementation.md` | R1 |
-| `configs/local-language-routing.json` | `../src/aimediator/assets/configs/local-language-routing.json` | scripts: `diagnose_evidence_quality_live.py`, `run_quality_screening_experiment.py`; docs: `design/balance-analysis.md` | R1 |
-| `data/glossary.json` | `../src/aimediator/assets/data/glossary.json` | scripts: `run_quality_screening_experiment.py`, `screen_feedback.py`; docs: `README.md`, `archive/readme-research-history.md`, `records/20261022-alias-review.md`, `reference/glossary.md`, `reference/glossary-vector-index.md` | R1 |
-| `data/evaluation/evidence-quality-synthetic-v1/cases.json` | `../../../src/aimediator/assets/fixtures/cases.json` | tests: `test_evidence_quality.py`; `tests/test_evaluation_sets.py` checks it against `cases_sha256` in the set's `manifest.json`; docs: `records/20261026-evidence-quality-implementation.md` | R1 |
+| `data/evaluation/evidence-quality-synthetic-v1/cases.json` | `../../../src/aimediator/assets/fixtures/cases.json` | tests: `test_evaluation_sets.py` checks it against `cases_sha256` in the set's `manifest.json`; docs: `records/20261026-evidence-quality-implementation.md` | kept (CR-D08): member of the frozen evaluation set `evidence-quality-synthetic-v1` |
 
 ## Symlinks to packaged prompts
 
-| Path | Points to | Used by | Removal |
-| ---- | --------- | ------- | ------- |
-| `prompts/evidence-quality.en.txt` | `../src/aimediator/assets/prompts/evidence-quality.en.txt` | scripts: `diagnose_evidence_quality_live.py`, `run_quality_screening_experiment.py`; docs: `design/evidence-quality.md`, `records/20261026-evidence-quality-implementation.md` | R1 |
-| `prompts/evidence-quality.zh.txt` | `../src/aimediator/assets/prompts/evidence-quality.zh.txt` | same as `evidence-quality.en.txt` | R1 |
-| `prompts/quality-extract.en.txt` | `../src/aimediator/assets/prompts/quality-extract.en.txt` | scripts: `diagnose_evidence_quality_live.py`; docs: `records/20261026-evidence-quality-implementation.md` | R1 |
-| `prompts/quality-extract.zh.txt` | `../src/aimediator/assets/prompts/quality-extract.zh.txt` | same as `quality-extract.en.txt` | R1 |
-| `prompts/quality-verify.en.txt` | `../src/aimediator/assets/prompts/quality-verify.en.txt` | scripts: `diagnose_evidence_quality_live.py`; docs: `records/20261026-evidence-quality-implementation.md` | R1 |
-| `prompts/quality-verify.zh.txt` | `../src/aimediator/assets/prompts/quality-verify.zh.txt` | same as `quality-verify.en.txt` | R1 |
-| `prompts/relevance.en.txt` | `../src/aimediator/assets/prompts/relevance.en.txt` | scripts: `replay_balance_admission.py`; docs: `design/balance-analysis.md`, `design/evidence-quality.md` | R1 |
-| `prompts/relevance.zh.txt` | `../src/aimediator/assets/prompts/relevance.zh.txt` | same as `relevance.en.txt` | R1 |
-| `prompts/retrieval-review.en.txt` | `../src/aimediator/assets/prompts/retrieval-review.en.txt` | scripts: `replay_balance_admission.py`; docs: `design/evidence-quality.md` | R1 |
-| `prompts/retrieval-review.zh.txt` | `../src/aimediator/assets/prompts/retrieval-review.zh.txt` | same as `retrieval-review.en.txt` | R1 |
-| `prompts/summarize-balance.en.txt` | `../src/aimediator/assets/prompts/summarize-balance.en.txt` | scripts: `diagnose_evidence_quality_live.py`, `run_balance_regression_live.py` (default `--prompt-dir`), `run_balance_numeric_extraction_live.py`, `run_balance_semantic_controls_live.py`; docs: `design/balance-analysis.md`, `design/evidence-quality.md`, `records/20261027-balanced-validation.md` | R1 |
-| `prompts/summarize-balance.zh.txt` | `../src/aimediator/assets/prompts/summarize-balance.zh.txt` | same as `summarize-balance.en.txt` | R1 |
-| `prompts/verify-balance.en.txt` | `../src/aimediator/assets/prompts/verify-balance.en.txt` | tests: `test_balance_analysis.py`; scripts: `diagnose_evidence_quality_live.py`, `run_balance_regression_live.py` (default `--prompt-dir`), `run_balance_controls_live.py`, `run_balance_numeric_extraction_live.py`, `run_balance_semantic_controls_live.py`; docs: `design/balance-analysis.md`, `records/20261027-balanced-validation.md` | R1 |
-| `prompts/verify-balance.zh.txt` | `../src/aimediator/assets/prompts/verify-balance.zh.txt` | scripts: same as `verify-balance.en.txt` (tests excepted) | R1 |
+None since code restructuring step B4.3 (see the change log). The prompts
+exist only under `src/aimediator/assets/prompts/`.
 
 ## Forwarding scripts
 
@@ -119,3 +103,15 @@ commands are package modules run with `python3 -m aimediator.<module>`.
   glossary index manifest since the owner's answer to escalation E-2), and
   no run identity hashes them since step B3.4. The register now lists 19
   symlinks and no forwarding script.
+- 2026-11-04 (code restructuring step B4.3, CR-D07, CR-D08): the 14 prompt
+  links in `prompts/`, the three policy and routing links in `configs/` and
+  the glossary link in `data/` were removed, with their rows; `prompts/` no
+  longer exists. R1 held for each under the CR-D07 reading (see "Removal
+  conditions"): every code user reads the resource through `asset_path()`,
+  and the living documents cite the `src/aimediator/assets/` paths since
+  step B4.1. The link targets are archived in
+  `~/Archives/AIMediator/scripts/20261104-compatibility-links/SYMLINKS.txt`.
+  The `cases.json` link of the frozen evaluation set stays (CR-D08); its
+  "Used by" cell drops `test_evidence_quality.py`, which reads the packaged
+  fixture through `tests/support.py` since step B3.2. The register now lists
+  1 symlink and no forwarding script.
