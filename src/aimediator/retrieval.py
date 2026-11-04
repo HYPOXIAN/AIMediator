@@ -1,5 +1,9 @@
 """Embedding retrieval of comments against the packaged topic anchors."""
+from __future__ import annotations
+
 import json
+from pathlib import Path
+from typing import Any, Callable
 
 import numpy as np
 from . import glossary_vectors
@@ -8,7 +12,12 @@ from .inference import api
 from .resources import anchors
 
 
-def retrieve(rows, base, folder, model, embedding_config=None, api_transport=None, embed_transport=None, log=None):
+def retrieve(rows: list[dict[str, Any]], base: str, folder: Path, model: str,
+             embedding_config: dict[str, Any] | None = None,
+             api_transport: Callable[..., dict[str, Any]] | None = None,
+             embed_transport: Callable[..., tuple[Any, Any]] | None = None,
+             log: Callable[[str], None] | None = None) -> list[dict[str, Any]]:
+    """Embed the anchors and comments, cached under embeddings/, score each comment and write retrieval.json."""
     instruction = 'Instruct: Retrieve the description matching the topic and intent of this Street Fighter 6 player comment.\nQuery: '
     positive_anchors, negative_anchors = anchors()
     topics = positive_anchors + negative_anchors

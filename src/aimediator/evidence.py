@@ -1,6 +1,9 @@
 """Evidence primitives: source units, numeric tokens, character references and source binding."""
+from __future__ import annotations
+
 import copy
 import re
+from typing import Any
 
 from .balance_policy import (attributed_candidates, direction_action_conflicts, identity_alias_allowed,
                              load_policy, numeric_request_supported, term_matches)
@@ -16,7 +19,8 @@ CLAIM = obj({'character': STRING, 'target': NULLABLE_STRING,
              'parameters': arr(PARAMETER), 'evidence_ids': arr(STRING), 'uncertain': BOOL})
 
 
-def evidence_units(text):
+def evidence_units(text: str) -> list[dict[str, Any]]:
+    """Split text into evidence units E1, E2, ... with their text and offsets in the original."""
     # Keep decimal values (e.g. 1.5) and move notation intact. Offsets are Unicode
     # code-point indices in the immutable original, not byte or UTF-16 offsets.
     units, start = [], 0
@@ -31,7 +35,8 @@ def evidence_units(text):
     return units
 
 
-def character_reference(text=''):
+def character_reference(text: str = '') -> list[dict[str, Any]]:
+    """Return new character reference entries, keeping only the aliases that occur in text."""
     reference = [{'canonical_name': e['canonical_name'], 'chinese_label': e.get('chinese_label'),
              'aliases': [{k: a[k] for k in ('text', 'candidate_only', 'requires_context', 'context_note') if k in a}
                          for a in e['aliases'] if term_matches(a['text'], text) and identity_alias_allowed(a['text'])]}
@@ -40,21 +45,23 @@ def character_reference(text=''):
     return reference
 
 
-def character_terms(entry):
+def character_terms(entry: dict[str, Any]) -> list[str | None]:
     """Return the canonical name, Chinese label and alias texts of a reference entry, unfiltered."""
     return [entry['canonical_name'], entry.get('chinese_label')] + [a['text'] for a in entry['aliases']]
 
 
-def character_candidates(text, reference):
+def character_candidates(text: str, reference: list[dict[str, Any]]) -> list[str]:
+    """Return the canonical names of the reference entries with a term that occurs in text."""
     return [entry['canonical_name'] for entry in reference
             if any(term_matches(term, text) for term in character_terms(entry))]
 
 
-def numeric_tokens(text):
+def numeric_tokens(text: str) -> list[str]:
+    """Return the signed numeric tokens of text, with their decimals and percent signs."""
     return re.findall(r'[+-]?\d+(?:\.\d+)?%?', text)
 
 
-def _character_identity(character, text):
+def _character_identity(character: str | None, text: str) -> dict[str, Any] | None:
     """Return the identity record of a claimed character in its source, or None without a reference entry."""
     entry = next((e for e in character_reference(text) if e['canonical_name'] == character), None)
     if not entry:
@@ -69,7 +76,8 @@ def _character_identity(character, text):
             'glossary_target_patch': glossary().get('target_patch')}
 
 
-def ground_claim(claim, row, characters):
+def ground_claim(claim: dict[str, Any], row: dict[str, Any],
+                 characters: set[str]) -> tuple[list[str], dict[str, Any] | None]:
     """Check identity-bound spans and numeric presence; entailment is audited later."""
     units = {u['evidence_id']: u for u in evidence_units(row['text_original'])}
     errors = []

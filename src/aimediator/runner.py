@@ -1,6 +1,10 @@
 """Content-addressed, resumable journal of model requests and responses."""
+from __future__ import annotations
+
 import json
+from pathlib import Path
 import time
+from typing import Any, Callable
 
 from .common import sha as digest, strict_json, write as write_json
 from .evidence_quality import schema_errors
@@ -9,8 +13,13 @@ from .stages import normalize, options, prepare, schema_for
 
 
 class Runner:
-    def __init__(self, base, folder, prompts, quality_identity=None, quality_policy=None, chat_transport=None, progress=None,
-                 log=None):
+    """Send stage requests to a chat model and journal each one under requests/<stage>/<request_id>/."""
+
+    def __init__(self, base: str, folder: Path, prompts: dict[str, dict[str, str]],
+                 quality_identity: dict[str, Any] | None = None, quality_policy: dict[str, Any] | None = None,
+                 chat_transport: Callable[..., dict[str, Any]] | None = None,
+                 progress: Callable[[str, list[str], bool | None], None] | None = None,
+                 log: Callable[[str], None] | None = None) -> None:
         self.base, self.folder, self.prompts = base, folder, prompts
         self.quality_identity = quality_identity
         self.quality_policy = quality_policy
@@ -19,7 +28,8 @@ class Runner:
         self.log = log
         self.chat_transport = chat_transport
 
-    def cached_single_ids(self, model, language, stage):
+    def cached_single_ids(self, model: str, language: str, stage: str) -> set[str]:
+        """Return the comment IDs with a valid single-comment response from this model and prompt."""
         identities = set()
         for path in (self.folder / 'requests' / stage).glob('*/response.json'):
             request = json.loads((path.parent / 'request.json').read_text(encoding='utf-8'))
@@ -33,7 +43,9 @@ class Runner:
                 identities.add(comments[0]['comment_id'])
         return identities
 
-    def generate(self, model, language, stage, data, ids):
+    def generate(self, model: str, language: str, stage: str, data: dict[str, Any],
+                 ids: list[str]) -> tuple[dict[str, Any] | None, dict[str, Any]]:
+        """Send or replay one stage request; return the parsed result or None, and its metadata."""
         if self.progress is not None:
             self.progress(stage, ids, None)
         parsed, metadata = self._generate(model, language, stage, data, ids)
@@ -41,7 +53,8 @@ class Runner:
             self.progress(stage, ids, bool(parsed))
         return parsed, metadata
 
-    def _generate(self, model, language, stage, data, ids):
+    def _generate(self, model: str, language: str, stage: str, data: dict[str, Any],
+                  ids: list[str]) -> tuple[dict[str, Any] | None, dict[str, Any]]:
         data = prepare(stage, data, ids)
         schema = schema_for(stage, ids, data)
         payload = {'model': model, 'messages': [
@@ -81,7 +94,8 @@ class Runner:
         return parsed if not errors else None, {'request_id': identity, 'errors': errors,
             'elapsed_seconds': response.get('elapsed_seconds', 0)}
 
-    def _response(self, model, stage, ids, folder, payload):
+    def _response(self, model: str, stage: str, ids: list[str], folder: Path,
+                  payload: dict[str, Any]) -> dict[str, Any]:
         """Return the journaled response of a request, calling the transport only when none is saved."""
         request_path = folder / 'request.json'
         response_path = folder / 'response.json'

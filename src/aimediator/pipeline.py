@@ -1,7 +1,10 @@
 """Shared analysis orchestration: relevance, evidence quality, extraction, source audit and report."""
+from __future__ import annotations
+
 from collections import Counter
 from dataclasses import dataclass, field
 import json
+from typing import Any, Callable, Iterator
 
 from . import evidence_quality as quality
 from .balance_policy import load_policy, retrieval_review_agrees, triage_retrieval
@@ -12,11 +15,13 @@ from .runner import Runner
 VERSION = 'balance-evidence-v2'
 
 
-def relevance_agrees(retrieved, review):
+def relevance_agrees(retrieved: dict[str, Any], review: dict[str, Any]) -> bool:
+    """Return whether a model review agrees with the retrieval decision of a comment."""
     return retrieval_review_agrees(retrieved, review)
 
 
-def batches(rows, count=12, chars=18000):
+def batches(rows: list[dict[str, Any]], count: int = 12, chars: int = 18000) -> Iterator[list[dict[str, Any]]]:
+    """Yield consecutive batches of at most count rows and chars JSON characters; a longer row goes alone."""
     batch, size = [], 0
     for row in rows:
         length = len(json.dumps(row, ensure_ascii=False))
@@ -29,7 +34,8 @@ def batches(rows, count=12, chars=18000):
         yield batch
 
 
-def aggregate(claims, quality_enforced=False):
+def aggregate(claims: list[dict[str, Any]], quality_enforced: bool = False) -> list[dict[str, Any]]:
+    """Group the reportable claims by character and direction, and by topic when quality is enforced."""
     grouped = {}
     for claim in claims:
         if quality_enforced and ((claim.get('evidence_quality') or {}).get('mode') != 'enforce'
@@ -57,7 +63,7 @@ def aggregate(claims, quality_enforced=False):
     return result
 
 
-def quality_source_counts(records, accepted):
+def quality_source_counts(records: list[dict[str, Any]], accepted: list[dict[str, Any]]) -> dict[str, Any]:
     """Unique source sets, including overlap; no player identity is inferred."""
     general = {q['comment_id'] for q in records if any(r['route'] == 'opinion_only' for r in q['routing'])}
     concrete = {c['comment_id'] for c in accepted if (c.get('evidence_quality') or {}).get('mode') == 'enforce'}
@@ -66,8 +72,10 @@ def quality_source_counts(records, accepted):
             'overlap_comment_ids': sorted(general & concrete), 'categories_overlap': True}
 
 
-def build_full_coverage(rows, decisions, routes, models, quality_records, coverage,
-                        accepted, quarantine, quality_mode, args):
+def build_full_coverage(rows: list[dict[str, Any]], decisions: dict[str, dict[str, Any]], routes: dict[str, dict[str, Any]],
+                        models: list[str], quality_records: dict[str, dict[str, Any]], coverage: list[dict[str, Any]],
+                        accepted: list[dict[str, Any]], quarantine: list[dict[str, Any]], quality_mode: str, args: Any) -> list[dict[str, Any]]:
+    """Return one full-pipeline coverage record per input row, with the stage it reached."""
     extraction = {c['comment_id']: c for c in coverage}
     all_languages = {route['language'] for route in routes.values()}
     selected_languages = {routes[m]['language'] for m in models}
@@ -105,7 +113,8 @@ def build_full_coverage(rows, decisions, routes, models, quality_records, covera
     return result
 
 
-def validate_modes(args):
+def validate_modes(args: Any) -> str:
+    """Return the evidence-quality mode after checking that the relevance-only and quality-only flags fit it."""
     mode = getattr(args, 'evidence_quality', 'off')
     if getattr(args, 'relevance_only', False) and (mode != 'off' or getattr(args, 'quality_only', False)):
         raise ValueError('--relevance-only requires --evidence-quality off and cannot use --quality-only')
@@ -138,7 +147,7 @@ class RunState:
     coverage: list = field(default_factory=list)
 
 
-def triage(state, retrieval):
+def triage(state: RunState, retrieval: list[dict[str, Any]]) -> None:
     """Start one relevance decision per retrieved comment and triage it by its retrieval scores."""
     state.decisions = {d['comment_id']: {**d, 'model_related': None, 'agreement': False} for d in retrieval}
     for decision in state.decisions.values():
@@ -147,7 +156,7 @@ def triage(state, retrieval):
         decision.update(retrieval_triage=status, retrieval_triage_reasons=reasons)
 
 
-def review_retrieval(state, model, language, language_rows):
+def review_retrieval(state: RunState, model: str, language: str, language_rows: list[dict[str, Any]]) -> None:
     """Review the borderline comments queued by triage, rechecking failed or uncertain batch items alone."""
     queued = [d for d in language_rows if d['retrieval_triage'] == 'review_queue']
     cached = state.runner.cached_single_ids(model, language, 'retrieval_review')
@@ -176,7 +185,7 @@ def review_retrieval(state, model, language, language_rows):
                                 retrieval_review_uncertain=result.get('uncertain', True))
 
 
-def admit_relevance(state, model, language, language_rows):
+def admit_relevance(state: RunState, model: str, language: str, language_rows: list[dict[str, Any]]) -> None:
     """Check relevance in batches, recheck each disagreement alone, then write relevance.json and review-queue.json."""
     candidates = [d for d in language_rows if d['retrieval_related'] or (
         d.get('retrieval_review_related') is True and d.get('retrieval_review_uncertain') is False)]
@@ -213,7 +222,7 @@ def admit_relevance(state, model, language, language_rows):
                if d['retrieval_triage'] == 'review_queue' and not d['agreement']])
 
 
-def assess_quality(state, model, language, selected):
+def assess_quality(state: RunState, model: str, language: str, selected: list[dict[str, Any]]) -> None:
     """Annotate the evidence quality of each admitted comment and write the quality progress after each record."""
     for row in selected:
         record_id = row['record_id']
@@ -249,7 +258,7 @@ def assess_quality(state, model, language, selected):
         write_json(state.folder / 'request-trace.json', state.trace)
 
 
-def extract_claims(state, model, language, selected):
+def extract_claims(state: RunState, model: str, language: str, selected: list[dict[str, Any]]) -> None:
     """Extract claims and bind them to their sources, splitting failed batches; write the progress after each batch."""
     # Evidence units contain the entire original text in order. Do not send
     # a second copy of the full text, which wastes context and GPU memory.
@@ -298,7 +307,7 @@ def extract_claims(state, model, language, selected):
         write_json(state.folder / 'quarantined-claims.json', state.quarantine)
 
 
-def audit_claims(state, model, language):
+def audit_claims(state: RunState, model: str, language: str) -> None:
     """Audit each claim of the model alone and quarantine unsupported ones; write the progress after each audit."""
     # Audit in a separate context, with original spans, never the generator's rationale.
     pending = [c for c in state.claims if c['model'] == model]
@@ -318,7 +327,7 @@ def audit_claims(state, model, language):
         write_json(state.folder / 'quarantined-claims.json', state.quarantine)
 
 
-def summarize(state, accepted):
+def summarize(state: RunState, accepted: list[dict[str, Any]]) -> dict[str, Any]:
     """Return the run summary: counts per stage and language, and the limitations of the method."""
     return {'version': VERSION, 'input_comments': len(state.rows),
         'mode': state.identity['mode'],
@@ -348,7 +357,7 @@ def summarize(state, accepted):
             'No numerical targets are invented; qualitative comments cannot supply exact engineering values.']}
 
 
-def report_quality(state, accepted, report):
+def report_quality(state: RunState, accepted: list[dict[str, Any]], report: dict[str, Any]) -> None:
     """Write the shadow or enforce quality artifacts and add them to the report."""
     records = list(state.quality_records.values())
     routed = [{**r, 'source_url': q['source_url'], 'content_sha256': q['content_sha256'],
@@ -380,7 +389,7 @@ def report_quality(state, accepted, report):
         report['quality_observation_artifacts'] = ['quality-summary.json', 'opinion-summary.json', 'system-feedback.json']
 
 
-def assemble(state, log=None):
+def assemble(state: RunState, log: Callable[[str], None] | None = None) -> dict[str, Any]:
     """Build the summary and the report, write the final artifacts, log the summary text and return the report."""
     accepted = [{**e['claim'], 'claim_id': e['claim_id'], 'comment_id': e['comment_id'],
                  'model': e['model'], 'semantic_audit': e['audit']} for e in state.claims
@@ -413,8 +422,12 @@ def assemble(state, log=None):
     return report
 
 
-def process(args, rows, routing, models, prompts, quality_identity, quality_policy,
-            identity, embedding_config=None, runner_factory=Runner, retrieval_service=retrieve, log=None):
+def process(args: Any, rows: list[dict[str, Any]], routing: dict[str, Any], models: list[str],
+            prompts: dict[str, dict[str, str]], quality_identity: dict[str, Any] | None,
+            quality_policy: dict[str, Any] | None, identity: dict[str, Any],
+            embedding_config: dict[str, Any] | None = None, runner_factory: Callable[..., Runner] = Runner,
+            retrieval_service: Callable[..., list[dict[str, Any]]] = retrieve,
+            log: Callable[[str], None] | None = None) -> dict[str, Any]:
     """Shared orchestration with explicit inputs and injected inference boundaries; log receives the summary text."""
     state = RunState(args, rows, models, quality_identity, quality_policy, identity,
                      folder=args.out.resolve(), routes=routing['models'], quality_mode=args.evidence_quality)

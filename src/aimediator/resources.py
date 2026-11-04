@@ -1,33 +1,38 @@
 """Authoritative redistributable resources, independent of the checkout."""
+from __future__ import annotations
+
 import functools
 from importlib.resources import files
 import json
 from pathlib import Path
+from typing import Any
 
 
-def asset_path(name=''):
+def asset_path(name: str = '') -> Path:
+    """Return the path of a packaged asset, or of the asset directory when name is empty."""
     # Linux wheels install unpacked; resource lookup always starts at the package.
     return Path(str(files('aimediator').joinpath('assets', name)))
 
 
 @functools.lru_cache(maxsize=1)
-def anchors():
+def anchors() -> tuple[list[str], list[str]]:
     """Return the packaged positive and negative retrieval anchors, loaded once per process; callers never mutate them."""
     value = json.loads(asset_path('retrieval-anchors.json').read_text(encoding='utf-8'))
     return value['POS'], value['NEG']
 
 
 @functools.lru_cache(maxsize=1)
-def glossary():
+def glossary() -> dict[str, Any]:
     """Return the parsed packaged glossary, loaded once per process; callers never mutate it."""
     return json.loads(asset_path('data/glossary.json').read_text(encoding='utf-8'))
 
 
-def module_path(name):
+def module_path(name: str) -> Path:
+    """Return the path of a module file inside the package."""
     return Path(str(files('aimediator').joinpath(name)))
 
 
-def prompts(mode):
+def prompts(mode: str) -> dict[str, dict[str, str]]:
     """Return the stage prompts for an evidence-quality mode, keyed by stage, then language."""
     names = {'relevance': 'relevance', 'retrieval_review': 'retrieval-review',
              'extract': 'summarize-balance', 'verify': 'verify-balance'}
@@ -42,13 +47,13 @@ def prompts(mode):
     return result
 
 
-def _workspace_root(candidate):
+def _workspace_root(candidate: Path) -> Path:
     """Return candidate when it holds RULES.md and pyproject.toml, otherwise the working directory."""
     if (candidate / 'RULES.md').exists() and (candidate / 'pyproject.toml').exists():
         return candidate
     return Path.cwd()
 
 
-def workspace_root():
+def workspace_root() -> Path:
     """Return the checkout root when the package is imported from a checkout, otherwise the working directory."""
     return _workspace_root(Path(__file__).resolve().parents[2])

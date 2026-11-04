@@ -1,4 +1,6 @@
 """Portable run identity, snapshots, advisory locking and lifecycle state."""
+from __future__ import annotations
+
 from collections import Counter
 from contextlib import contextmanager
 from datetime import datetime, timezone
@@ -7,28 +9,33 @@ from importlib.resources import files
 import os
 from pathlib import Path
 import platform
+from typing import Any, Iterator
 import numpy as np
 from . import __version__
 from .common import Failure, canonical, input_rows, read, sha, write
 from .resources import asset_path
 
 
-def now():
+def now() -> str:
+    """Return the current UTC time in ISO 8601 format."""
     return datetime.now(timezone.utc).isoformat()
 
 
-def code_manifest():
+def code_manifest() -> dict[str, Any]:
+    """Return the package, Python and NumPy versions and the SHA-256 of every top-level package module."""
     root = Path(str(files('aimediator')))
     return {'package_version': __version__, 'python': platform.python_version(), 'numpy': np.__version__,
             'modules': {p.name: sha(p.read_bytes()) for p in sorted(root.glob('*.py'))}}
 
 
-def resource_manifest():
+def resource_manifest() -> dict[str, str]:
+    """Return the SHA-256 of every packaged asset file, keyed by its path inside the asset directory."""
     root = asset_path()
     return {str(p.relative_to(root)): sha(p.read_bytes()) for p in sorted(root.rglob('*')) if p.is_file()}
 
 
-def identity(raw, rows, cfg, installed):
+def identity(raw: bytes, rows: list[dict[str, Any]], cfg: dict[str, Any], installed: dict[str, str]) -> dict[str, Any]:
+    """Return the run identity: input, source, configuration, resource, code, model and embedding fingerprints."""
     return {'input_sha256': sha(raw), 'sources_sha256': sha(canonical(rows)),
             'config_sha256': sha(canonical(cfg)), 'resources': resource_manifest(),
             'code': code_manifest(), 'models': {m: installed[m] for m in cfg['routing']['models']},
@@ -39,7 +46,8 @@ def identity(raw, rows, cfg, installed):
 
 
 @contextmanager
-def lock(folder):
+def lock(folder: Path) -> Iterator[None]:
+    """Hold the exclusive writer lock of a run folder, or raise Failure(4) when another writer holds it."""
     # Existing files are never truncated. flock ownership is released by the OS.
     with (folder / '.writer.lock').open('a', encoding='utf-8') as handle:
         try:
@@ -52,7 +60,9 @@ def lock(folder):
             fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
 
 
-def initialize(folder, raw, rows, cfg, installed, provenance):
+def initialize(folder: Path, raw: bytes, rows: list[dict[str, Any]], cfg: dict[str, Any], installed: dict[str, str],
+               provenance: str) -> None:
+    """Create a run folder with its manifest and its configuration, input, source, code and resource snapshots."""
     folder.mkdir(parents=True, exist_ok=False)
     ident = identity(raw, rows, cfg, installed)
     write(folder / 'manifest.json', {'schema_version': 'aimediator-run-v1', 'identity': ident,
@@ -74,7 +84,7 @@ def initialize(folder, raw, rows, cfg, installed, provenance):
 _validations = {}
 
 
-def _completed_requests(folder):
+def _completed_requests(folder: Path) -> list[str]:
     """Return the request directories whose validation.json has no errors, reading only new or changed files."""
     known = _validations.pop(str(folder), {})
     _validations.clear()
@@ -93,7 +103,8 @@ def _completed_requests(folder):
     return [entry[2] for _, entry in sorted(entries, key=lambda item: item[1][1]) if entry[3]]
 
 
-def state(folder, status, stage, reason=None):
+def state(folder: Path, status: str, stage: str, reason: str | None = None) -> None:
+    """Update run-state.json with the status, stage and reason, and the completed request identities."""
     previous = read(folder / 'run-state.json') if (folder / 'run-state.json').exists() else {}
     completed = _completed_requests(folder)
     write(folder / 'run-state.json', {**previous, 'schema_version': 'aimediator-state-v1',
@@ -102,7 +113,8 @@ def state(folder, status, stage, reason=None):
           'completed_request_identities': completed})
 
 
-def load_resume(folder):
+def load_resume(folder: Path) -> tuple[dict[str, Any], dict[str, Any], list[dict[str, Any]]]:
+    """Return the manifest, configuration and rows of a run whose recorded identity still holds, or raise Failure(4)."""
     manifest = read(folder / 'manifest.json')
     if manifest.get('schema_version') != 'aimediator-run-v1':
         raise Failure(4, 'Only aimediator-run-v1 runs can be resumed')
@@ -123,7 +135,8 @@ def load_resume(folder):
     return manifest, cfg, rows
 
 
-def coverage(folder, rows):
+def coverage(folder: Path, rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Return the coverage ledger: one aimediator-coverage-v1 record per source row."""
     path = folder / 'full-pipeline-coverage.json'
     records = read(path) if path.exists() else []
     by_id = {r['comment_id']: r for r in records}
@@ -157,7 +170,8 @@ def coverage(folder, rows):
     return result
 
 
-def technical_failures(folder, ledger):
+def technical_failures(folder: Path, ledger: list[dict[str, Any]]) -> list[str]:
+    """Return the sorted comment and claim IDs that a technical failure left unfinished."""
     decisions = {r['comment_id']: r for r in read(folder / 'relevance.json')} if (folder / 'relevance.json').exists() else {}
     failures = [r['comment_id'] for r in ledger if r['status'] in (
         'pending', 'quality_pending', 'quality_failed', 'extraction_failed', 'extraction_pending')
@@ -167,7 +181,8 @@ def technical_failures(folder, ledger):
     return sorted(set(failures))
 
 
-def snapshot_artifacts(folder):
+def snapshot_artifacts(folder: Path) -> dict[str, str]:
+    """Return the SHA-256 of each existing main run artifact, keyed by file name."""
     # Completion replay also verifies artifact bytes, not just the existence of a directory.
     names = ['retrieval.json', 'relevance.json', 'full-pipeline-coverage.json', 'validated-claims.json',
              'quarantined-claims.json', 'balance-report.json', 'summary.json', 'evidence-quality.json']

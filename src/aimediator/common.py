@@ -10,6 +10,7 @@ import math
 
 
 def strict_json(raw: str | bytes) -> Any:
+    """Parse JSON text, rejecting duplicate keys and non-finite numbers with ValueError."""
     def pairs(items):
         result = {}
         for key, value in items:
@@ -28,24 +29,30 @@ def strict_json(raw: str | bytes) -> Any:
 
 
 class Failure(Exception):
+    """A public failure that carries the CLI exit code and the message shown to the user."""
+
     def __init__(self, code: int, message: str) -> None:
         self.code, self.message = code, message
         super().__init__(message)
 
 
 def canonical(value: Any) -> bytes:
+    """Return the canonical UTF-8 JSON bytes of a value: sorted keys, compact separators, no NaN."""
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':'), allow_nan=False).encode('utf-8')
 
 
 def sha(value: bytes) -> str:
+    """Return the hexadecimal SHA-256 digest of bytes."""
     return hashlib.sha256(value).hexdigest()
 
 
 def read(path: str | Path) -> Any:
+    """Read a UTF-8 JSON file with strict_json."""
     return strict_json(Path(path).read_text(encoding='utf-8'))
 
 
 def write(path: str | Path, value: Any) -> None:
+    """Write a value as indented UTF-8 JSON through a synced temporary file, creating missing parents."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     temp = path.with_name(path.name + '.tmp')
@@ -57,6 +64,7 @@ def write(path: str | Path, value: Any) -> None:
 
 
 def new_path(path: str | Path, source: str | Path | None = None) -> Path:
+    """Resolve an output path that does not exist yet, lies apart from the source run and has a writable parent."""
     path = Path(path).resolve()
     if path.exists():
         raise Failure(4, 'Output already exists; choose a new path')
@@ -73,6 +81,7 @@ def new_path(path: str | Path, source: str | Path | None = None) -> Path:
 
 
 def input_rows(raw: bytes) -> list[dict[str, Any]]:
+    """Parse UTF-8 JSONL input into rows with unique record IDs, or raise Failure(2)."""
     rows, seen = [], set()
     try:
         lines = raw.decode('utf-8').splitlines()

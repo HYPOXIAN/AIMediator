@@ -1,24 +1,29 @@
 """JSON-schema builders, constants and the validator for model response formats."""
+from __future__ import annotations
+
 import json
+from typing import Any, Iterable
 
 
-def obj(properties):
+def obj(properties: dict[str, Any]) -> dict[str, Any]:
     """Object schema keyed type, additionalProperties, properties, required; the order reaches the model."""
     return {'type': 'object', 'additionalProperties': False,
             'properties': properties, 'required': list(properties)}
 
 
-def quality_obj(properties):
+def quality_obj(properties: dict[str, Any]) -> dict[str, Any]:
     """Object schema keyed type, properties, required, additionalProperties; the order reaches the model."""
     return {'type': 'object', 'properties': properties, 'required': list(properties),
             'additionalProperties': False}
 
 
-def arr(items):
+def arr(items: dict[str, Any]) -> dict[str, Any]:
+    """Array schema with the given item schema."""
     return {'type': 'array', 'items': items}
 
 
-def enum(values):
+def enum(values: Iterable[str]) -> dict[str, Any]:
+    """String schema limited to the given values, in their order."""
     return {'type': 'string', 'enum': list(values)}
 
 
@@ -28,7 +33,8 @@ NULLABLE_NONEMPTY_STRING = {'type': ['string', 'null'], 'minLength': 1}
 BOOL = {'type': 'boolean'}
 
 
-def schema_errors(value, schema, path='$'):
+def schema_errors(value: Any, schema: dict[str, Any], path: str = '$') -> list[str]:
+    """Return the errors of a value against the supported JSON-schema subset, each prefixed with its JSON path."""
     errors = []
     if 'enum' in schema and value not in schema['enum']:
         errors.append(path + ': value outside enum')

@@ -1,7 +1,10 @@
 """Per-stage request data, options, response schemas, response normalization and item coverage checks."""
+from __future__ import annotations
+
 from collections import Counter
 import copy
 import re
+from typing import Any
 
 from . import evidence_quality as quality
 from .balance_policy import attributed_candidates
@@ -9,7 +12,8 @@ from .evidence import CLAIM, character_candidates, character_reference, numeric_
 from .schema import arr, obj
 
 
-def schema_for(stage, ids, data=None):
+def schema_for(stage: str, ids: list[str], data: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Return the response schema of a stage request; for extract, the request data narrows it per comment."""
     identity = {'type': 'string', 'enum': ids}
     if stage in ('relevance', 'retrieval_review'):
         return obj({'decisions': {**arr({'enum': ['related', 'unrelated', 'uncertain']}),
@@ -63,11 +67,12 @@ def schema_for(stage, ids, data=None):
     return obj({'support': {'type': 'string', 'enum': ['supported', 'unsupported', 'uncertain']}})
 
 
-def exact_coverage(rows, key, expected):
+def exact_coverage(rows: list[dict[str, Any]], key: str, expected: list[str]) -> bool:
+    """Return whether the key values of the rows are exactly the expected IDs, each as often."""
     return Counter(r[key] for r in rows) == Counter(expected)
 
 
-def prepare(stage, data, ids):
+def prepare(stage: str, data: dict[str, Any], ids: list[str]) -> dict[str, Any]:
     """Return the request data of a stage: the audit view for verify, data itself otherwise."""
     if stage != 'verify':
         return data
@@ -97,7 +102,7 @@ def prepare(stage, data, ids):
     return data
 
 
-def options(stage, quality_policy):
+def options(stage: str, quality_policy: dict[str, Any] | None) -> dict[str, Any]:
     """Return the inference options of a stage request; Runner applies its runtime options afterwards."""
     result = {'temperature': 0, 'seed': 42, 'num_ctx': 8192,
               'num_predict': 4096 if stage == 'extract' else 256}
@@ -107,7 +112,8 @@ def options(stage, quality_policy):
     return result
 
 
-def normalize(stage, parsed, ids, data):
+def normalize(stage: str, parsed: dict[str, Any], ids: list[str],
+              data: dict[str, Any]) -> tuple[dict[str, Any] | None, list[str]]:
     """Turn a schema-valid response into the stage result; return (parsed or None, errors)."""
     errors = []
     if stage in ('relevance', 'retrieval_review'):
