@@ -1618,6 +1618,35 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   ([B5 work order](../plans/code-restructuring-handoffs/b5-internals-and-performance.md)),
   from `restructure-b4`; blockers: none.
 
+### 2026-11-04 B5-1 (implementation)
+
+- Steps: B5.1 to B5.5 and the fix-up step B5.F1 (`7c8085b`, `0625444`,
+  `35bedaf`, `7aa981c`, `8cb6c9b`, `18cebca`); none started and stashed.
+- State: HEAD is this entry's commit (parent `18cebca`); tests 230 (221,
+  plus 1 in B5.2 and 8 in B5.5); lock green, fixture unchanged since
+  `restructure-b0`; rule check 0. Suite 9.5 s. Plan 8.5: 230 pass from a
+  foreign directory, which stays empty. Plan 8.2: `"passed": true`,
+  `"commands": 18`. The boundary check from `restructure-b4` and the
+  commit hygiene check print nothing. Among `pipeline`, `runner`,
+  `stages`, `evidence` and `retrieval`, the blueprint 7.3 metric lists
+  only `pipeline.process` (259 lines, B5.6).
+- Findings:
+  - Three decisions found during execution, registered and implemented
+    under plan section 1, item 8, and open to the owner: `character_terms`
+    in `balance_policy` (B5.3: plan 4.2 forbids the import, so that site
+    keeps its inline list); the term order of the `ground_claim` literal
+    (B5.3: the site keeps its own order, which decides `source_literal`);
+    where the response journal of `Runner` lives (B5.5: the private
+    `Runner._response`, so that `_generate` has 39 lines).
+  - Fix-up step B5.F1 (blueprint 5.3, item 2): `ground_claim` had been
+    over 60 lines since B1.2. Its character-identity block moved into the
+    private `_character_identity`. Fix-up steps recorded by B5-V start at
+    B5.F2.
+  - For B5.7 (session B5-3): the `Runner` progress `print` is now in
+    `Runner._response`.
+  - No escalation.
+- Next: B5.6, session B5-2; blockers: none.
+
 ## Batch results
 
 ## Deferred
