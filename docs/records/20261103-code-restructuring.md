@@ -797,6 +797,32 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
 - **Status**: implemented in B6.4 under plan section 1, item 8. The owner
   may reject it.
 
+### The frozen pilot stays out of the style normalization (found in B7.1)
+
+- **Question**: CR-D11 applies the B7.1 style normalization to `scripts/`,
+  and the B7 work order lists `scripts/experiments/` as commit group 2.
+  The plan also keeps `run_grounded_feedback_live.py` as a frozen
+  historical pilot (CR-D02). Plan 4.4 limits its changes to "bootstrap,
+  encoding and root fixes only" in B1.3, B3.4 and B6.1, and plan 4.5 lists
+  it as deliberately unchanged. The script has 23 hits, the most of any
+  experiment script, and writes its own source into every run as
+  `runner.py`. Does B7.1 reformat it?
+- **Options**:
+  - (a) Leave the pilot out of B7.1. Its 23 hits stay, and the other
+    eleven experiment scripts are normalized.
+  - (b) Normalize it like the other scripts. The throwaway splitter of
+    B7.1 makes it AST-equal to HEAD (checked, then discarded).
+- **Recommendation**: (a). The plan outranks the work order (blueprint
+  section 0), and its file-specific disposition is narrower than the
+  directory scope of CR-D11. Formatting a frozen historical script adds
+  churn without a safety benefit, the reason CR-D11 gives for leaving
+  `tests/` out. It also keeps the `runner.py` snapshots of new pilot runs
+  comparable with the historical ones. Resume does not hash the script, so
+  (b) would break nothing; if the owner prefers it, a fix-up step applies
+  the same AST-checked split.
+- **Status**: implemented in B7.1 under plan section 1, item 8. It changes
+  no file. The owner may reject it.
+
 ## Escalations
 
 ### E-1 Baseline of "Test files importing forwarders" (B0.4)
