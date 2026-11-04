@@ -747,6 +747,118 @@ mentions.
     the patch it replaced.
 - Result: accepted, tag `restructure-b2`.
 
+### 2026-11-03 B3-V
+
+- Range: `restructure-b2..b4b84b2`; 12 commits. B3-1 made B3.1 to B3.3
+  (`4a3e113`, `267e62b`, and the series `d78a645`, `fc06dc3`, `11f1464`)
+  and the session-log entry `3b9fbbc`; B3-2 made B3.4 to B3.6 (the series
+  `2251a75`, `5c7ba45`, `d544ddd`, then `c386d4f`, `53edafb`) and the
+  session-log entry `b4b84b2`. All checks ran on `b4b84b2`. The tree of
+  `restructure-b2` was extracted with `git archive` outside the checkout.
+- Checks:
+  1. Boundary, commit hygiene and CR-D06: pass. The boundary check from
+     `restructure-b2` prints nothing. The 33 changed paths are six package
+     modules (`engine`, `evaluation`, `legacy_review`, `operations`,
+     `reporting`, `review`), `tests/support.py` and 11 test modules, the
+     13 experiment scripts, `scripts/collect/screen_feedback.py` and this
+     record; nothing under `src/aimediator/assets/`, `data/` or
+     `reports/`. The hygiene check prints nothing: every commit has a
+     `Step:` or `Session:` line, and none has an attribution line. Each
+     commit changes only the files of its step, plus this record in the
+     last commit of a step. The three B3.4 commits (`2251a75`, `5c7ba45`,
+     `d544ddd`) each carry `Step: B3.4` and `Decision: CR-D06`; no other
+     commit has a `Decision:` line.
+  2. Greps and layering test: pass. Plan 8.7, first grep (forwarder
+     imports under `tests` and `scripts`) and second grep (`engine`
+     imports in the package outside `engine.py`), print nothing.
+     `tests/test_module_layers.py` no longer has `FACADE` or
+     `FACADE_USERS`, and `allowed` accepts only the table and
+     `__version__`. Its 5 tests pass with no violation and no cycle, and
+     its table still equals plan 4.2 row by row (27 rows). The test is
+     live: a scratch copy of HEAD with `from . import engine` added to
+     `review.py` fails with `review -> engine (line 5)`. `engine.py` (130
+     lines) holds the docstring, its imports, `ROOT`, `run`, `main` and
+     the `__main__` guard. Every global name that `run` and `main` load
+     resolves (checked with `symtable`), no import is unused, every import
+     lies in its plan 4.2 row, and `run` and `main` have the same AST as at
+     `restructure-b2`. `python3 -m aimediator.engine --help` equals
+     `restructure-b1`.
+  3. Lock and test count: pass. `tests/fixtures/behavior-lock.json` is the
+     same blob at `restructure-b0` and at HEAD (`df5a724`), and no B3
+     commit touches the fixture, `tests/behavior_lock.py` or
+     `tests/test_behavior_lock.py`. `python3 tests/behavior_lock.py`
+     prints `378 keys, 0 differ`, and plan 8.3 passes. The suite runs 222
+     tests, and the 222 test IDs collected at `restructure-b2` and at HEAD
+     are identical, so the count per module is unchanged.
+  4. Experiment scripts and identity table: pass. All 13 scripts under
+     `scripts/experiments/`, and the 4 collectors, print `--help` with
+     exit 0 from a foreign temporary directory, which stays empty. For the
+     13 scripts and `screen_feedback.py`, the help text is byte-identical
+     to `restructure-b2`. The table "Experiment identities (B3.4)" is in
+     this record and matches the code: the removed and added keys of each
+     script equal its diff; each of the six `ASSETS` tuples lists the
+     assets the table names, and each file exists under `asset_path`; the
+     27 entries of `code_manifest()['modules']` resolve through
+     `module_path` to files with the same digests, so the `code-snapshot/`
+     copies match `package_code_sha256`; the seven scripts listed with no
+     identity change hash no forwarder or symlink path. In the
+     `restructure-b2` tree, every name a changed script imports from
+     `aimediator` is the object its forwarder exposed. The exceptions are
+     the new names (`asset_path`, `code_manifest`) and the prescribed
+     `retrieval_review_agrees`, the function that
+     `pipeline.relevance_agrees` wraps. The new `--prompt-dir` default
+     names the asset files that the `prompts/` symlinks point to.
+  5. Gates, foreign directory and wheel: pass. Tree clean, no stash; 222
+     tests OK; rule check `Total: 0`. The only warnings are the two known
+     `ResourceWarning`s from `test_collect_feedback.py`. Plan 8.5: 222
+     tests OK from a foreign temporary directory, which stays empty. Plan
+     8.2, with the build directory outside the checkout: `"passed": true`,
+     `"commands": 18` (Python 3.14.8, NumPy 2.4.6). The wheel's 27
+     `aimediator/*.py` files equal the checkout files, with none missing
+     and none extra, and the wheel holds no `data/raw` and no `.env`.
+- Measurements: tests 222 in 8.7 s (wall 9.2 s); demo 3.0 s under
+  cProfile, 1.56 s plain; `evidence.character_reference` 688 calls, 0.74 s
+  cumulative; lock green, 4.4 s run alone.
+- Notes:
+  - Batch checks of blueprint 7.1 beyond the checklist. Plan 8.7, fifth
+    grep, prints nothing; the third and fourth are not due. The progress
+    table has rows B3.1 to B3.6, all `done` with lock `green`. All 74
+    tracked `.py` files under `src/`, `tests/` and `scripts/` parse as
+    Python 3.9, none has a star import, and no experiment or collector
+    docstring begins with "Compatibility entry point". The package diff
+    changes only import lines and module-qualified names. The test diffs
+    substitute names and move `CASES`, `case` and `qualified` into
+    `tests/support.py`; no assertion changes. No test imports another
+    test module. A scripts directory stays on `sys.path` only in the five
+    tests that import a script, and in `test_refactored_boundaries` for
+    its forwarder-identity test until B4.2. The pilot gets only the
+    bootstrap and the asset path (CR-D02), and `screen_feedback.py` only
+    the bootstrap and the glossary path.
+  - `ROOT`: four scripts now define it from their own path, as work order
+    B3.4 prescribes, instead of taking `Path.cwd()` from the facade. From
+    the checkout root, their defaults name the same files.
+  - Decision found during execution: the scope of `asset_sha256` (B3.4),
+    option (a). The conditions of plan section 1, item 8 hold: a revert
+    of the three B3.4 commits undoes it, the lock stays green, `RULES.md`
+    is unchanged and nothing is deleted. It is implemented, not bypassed,
+    and open to the owner. Plan section 1, item 8 asks for registration
+    before acting; it was registered after the B3.4 commits, with the
+    B3-2 session-log entry. The registration is complete now, so this
+    needs no fix-up step.
+  - For the owner, within CR-D06: `run_quality_screening_experiment`
+    sends its identity to the model as `quality_contract`, so the user
+    content of its quality requests changes by exactly the identity
+    fields. `diagnose_evidence_quality_live` and
+    `run_quality_screening_experiment` pass their identity to `Runner` as
+    `quality_identity`, so their request IDs change, which CR-D06
+    intends. Nothing beyond the CR-D06 identity fields changes, so the
+    escalation trigger of work order section 6 does not apply.
+  - Still open for the owner, and not caused by B3:
+    `replay_balance_admission.py` builds its `Runner` without
+    `quality_identity` (B2-1 session-log entry). For B4: plan 8.7, third
+    grep, also matches asset-relative names (B3-2 session-log entry).
+- Result: accepted, tag `restructure-b3`.
+
 ## Session log
 
 ### 2026-11-03 B0-1 (implementation)
@@ -959,6 +1071,21 @@ mentions.
     change the script's logic.
   - No escalations.
 - Next: B3-V (verification of B3, sets `restructure-b3`); blockers: none.
+
+### 2026-11-03 B3-V (verification)
+
+- Steps: none (verification); none started and stashed.
+- State: HEAD is the verification-note commit (parent `b4b84b2`), tagged
+  `restructure-b3`; tests 222; lock green, fixture unchanged since
+  `restructure-b0`; rule check 0.
+- Findings: none. All five checklist items pass; no fix-up steps and no
+  escalations. The B3.4 decision (scope of `asset_sha256`) is implemented
+  and open to the owner; it was registered after its commits. The
+  `quality_contract` effect of CR-D06 on the screening experiment's
+  requests is noted for the owner.
+- Next: B4.1, session B4-1
+  ([B4 work order](../plans/code-restructuring-handoffs/b4-layer-removal-and-docs.md)),
+  from `restructure-b3`; blockers: none.
 
 ## Batch results
 
