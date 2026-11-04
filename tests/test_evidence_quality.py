@@ -9,13 +9,11 @@ import tempfile
 import unittest
 from unittest.mock import Mock, patch
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts/collect'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts/experiments'))
-import evidence_quality as q
-import run_balance_analysis as m
+from aimediator import engine, evidence, evidence_quality as q, pipeline
+from aimediator.legacy_review import apply_review, proposal_hash
 from prepare_balance_design import prepare_briefs
-from review_balance_sources import apply_review, proposal_hash
 from support import CASES, case, qualified
 
 
@@ -47,7 +45,7 @@ class QualityLogicTests(unittest.TestCase):
         text = ' 😤e\u0301中1.5 2MK!\r\n'
         self.assertEqual(q.weight(text), 9)
         row = {'record_id': 'unicode', 'text_original': text}
-        units = m.evidence_units(text)
+        units = evidence.evidence_units(text)
         annotation = {'comment_id': 'unicode', 'information_points': [], 'segments': [
             {'segment_id': 'S' + str(i), 'evidence_id': u['evidence_id'], 'start': u['start'],
              'end': u['end'], 'quote': u['text'], 'scope': 'unrelated', 'content_kind': 'pure_emotion',
@@ -62,7 +60,7 @@ class QualityLogicTests(unittest.TestCase):
     def test_empty_and_punctuation_measurement(self):
         for text in ('', ' \r\n', '!!!。'):
             row = {'record_id': 'empty', 'text_original': text}
-            units = m.evidence_units(text)
+            units = evidence.evidence_units(text)
             ann = {'comment_id': 'empty', 'information_points': [], 'segments': [
                 dict(segment_id=f'S{i}', evidence_id=u['evidence_id'], start=u['start'], end=u['end'],
                      quote=u['text'], scope='unrelated', content_kind='other', emotional_tone=False,
@@ -118,36 +116,36 @@ class QualityLogicTests(unittest.TestCase):
             self.assertTrue(records[-1]['high_emotion_warning'])
             self.assertTrue(all(len(q.allowed_points(r))==1 for r in records))
             claims=[{'character':'Ken','target':'Shoryuken','direction':'unclear','comment_id':r['comment_id'], 'evidence_quality':{'mode':'enforce','route':'mechanism_evidence'}, 'semantic_audit':{'supported':True}} for r in records]
-            self.assertEqual(m.aggregate(claims,True)[0]['supporting_comment_count'],3)
-            self.assertEqual(m.aggregate(claims+claims,True)[0]['supporting_comment_count'],3)
+            self.assertEqual(pipeline.aggregate(claims,True)[0]['supporting_comment_count'],3)
+            self.assertEqual(pipeline.aggregate(claims+claims,True)[0]['supporting_comment_count'],3)
 
     def test_opinions_keep_stance_negation_and_unverified_identity_isolated(self):
         records=[qualified(case('negation')),qualified(case('general'))]
-        out=q.summarize_opinions(records+records,m.character_reference('Ken'))
+        out=q.summarize_opinions(records+records,evidence.character_reference('Ken'))
         self.assertEqual({g['direction'] for g in out['groups']},{'keep','nerf'})
         self.assertTrue(all(g['supporting_comment_count']==1 for g in out['groups']))
         c=case('unknown_identity');p=c['annotation']['information_points'][0]
         p['detail_level']='general';c['annotation']['segments'][0]['content_kind']='general_opinion'
-        out=q.summarize_opinions([qualified(c)],m.character_reference(c['source']['text_original']))
+        out=q.summarize_opinions([qualified(c)],evidence.character_reference(c['source']['text_original']))
         self.assertEqual(out['groups'],[]);self.assertEqual(len(out['unresolved_identity_opinions']),1)
 
     def test_claim_requires_own_eligible_point_and_local_numbers(self):
         c=case('numeric_request');r=qualified(c);claim=numeric_claim();claim['quality_point_ids']=['P1']
-        errors,qualification=q.bind_claim(claim,r,m.character_reference(c['source']['text_original']))
+        errors,qualification=q.bind_claim(claim,r,evidence.character_reference(c['source']['text_original']))
         self.assertEqual(errors,[]);self.assertEqual(qualification['route'],'mechanism_evidence')
         for field,value in [('quality_point_ids',[]),('quality_point_ids',['foreign:P1']),
                             ('character','Ken'),('direction','buff'),('target','Shoryuken'),
                             ('recommendation','Nerf Ryu damage to 100.')]:
             bad=copy.deepcopy(claim);bad[field]=value
-            self.assertTrue(q.bind_claim(bad,r,m.character_reference(c['source']['text_original']))[0])
+            self.assertTrue(q.bind_claim(bad,r,evidence.character_reference(c['source']['text_original']))[0])
         bad=copy.deepcopy(claim);bad['parameters'][0]['metric']='damage at 999 health'
-        self.assertTrue(q.bind_claim(bad,r,m.character_reference(c['source']['text_original']))[0])
+        self.assertTrue(q.bind_claim(bad,r,evidence.character_reference(c['source']['text_original']))[0])
         for category in ('general','system_and_cosmetic','venting'):
-            self.assertTrue(q.bind_claim(claim,qualified(case(category)),m.character_reference('Ryu'))[0])
+            self.assertTrue(q.bind_claim(claim,qualified(case(category)),evidence.character_reference('Ryu'))[0])
 
     def test_same_evidence_unit_cannot_lend_general_numeric_request(self):
         text='Ryu Hadoken is strong; please nerf Ken damage from 600 to 500.'
-        row={'record_id':'mixed','text_original':text};u=m.evidence_units(text)[0];cut=text.index(';')+1
+        row={'record_id':'mixed','text_original':text};u=evidence.evidence_units(text)[0];cut=text.index(';')+1
         a=case('numeric_request')['annotation'];a['comment_id']='mixed'
         a['segments']=[{**a['segments'][0],'quote':text[:cut],'end':cut},
             {**a['segments'][0],'segment_id':'S2','start':cut,'end':len(text),'quote':text[cut:],
@@ -157,12 +155,12 @@ class QualityLogicTests(unittest.TestCase):
              'character_literal':'Ken','mechanic_literal':None}]
         r=q.qualify(a,row,[u]);self.assertEqual(r['errors'],[])
         claim=numeric_claim();claim['quality_point_ids']=['P1']
-        self.assertTrue(q.bind_claim(claim,r,m.character_reference(text))[0])
+        self.assertTrue(q.bind_claim(claim,r,evidence.character_reference(text))[0])
 
     def test_numeric_observations_and_history_cannot_become_requests(self):
         for category in ('damage_comparison','past_patch'):
             c=case(category);claim=numeric_claim();claim['quality_point_ids']=['P1']
-            self.assertTrue(q.bind_claim(claim,qualified(c),m.character_reference(c['source']['text_original']))[0])
+            self.assertTrue(q.bind_claim(claim,qualified(c),evidence.character_reference(c['source']['text_original']))[0])
 
     def test_unresolved_part_does_not_block_independent_point(self):
         c=case('opposing_mechanics');c['annotation']['information_points'][1]['stance']='uncertain'
@@ -171,8 +169,8 @@ class QualityLogicTests(unittest.TestCase):
 
     def test_schema_integer_bounds_are_real_checks(self):
         for value in (True,1.5,-1,'1'):
-            self.assertTrue(m.schema_errors(value,{'type':'integer','minimum':0}))
-        self.assertEqual(m.schema_errors(1,{'type':'integer','minimum':0}),[])
+            self.assertTrue(q.schema_errors(value,{'type':'integer','minimum':0}))
+        self.assertEqual(q.schema_errors(1,{'type':'integer','minimum':0}),[])
 
     def test_design_accept_cannot_upgrade_general_or_missing_quality(self):
         c={**numeric_claim(),'claim_id':'a:1','comment_id':'a','source_review':{'decision':'accept'}}
@@ -185,8 +183,8 @@ class QualityLogicTests(unittest.TestCase):
 
     def test_source_review_preserves_quality_and_fingerprint(self):
         c=case('numeric_request');source=c['source'];claim=numeric_claim();claim['quality_point_ids']=['P1']
-        _,enriched=m.ground_claim(claim,source,{'Ryu'})
-        _,qualification=q.bind_claim(claim,qualified(c),m.character_reference(source['text_original']))
+        _,enriched=evidence.ground_claim(claim,source,{'Ryu'})
+        _,qualification=q.bind_claim(claim,qualified(c),evidence.character_reference(source['text_original']))
         enriched['evidence_quality']=qualification;enriched['semantic_audit']={'supported':True}
         original_hash=proposal_hash(enriched)
         changed=copy.deepcopy(enriched);changed['quality_point_ids']=['P999']
@@ -202,8 +200,8 @@ class QualityLogicTests(unittest.TestCase):
 
     def test_qualified_design_retains_version_and_source_gates(self):
         c=case('numeric_request');source=c['source'];claim=numeric_claim();claim['quality_point_ids']=['P1']
-        _,enriched=m.ground_claim(claim,source,{'Ryu'})
-        _,qualification=q.bind_claim(claim,qualified(c),m.character_reference(source['text_original']))
+        _,enriched=evidence.ground_claim(claim,source,{'Ryu'})
+        _,qualification=q.bind_claim(claim,qualified(c),evidence.character_reference(source['text_original']))
         enriched.update(evidence_quality=qualification,semantic_audit={'supported':True},
                         comment_id=source['record_id'],claim_id='fixture:1',source_review={'decision':'accept'})
         moves=[{'character':'Ryu','target':'Hadoken damage','patch_version':'synthetic-patch',
@@ -217,11 +215,11 @@ class QualityLogicTests(unittest.TestCase):
     def test_comment_union_counts_overlap_and_stance_counts_do_not_add_weight(self):
         c=case('general');p=copy.deepcopy(c['annotation']['information_points'][0]);p['point_id']='P2';p['stance']='strength_assessment'
         c['annotation']['information_points'].append(p)
-        record=qualified(c);opinion=q.summarize_opinions([record],m.character_reference('Ken'))
+        record=qualified(c);opinion=q.summarize_opinions([record],evidence.character_reference('Ken'))
         self.assertEqual(len(opinion['groups']),1)
         group=opinion['groups'][0];self.assertEqual(group['supporting_comment_count'],1)
         self.assertEqual(group['stance_comment_counts'],{'explicit_request':1,'strength_assessment':1})
-        counts=m.quality_source_counts([record],[{'comment_id':record['comment_id'],'evidence_quality':{'mode':'enforce'}}])
+        counts=pipeline.quality_source_counts([record],[{'comment_id':record['comment_id'],'evidence_quality':{'mode':'enforce'}}])
         self.assertEqual(counts['union_count'],1);self.assertEqual(counts['overlap_comment_ids'],[record['comment_id']])
 
 
@@ -279,7 +277,7 @@ class MockPipelineTests(unittest.TestCase):
                      'positive_score':.1 if r['record_id']=='reject' else .9,
                      'negative_score':.9 if r['record_id']=='reject' else .1,'references':[]} for r in rows]
         with patch('sys.stdout',new=io.StringIO()):
-            m.run(args,api_transport=Mock(return_value=tags),chat_transport=self.transport,retrieval_service=retrieval)
+            engine.run(args,api_transport=Mock(return_value=tags),chat_transport=self.transport,retrieval_service=retrieval)
         return json.loads((folder/'balance-report.json').read_text(encoding='utf-8'))
 
     def test_off_shadow_downstream_identical_enforce_routes_and_resume(self):
@@ -387,8 +385,8 @@ class MockPipelineTests(unittest.TestCase):
 
     def test_mode_argument_validation(self):
         for mode,quality_only,relevance_only in [('off',True,False),('shadow',False,True),('enforce',True,True)]:
-            with self.assertRaises(ValueError):m.validate_modes(argparse.Namespace(evidence_quality=mode,quality_only=quality_only,relevance_only=relevance_only))
-        self.assertEqual(m.validate_modes(argparse.Namespace()),'off')
+            with self.assertRaises(ValueError):pipeline.validate_modes(argparse.Namespace(evidence_quality=mode,quality_only=quality_only,relevance_only=relevance_only))
+        self.assertEqual(pipeline.validate_modes(argparse.Namespace()),'off')
 
 
 if __name__=='__main__':unittest.main()

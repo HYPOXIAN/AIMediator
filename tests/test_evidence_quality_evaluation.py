@@ -4,12 +4,8 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts/collect'))
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts/experiments'))
-import evidence_quality as q
-import run_balance_analysis as m
-from evaluate_evidence_quality import evaluate,proportion,prepare_dataset
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'src'))
+from aimediator.quality_scoring import evaluate,proportion,prepare_dataset
 from support import case,qualified
 
 

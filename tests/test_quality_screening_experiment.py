@@ -4,11 +4,9 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts/collect'))
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'src'))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts/experiments'))
-import evidence_quality as q
-import run_balance_analysis as m
+from aimediator import evidence, evidence_quality as q
 from run_quality_screening_experiment import classify,export_results
 from support import case,qualified
 
@@ -32,7 +30,7 @@ class ScreeningExperimentTests(unittest.TestCase):
         self.assertEqual(result['retained_fragments'][0]['route'],'opinion_only')
 
     def test_failed_annotation_is_review_not_exclusion(self):
-        c=case('numeric_request');r=q.failed_record(c['source'],m.evidence_units(c['source']['text_original']),
+        c=case('numeric_request');r=q.failed_record(c['source'],evidence.evidence_units(c['source']['text_original']),
             [{'request_id':'failure','errors':['timeout']}])
         result=classify(c['source'],{'agreement':True},r)
         self.assertEqual(result['decision'],'review');self.assertEqual(result['quality_status'],'failed')
