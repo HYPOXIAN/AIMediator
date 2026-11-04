@@ -1,7 +1,10 @@
 import json,re
 from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
+from aimediator.resources import asset_path
 ROOT=Path(__file__).resolve().parents[2]
-G=json.loads((ROOT/'data/glossary.json').read_text(encoding='utf-8'))
+G=json.loads(asset_path('data/glossary.json').read_text(encoding='utf-8'))
 NAMES=[e['canonical_name'] for e in G['entries'] if e['category']=='character']+['Arjun','Viper','Bison','Akuma','Gouki','Gief','Honda','Deejay','Chun','Luke','Guile','Cammy']
 CHAR_EN=re.compile(r'\b(?:'+ '|'.join(re.escape(x) for x in NAMES)+r')\b',re.I)
 CHAR_ZH=re.compile('隆|卢克|傑米|杰米|春丽|春麗|古烈|盖尔|蓋爾|朱莉|蛛俐|肯|布兰卡|布蘭卡|达尔西姆|達爾錫|本田|迪杰|迪傑|曼侬|曼儂|玛丽莎|瑪麗莎|桑吉|莉莉|嘉米|嘉蜜|阿鬼|豪鬼|维加|維加|特瑞|不知火舞|艾琳娜|沙加特|沙盖特|毒蛇|阿里克斯|英格丽德|雅思敏|阿俊|阿军|印度人|阿三|老桑|将军|將軍|警察|狮子|獅子|阿光|阿杜')
