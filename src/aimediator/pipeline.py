@@ -213,6 +213,42 @@ def admit_relevance(state, model, language, language_rows):
                if d['retrieval_triage'] == 'review_queue' and not d['agreement']])
 
 
+def assess_quality(state, model, language, selected):
+    """Annotate the evidence quality of each admitted comment and write the quality progress after each record."""
+    for row in selected:
+        record_id = row['record_id']
+        units = evidence_units(row['text_original'])
+        attempts = []
+        result = None
+        for attempt in range(state.quality_policy['max_attempts']):
+            data = {'comments': [{'comment_id': record_id, 'units': units}],
+                'source': row, 'language': language,
+                'character_normalization_reference': character_reference(row['text_original']),
+                'quality_contract': state.quality_identity, 'attempt': attempt + 1}
+            # A retry is a new request/cache identity. Failed cached
+            # attempt 1 cannot masquerade as a fresh attempt 2.
+            parsed, meta = state.runner.generate(model, language, 'quality', data, [record_id])
+            state.trace.append({'model': model, 'stage': 'quality', 'comment_id': record_id,
+                                'attempt': attempt + 1, **meta})
+            if parsed is not None:
+                result = quality.qualify(parsed, row, units, state.quality_policy)
+                if result['errors']:
+                    meta = {**meta, 'errors': result['errors']}
+                else:
+                    attempts.append(meta)
+                    break
+            attempts.append(meta)
+            result = None
+        record = result or quality.failed_record(row, units, attempts, state.quality_policy)
+        record.update(attempts=attempts, model=model, observation_only=state.quality_mode == 'shadow')
+        state.quality_records[record_id] = record
+        write_json(state.folder / 'evidence-quality.json', list(state.quality_records.values()))
+        write_json(state.folder / 'full-pipeline-coverage.json', build_full_coverage(
+            state.rows, state.decisions, state.routes, state.models, state.quality_records, state.coverage, [],
+            state.quarantine, state.quality_mode, state.args))
+        write_json(state.folder / 'request-trace.json', state.trace)
+
+
 def process(args, rows, routing, models, prompts, quality_identity, quality_policy,
             identity, embedding_config=None, runner_factory=Runner, retrieval_service=retrieve):
     """Shared orchestration with explicit inputs and injected inference boundaries."""
@@ -243,38 +279,7 @@ def process(args, rows, routing, models, prompts, quality_identity, quality_poli
             state.rows, state.decisions, state.routes, state.models, state.quality_records, state.coverage, [],
             state.quarantine, state.quality_mode, state.args))
         if state.quality_mode != 'off':
-            for row in selected:
-                record_id = row['record_id']
-                units = evidence_units(row['text_original'])
-                attempts = []
-                result = None
-                for attempt in range(state.quality_policy['max_attempts']):
-                    data = {'comments': [{'comment_id': record_id, 'units': units}],
-                        'source': row, 'language': language,
-                        'character_normalization_reference': character_reference(row['text_original']),
-                        'quality_contract': state.quality_identity, 'attempt': attempt + 1}
-                    # A retry is a new request/cache identity. Failed cached
-                    # attempt 1 cannot masquerade as a fresh attempt 2.
-                    parsed, meta = state.runner.generate(model, language, 'quality', data, [record_id])
-                    state.trace.append({'model': model, 'stage': 'quality', 'comment_id': record_id,
-                                        'attempt': attempt + 1, **meta})
-                    if parsed is not None:
-                        result = quality.qualify(parsed, row, units, state.quality_policy)
-                        if result['errors']:
-                            meta = {**meta, 'errors': result['errors']}
-                        else:
-                            attempts.append(meta)
-                            break
-                    attempts.append(meta)
-                    result = None
-                record = result or quality.failed_record(row, units, attempts, state.quality_policy)
-                record.update(attempts=attempts, model=model, observation_only=state.quality_mode == 'shadow')
-                state.quality_records[record_id] = record
-                write_json(state.folder / 'evidence-quality.json', list(state.quality_records.values()))
-                write_json(state.folder / 'full-pipeline-coverage.json', build_full_coverage(
-                    state.rows, state.decisions, state.routes, state.models, state.quality_records, state.coverage, [],
-                    state.quarantine, state.quality_mode, state.args))
-                write_json(state.folder / 'request-trace.json', state.trace)
+            assess_quality(state, model, language, selected)
             if getattr(state.args, 'quality_only', False):
                 continue
         prepared = [{'comment_id': r['record_id'], 'units': evidence_units(r['text_original'])}
