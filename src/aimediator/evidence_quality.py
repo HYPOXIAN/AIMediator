@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 import unicodedata
 
-from .evidence import character_terms
+from .evidence import character_terms, numeric_tokens
 from .resources import asset_path
 from .schema import NULLABLE_NONEMPTY_STRING, STRING, enum, quality_obj, schema_errors
 POLICY_PATH = asset_path('configs/evidence-quality-policy.json')
@@ -189,7 +189,6 @@ def bind_claim(claim, record, reference):
     audit must still establish the relation between the claim and this point.
     """
     from .balance_policy import numeric_request_supported, term_matches
-    import re
     errors = []
     ids = claim.get('quality_point_ids', [])
     by_id = {r['point_id']: r for r in allowed_points(record)}
@@ -209,17 +208,16 @@ def bind_claim(claim, record, reference):
     if claim.get('target') and not (claim['target'] in text or
             p['mechanic_literal'] and p['mechanic_literal'] in claim['target']):
         errors.append('Claim target absent from selected point')
-    numbers = lambda t: re.findall(r'[+-]?\d+(?:\.\d+)?%?', t)
-    if any(n not in numbers(text) for n in numbers((claim.get('target') or '') + ' ' + claim['recommendation'])):
+    if any(n not in numeric_tokens(text) for n in numeric_tokens((claim.get('target') or '') + ' ' + claim['recommendation'])):
         errors.append('Claim number absent from selected point')
     for param in claim['parameters']:
         local = '\n'.join(s['quote'] for s in spans if s['evidence_id'] == param['evidence_id'])
-        if any(n not in numbers(local) for n in numbers(param['metric'])):
+        if any(n not in numeric_tokens(local) for n in numeric_tokens(param['metric'])):
             errors.append('Parameter metric number absent from selected quality spans')
         if p['stance'] != 'explicit_request' or not numeric_request_supported(local, param):
             errors.append('Numeric request not supported by selected point')
         for key in ('current', 'proposed', 'delta', 'unit'):
-            if param[key] is not None and (param[key] not in local or any(n not in numbers(local) for n in numbers(param[key]))):
+            if param[key] is not None and (param[key] not in local or any(n not in numeric_tokens(local) for n in numeric_tokens(param[key]))):
                 errors.append('Parameter absent from selected quality spans: ' + key)
     qualification = {'schema_version': record['schema_version'], 'mode': 'enforce',
                      'route': 'mechanism_evidence', 'comment_id': record['comment_id'],
