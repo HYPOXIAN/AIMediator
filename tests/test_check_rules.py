@@ -243,6 +243,8 @@ class TestDocumentationRules(CheckRulesTestCase):
         self.write('docs/reference/dump.json', '{}')
         self.write('docs/reference/big.md', 'x' * (100 * 1024 + 1))
         self.write('docs/reference/small.md', 'x' * 100)
+        self.write('docs/records/20261103-code-restructuring.md',
+                   'x' * (100 * 1024 + 1))  # justified (D7_JUSTIFIED)
         self.assertEqual(self.paths('D7'), ['docs/reference/big.md',
                                             'docs/reference/dump.json'])
 

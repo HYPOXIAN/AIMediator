@@ -621,6 +621,32 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   B4.5. The B4.3 work in progress is stashed as
   `WIP Step B4.3: escalation E-3`.
 
+### E-4 The change record reaches the D7 size limit (B4.3)
+
+- **Step**: B4.3 (any further entry).
+- **Question**: this record is 102,203 bytes at `6409098`, against the D7
+  limit of 102,400. The answer to E-3 pushed it over, and the pre-commit
+  hook refused that commit. RULES D7 says a Markdown file over 100 KB
+  "must be justified", but `check_rules.py` has no way to record a
+  justification. B4-1, B4-V and batches B5 to B7 add more entries. How is
+  the record kept committable?
+- **Options**: (a) a justified-files map for D7 in `check_rules.py`,
+  listing only this record with its reason, and the existing D7 test
+  extended (no new test); (b) freeze this record at B3 and continue in a
+  second record, which changes the plan, the blueprint and the handoffs;
+  (c) condense the record, which buys room for this session only.
+- **Recommendation**: (a). D7 already allows justified files; only the
+  check lacks the means. `RULES.md` does not change.
+- **Blocked**: every commit that adds to this record.
+- **Answer**: the owner, 2026-11-04, given to session B4-1: option (a).
+  B4-1 added `D7_JUSTIFIED` at the owner's instruction in its own `chore`
+  commit, which also records this answer. `check_d7` skips a listed file;
+  `test_d7_json_and_size` writes an oversize file at this record's path and
+  still expects only the two unlisted violations. The test count is
+  unchanged. Plan 4.4 allows only the G3 change in `check_rules.py`, so
+  this commit is a deviation the owner authorized; its paths lie inside
+  the B4 boundary.
+
 ## Verification notes
 
 ### 2026-11-03 B0-V

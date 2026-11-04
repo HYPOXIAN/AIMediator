@@ -70,6 +70,13 @@ CODE_SUFFIXES = frozenset({'.py', '.ts', '.tsx', '.js', '.jsx', '.sh',
 ARCHIVE_SUFFIXES = frozenset({'.zip', '.tar', '.gz', '.tgz', '.7z', '.whl'})
 MAX_TEXT_BYTES = 5 * 1024 * 1024
 D7_MAX_MD_BYTES = 100 * 1024
+# RULES.md D7: a Markdown file over the limit must be justified. Each entry
+# maps the file to its justification.
+D7_JUSTIFIED = {
+    'docs/records/20261103-code-restructuring.md':
+        'the single change record of the code restructuring; owner answer to'
+        ' escalation E-4 (2026-11-04)',
+}
 
 KEBAB = re.compile(r'^[a-z0-9]+(?:-[a-z0-9]+)*$')
 KEBAB_FILE = re.compile(r'^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.[a-z0-9]+)*$')
@@ -691,14 +698,14 @@ def check_d6(project):
 
 
 def check_d7(project):
-    """No JSON under docs/; Markdown files stay under 100 KB."""
+    """No JSON under docs/; Markdown files stay under 100 KB unless justified."""
     found = []
     for rel in project.under('docs'):
         if rel.endswith(('.json', '.jsonl')):
             found.append(Violation('D7', rel, None, 'data file under docs/'))
         elif rel.endswith('.md') and not project.is_link(rel):
             size = (project.root / rel).stat().st_size
-            if size > D7_MAX_MD_BYTES:
+            if size > D7_MAX_MD_BYTES and rel not in D7_JUSTIFIED:
                 found.append(Violation(
                     'D7', rel, None,
                     'Markdown file of %d KB exceeds 100 KB' % (size // 1024)))
