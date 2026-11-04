@@ -6,10 +6,13 @@ import argparse
 from collections import Counter
 from pathlib import Path
 import sys
-sys.path.insert(1, str(Path(__file__).resolve().parents[1]))  # scripts/ holds the registered forwarding shells
-from run_balance_analysis import ROOT,strict_json,write_json,ground_claim,character_reference,digest
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
+from aimediator.common import sha as digest, strict_json, write as write_json
+from aimediator.evidence import character_reference, ground_claim
+from aimediator.legacy_review import apply_review, proposal_hash
 from prepare_balance_design import prepare_briefs
-from review_balance_sources import proposal_hash, apply_review
+
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def replay(cases, prior_claims):

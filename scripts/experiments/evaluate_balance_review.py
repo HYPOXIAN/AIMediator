@@ -7,9 +7,11 @@ from collections import Counter
 import json
 from pathlib import Path
 import sys
-sys.path.insert(1, str(Path(__file__).resolve().parents[1]))  # scripts/ holds the registered forwarding shells
-from run_balance_analysis import ROOT, digest, strict_json, write_json
-from balance_policy import triage_retrieval
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
+from aimediator.balance_policy import triage_retrieval
+from aimediator.common import sha as digest, strict_json, write as write_json
+
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def read_labels(folder, source_rows):

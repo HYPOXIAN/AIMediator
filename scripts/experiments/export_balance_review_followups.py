@@ -6,9 +6,10 @@ import argparse
 from collections import Counter
 from pathlib import Path
 import sys
-sys.path.insert(1, str(Path(__file__).resolve().parents[1]))  # scripts/ holds the registered forwarding shells
-from balance_policy import load_policy,term_matches,attributed_candidates
-from run_balance_analysis import strict_json,write_json,character_reference,character_candidates,digest
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
+from aimediator.balance_policy import attributed_candidates, load_policy, term_matches
+from aimediator.common import sha as digest, strict_json, write as write_json
+from aimediator.evidence import character_candidates, character_reference
 
 
 def followups(decisions,sources):

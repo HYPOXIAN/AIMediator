@@ -8,7 +8,10 @@ import json
 import re
 from pathlib import Path
 import sys
-sys.path.insert(1, str(Path(__file__).resolve().parents[1]))  # scripts/ holds the registered forwarding shells
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
+from aimediator.common import sha as digest, strict_json, write as write_json
+
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def validate_move_data(rows):
@@ -90,7 +93,6 @@ def prepare_briefs(claims, move_data=None, target_patch=None, pending_adjudicati
 
 
 def main():
-    from run_balance_analysis import ROOT,strict_json,write_json,digest
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--claims',type=Path,required=True)
     p.add_argument('--quality-mode',choices=['auto','enforce'],default='auto',help='Use enforce for v3 claim lists to reject missing quality metadata')
     p.add_argument('--move-data',type=Path);p.add_argument('--target-patch');p.add_argument('--out',type=Path,required=True)

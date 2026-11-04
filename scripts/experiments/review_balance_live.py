@@ -5,9 +5,11 @@ Keeps the raw model results unchanged and never substitutes review for model sco
 import argparse
 from pathlib import Path
 import sys
-sys.path.insert(1, str(Path(__file__).resolve().parents[1]))  # scripts/ holds the registered forwarding shells
-from run_balance_analysis import strict_json,write_json,character_reference,aggregate,digest
-from review_balance_sources import apply_review
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
+from aimediator.common import sha as digest, strict_json, write as write_json
+from aimediator.evidence import character_reference
+from aimediator.legacy_review import apply_review
+from aimediator.pipeline import aggregate
 from prepare_balance_design import prepare_briefs
 
 
