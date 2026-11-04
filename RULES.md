@@ -1,6 +1,6 @@
 # AIMediator Project Rules
 
-Version 1.2 · Effective 2026-11-03 · Approved by the project owner.
+Version 1.3 · Effective 2026-11-04 · Approved by the project owner.
 
 This file is the highest-level convention for the project's structure. Every
 rule has a **Check**: the way compliance is verified. Rule IDs are stable; cite
@@ -27,11 +27,9 @@ the register.
 `RULES.md`, `pyproject.toml`, `MANIFEST.in`, `.gitignore`, `.env.example`,
 `.env` (local only), agent entry files (`CLAUDE.md`, `AGENTS.md`), `src/`,
 `tests/`, `scripts/`, `configs/`, `data/`, `docs/`, `examples/`, `reports/`,
-`runs/`, plus the ignored `build/`, `dist/` and `.venv/`. `prompts/` is also
-allowed, but only for compatibility links listed in the G2 register; it is
-removed once it is empty. `.claude/` is also allowed as ignored local state of
-the coding-agent harness; it holds no project content. Adding a top-level
-entry requires amending this rule first.
+`runs/`, plus the ignored `build/`, `dist/` and `.venv/`. `.claude/` is also
+allowed as ignored local state of the coding-agent harness; it holds no
+project content. Adding a top-level entry requires amending this rule first.
 *Check:* `ls -A` matches the allowlist.
 
 **G4 Sources and generated output are separate.** Anything reproducible from
@@ -177,6 +175,9 @@ README "Layout" section.
   points that call the package.
 - Scripts are grouped by purpose in `scripts/collect/`, `scripts/experiments/`
   and `scripts/maintenance/`.
+- Experiment scripts in `scripts/experiments/` may keep experiment-specific
+  orchestration, case lists and output formatting; logic that two or more
+  scripts or the tests use lives in the package.
 - No `test_` prefix in `scripts/`.
 - One-off scripts bound to a single run are archived or deleted after that run.
 - Compatibility forwarding scripts are listed in the G2 register with a removal
@@ -217,8 +218,7 @@ README "Layout" section.
 
 - `src/aimediator/assets/` is the only source for prompts and policy
   configuration.
-- Root `prompts/` and `configs/` keep only collection configuration and the
-  compatibility links listed in the G2 register.
+- Root `configs/` keeps only collection configuration.
 - Legacy prompts (such as `extract-feedback.txt`) are archived once confirmed
   unreferenced.
 - A prompt change is a behavior change and is documented in a record or ADR.
@@ -254,3 +254,8 @@ README "Layout" section.
   `docs/records/20261103-reorganization.md`, frozen). The rule check reports
   0 violations and the pre-commit hook now blocks commits with violations
   (G10). No rule changed; the version stays 1.2.
+- 2026-11-04 v1.3 — Owner decisions CR-D02, CR-D07 and CR-D10 of the code
+  restructuring plan. G3: `prompts/` removed from the allowlist; the
+  directory is empty since step B4.3 removed the last compatibility links.
+  P3: states what experiment scripts may keep. P7: root `configs/` no longer
+  holds compatibility links.
