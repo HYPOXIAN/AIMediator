@@ -1,9 +1,33 @@
 """Intra-package imports follow the dependency table of the restructuring plan, section 4.2."""
 import ast
 from pathlib import Path
+import subprocess
+import sys
 import unittest
 
 PACKAGE = Path(__file__).resolve().parents[1] / 'src/aimediator'
+
+# Run in a fresh interpreter: argv[1] is the source root, the rest are module names.
+IMPORT_WITHOUT_READS = '''
+import importlib, json, pathlib, sys
+import numpy
+
+def refuse(path, *args, **kwargs):
+    raise AssertionError('File read at import time: ' + str(path))
+
+pathlib.Path.read_text = refuse
+pathlib.Path.read_bytes = refuse
+try:
+    pathlib.Path(sys.argv[1]).read_bytes()
+except AssertionError:
+    pass
+else:
+    raise SystemExit('The read patch is not in effect')
+sys.path.insert(0, sys.argv[1])
+for name in sys.argv[2:]:
+    importlib.import_module(name)
+print(len(sys.argv) - 2)
+'''
 
 # Plan section 4.2, copied row by row. Rows for modules that do not exist yet
 # stay. A table change needs a decision in the change record and an update of
@@ -104,6 +128,16 @@ class ModuleLayers(unittest.TestCase):
         modules = set(package_imports()) - {PACKAGE_INIT}
         self.assertIn('common', modules)
         self.assertEqual(sorted(modules - set(ALLOWED)), [], 'Add new modules to the table on purpose')
+
+    def test_importing_every_module_reads_no_file(self):
+        # __main__ is left out: importing it runs the command line.
+        names = sorted('.'.join(('aimediator',) + path.relative_to(PACKAGE).with_suffix('').parts).replace('.__init__', '')
+                       for path in PACKAGE.rglob('*.py') if path.stem != '__main__')
+        self.assertIn('aimediator.retrieval', names)
+        result = subprocess.run([sys.executable, '-c', IMPORT_WITHOUT_READS, str(PACKAGE.parent)] + names,
+                                capture_output=True, text=True, check=False)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.split(), [str(len(names))])
 
     def test_package_init_imports_nothing_from_the_package(self):
         self.assertEqual(package_imports()[PACKAGE_INIT], [])

@@ -16,7 +16,7 @@ from .balance_policy import POLICY_PATH, load_policy
 from .resources import asset_path, module_path
 from .inference import api
 from .runner import Runner
-from .retrieval import NEG, POS, retrieve
+from .retrieval import retrieve
 from .pipeline import VERSION, process, validate_modes
 ROOT = Path.cwd()
 
@@ -52,6 +52,7 @@ def run(args, *, api_transport=None, chat_transport=None, embed_transport=None, 
         'prompts_sha256': digest(json.dumps(prompts, sort_keys=True, ensure_ascii=False).encode()),
         'module_sha256': digest((module_path('evidence_quality.py')).read_bytes()),
         'schema_sha256': digest(json.dumps(quality.annotation_schema(['COMMENT_ID']), sort_keys=True).encode())}
+    positive_anchors, negative_anchors = resources.anchors()
     identity = {'version': VERSION, 'dataset_sha256': digest(source),
         'shared_code_sha256': {p.name: digest(p.read_bytes()) for p in sorted(module_path('engine.py').parent.glob('*.py'))},
         'models': {m: installed[m] for m in models}, 'embedding_model': args.embedding_model,
@@ -62,7 +63,7 @@ def run(args, *, api_transport=None, chat_transport=None, embed_transport=None, 
         'review_policy_sha256': digest(POLICY_PATH.read_bytes()),
         'mode': 'relevance_only' if getattr(args, 'relevance_only', False) else 'quality_only' if getattr(args, 'quality_only', False) else 'full_pipeline',
         'evidence_quality': quality_identity,
-        'anchor_sha256': digest(json.dumps([POS, NEG], ensure_ascii=False).encode()),
+        'anchor_sha256': digest(json.dumps([positive_anchors, negative_anchors], ensure_ascii=False).encode()),
         'prompts': {stage: {lang: digest(t.encode()) for lang, t in pair.items()}
                     for stage, pair in prompts.items()}}
     if embedding_config:
@@ -78,7 +79,7 @@ def run(args, *, api_transport=None, chat_transport=None, embed_transport=None, 
     else:
         write_json(manifest_path, {'identity': identity, 'dataset': str(args.dataset.resolve()),
             'created_at_utc': datetime.now(timezone.utc).isoformat(),
-            'retrieval': {'positive_anchors': POS, 'negative_anchors': NEG,
+            'retrieval': {'positive_anchors': positive_anchors, 'negative_anchors': negative_anchors,
                 'score': 'mean top-3 cosine per class', 'pass': 'positive > negative',
                 'agreement': 'retrieval pass AND same-language model related AND not uncertain'}})
         write_json(folder / 'source-snapshot.json', rows)

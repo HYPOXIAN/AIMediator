@@ -6,12 +6,13 @@ from . import glossary_vectors
 from .common import sha as digest, write as write_json
 from .inference import api
 from .resources import anchors
-POS, NEG = anchors()
 
 
 def retrieve(rows, base, folder, model, embedding_config=None, api_transport=None, embed_transport=None, log=None):
     instruction = 'Instruct: Retrieve the description matching the topic and intent of this Street Fighter 6 player comment.\nQuery: '
-    texts = POS + NEG + [instruction + r['text_original'] for r in rows]
+    positive_anchors, negative_anchors = anchors()
+    topics = positive_anchors + negative_anchors
+    texts = topics + [instruction + r['text_original'] for r in rows]
     matrices = []
     for start in range(0, len(texts), 8):
         batch = texts[start:start + 8]
@@ -51,7 +52,7 @@ def retrieve(rows, base, folder, model, embedding_config=None, api_transport=Non
             'positive_score': positive, 'negative_score': negative, 'margin': positive - negative,
             'retrieval_related': positive > negative,
             'references': [{'topic_id': ('P' + str(int(i) + 1) if i < 10 else 'N' + str(int(i) - 9)),
-                            'text': (POS + NEG)[int(i)], 'cosine': float(scores[i]),
+                            'text': topics[int(i)], 'cosine': float(scores[i]),
                             'class': 'related' if i < 10 else 'unrelated'} for i in order[:4]]})
     write_json(folder / 'retrieval.json', decisions)
     return decisions

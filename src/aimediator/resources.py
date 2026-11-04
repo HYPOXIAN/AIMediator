@@ -10,7 +10,9 @@ def asset_path(name=''):
     return Path(str(files('aimediator').joinpath('assets', name)))
 
 
+@functools.lru_cache(maxsize=1)
 def anchors():
+    """Return the packaged positive and negative retrieval anchors, loaded once per process; callers never mutate them."""
     value = json.loads(asset_path('retrieval-anchors.json').read_text(encoding='utf-8'))
     return value['POS'], value['NEG']
 
