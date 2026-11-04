@@ -10,7 +10,7 @@ import json
 from pathlib import Path
 
 from . import evidence_quality as quality
-from . import glossary_vectors
+from . import glossary_vectors, resources
 from .common import sha as digest, write as write_json
 from .balance_policy import POLICY_PATH, load_policy
 from .resources import asset_path, module_path
@@ -42,16 +42,7 @@ def run(args, *, api_transport=None, chat_transport=None, embed_transport=None, 
     missing_models = sorted(set(models + ([] if embedding_config else [args.embedding_model])) - set(installed))
     if missing_models:
         raise ValueError('Required local models unavailable: ' + ', '.join(missing_models))
-    prompt_names = {'relevance': 'relevance', 'retrieval_review': 'retrieval-review',
-                    'extract': 'summarize-balance', 'verify': 'verify-balance'}
-    if quality_mode != 'off':
-        prompt_names['quality'] = 'evidence-quality'
-    prompts = {stage: {lang: (asset_path(f'prompts/{name}.{lang}.txt')).read_text(encoding='utf-8')
-                       for lang in ('en', 'zh')} for stage, name in prompt_names.items()}
-    if quality_mode == 'enforce':
-        for lang in ('en', 'zh'):
-            prompts['extract'][lang] += '\n' + (asset_path(f'prompts/quality-extract.{lang}.txt')).read_text(encoding='utf-8')
-            prompts['verify'][lang] += '\n' + (asset_path(f'prompts/quality-verify.{lang}.txt')).read_text(encoding='utf-8')
+    prompts = resources.prompts(quality_mode)
     quality_identity = {'mode': quality_mode, 'policy': quality_policy,
         'runner_sha256': digest(module_path('engine.py').read_bytes()),
         'model_digests': {m: installed[m] for m in models},

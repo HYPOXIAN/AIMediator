@@ -4,7 +4,7 @@ import io
 from pathlib import Path
 import sys
 from types import SimpleNamespace
-from . import balance_policy, evidence_quality, pipeline, retrieval, runner
+from . import balance_policy, evidence_quality, pipeline, resources, retrieval, runner
 from .common import Failure, canonical, input_rows, new_path, read, sha, write
 from .config import credential, resolve, validate
 from .inference import Transport, probe
@@ -38,18 +38,7 @@ def doctor(cfg, input_path=None, out=None, offline=False, env_file=None):
             'runtime': {k:v for k,v in store.code_manifest().items() if k != 'modules'}}
 
 
-def prompts_for(mode):
-    names = {'relevance': 'relevance', 'retrieval_review': 'retrieval-review',
-             'extract': 'summarize-balance', 'verify': 'verify-balance'}
-    if mode != 'off':
-        names['quality'] = 'evidence-quality'
-    prompts = {stage: {lang: asset_path('prompts/%s.%s.txt' % (name, lang)).read_text(encoding='utf-8')
-                       for lang in ('en', 'zh')} for stage, name in names.items()}
-    if mode == 'enforce':
-        for stage, name in (('extract', 'quality-extract'), ('verify', 'quality-verify')):
-            for lang in ('en', 'zh'):
-                prompts[stage][lang] += '\n' + asset_path('prompts/%s.%s.txt' % (name, lang)).read_text(encoding='utf-8')
-    return prompts
+prompts_for = resources.prompts
 
 
 def analyze(input_path=None, out=None, cfg=None, resume=None, env_file=None, transport=None, quiet=False):
@@ -102,7 +91,7 @@ def analyze(input_path=None, out=None, cfg=None, resume=None, env_file=None, tra
         try:
             store.state(folder, 'running', 'retrieval')
             mode = cfg['evidence_quality']
-            prompts = prompts_for(mode)
+            prompts = resources.prompts(mode)
             write(folder / 'prompt-snapshot.json', prompts)
             write(folder / 'review-policy-snapshot.json', balance_policy.load_policy())
             policy = evidence_quality.load_policy() if mode != 'off' else None
