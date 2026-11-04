@@ -118,27 +118,40 @@ def fixture_api(transport):
     return api
 
 
-def produce_legacy(work):
-    """L2: ``engine.run`` in the three quality modes on the packaged fixture sources."""
-    from aimediator import engine
+def legacy_dataset(root):
+    """Write the packaged fixture sources to ``root`` as the demo writes ``synthetic-input.jsonl``."""
     from aimediator.common import canonical, read
-    from aimediator.config import defaults
-    from aimediator.demo import FixtureTransport
     from aimediator.resources import asset_path
-    root = work / 'legacy'
-    root.mkdir()
     dataset = root / 'synthetic-input.jsonl'
     cases = read(asset_path('fixtures/cases.json'))
     dataset.write_bytes(b''.join(canonical(c['source']) + b'\n' for c in cases))
+    return dataset
+
+
+def run_legacy(root, dataset, mode):
+    """Run ``engine.run`` in one quality mode into ``root/mode``; return what it printed."""
+    from aimediator import engine
+    from aimediator.config import defaults
+    from aimediator.demo import FixtureTransport
+    transport = FixtureTransport(defaults())
+    args = SimpleNamespace(dataset=dataset, out=root / mode, model=None,
+                           embedding_model='qwen3-embedding:8b', base_url='http://fixture.invalid',
+                           evidence_quality=mode, quality_only=False, relevance_only=False)
+    stdout = io.StringIO()
+    with patch.object(engine, 'api', fixture_api(transport)), \
+            patch.object(engine, 'streamed_chat', transport.chat), \
+            contextlib.redirect_stdout(stdout):
+        engine.run(args)
+    return stdout.getvalue()
+
+
+def produce_legacy(work):
+    """L2: ``engine.run`` in the three quality modes on the packaged fixture sources."""
+    root = work / 'legacy'
+    root.mkdir()
+    dataset = legacy_dataset(root)
     for mode in MODES:
-        transport = FixtureTransport(defaults())
-        args = SimpleNamespace(dataset=dataset, out=root / mode, model=None,
-                               embedding_model='qwen3-embedding:8b', base_url='http://fixture.invalid',
-                               evidence_quality=mode, quality_only=False, relevance_only=False)
-        with patch.object(engine, 'api', fixture_api(transport)), \
-                patch.object(engine, 'streamed_chat', transport.chat), \
-                contextlib.redirect_stdout(io.StringIO()):
-            engine.run(args)
+        run_legacy(root, dataset, mode)
     return root
 
 
