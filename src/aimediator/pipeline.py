@@ -318,12 +318,9 @@ def audit_claims(state, model, language):
         write_json(state.folder / 'quarantined-claims.json', state.quarantine)
 
 
-def assemble(state):
-    """Build the summary and the report, write the final artifacts, print the summary and return the report."""
-    accepted = [{**e['claim'], 'claim_id': e['claim_id'], 'comment_id': e['comment_id'],
-                 'model': e['model'], 'semantic_audit': e['audit']} for e in state.claims
-                if (e.get('audit') or {}).get('supported')]
-    summary = {'version': VERSION, 'input_comments': len(state.rows),
+def summarize(state, accepted):
+    """Return the run summary: counts per stage and language, and the limitations of the method."""
+    return {'version': VERSION, 'input_comments': len(state.rows),
         'mode': state.identity['mode'],
         'input_languages': dict(Counter(r['language'] for r in state.rows)),
         'routed_comments': len(state.eligible), 'unsupported_or_unselected_language': len(state.rows) - len(state.eligible),
@@ -349,6 +346,14 @@ def assemble(state):
             'Semantic audit reads the full original comment; selected citations can still need additional context.',
             'Coverage accounts for every admitted comment; completeness of individual concerns still requires human review.',
             'No numerical targets are invented; qualitative comments cannot supply exact engineering values.']}
+
+
+def assemble(state):
+    """Build the summary and the report, write the final artifacts, print the summary and return the report."""
+    accepted = [{**e['claim'], 'claim_id': e['claim_id'], 'comment_id': e['comment_id'],
+                 'model': e['model'], 'semantic_audit': e['audit']} for e in state.claims
+                if (e.get('audit') or {}).get('supported')]
+    summary = summarize(state, accepted)
     unsupported = [{'comment_id': r['record_id'], 'language': r['language'],
                     'reason': 'No configured language route'} for r in state.rows if r not in state.eligible]
     report = {'summary': summary, 'character_adjustments': aggregate(accepted, state.quality_mode == 'enforce'),
