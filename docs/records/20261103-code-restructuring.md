@@ -820,6 +820,44 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   this commit is a deviation the owner authorized; its paths lie inside
   the B4 boundary.
 
+### E-5 New top-level modules add lock keys (B6.3)
+
+- **Step**: B6.3, and B6.4 for the same reason.
+- **Question**: since B5.11 (CR-D12), `engine.run` copies every top-level
+  package module into `code-snapshot/<module>.py`. B6.3 creates the
+  top-level module `design_briefs.py` (plan 4.1, blueprint 3.3), so each L2
+  run writes one more file. With the B6.3 change in the working tree, the
+  lock fails at exactly three normalized paths, all added and all
+  existence-only (`<exempt: existence only>`):
+  `L2:<off|shadow|enforce>/code-snapshot/design_briefs.py`. No key is
+  removed or changed, and the request digests are unchanged (459 keys in
+  the fixture, 462 produced). B6.4 adds `diagnostics.py` and with it three
+  more such keys. The work order lists the lock fixture as not allowed, and
+  B6-V checklist item 5 expects it unchanged since B5. CR-D12 asks for a
+  snapshot of every top-level module, and CR-D02 creates the two modules,
+  but neither the plan nor the work order foresaw the combination. The
+  collection modules of B6.2 sit in a subpackage, which `glob('*.py')`
+  skips, so B6.2 did not meet this. How are the added keys handled?
+- **Options**:
+  - (a) The owner authorizes the fixture update under CR-D12 and CR-D02 in
+    the commits of B6.3 and B6.4 (plan 5.5): `--write` in each commit, whose
+    body lists the three added paths; the record lists them too. B6-V reads
+    checklist item 5 as "the fixture changed only by these six added
+    existence-only keys".
+  - (b) Change the L2 normalization in `tests/behavior_lock.py`, for
+    example one key for the whole `code-snapshot/` set. That weakens the
+    lock and still changes the fixture.
+  - (c) Leave `design_briefs` and `diagnostics` out of the code snapshot.
+    That contradicts CR-D12, and `shared_code_sha256` would still hash
+    them.
+  - (d) Place the two modules in a subpackage. That contradicts plan 4.1,
+    blueprint 3.3 and the layering table.
+- **Recommendation**: (a). The added files are what CR-D12 prescribes for
+  a module that CR-D02 creates. They hold code only and carry no behavior,
+  and every other lock key stays byte-identical.
+- **Blocked**: B6.3 (the work in progress is stashed as
+  `WIP Step B6.3: escalation E-5`) and B6.4.
+
 ## Verification notes
 
 ### 2026-11-03 B0-V
