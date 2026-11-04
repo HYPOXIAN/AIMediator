@@ -9,7 +9,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
 from aimediator.balance_policy import attributed_candidates, load_policy, term_matches
 from aimediator.common import sha as digest, strict_json, write as write_json
-from aimediator.evidence import character_candidates, character_reference
+from aimediator.evidence import character_candidates, character_reference, character_terms
 
 
 def followups(decisions,sources):
@@ -29,7 +29,7 @@ def followups(decisions,sources):
         names=[]
         if decision['agreement']:
             for entry in load_policy()['source_literal_characters']:
-                for term in [entry['canonical_name'],entry.get('chinese_label')]+[a['text'] for a in entry['aliases']]:
+                for term in character_terms(entry):
                     if term_matches(term,source['text_original']):names.append(term)
             if names:scope.append('identity');reasons.append('source_literal_official_identity_unverified')
         if scope:

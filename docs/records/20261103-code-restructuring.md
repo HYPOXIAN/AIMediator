@@ -67,6 +67,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | B4.5 | done | 221 | green | ADR `docs/decisions/0002-module-boundaries-and-entry-points.md` with the D2 header (Decision, Active) and an index row under Decisions. Context: the `engine` hub, the patch seams, the compatibility layers. Decision: modules by responsibility in layers; the dependency table of plan 4.1 and 4.2 held and enforced by `tests/test_module_layers.py`; injection instead of patching; research commands as `python3 -m`; the layers removed. Consequences: run identities (CR-D06), the editable-install requirement, historical paths in frozen documents, and how the structure changes. The ADR freezes once final, while the plan moves to the archive in B7.5, so it links only to stable targets (ADR 0001, this record, the layering test, the register) and names the plan in prose; it describes the layers in a table but does not copy the dependency table (G2), whose enforced copy is the test |
 | B5.1 | done | 221 | green | U-01: `resources.prompts(mode)` is the only prompt loader; it is the body of the old `operations.prompts_for`, with the docstring the blueprint asks for. `engine.run` and `operations.analyze` call `resources.prompts` (both import the module, because each has a local `prompts`); `operations.prompts_for = resources.prompts` is the one-line alias, and is the same object. A scratch check compared the result with the old `operations.prompts_for` and the old `engine.run` dictionary in `off`, `shadow` and `enforce`: the `json.dumps` texts are identical, key order included (`relevance`, `retrieval_review`, `extract`, `verify`, then `quality` outside `off`). The old `engine.run` read the two appendix files per language rather than per stage; the result is the same. The six `prompt-snapshot.json` digests of L1 and L2 are unchanged |
 | B5.2 | done | 222 | green | U-02: `schema.py` holds `obj`, `quality_obj` (the former `evidence_quality.obj`), `arr`, `enum`, `STRING`, `NULLABLE_STRING` (the former `schema.NULL_STRING`), `NULLABLE_NONEMPTY_STRING` (the former `evidence_quality.NULL_STRING`), `BOOL` and `schema_errors`. `evidence_quality` drops its builders, constants and validator, imports them from `schema`, and `annotation_schema` calls them by their `schema` names; `evidence` uses `NULLABLE_STRING`. `evidence_quality.schema_errors` stays importable, because the module uses it: `runner` may not import `schema` (plan 4.2), so its import and the other callers are unchanged. Checks: `schema_errors` and `enum` have the AST of the old functions, and `quality_obj` and `obj` return the old dictionaries; `json.dumps` of `PARAMETER`, `CLAIM`, `annotation_schema(['X'])` and `schema_for` for `extract` (with data and allowed points, and without data), `relevance`, `quality` and `verify` is byte-identical to `restructure-b4` (10,182 bytes). New `tests/test_schema.py` (+1) pins both object builders and both nullable constants as literal JSON; a scratch swap of two keys in `quality_obj` fails it. The work order's grep matches only the blueprint and the work order |
+| B5.3 | done | 222 | green | U-03: `evidence.character_terms(entry)` returns `[canonical_name, chinese_label] + alias texts`, unfiltered, with a one-line docstring. Four sites call it and keep their filtering: `evidence.character_candidates` (none), `evidence_quality.bind_claim` (`t and term_matches` inside `any`), `evidence_quality.summarize_opinions` (the same) and `scripts/experiments/export_balance_review_followups.py` (none). `evidence_quality` imports `evidence` at module level (plan 4.2 allows it; no cycle). Two listed sites keep their inline lists, each with a comment, as decisions found during execution: `balance_policy.attributed_candidates` (plan 4.2 forbids `balance_policy -> evidence`) and the `ground_claim` literal search (its order starts with the Chinese label and decides `source_literal`). Checks: on 64 entries (the glossary's character entries, the policy's source-literal characters and `character_reference('')`, which overlap), `character_terms` equals the old inline list; `character_candidates` gives results identical to `restructure-b4` on 431 texts (every `text_original` of the tracked evaluation sets and the packaged cases, plus five probes), against each text's own reference and the full one. The script prints `--help` from a foreign directory; `test_balance_review_pipeline` runs its `followups` |
 
 ## Baseline measurements (B0.4)
 
@@ -545,6 +546,49 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   are copied as item 9 says.
 - **Status**: registered before B4.3 and applied in it, under plan
   section 1, item 8; open to the owner.
+
+### `character_terms` in `balance_policy` (found in B5.3)
+
+- **Question**: the B5 work order lists `balance_policy.attributed_candidates`
+  among the six sites that call `evidence.character_terms`. Plan 4.2 allows
+  `balance_policy` to import only `resources`, and `evidence` imports
+  `balance_policy` at module level, so the call would add an edge outside
+  the table and a cycle, and `tests/test_module_layers.py` would fail. How
+  is this site handled?
+- **Options**: (a) define `character_terms` in `balance_policy` and import
+  it into `evidence`, so `evidence.character_terms` stays reachable and all
+  sites but `ground_claim` share it; this moves the definition away from
+  `evidence`, where plan 4.1 and blueprint 3.3 place it. (b) Keep the
+  inline list in `attributed_candidates`, with a comment naming
+  `evidence.character_terms`; the other sites use `evidence.character_terms`.
+- **Recommendation**: (b). Plan 4.1 and 4.2 rank above the work order
+  (blueprint section 0), and (b) follows both. The site's result is
+  unchanged, a revert undoes the comment, the lock stays green, and no
+  rule changes.
+- **Status**: implemented in B5.3 under plan section 1, item 8. The owner
+  may choose (a) instead.
+
+### Term order of the `ground_claim` literal (found in B5.3)
+
+- **Question**: the work order lists the term list of `ground_claim`
+  (`engine.py` lines 471 and 472 at `7282f49`) among the
+  `character_terms` sites. That list is
+  `[chinese_label, canonical_name] + aliases`, not
+  `[canonical_name, chinese_label] + aliases`, and `next(...)` takes its
+  first term that matches the source. When both the label and the name
+  occur in a comment, `character_terms` would change
+  `character_identity.source_literal` from the label to the name, a
+  change of validated-claim content. How is this site handled?
+- **Options**: (a) keep the inline list, with a comment that its order
+  differs from `character_terms` on purpose; (b) search
+  `[entry.get('chinese_label')] + character_terms(entry)`, which gives the
+  same first match but hides the reason; (c) use `character_terms`, which
+  changes behavior and is out of scope.
+- **Recommendation**: (a). The result is unchanged, the comment keeps a
+  later session from "fixing" the order, a revert undoes it, and no rule
+  changes.
+- **Status**: implemented in B5.3 under plan section 1, item 8. The owner
+  may choose (b).
 
 ## Escalations
 

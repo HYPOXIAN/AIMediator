@@ -76,6 +76,7 @@ def attributed_candidates(text, reference, candidates):
     Conservative source grammar only. This does not resolve general comparisons
     or sarcasm; omitted mentions remain available in the full original source.
     """
+    # The term list of evidence.character_terms, built here because evidence imports this module.
     terms = {e['canonical_name']: list(dict.fromkeys(t for t in
              [e['canonical_name'], e.get('chinese_label')] + [a['text'] for a in e['aliases']]
              if t and term_matches(t, text))) for e in reference if e['canonical_name'] in candidates}

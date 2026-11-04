@@ -40,9 +40,14 @@ def character_reference(text=''):
     return reference
 
 
+def character_terms(entry):
+    """Return the canonical name, Chinese label and alias texts of a reference entry, unfiltered."""
+    return [entry['canonical_name'], entry.get('chinese_label')] + [a['text'] for a in entry['aliases']]
+
+
 def character_candidates(text, reference):
-    return [entry['canonical_name'] for entry in reference if any(term_matches(term, text) for term in
-        [entry['canonical_name'], entry.get('chinese_label')] + [a['text'] for a in entry['aliases']])]
+    return [entry['canonical_name'] for entry in reference
+            if any(term_matches(term, text) for term in character_terms(entry))]
 
 
 def numeric_tokens(text):
@@ -99,6 +104,7 @@ def ground_claim(claim, row, characters):
     entry = next((e for e in character_reference(row['text_original'])
                   if e['canonical_name'] == claim['character']), None)
     if entry:
+        # The Chinese label is tried first here, unlike character_terms; it decides the recorded literal.
         literal = next((t for t in [entry.get('chinese_label'), entry['canonical_name']]
                         + [a['text'] for a in entry['aliases']] if term_matches(t, row['text_original'])), None)
         unverified = entry.get('normalization_status') == 'source_literal_unverified'

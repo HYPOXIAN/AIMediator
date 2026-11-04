@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 import unicodedata
 
+from .evidence import character_terms
 from .resources import asset_path
 from .schema import NULLABLE_NONEMPTY_STRING, STRING, enum, quality_obj, schema_errors
 POLICY_PATH = asset_path('configs/evidence-quality-policy.json')
@@ -200,8 +201,7 @@ def bind_claim(claim, record, reference):
     if not claim['evidence_ids'] or set(claim['evidence_ids']) != {s['evidence_id'] for s in spans}:
         errors.append('Claim evidence outside selected quality point')
     identity = next((e for e in reference if e['canonical_name'] == claim['character']), None)
-    terms = ([identity['canonical_name'], identity.get('chinese_label')]
-             + [a['text'] for a in identity['aliases']]) if identity else []
+    terms = character_terms(identity) if identity else []
     if not any(t and term_matches(t, p['character_literal'] or '') for t in terms):
         errors.append('Claim character differs from selected point')
     if claim['direction'] != p['direction']:
@@ -236,8 +236,8 @@ def summarize_opinions(records, reference):
             if routed['route'] != 'opinion_only':
                 continue
             p = routed['point']
-            matching = [e for e in reference if any(t and term_matches(t, p['character_literal']) for t in
-                        [e['canonical_name'], e.get('chinese_label')] + [a['text'] for a in e['aliases']])]
+            matching = [e for e in reference
+                        if any(t and term_matches(t, p['character_literal']) for t in character_terms(e))]
             if len(matching) != 1 or matching[0].get('normalization_status') == 'source_literal_unverified':
                 unresolved.append(routed)
                 continue
