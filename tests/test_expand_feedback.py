@@ -4,9 +4,7 @@ import sys
 import types
 import unittest
 
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts/collect'))
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts/experiments'))
 SPEC=importlib.util.spec_from_file_location('expansion',Path(__file__).resolve().parents[1]/'scripts/collect/expand_feedback.py')
 m=importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(m)

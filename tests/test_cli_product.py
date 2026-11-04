@@ -11,7 +11,7 @@ import unittest
 from unittest.mock import patch
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'src'))
-from aimediator import engine
+from aimediator import evidence
 from aimediator.cli import main
 from aimediator.common import Failure, canonical, input_rows, read, sha, write
 from aimediator.config import defaults, credential, resolve
@@ -70,7 +70,7 @@ class ProductTests(unittest.TestCase):
         ledger=read(run/'full-pipeline-coverage.json')
         self.assertEqual({r['comment_id'] for r in ledger},{r['record_id'] for r in rows})
         self.assertEqual(ledger[-1]['status'],'unsupported_language')
-        text='😀 Ryu. 龙！';units=engine.evidence_units(text)
+        text='😀 Ryu. 龙！';units=evidence.evidence_units(text)
         for unit in units:self.assertEqual(text[unit['start']:unit['end']],unit['text'])
 
     def test_completed_resume_relocation_no_generation(self):

@@ -9,12 +9,11 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
-sys.path.insert(0, str(ROOT / 'scripts'))
-sys.path.insert(0, str(ROOT / 'scripts/collect'))
-sys.path.insert(0, str(ROOT / 'scripts/experiments'))
-from aimediator import engine
+sys.path.insert(0, str(ROOT / 'scripts'))  # the forwarders, for the identity test until B4.2
+from aimediator import evidence
 from aimediator.config import defaults, embedding_endpoint, env_values
 from aimediator.inference import Transport
+from aimediator.runner import Runner
 
 
 class RefactoredBoundaries(unittest.TestCase):
@@ -32,20 +31,20 @@ class RefactoredBoundaries(unittest.TestCase):
                               importlib.import_module('aimediator.' + package))
 
     def test_character_reference_returns_new_objects(self):
-        expected = copy.deepcopy(engine.character_reference('Ryu'))
+        expected = copy.deepcopy(evidence.character_reference('Ryu'))
         self.assertIn({'text': 'Ryu'}, next(e for e in expected if e['canonical_name'] == 'Ryu')['aliases'])
-        reference = engine.character_reference('Ryu')
+        reference = evidence.character_reference('Ryu')
         for entry in reference:
             for alias in entry['aliases']:
                 alias['text'] = 'mutated'
             entry['aliases'].append({'text': 'mutated'})
             entry['canonical_name'] = 'mutated'
         reference.clear()
-        self.assertEqual(engine.character_reference('Ryu'), expected)
+        self.assertEqual(evidence.character_reference('Ryu'), expected)
 
     def test_progress_brackets_generation(self):
         events = []
-        runner = engine.Runner('', Path('.'), {}, progress=lambda *event: events.append(event))
+        runner = Runner('', Path('.'), {}, progress=lambda *event: events.append(event))
         with patch.object(runner, '_generate', return_value=({'ok': True}, {})):
             self.assertEqual(runner.generate('model', 'en', 'quality', {}, ['a']),
                              ({'ok': True}, {}))
