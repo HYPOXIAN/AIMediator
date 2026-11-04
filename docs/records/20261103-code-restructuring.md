@@ -659,6 +659,40 @@ mentions.
   script's identity).
 - Next: B2.5, session B2-2; blockers: none.
 
+### 2026-11-03 B2-2 (implementation)
+
+- Steps: B2.5 to B2.10 (`a2a96c4`, `af5c247`, `9ffb4fe`, `5c7a359`,
+  `7f0213e`, `2fa9304`); none started and stashed.
+- State: HEAD is this entry's commit (parent `2fa9304`); tests 222 (217
+  plus the 5 layering tests); lock green, fixture unchanged; rule check 0.
+  Suite 9.1 s. `engine.py` has 153 lines (759 at entry) and holds only its
+  docstring, import lines, `ROOT`, the `schema_errors` wrapper, `run`,
+  `main` and the `__main__` guard. B2-V checklist items 1 to 6, run at
+  `2fa9304`: the boundary check from `restructure-b1` and the commit
+  hygiene check print nothing; the move check from `restructure-b1` prints
+  `same` for 23 definitions of `engine.py` and `CHANGED run` (B2.1), and
+  for `demo.py` `same demo` and `CHANGED FixtureTransport` (listed in the
+  B2.9 commit); `git diff restructure-b0..HEAD -- tests/fixtures/` prints
+  nothing and the lock reports `378 keys, 0 differ`; the B2.2 grep prints
+  nothing and the layering test passes with no cycle; plan 8.5: 222 pass
+  from a foreign directory, which stays empty; plan 8.2: `"passed": true`,
+  `"commands": 18`, and every `.py` file in the wheel equals the checkout,
+  the five new modules included. All 73 tracked `.py` files under `src/`,
+  `tests/` and `scripts/` parse as Python 3.9. Plan 8.7 grep 2 (due after
+  B3.1): 29 lines in 5 modules.
+- Findings: one decision found during execution, implemented under plan
+  section 1, item 8 and open to the owner: `__init__.py` and the module
+  table (B2.10). No escalations. Noted in the step rows: `Counter` was
+  missing from the work order's B2.5 list; the B2.8 docstring paragraph
+  also appears in the `--help` description of `python3 -m
+  aimediator.engine`; after B2.9 the fixture's `api` calls `anchors()` once
+  per text until B5.10 caches it; the layering test also reads the
+  absolute `from aimediator` form, and fails on any subpackage, so B6.2
+  must extend it for `collection.*`. Still open for the owner and not
+  touched: the `replay_balance_admission.py` identity item from the B2-1
+  entry.
+- Next: B2-V (verification of B2, sets `restructure-b2`); blockers: none.
+
 ## Batch results
 
 ## Deferred
