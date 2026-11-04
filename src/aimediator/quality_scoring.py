@@ -18,7 +18,8 @@ from .common import sha as digest, strict_json, write as write_json
 def proportion(numerator, denominator):
     if not denominator:
         return {'numerator': numerator, 'denominator': denominator, 'value': None, 'wilson95': None}
-    p=numerator/denominator;z=1.959963984540054
+    p=numerator/denominator
+    z=1.959963984540054
     center=(p+z*z/(2*denominator))/(1+z*z/denominator)
     half=z*math.sqrt(p*(1-p)/denominator+z*z/(4*denominator**2))/(1+z*z/denominator)
     return {'numerator': numerator, 'denominator': denominator, 'value': p,
@@ -50,7 +51,8 @@ def prepare_dataset(rows, source_stage, out, limit=300, inspected_ids=()):
                 'relevance': None, 'segments': None, 'points': None, 'point_matches': None,
                 'equivalence_group': None, 'reviewer_a': None, 'reviewer_b': None,
                 'adjudication': None, 'notes': 'Merge paraphrase clusters before freezing splits.'})
-        if len(selected)>=limit:break
+        if len(selected)>=limit:
+            break
     out.mkdir(parents=True)
     write_json(out/'annotation-template.json',selected)
     write_json(out/'manifest.json',{'version':'evidence-quality-evaluation-v1',
@@ -64,29 +66,41 @@ def prepare_dataset(rows, source_stage, out, limit=300, inspected_ids=()):
 
 
 def score_group(labels, predictions, admission):
-    n=Counter();span=Counter();ratio_errors=[];equivalents=defaultdict(list)
+    n=Counter()
+    span=Counter()
+    ratio_errors=[]
+    equivalents=defaultdict(list)
     eligible_labels=[]
     for label in labels:
-        cid=label['comment_id'];pred=predictions.get(cid)
-        n['total']+=1;n['missing']+=pred is None
+        cid=label['comment_id']
+        pred=predictions.get(cid)
+        n['total']+=1
+        n['missing']+=pred is None
         n['failed']+=pred is not None and pred['status']=='failed'
         n['review']+=pred is not None and 'review' in pred['routes_present']
         if label.get('relevance') in ('related','unrelated') and cid in admission:
-            n['admitted']+=admission[cid];n['false_accept']+=admission[cid] and label['relevance']=='unrelated'
+            n['admitted']+=admission[cid]
+            n['false_accept']+=admission[cid] and label['relevance']=='unrelated'
         if label.get('points') is None or label.get('point_matches') is None:
             continue
         eligible_labels.append(label)
         gold={p['point_id']:p for p in label['points']}
-        if len(gold)!=len(label['points']):raise ValueError('Duplicate gold point IDs')
+        if len(gold)!=len(label['points']):
+            raise ValueError('Duplicate gold point IDs')
         predicted={r['point_id']:r for r in (pred or {}).get('routing',[]) if r.get('point_id')}
-        matches=label['point_matches'];aligned={};used=set()
+        matches=label['point_matches']
+        aligned={}
+        used=set()
         for match in matches:
             g,p=match['gold_point_id'],match['predicted_point_id']
             if g not in gold or p not in predicted or g in aligned or p in used:
                 raise ValueError('Invalid or duplicate adjudicated point alignment: '+cid)
-            aligned[g]=p;used.add(p)
+            aligned[g]=p
+            used.add(p)
         for gid,g in gold.items():
-            route=g['route'];p=predicted.get(aligned.get(gid));actual=p['route'] if p else None
+            route=g['route']
+            p=predicted.get(aligned.get(gid))
+            actual=p['route'] if p else None
             if not p and pred and g.get('segment_ids') and label.get('segments'):
                 gold_spans=[s for s in label['segments'] if s['segment_id'] in g['segment_ids']]
                 source_chars={i for s in gold_spans for i in range(s['start'],s['end']) if q.weight(label['text_original'][i])}
@@ -100,9 +114,11 @@ def score_group(labels, predictions, admission):
                 n['mechanism_excluded']+=actual=='exclude'
                 n['mechanism_review_loss']+=actual=='review' or pred is not None and pred['status']=='failed'
             if route=='opinion_only':
-                n['gold_general']+=1;n['general_upgrade']+=actual=='mechanism_evidence'
+                n['gold_general']+=1
+                n['general_upgrade']+=actual=='mechanism_evidence'
             if route=='system_evidence':
-                n['gold_system']+=1;n['system_misbind']+=actual in ('mechanism_evidence','opinion_only')
+                n['gold_system']+=1
+                n['system_misbind']+=actual in ('mechanism_evidence','opinion_only')
         n['pred_mechanism']+=sum(p['route']=='mechanism_evidence' for p in predicted.values())
         if label.get('equivalence_group'):
             signature=sorted((r['point']['scope'],r['point']['detail_level'],r['point']['direction'],r['route'],1)
@@ -110,12 +126,15 @@ def score_group(labels, predictions, admission):
             # Failures/missing predictions never count as equivalent success.
             equivalents[label['equivalence_group']].append(signature if pred and pred['status']=='completed' else None)
         if label.get('reviewer_type')=='human' and label.get('segments') is not None:
-            text=label['text_original'];measure={i for i,c in enumerate(text) if q.weight(c)}
+            text=label['text_original']
+            measure={i for i,c in enumerate(text) if q.weight(c)}
             actual={i for s in (pred or {}).get('annotation',{}).get('segments',[]) if s['content_kind']=='pure_emotion'
                     for i in range(s['start'],s['end'])}&measure if pred and pred.get('annotation') else set()
             expected={i for s in label['segments'] if s['content_kind']=='pure_emotion'
                       for i in range(s['start'],s['end'])}&measure
-            span['tp']+=len(actual&expected);span['pred']+=len(actual);span['gold']+=len(expected)
+            span['tp']+=len(actual&expected)
+            span['pred']+=len(actual)
+            span['gold']+=len(expected)
             if measure and pred and pred.get('emotion_ratio') is not None:
                 ratio_errors.append(abs(pred['emotion_ratio']-len(expected)/len(measure)))
     n['equivalence_pairs']=sum(len(v)*(len(v)-1)//2 for v in equivalents.values())
@@ -137,36 +156,46 @@ def score_group(labels, predictions, admission):
 
 
 def evaluate(labels, records, admission=None):
-    if len({r['comment_id'] for r in labels})!=len(labels):raise ValueError('Duplicate label IDs')
-    if len({r['comment_id'] for r in records})!=len(records):raise ValueError('Duplicate prediction IDs')
-    predictions={r['comment_id']:r for r in records};admission=admission or {}
+    if len({r['comment_id'] for r in labels})!=len(labels):
+        raise ValueError('Duplicate label IDs')
+    if len({r['comment_id'] for r in records})!=len(records):
+        raise ValueError('Duplicate prediction IDs')
+    predictions={r['comment_id']:r for r in records}
+    admission=admission or {}
     cluster_splits=defaultdict(set)
     for label in labels:
         cluster_splits[label['cluster_id']].add(label['split'])
-        if label.get('equivalence_group'):cluster_splits['equivalent:'+label['equivalence_group']].add(label['split'])
+        if label.get('equivalence_group'):
+            cluster_splits['equivalent:'+label['equivalence_group']].add(label['split'])
         if label.get('segments') is not None:
-            previous=0;covered=set()
+            previous=0
+            covered=set()
             for span in label['segments']:
                 if (type(span.get('start')) is not int or type(span.get('end')) is not int
                         or not previous<=span['start']<span['end']<=len(label['text_original'])
                         or span.get('quote')!=label['text_original'][span['start']:span['end']]):
                     raise ValueError('Invalid gold span binding')
-                previous=span['end'];covered.update(range(span['start'],span['end']))
+                previous=span['end']
+                covered.update(range(span['start'],span['end']))
             if any(not c.isspace() and i not in covered for i,c in enumerate(label['text_original'])):
                 raise ValueError('Incomplete gold spans')
         if label.get('points') is not None and any(p.get('route') not in q.ROUTES for p in label['points']):
             raise ValueError('Unknown gold point route')
-        if label['content_sha256']!=digest(label['text_original'].encode()):raise ValueError('Label source hash mismatch')
+        if label['content_sha256']!=digest(label['text_original'].encode()):
+            raise ValueError('Label source hash mismatch')
         pred=predictions.get(label['comment_id'])
-        if pred and pred['content_sha256']!=label['content_sha256']:raise ValueError('Prediction source hash mismatch')
-    if any(len(v)>1 for v in cluster_splits.values()):raise ValueError('Cluster crosses evaluation splits')
+        if pred and pred['content_sha256']!=label['content_sha256']:
+            raise ValueError('Prediction source hash mismatch')
+    if any(len(v)>1 for v in cluster_splits.values()):
+        raise ValueError('Cluster crosses evaluation splits')
     labeled=[l for l in labels if l.get('reviewer_type') in ('human','silver','agent_authored_synthetic')]
     # Do not pool unlike provenance or development/test data as an accuracy claim.
     groups={}
     for provenance in sorted({l['reviewer_type'] for l in labeled}):
         for split in sorted({l['split'] for l in labeled}):
             subset=[l for l in labeled if l['reviewer_type']==provenance and l['split']==split]
-            if not subset:continue
+            if not subset:
+                continue
             groups[provenance+':'+split]={'all':score_group(subset,predictions,admission),
                 'by_language':{lang:score_group([l for l in subset if l['language']==lang],predictions,admission)
                                for lang in sorted({l['language'] for l in subset})},
@@ -184,20 +213,30 @@ def evaluate(labels, records, admission=None):
 
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);sub=p.add_subparsers(dest='command',required=True)
-    a=sub.add_parser('prepare');a.add_argument('--dataset',type=Path,required=True)
+    p=argparse.ArgumentParser(description=__doc__)
+    sub=p.add_subparsers(dest='command',required=True)
+    a=sub.add_parser('prepare')
+    a.add_argument('--dataset',type=Path,required=True)
     a.add_argument('--source-stage',choices=['raw_pre_screen','screened','fixed_admission'],required=True)
-    a.add_argument('--inspected-labels',type=Path);a.add_argument('--limit',type=int,default=300);a.add_argument('--out',type=Path,required=True)
-    e=sub.add_parser('score');e.add_argument('--labels',type=Path,required=True);e.add_argument('--run',type=Path,required=True);e.add_argument('--out',type=Path,required=True)
+    a.add_argument('--inspected-labels',type=Path)
+    a.add_argument('--limit',type=int,default=300)
+    a.add_argument('--out',type=Path,required=True)
+    e=sub.add_parser('score')
+    e.add_argument('--labels',type=Path,required=True)
+    e.add_argument('--run',type=Path,required=True)
+    e.add_argument('--out',type=Path,required=True)
     args=p.parse_args()
     if args.command=='prepare':
         rows=[strict_json(line) for line in args.dataset.read_text(encoding='utf-8').splitlines() if line.strip()]
         inspected=[strict_json(line)['comment_id'] for line in args.inspected_labels.read_text(encoding='utf-8').splitlines() if line.strip()] if args.inspected_labels else []
         prepare_dataset(rows,args.source_stage,args.out,args.limit,inspected)
     else:
-        labels=strict_json(args.labels.read_text(encoding='utf-8'));records=strict_json((args.run/'evidence-quality.json').read_text(encoding='utf-8'))
-        relevance=args.run/'relevance.json';admission={r['comment_id']:r['agreement'] for r in strict_json(relevance.read_text(encoding='utf-8'))} if relevance.exists() else {}
+        labels=strict_json(args.labels.read_text(encoding='utf-8'))
+        records=strict_json((args.run/'evidence-quality.json').read_text(encoding='utf-8'))
+        relevance=args.run/'relevance.json'
+        admission={r['comment_id']:r['agreement'] for r in strict_json(relevance.read_text(encoding='utf-8'))} if relevance.exists() else {}
         write_json(args.out,evaluate(labels,records,admission))
 
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    main()

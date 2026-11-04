@@ -35,29 +35,47 @@ SPECIFIC=re.compile(r'\b(?:hit[ -]?box|hurt[ -]?box|frame[ -]?(?:data|advantage|
 
 
 def classify_rules(row):
- text=row['text_original'];char=bool(_char_en().search(text) or CHAR_ZH.search(text));game=bool(GAME.search(text));explicit=EXPLICIT.search(text);mech=MECH.search(text);qual=QUAL.search(text)
- if re.search(r'top[ -]?tier.{0,16}(?:editing|thumbnail|reviewing|video production)',text,re.I) and not COMBAT_MECH.search(text) and not char:return 'exclude','creator_video_or_review_meta_discussion',[]
- if re.search(r'(?:balance.{0,60}nostalgia|nostalgia.{0,90}balance)',text,re.I) and not COMBAT_MECH.search(text):return 'exclude','presentation_cosmetics_or_story',[]
- if explicit and re.search(r'(?:buff|nerf).{0,20}(?:graphics|soundtrack|outfits?|visuals?)',text,re.I) and not COMBAT_MECH.search(text) and not char:return 'exclude','presentation_cosmetics_or_story',[]
- if OTHER.search(text) and not game and not char and not COMBAT_MECH.search(text):return 'exclude','other_game_or_unrelated_reference',[]
- if SOLO.search(text) and not PVP.search(text) and not explicit:return 'exclude','single_player_story_or_pve_difficulty',[]
- if explicit:
-  return 'keep','explicit_balance_or_strength_claim',[explicit.group()]
- if char and STRENGTH.search(text):
-  return 'keep','character_strength_or_matchup_claim',[STRENGTH.search(text).group()]
- if SPECIFIC.search(text):return 'keep','specific_competitive_mechanic',[SPECIFIC.search(text).group()]
- if mech and qual and (COMBAT_MECH.search(text) or CONTROL.search(text)):
-  return 'keep','competitive_mechanic_with_claim',[mech.group(),qual.group()]
- if mech and not META.search(text) and not (SHOP.search(text) or PRESENTATION.search(text) or SOLO.search(text)):
-  return 'review','combat_mechanic_without_clear_balance_claim',[mech.group()]
- if char and re.search(r'\bhate\b|\bspam\w*\b|恶心|噁心|垃圾|大变|大變|体验|體驗',text,re.I) and not PRESENTATION.search(text):return 'review','character_complaint_without_clear_reason',[]
- if TECH.search(text):return 'exclude','technical_network_matchmaking_or_cheating',[]
- if META.search(text):return 'exclude','creator_video_or_review_meta_discussion',[]
- if SHOP.search(text):return 'exclude','purchase_price_or_monetization_without_balance',[]
- if SOLO.search(text):return 'exclude','single_player_story_or_pve_content',[]
- if PRESENTATION.search(text):return 'exclude','presentation_cosmetics_or_story',[]
- if GAMEPLAY.search(text):return 'exclude','general_gameplay_learning_without_balance_claim',[]
- return 'exclude','generic_reaction_or_insufficient_game_balance_evidence',[]
+    text=row['text_original']
+    char=bool(_char_en().search(text) or CHAR_ZH.search(text))
+    game=bool(GAME.search(text))
+    explicit=EXPLICIT.search(text)
+    mech=MECH.search(text)
+    qual=QUAL.search(text)
+    if re.search(r'top[ -]?tier.{0,16}(?:editing|thumbnail|reviewing|video production)',text,re.I) and not COMBAT_MECH.search(text) and not char:
+        return 'exclude','creator_video_or_review_meta_discussion',[]
+    if re.search(r'(?:balance.{0,60}nostalgia|nostalgia.{0,90}balance)',text,re.I) and not COMBAT_MECH.search(text):
+        return 'exclude','presentation_cosmetics_or_story',[]
+    if explicit and re.search(r'(?:buff|nerf).{0,20}(?:graphics|soundtrack|outfits?|visuals?)',text,re.I) and not COMBAT_MECH.search(text) and not char:
+        return 'exclude','presentation_cosmetics_or_story',[]
+    if OTHER.search(text) and not game and not char and not COMBAT_MECH.search(text):
+        return 'exclude','other_game_or_unrelated_reference',[]
+    if SOLO.search(text) and not PVP.search(text) and not explicit:
+        return 'exclude','single_player_story_or_pve_difficulty',[]
+    if explicit:
+        return 'keep','explicit_balance_or_strength_claim',[explicit.group()]
+    if char and STRENGTH.search(text):
+        return 'keep','character_strength_or_matchup_claim',[STRENGTH.search(text).group()]
+    if SPECIFIC.search(text):
+        return 'keep','specific_competitive_mechanic',[SPECIFIC.search(text).group()]
+    if mech and qual and (COMBAT_MECH.search(text) or CONTROL.search(text)):
+        return 'keep','competitive_mechanic_with_claim',[mech.group(),qual.group()]
+    if mech and not META.search(text) and not (SHOP.search(text) or PRESENTATION.search(text) or SOLO.search(text)):
+        return 'review','combat_mechanic_without_clear_balance_claim',[mech.group()]
+    if char and re.search(r'\bhate\b|\bspam\w*\b|恶心|噁心|垃圾|大变|大變|体验|體驗',text,re.I) and not PRESENTATION.search(text):
+        return 'review','character_complaint_without_clear_reason',[]
+    if TECH.search(text):
+        return 'exclude','technical_network_matchmaking_or_cheating',[]
+    if META.search(text):
+        return 'exclude','creator_video_or_review_meta_discussion',[]
+    if SHOP.search(text):
+        return 'exclude','purchase_price_or_monetization_without_balance',[]
+    if SOLO.search(text):
+        return 'exclude','single_player_story_or_pve_content',[]
+    if PRESENTATION.search(text):
+        return 'exclude','presentation_cosmetics_or_story',[]
+    if GAMEPLAY.search(text):
+        return 'exclude','general_gameplay_learning_without_balance_claim',[]
+    return 'exclude','generic_reaction_or_insufficient_game_balance_evidence',[]
 
 
 def classify(row, overrides=None):
@@ -77,7 +95,9 @@ def load_sources(folder):
     files=sorted(folder.glob('*.jsonl'))
     if not files:
         raise ValueError('No input JSONL files found')
-    union={};members={};hashes={}
+    union={}
+    members={}
+    hashes={}
     for path in files:
         hashes[path.name]=hashlib.sha256(path.read_bytes()).hexdigest()
         ids=[]
@@ -90,7 +110,8 @@ def load_sources(folder):
                 raise ValueError('Conflicting copies of a record across input views: '+identity)
             if identity in ids:
                 raise ValueError('Duplicate ID within input view: '+path.name)
-            union[identity]=row;ids.append(identity)
+            union[identity]=row
+            ids.append(identity)
         members[path.name]=ids
     return union,members,hashes
 
@@ -110,7 +131,8 @@ def main(argv=None):
     parser.add_argument('--output',type=Path)
     parser.add_argument('--language-corrections',type=Path)
     parser.add_argument('--overrides',type=Path,default=ROOT/'configs/feedback-screening-overrides.json')
-    args=parser.parse_args(argv);output=args.output or args.input/'screened'
+    args=parser.parse_args(argv)
+    output=args.output or args.input/'screened'
     if output.resolve()==args.input.resolve():
         parser.error('Output must differ from the original source directory')
     union,members,hashes=load_sources(args.input)
@@ -119,7 +141,8 @@ def main(argv=None):
     if len(overrides)!=len(raw_overrides):
         raise ValueError('Duplicate boundary override IDs')
     language_corrections={r['record_id']:r for r in json.loads(args.language_corrections.read_text(encoding='utf-8'))['entries']} if args.language_corrections else {}
-    tagged={};decisions=[]
+    tagged={}
+    decisions=[]
     for identity,row in union.items():
         decision,reason,signals,method=classify(row,overrides)
         result={'version':'coarse-v1','decision':decision,'reason':reason,'signals':signals,'method':method,'text_sha256':hashlib.sha256(row['text_original'].encode()).hexdigest(),'human_review':'pending'}
@@ -161,8 +184,10 @@ def main(argv=None):
     summary['original_fields_unchanged_except_explicit_language_corrections']=True
     (output/'summary.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     lines=['# Coarse Balance Relevance Screening','','Scope: Street Fighter 6 competitive character/system balance. Original source files and text are unchanged. All five overlapping input views were classified once per stable source ID.','','Keep: explicit balance/strength opinions, requested buffs/nerfs, concrete offensive/defensive mechanics, matchup/resource/risk-reward claims, and Modern/Classic competitive fairness. Favorable, negative, sarcastic, and emotional balance opinions can all be retained.','','Exclude: unrelated games without an SF6 claim; shopping/price-only discussions; cosmetics, visuals, music, story and PvE-only content; network/crash/matchmaking-only issues; video/creator discussion; general learning/accessibility praise; generic reactions without a balance claim. Mixed reviews remain intact when a relevant balance claim exists.','','Review: potentially relevant but under-specified character/control complaints and ambiguous mechanic-only mentions. These are not included in the kept files.','','No date, patch, character-roster, sentiment, language/script, toxicity, truthfulness, or authenticity filter was applied. Inclusion does not confirm the claimed mechanic is true. Some records concern later patches. Original language labels are inherited and unverified.','','Rules and boundary corrections are coarse judgments, not a measured semantic-accuracy guarantee or human-approved labels. A human should still review the kept material and the separate uncertain set.','',f"Unique records: {len(union)}; kept: {len(kept)}; excluded: {len(excluded)}; needs review: {len(review)}.",'','## Output views','']
-    if args.language_corrections:lines+=['', 'Explicit inspected language-label corrections were applied only to output copies. Original raw labels/text are unchanged; language_correction preserves old labels and reasons. English/Chinese views are rebuilt from corrected labels, so source-view input counts can differ from normalized output-view counts. Other unverified language labels are inherited.', '']
-    for name,counts in file_stats.items():lines.append(f"- {name}: {counts['input']} input -> {counts['keep']} kept; {counts['exclude']} excluded; {counts['review']} needs review.")
+    if args.language_corrections:
+        lines+=['', 'Explicit inspected language-label corrections were applied only to output copies. Original raw labels/text are unchanged; language_correction preserves old labels and reasons. English/Chinese views are rebuilt from corrected labels, so source-view input counts can differ from normalized output-view counts. Other unverified language labels are inherited.', '']
+    for name,counts in file_stats.items():
+        lines.append(f"- {name}: {counts['input']} input -> {counts['keep']} kept; {counts['exclude']} excluded; {counts['review']} needs review.")
     lines+=['','Do not sum overlapping language/platform views. Use records.jsonl as the canonical kept dataset. excluded.jsonl retains reversible exclusions with reasons; decisions.jsonl records every decision; needs-review.jsonl is the uncertain set. YouTube-derived files inherit their original refresh/delete obligations.','','## Human review','','Reviewer:','Decision:','Notes:','','## Uncertain records','']
     for row in review:
         lines += [f"### {row['record_id']}",'',f"Source: {row['source_url']}",'',f"Reason: {row['coarse_screening']['reason']}",'','Original text:','']+['> '+line for line in row['text_original'].splitlines()]+['','Reviewer:','Decision:','Notes:','']
