@@ -1,3 +1,5 @@
+import fcntl
+import io
 import json
 import hashlib
 from pathlib import Path
@@ -95,6 +97,19 @@ class BalancedCollectionTests(unittest.TestCase):
             self.assertFalse(meta['errors'])
             request = json.loads(next(Path(temp).rglob('request.json')).read_text(encoding='utf-8'))
             self.assertEqual(request['options']['num_gpu'], 0)
+
+    def test_held_collector_lock_is_reported_through_the_parser(self):
+        with tempfile.TemporaryDirectory() as temp:
+            state = Path(temp)
+            argv = ['collect_balanced_feedback.py', '--out', str(state / 'out')]
+            with (state / 'feedback-collector.lock').open('a', encoding='utf-8') as held:
+                fcntl.flock(held, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                with patch.object(b.c, 'STATE', state), patch.object(sys, 'argv', argv), \
+                        patch('sys.stderr', new_callable=io.StringIO) as stderr:
+                    with self.assertRaises(SystemExit) as raised:
+                        b.main()
+        self.assertEqual(raised.exception.code, 2)
+        self.assertIn('Another collector is running in this project', stderr.getvalue())
 
 
 if __name__ == '__main__':

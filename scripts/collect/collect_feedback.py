@@ -378,42 +378,45 @@ def main():
     STATE.mkdir(parents=True, exist_ok=True)
     lock = (STATE / "feedback-collector.lock").open("a", encoding="utf-8")
     try:
-        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except BlockingIOError:
-        parser.error("Another collector is running in this project")
-    config = json.loads(args.config.read_text(encoding="utf-8"))
-    output = args.output or ROOT / "data/raw/feedback" / dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
-    store = Store(output, config)
-    client = Client(STATE / "feedback-http-state.json")
-    statuses = {}
-    interrupted = False
-    try:
-        for platform in ("steam", "bluesky", "youtube"):
-            settings = config[platform]
-            if platform not in args.platforms or not settings["enabled"]:
-                statuses[platform] = "not_selected"
-                continue
-            if store.complete(platform):
-                statuses[platform] = "target_already_reached"
-                continue
-            settings["quota_used"] = store.state.get("youtube_quota_used", 0) if platform == "youtube" else 0
-            try:
-                {"steam": steam, "bluesky": bluesky, "youtube": youtube}[platform](client, store, settings)
-                statuses[platform] = "target_reached" if store.complete(platform) else "partial_or_exhausted"
-            except Halt as error:
-                statuses[platform] = str(error)
-                print(platform + ": " + str(error), flush=True)
-            finally:
-                if platform == "youtube":
-                    store.state["youtube_quota_used"] = settings.get("quota_used", 0)
-                store.save()
-    except KeyboardInterrupt:
-        interrupted = True
-        statuses[platform] = "interrupted; resume with the same output directory"
-        store.save()
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            parser.error("Another collector is running in this project")
+        config = json.loads(args.config.read_text(encoding="utf-8"))
+        output = args.output or ROOT / "data/raw/feedback" / dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+        store = Store(output, config)
+        client = Client(STATE / "feedback-http-state.json")
+        statuses = {}
+        interrupted = False
+        try:
+            for platform in ("steam", "bluesky", "youtube"):
+                settings = config[platform]
+                if platform not in args.platforms or not settings["enabled"]:
+                    statuses[platform] = "not_selected"
+                    continue
+                if store.complete(platform):
+                    statuses[platform] = "target_already_reached"
+                    continue
+                settings["quota_used"] = store.state.get("youtube_quota_used", 0) if platform == "youtube" else 0
+                try:
+                    {"steam": steam, "bluesky": bluesky, "youtube": youtube}[platform](client, store, settings)
+                    statuses[platform] = "target_reached" if store.complete(platform) else "partial_or_exhausted"
+                except Halt as error:
+                    statuses[platform] = str(error)
+                    print(platform + ": " + str(error), flush=True)
+                finally:
+                    if platform == "youtube":
+                        store.state["youtube_quota_used"] = settings.get("quota_used", 0)
+                    store.save()
+        except KeyboardInterrupt:
+            interrupted = True
+            statuses[platform] = "interrupted; resume with the same output directory"
+            store.save()
+        finally:
+            export(store, statuses, client)
+        return 130 if interrupted else 0 if all(store.complete(p) for p in args.platforms if config[p]["enabled"]) else 2
     finally:
-        export(store, statuses, client)
-    return 130 if interrupted else 0 if all(store.complete(p) for p in args.platforms if config[p]["enabled"]) else 2
+        lock.close()
 
 
 if __name__ == "__main__":
