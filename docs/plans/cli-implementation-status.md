@@ -2,7 +2,7 @@
 
 - Type: Plan (implementation status)
 - Status: Active
-- Updated: 2026-11-03
+- Updated: 2026-11-04
 - Applies to: `aimediator` 0.1.0; engineering acceptance of 2026-10-28
 
 Specification: [design/cli.md](../design/cli.md).
@@ -147,6 +147,15 @@ Section 5 permits layout changes: evidence/retrieval primitives remain in the
 shared engine module, with separate configuration, persistence, inference,
 operations, review, reporting, evaluation and fixture services. This preserves
 behavior/patch seams without introducing another engine implementation.
+Note (2026-11-04): the code restructuring split the shared engine module by
+responsibility into `schema`, `evidence`, `stages`, `runner`, `retrieval` and
+`pipeline`, moved the fixture transport into `fixture_transport`, and added
+the research modules `design_briefs`, `diagnostics` and `collection/`.
+`engine` remains as the legacy research runner only, and injected transports
+replaced the patch seams. The layout, its layers and the module contracts are
+in [design/cli.md](../design/cli.md) section 5; ADR
+[0002](../decisions/0002-module-boundaries-and-entry-points.md) records the
+boundaries.
 Linux is the supported OS. Exact runtime identity intentionally rejects resume
 under changed Python/NumPy. Legacy analysis resume, review re-audit, semantic
 cross-language clustering and collector/index-management commands are outside V1.

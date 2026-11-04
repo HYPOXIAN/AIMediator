@@ -48,7 +48,7 @@ Documents are listed by path under `docs/`; `README.md` is the root README.
 
 | Path | Points to | Used by | Removal |
 | ---- | --------- | ------- | ------- |
-| `data/evaluation/evidence-quality-synthetic-v1/cases.json` | `../../../src/aimediator/assets/fixtures/cases.json` | tests: `test_evaluation_sets.py` checks it against `cases_sha256` in the set's `manifest.json`; docs: `records/20261026-evidence-quality-implementation.md` | kept (CR-D08): member of the frozen evaluation set `evidence-quality-synthetic-v1` |
+| `data/evaluation/evidence-quality-synthetic-v1/cases.json` | `../../../src/aimediator/assets/fixtures/cases.json` | tests: `test_evaluation_sets.py` checks it against `cases_sha256` in the set's `manifest.json`; docs: `README.md` ("Layout"), `decisions/0002-module-boundaries-and-entry-points.md`, `records/20261026-evidence-quality-implementation.md` | kept (CR-D08): member of the frozen evaluation set `evidence-quality-synthetic-v1` |
 
 ## Symlinks to packaged prompts
 
@@ -115,3 +115,13 @@ commands are package modules run with `python3 -m aimediator.<module>`.
   "Used by" cell drops `test_evidence_quality.py`, which reads the packaged
   fixture through `tests/support.py` since step B3.2. The register now lists
   1 symlink and no forwarding script.
+- 2026-11-04 (code restructuring step B7.3): state at the end of the code
+  restructuring, checked against the tree: 1 symlink, the `cases.json` link
+  of the frozen evaluation set (CR-D08), and no forwarding script.
+  `git ls-files -s` lists that one symlink, `scripts/` has no files at its
+  top level, and no tracked script's docstring begins with "Compatibility
+  entry point". The link's "Used by" cell adds `README.md` and ADR 0002,
+  which name the path since steps B4.3 and B4.5. The restructuring's plan,
+  blueprint and B4 work order also name it; they are not listed, because
+  they move to `docs/archive/` when the restructuring closes. No layer
+  changed.

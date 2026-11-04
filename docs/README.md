@@ -20,7 +20,7 @@ RULES.md D1. Records, decisions and meeting notes are frozen once final
 
 | Document | Type | Status | Description |
 | -------- | ---- | ------ | ----------- |
-| [cli.md](design/cli.md) | Design | Active | CLI specification: product invariants, command contract, package architecture, configuration, run persistence, coverage and report contracts. |
+| [cli.md](design/cli.md) | Design | Active | CLI specification: product invariants, command contract, package layout with its layers and module contracts, configuration, run persistence, coverage and report contracts. |
 | [balance-analysis.md](design/balance-analysis.md) | Design | Active | Bilingual evidence-grounded balance pipeline: prompts and routing, admission, extraction, source checks, report files and source review. |
 | [evidence-quality.md](design/evidence-quality.md) | Design | Active | Pre-implementation specification of the evidence-quality module: segment annotation, emotion ratio, routing, integration, tests and evaluation targets. |
 | [emotion-quantification-and-evidence-isolation.md](design/emotion-quantification-and-evidence-isolation.md) | Design | Active | Short description of the implemented evidence-quality module: flow, segment labels, emotion ratio and evidence routes. |
@@ -67,7 +67,7 @@ RULES.md D1. Records, decisions and meeting notes are frozen once final
 
 | Document | Type | Status | Description |
 | -------- | ---- | ------ | ----------- |
-| [compatibility-layers.md](reference/compatibility-layers.md) | Reference | Active | Register of compatibility symlinks and forwarding scripts with their removal conditions (RULES.md G2). |
+| [compatibility-layers.md](reference/compatibility-layers.md) | Reference | Active | Register of compatibility symlinks and forwarding scripts with their removal conditions (RULES.md G2); one symlink remains. |
 | [glossary.md](reference/glossary.md) | Reference | Active | Street Fighter 6 bilingual glossary: provenance, integration rules and all entries with aliases. |
 | [glossary-vector-index.md](reference/glossary-vector-index.md) | Reference | Active | Glossary vector index: configuration, build and search commands, storage layout. |
 

@@ -92,6 +92,8 @@ Current implementation:
   writes derived review files into the run directory. Note (2026-11-04): now
   `aimediator.legacy_review`, run as `python3 -m aimediator.legacy_review`.
 - `scripts/experiments/prepare_balance_design.py` separates evidence from engineering readiness.
+  Note (2026-11-04): its readiness logic is now `aimediator.design_briefs`
+  (code restructuring step B6.3); the script keeps its flags and calls it.
 - `evaluate_evidence_quality.py` supplies annotation preparation and quality
   scoring. `scripts/experiments/evaluate_balance_review.py` is a different, frozen-silver
   retrieval experiment; it is not an arbitrary-dataset evaluator. Note
@@ -424,34 +426,226 @@ Record the exact Python, NumPy, package version, and code/resource hashes per
 experiment; a package version range is not an experiment lockfile. Build a wheel
 and sdist and record the tested dependency versions in the release validation.
 
-Target structure, with modules combined where this reduces refactor risk:
+Layout of the package on 2026-11-04, at the end of the code restructuring,
+grouped by layer from top to bottom:
 
 ```text
 src/aimediator/
-  __init__.py                 # package version
-  __main__.py                 # main() entry
-  cli.py                     # parsing, rendering, exit translation
-  config.py                  # strict JSON config, override resolution, redaction
-  preflight.py               # shared doctor/analyze checks
-  resources.py               # importlib.resources, no repo-root assumptions
-  pipeline.py                # run(config, store, transports), no argparse globals
-  retrieval.py               # existing topic-prototype retrieval
-  inference.py               # Ollama/embedding clients and fixture interfaces
-  evidence.py                # schemas, source units, grounding, numerical checks
-  evidence_quality.py        # existing quality logic
-  balance_policy.py          # existing rules
-  run_store.py               # identity, snapshots, requests, locking, atomic writes
-  review.py                  # export/import and immutable review overlays
-  reporting.py               # deterministic automatic/reviewed views
-  evaluation.py              # quality scoring adapter
-  demo.py                    # injected fixture execution
+  __init__.py              # package version; imports nothing from the package
+  __main__.py              # python3 -m aimediator: calls cli.main
+  # interfaces
+  cli.py                   # parsing, rendering, exit translation
+  presentation.py          # business-only output of the demonstration launcher
+  # services
+  operations.py            # preflight, doctor, analyze, status
+  review.py                # read-only run adapters, review export/import, overlays
+  legacy_review.py         # source review of research runs
+  reporting.py             # deterministic automatic/reviewed report exports
+  evaluation.py            # quality scoring adapter for CLI runs
+  quality_scoring.py       # annotation preparation and quality scoring
+  demo.py                  # offline demo through the real pipeline boundaries
+  engine.py                # legacy research runner
+  # orchestration
+  pipeline.py              # analysis stages over one RunState
+  # infrastructure
+  inference.py             # Ollama HTTP calls and the production Transport
+  runner.py                # content-addressed journal of model requests
+  retrieval.py             # embedding retrieval against the topic anchors
+  run_store.py             # identity, snapshots, locking, lifecycle state
+  fixture_transport.py     # authored fixture transport of the demo
+  # domain
+  evidence.py              # source units, numeric tokens, characters, grounding
+  evidence_quality.py      # span validation and information-point routing
+  stages.py                # per-stage request data, options, schemas, normalization
+  # foundation
+  common.py                # strict JSON, canonical bytes, hashing, atomic writes
+  schema.py                # JSON-schema builders, constants and validator
+  resources.py             # packaged assets, prompts, workspace root
+  config.py                # strict JSON config, override resolution, redaction
+  balance_policy.py        # identity, retrieval triage and numeric rules
+  glossary_vectors.py      # glossary vector index
+  # research, outside the CLI path
+  design_briefs.py         # engineering-brief readiness
+  diagnostics.py           # shared live extract, ground and audit loop
+  collection/              # collectors and screening: client, store, sources,
+                           #   export, screening, balanced, expansion
   assets/
-    prompts/                 # active paired prompts and quality appendices
-    configs/                 # routing and policies
-    glossary.json
-    retrieval-anchors.json   # exact current POS/NEG values
-    fixtures/                # authored, synthetic, redistributable examples
+    prompts/               # active paired prompts and quality appendices
+    configs/               # routing and policies
+    data/glossary.json
+    retrieval-anchors.json # exact positive and negative anchor texts
+    fixtures/              # authored, synthetic, redistributable examples
 ```
+
+A module imports only the package modules that its row in the table of
+`tests/test_module_layers.py` allows: its own layer or the ones below it,
+and never in a cycle. The test reads every module, imports inside functions
+included, and also checks that importing a module reads no file. Every
+module may import `aimediator.__version__`. ADR
+[0002](../decisions/0002-module-boundaries-and-entry-points.md) records the
+decision. `run_store.code_manifest` and the legacy runner's
+`shared_code_sha256` and `code-snapshot/` cover the top-level modules,
+`design_briefs` and `diagnostics` included; the `collection/` subpackage is
+outside run identities.
+
+The research commands are package modules: `python3 -m aimediator.engine`,
+`.legacy_review`, `.quality_scoring` and `.glossary_vectors`, which need
+`pip install -e .` or `PYTHONPATH=src`. `scripts/` has no files at its top
+level. The scripts in `scripts/collect/` and `scripts/experiments/` put the
+checkout's `src/` first on `sys.path` and import `aimediator`; their first
+docstring line never begins with "Compatibility entry point" (RULES.md G2).
+
+Module contracts. The names below are each module's surface for other
+modules, scripts and tests; a change to one updates every caller in the
+package, scripts and tests together. Two rules hold for every module.
+Serialization order is behavior: a dict literal, a schema's properties or a
+list that reaches a request or an artifact keeps its order, and `sort_keys`
+is neither added nor removed. The CLI maps exception types to exit codes, so
+every path keeps the exception type it raises.
+
+- `common`: `strict_json` (duplicate keys and non-finite numbers raise
+  `ValueError`), `canonical` (sorted, compact UTF-8 JSON bytes), `sha`,
+  `read`, `write` (indented, unsorted UTF-8 JSON, replaced atomically through
+  a synced temporary file), `new_path`, `input_rows`, and `Failure(code,
+  message)`, which carries the CLI exit code.
+- `resources`: `asset_path(name='')` and `module_path(name)`. `glossary()`
+  and `anchors()` load once per process, and callers never mutate the
+  result; `retrieval` relies on exactly 10 positive and 10 negative anchors.
+  `prompts(mode)` returns stage, then language, then text for `relevance`,
+  `retrieval_review`, `extract` and `verify`, plus `quality` in `shadow` and
+  `enforce`; in `enforce`, `extract` and `verify` get `'\n'` and the
+  `quality-extract` or `quality-verify` appendix. `operations.prompts_for` is
+  an alias. `workspace_root()` returns the checkout root when the package is
+  imported from a checkout holding `RULES.md` and `pyproject.toml`, and the
+  working directory otherwise, evaluated at call time.
+- `schema`: `obj(properties)` (keys `type`, `additionalProperties`,
+  `properties`, `required`) and `quality_obj(properties)` (keys `type`,
+  `properties`, `required`, `additionalProperties`). They differ only in key
+  order, which reaches the model through the request, so both are frozen and
+  `tests/test_schema.py` pins each. Also `arr(items)`, `enum(values)`, the
+  constants `STRING`, `NULLABLE_STRING`, `NULLABLE_NONEMPTY_STRING` and
+  `BOOL`, and the validator `schema_errors(value, schema, path='$')`.
+- `evidence`: `evidence_units`, `numeric_tokens`, `PARAMETER`, `CLAIM`,
+  `character_reference(text='')` (new objects on every call, built from
+  `resources.glossary()`), `character_terms(entry)` (canonical name, Chinese
+  label, then the alias texts, unfiltered; callers filter),
+  `character_candidates(text, reference)` and `ground_claim(claim, row,
+  characters) -> (errors, enriched or None)`, whose span invariant raises
+  `AssertionError` explicitly, so it holds under `python -O`.
+- `stages`: `schema_for(stage, ids, data=None)`, `exact_coverage(rows, key,
+  expected)`, `prepare(stage, data, ids)` (the audit view for `verify`,
+  `data` itself for every other stage), `options(stage, quality_policy)`
+  (`temperature` 0, `seed` 42, `num_ctx` 8192, `num_predict` 4096 for
+  `extract` and 256 otherwise; `quality` takes `num_predict` and `num_ctx`
+  from the policy) and `normalize(stage, parsed, ids, data) -> (parsed or
+  None, errors)`, which `Runner` calls only after the schema check passed.
+- `inference`: `api`, `streamed_chat`, `repeated_claim`, the production
+  `Transport(cfg, key=None, folder=None)` with `tags`, `api`, `embed` and
+  `chat`, and `probe(cfg, transport, require_embedding=True)`, which checks
+  availability only.
+- `runner`: `Runner(base, folder, prompts, quality_identity=None,
+  quality_policy=None, chat_transport=None, progress=None, log=None)` with
+  `runtime_options` (default `{}`), `cached_single_ids(model, language,
+  stage)` and `generate(model, language, stage, data, ids) -> (parsed or
+  None, meta)`; `meta` holds `request_id`, `errors` and `elapsed_seconds`.
+  `progress(stage, ids, None)` runs before a request and `progress(stage,
+  ids, bool(parsed))` after it; `log` receives `'<stage>: <model>, <n>
+  items'`. Each request is journaled under `requests/<stage>/<request_id>/`
+  (`request.json`, `response.json`, `validation.json`,
+  `partial-output.txt`). Stages other than `quality` propagate transport
+  errors and unreadable cache files; `quality` turns them into failed
+  attempts with `done_reason` `transport_error`, `invalid_cache` or
+  `invalid_response`.
+- `retrieval`: `retrieve(rows, base, folder, model, embedding_config=None,
+  api_transport=None, embed_transport=None, log=None)` writes
+  `embeddings/<sha256>.json` and `retrieval.json`; `log` receives the
+  `'Embedding <n>/<total>'` lines.
+- `pipeline`: `VERSION` (`'balance-evidence-v2'`), `relevance_agrees`,
+  `batches`, `aggregate`, `quality_source_counts`, `build_full_coverage`,
+  `validate_modes`, the `RunState` dataclass shared by the stage functions
+  (`triage`, `review_retrieval`, `admit_relevance`, `assess_quality`,
+  `extract_claims`, `audit_claims`, `summarize`, `report_quality`,
+  `assemble`), and `process(args, rows, routing, models, prompts,
+  quality_identity, quality_policy, identity, embedding_config=None,
+  runner_factory=Runner, retrieval_service=retrieve, log=None)`; `log`
+  receives the summary JSON text. `KeyboardInterrupt` passes through
+  `process`; `operations.analyze` handles it.
+- `run_store`: run identity (`code_manifest`, `resource_manifest`,
+  `identity`), `initialize`, the advisory `lock`, `state(folder, status,
+  stage, reason=None)` (reads only request validations that are new or
+  changed since its last call), `load_resume`, `coverage`,
+  `technical_failures` and `snapshot_artifacts`.
+- `fixture_transport`: `FixtureTransport(cfg, key=None, folder=None)`, with
+  provenance `agent_authored_synthetic_fixture_transports`; `demo` imports
+  it, so `demo.FixtureTransport` stays importable.
+- `operations`: `preflight`, `doctor`, `analyze` and `status`; progress
+  lines go to stderr.
+- `engine`: `ROOT` (`workspace_root()`), `run(args, *, api_transport=None,
+  chat_transport=None, embed_transport=None, retrieval_service=None,
+  log=None)` and `main()`, which passes a printer as `log`. When `run` first
+  creates a run manifest, it also writes `code-snapshot/<module>.py` for
+  every top-level package module.
+- `design_briefs`: `validate_move_data`, `quality_design_errors` and
+  `prepare_briefs(claims, move_data=None, target_patch=None,
+  pending_adjudication_ids=(), quality_mode=None)`; it imports nothing from
+  the package.
+- `diagnostics`: `extract(runner, model, language, row, *,
+  allowed_points=None)` sends one extraction request whose data holds
+  `comments` (one entry with `comment_id`, `units`, then
+  `allowed_quality_points` when given) and then
+  `character_normalization_reference`.
+  `audit(runner, model, language, row, claims, characters, *,
+  quality_record=None)` grounds each claim, binds it when a quality record
+  is given, sends the `verify` request only when no error remains, and
+  returns records with `index`, `claim`, `enriched`, `errors`, `audit` and
+  `audit_meta`. Each script maps the records to its own output keys.
+- `collection`: modules `client`, `store`, `sources`, `export`, `screening`,
+  `balanced` and `expansion`. `sources`, `balanced`, `expansion` and
+  `screening` each expose `main(argv=None)` for the matching script in
+  `scripts/collect/`. The state directory is `workspace_root() / 'runs/state'`.
+- `config`, `balance_policy`, `evidence_quality`, `glossary_vectors`,
+  `review`, `legacy_review`, `reporting`, `evaluation`, `quality_scoring`,
+  `demo`, `cli` and `presentation` keep the responsibilities and behavior
+  they had before the restructuring. What changed is where shared helpers
+  come from: `evidence_quality` takes its schema builders, constants and
+  validator from `schema`, and its character terms and numeric tokens from
+  `evidence`; `balance_policy` builds the same term list inline, because
+  `evidence` imports it; `demo` imports `FixtureTransport`;
+  `glossary_vectors.ROOT` is `workspace_root()`; `operations`, `review`,
+  `legacy_review`, `reporting`, `evaluation` and `demo` import the split
+  modules instead of `engine`.
+
+Analysis modules do not print (`common`, `schema`, `resources`, `config`,
+`balance_policy`, `evidence`, `evidence_quality`, `stages`, `inference`,
+`runner`, `retrieval`, `pipeline`, `run_store`, `review`, `reporting`,
+`evaluation`); they report through `log` or `progress` callbacks. The order
+and content of every model request is frozen. The user content is
+`json.dumps({**data, 'response_schema': schema}, ensure_ascii=False)`, the
+payload keys are `model`, `messages`, `format`, `stream`, `keep_alive` and
+`options`, and `runtime_options` come after the stage options. The cache
+identity is the SHA-256 of the payload with `stream` false, plus
+`pipeline_quality_identity` when set, dumped with `sort_keys`. The write
+points and order of the run artifacts are frozen too, because partial runs,
+resume, `status` and partial reports read them: per model, `relevance.json`
+and `review-queue.json` after relevance; the quality, extraction and audit
+progress files after each record or batch; and at the end the quality
+artifacts (shadow and enforce), then `relevance.json`,
+`validated-claims.json`, `quarantined-claims.json`, `request-trace.json`,
+`summary.json` and `balance-report.json`. `tests/test_behavior_lock.py`
+checks request digests and artifacts against a fixture.
+
+Difference from the original target (2026-11-04). The 2026-10-28 target
+listed 17 modules. The CLI implementation kept the shared runner as `engine`,
+added `common`, `operations` (which holds the preflight the target placed in
+a `preflight` module), `legacy_review`, `quality_scoring`, `glossary_vectors`
+and `presentation`, and stored the glossary as `assets/data/glossary.json`.
+The 2026-11 code restructuring then split `engine` into the target's
+`evidence`, `retrieval` and `pipeline`, and added `schema` (the target put
+schemas in `evidence`), `stages`, `runner`, `fixture_transport` (from
+`demo`), and the research modules `design_briefs`, `diagnostics` and
+`collection/`. `engine` stays as the legacy research runner only. The
+migration guidance below is the original plan of the 2026-10-28 design; it
+is complete.
 
 The CLI only parses options and calls application services. The core returns
 structured results and emits progress events; it must not invoke the CLI,

@@ -4,8 +4,8 @@ A local LLM research prototype for analyzing Street Fighter 6 community feedback
 
 The installable Linux `aimediator` CLI provides explicit input analysis, bounded
 resume, offline status, immutable source review, deterministic report exports,
-quality evaluation and a packaged bilingual offline demo. It uses the existing
-Python engine in-process. Default evidence quality remains `off`; examples
+quality evaluation and a packaged bilingual offline demo. It runs the research
+analysis pipeline in-process. Default evidence quality remains `off`; examples
 recommend `shadow` while independent semantic validation is outstanding.
 
 Consensus describes the collected sample, not the entire player community or an objectively correct balance adjustment. Emotional language must not automatically invalidate a concrete gameplay concern.
@@ -88,9 +88,9 @@ AIMediator/
 ├── MANIFEST.in          # Extra sdist files
 ├── .env.example         # Configuration key names, no values
 ├── .gitignore           # Ignored locations (RULES.md G4)
-├── src/aimediator/      # CLI, engine and packaged resources
+├── src/aimediator/      # The package: CLI, analysis, research modules, assets
 ├── tests/               # Offline automated tests
-├── scripts/             # Collection, experiment and maintenance scripts
+├── scripts/             # Entry-point scripts, no files at this level
 │   ├── collect/         # Feedback collection and screening
 │   ├── experiments/     # Evaluations, diagnostics, live experiments
 │   └── maintenance/     # Rule check, hook, install verification
@@ -105,6 +105,9 @@ AIMediator/
 └── dist/                # Current wheel and sdist (ignored)
 ```
 
+- `src/aimediator/` is the only implementation. Its modules, their layers
+  and contracts are in [CLI design](docs/design/cli.md), section 5. The
+  collection and experiment scripts call it; the rule check runs without it.
 - `src/aimediator/assets/` holds the only copy of the prompts, policies,
   routing, the glossary and fixtures. One link to it remains:
   `data/evaluation/evidence-quality-synthetic-v1/cases.json`, a member of a
