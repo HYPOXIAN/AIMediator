@@ -17,12 +17,16 @@ import urllib.request
 
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--out',type=Path,required=True);args=parser.parse_args()
-    out=args.out.resolve();out.mkdir(parents=True,exist_ok=False)
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--out',type=Path,required=True)
+    args=parser.parse_args()
+    out=args.out.resolve()
+    out.mkdir(parents=True,exist_ok=False)
     import aimediator
     from aimediator.cli import main as cli
     from aimediator.resources import asset_path
-    environment=dict(os.environ);environment.pop('PYTHONPATH',None)
+    environment=dict(os.environ)
+    environment.pop('PYTHONPATH',None)
     console=Path(sys.executable).parent/'aimediator'
     records=[]
     for argv in (['--help'],['--version']):
@@ -31,14 +35,19 @@ def main():
     os.chdir(out)
     os.environ['EMBEDDING_API_KEY']='UNRELATED_ACCEPTANCE_SECRET'
     Path('.env').write_text('EMBEDDING_API_URL=https://unrelated.invalid\nEMBEDDING_API_KEY=UNRELATED_ENV_FILE_SECRET\n',encoding='utf-8')
-    def deny(*args,**kwargs):raise AssertionError('Offline acceptance attempted network access')
-    socket.socket.connect=deny;urllib.request.urlopen=deny
+    def deny(*args,**kwargs):
+        raise AssertionError('Offline acceptance attempted network access')
+    socket.socket.connect=deny
+    urllib.request.urlopen=deny
     def run(argv,expected=0):
         stdout,stderr=io.StringIO(),io.StringIO()
-        with contextlib.redirect_stdout(stdout),contextlib.redirect_stderr(stderr):code=cli([*argv,'--json','--quiet'])
+        with contextlib.redirect_stdout(stdout),contextlib.redirect_stderr(stderr):
+            code=cli([*argv,'--json','--quiet'])
         result=json.loads(stdout.getvalue())
-        if code!=expected:raise AssertionError((argv,code,result,stderr.getvalue()))
-        for key in ('command','status','artifacts','counts','warnings','error_code','error_message'):assert key in result
+        if code!=expected:
+            raise AssertionError((argv,code,result,stderr.getvalue()))
+        for key in ('command','status','artifacts','counts','warnings','error_code','error_message'):
+            assert key in result
         records.append({'argv':argv,'exit':code,'result':result,'stderr':stderr.getvalue()})
         return result
     run(['init','--out','config.json'])
@@ -64,7 +73,8 @@ def main():
     cases=json.loads(asset_path('fixtures/cases.json').read_text(encoding='utf-8'))
     labels=[]
     for case in cases:
-        row=case['source'];labels.append({'comment_id':row['record_id'],'language':row['language'],
+        row=case['source']
+        labels.append({'comment_id':row['record_id'],'language':row['language'],
             'text_original':row['text_original'],'content_sha256':hashlib.sha256(row['text_original'].encode()).hexdigest(),
             'cluster_id':row['record_id'],'split':'development','reviewer_type':'agent_authored_synthetic',
             'source_stage':'fixed_admission','points':None,'point_matches':None})
@@ -81,11 +91,13 @@ def main():
         assert len(ledger)==len(cases)==len({r['comment_id'] for r in ledger})
     assert json.loads(Path('reviewed-report/report.json').read_text(encoding='utf-8'))['counts']['formal_claims']==0
     for path in Path('demo').rglob('*'):
-        if path.is_file():assert b'UNRELATED_' not in path.read_bytes()
+        if path.is_file():
+            assert b'UNRELATED_' not in path.read_bytes()
     result={'passed':True,'network_calls':0,'package_file':str(Path(aimediator.__file__).resolve()),
             'python':sys.version,'numpy':__import__('numpy').__version__,'commands':records}
     Path('acceptance.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     print(json.dumps({'passed':True,'commands':len(records),'artifacts':str(out),'python':sys.version.split()[0],'numpy':result['numpy']}))
 
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    main()
