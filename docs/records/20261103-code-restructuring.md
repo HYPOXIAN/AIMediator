@@ -1212,6 +1212,31 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
 - Result: accepted, tag `restructure-b4-review`. The owner's review and
   the `restructure-b4` tag follow in a closure session (blueprint 6.4).
 
+### 2026-11-04 B4 owner review
+
+- Recorded by the closure session B4-2 at `7e5226b`
+  (`restructure-b4-review`). The owner gave the outcome to the session
+  that ran B4-V.
+- Outcome: the owner's answer, 2026-11-04, was "Checklist 4 accepted, B4
+  closes."
+  1. Checklist item 4 is accepted, and with it option (a) of the B4.1
+     decision "Reading of plan 8.7, third grep, after B4.3". The condition
+     of work order step B4.3 and of checklist item 4 is therefore read as
+     the narrowed command of that decision, which must print nothing.
+  2. The batch closes with no review item of the B4-V note rejected. The
+     v1.3 wording (G3, P3 and the P7 consequence) stands as drafted,
+     effective 2026-11-04. ADR 0002, the document changes of B4.1 and
+     B4.3, and the register stand as reviewed. The other items that B4-1
+     left open also stand as implemented: the archive form of the deleted
+     symlinks (B4.1 decision) and the E-4 checker change
+     (`D7_JUSTIFIED`).
+- Rejected items: none, so there are no fix-up steps.
+- Gates at `7e5226b`, run again by B4-2: tree clean, no stash; 221 tests
+  OK; rule check `Total: 0`; lock `378 keys, 0 differ`, and the fixture
+  is the same blob (`df5a724`) as at `restructure-b0`.
+- Result: batch B4 closed, tag `restructure-b4` on this commit. B5 starts
+  from it.
+
 ## Session log
 
 ### 2026-11-03 B0-1 (implementation)
@@ -1501,6 +1526,21 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   sets `restructure-b4` (blueprint 6.4). B5.1, session B5-1
   ([B5 work order](../plans/code-restructuring-handoffs/b5-internals-and-performance.md)),
   starts from that tag. Blockers: the owner's review.
+
+### 2026-11-04 B4-2 (closure)
+
+- Steps: none (closure); none started and stashed.
+- State: HEAD is this entry's commit (parent `7e5226b`), tagged
+  `restructure-b4`; tests 221; lock green, fixture unchanged since
+  `restructure-b0`; rule check 0.
+- Findings: the owner accepted checklist item 4 under the B4.1 reading of
+  plan 8.7, third grep, and closed B4. No review item was rejected (see
+  "2026-11-04 B4 owner review"), so there are no fix-up steps and no
+  escalations. This closure ran in the same session context as B4-V, at
+  the owner's instruction.
+- Next: B5.1, session B5-1
+  ([B5 work order](../plans/code-restructuring-handoffs/b5-internals-and-performance.md)),
+  from `restructure-b4`; blockers: none.
 
 ## Batch results
 
