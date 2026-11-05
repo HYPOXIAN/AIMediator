@@ -74,6 +74,9 @@ D7_JUSTIFIED = {
     'docs/records/20261103-code-restructuring.md':
         'the single change record of the code restructuring; owner answer to'
         ' escalation E-4 (2026-11-04)',
+    'docs/records/20261104-pipeline-upgrade.md':
+        'the single change record of the pipeline upgrade; E-2 of that record,'
+        ' adopted on the precedent of E-4 (2026-11-05)',
 }
 
 KEBAB = re.compile(r'^[a-z0-9]+(?:-[a-z0-9]+)*$')

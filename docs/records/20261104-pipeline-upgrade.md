@@ -706,6 +706,20 @@ Findings of U0.8:
   `/api/tags`. `doctor` then passed every check. Blocked: nothing after
   the decision. Finding for U1 (service identity, plan 4.7): the probe
   applies the connection timeout to a call that loads a model.
+- **E-2 (U2-L1) This record reaches the D7 size limit.** Raised on
+  2026-11-05 by the orchestrating session while committing D-8, which
+  the U2-L1 session had written before the shutdown: with D-8 the record
+  holds 102,837 bytes against the D7 limit of 102,400, and the pre-commit
+  hook refused the commit. Every later session adds to this record.
+  Options: (a) list this record in `D7_JUSTIFIED` of `check_rules.py`
+  with its reason, as the owner decided for the restructuring's record
+  (E-4 of [that record](20261103-code-restructuring.md)); (b) continue in
+  a second record, which changes the plan and every work order; (c)
+  condense this record, which buys room for one session only.
+  Recommendation and action: (a), adopted under the owner's standing
+  instruction, in its own `chore` commit; `RULES.md` does not change and
+  the D7 test already covers a listed file. Blocked: nothing after the
+  commit.
 
 ## Verification notes
 
