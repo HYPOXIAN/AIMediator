@@ -5,6 +5,7 @@ import copy
 from functools import lru_cache
 import re
 from typing import Any
+import unicodedata
 
 from .balance_policy import (attributed_candidates, direction_action_conflicts, identity_alias_allowed,
                              load_policy, numeric_request_supported, term_matches)
@@ -34,6 +35,46 @@ def evidence_units(text: str) -> list[dict[str, Any]]:
                           'text': text[left:right], 'start': left, 'end': right})
         start = len(text) if match is None else match.end()
     return units
+
+
+SEGMENTATION_VERSION = 'clause-v1'
+CLAUSE_PUNCTUATION = frozenset(',;:，；：、')
+
+
+def clause_segments(units: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Split evidence units into clause segments E<n>.<k> with absolute code-point offsets (clause-v1, plan 4.2).
+
+    A unit splits after a run of clause punctuation (, ; : and their full-width forms, and 、) with the
+    combining marks that follow it, unless the characters before and after the run are both decimal digits
+    (1,000 and 1:30 stay whole). Punctuation stays with the clause on its left; whitespace at the edges of a
+    segment is dropped; a unit without a split point is one segment. The segments of a unit are ordered,
+    disjoint and cover every non-whitespace character of the unit; text == original[start:end].
+    """
+    segments = []
+    for unit in units:
+        text, base, pieces, left, i = unit['text'], unit['start'], [], 0, 0
+        while i < len(text):
+            if text[i] not in CLAUSE_PUNCTUATION:
+                i += 1
+                continue
+            run_start = i
+            while i < len(text) and text[i] in CLAUSE_PUNCTUATION:
+                i += 1
+            while i < len(text) and unicodedata.category(text[i]).startswith('M'):
+                i += 1
+            if i < len(text) and not (run_start > 0 and text[run_start - 1].isdecimal() and text[i].isdecimal()):
+                pieces.append((left, i))
+                left = i
+        pieces.append((left, len(text)))
+        for start, end in pieces:
+            raw = text[start:end]
+            start, end = start + len(raw) - len(raw.lstrip()), end - len(raw) + len(raw.rstrip())
+            if start < end:
+                count = sum(s['evidence_id'] == unit['evidence_id'] for s in segments)
+                segments.append({'segment_id': '%s.%d' % (unit['evidence_id'], count + 1),
+                                 'evidence_id': unit['evidence_id'], 'text': text[start:end],
+                                 'start': base + start, 'end': base + end})
+    return segments
 
 
 def character_reference(text: str = '') -> list[dict[str, Any]]:
