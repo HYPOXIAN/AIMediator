@@ -670,6 +670,20 @@ Findings of U0.8:
   8.2 %. Recommendation and action: (b). N-class, undone by a revert, no
   `RULES.md` change, nothing deleted; the equivalence and new-object
   tests hold for both.
+- **D-7 (U2.4) Prompts of `replay_balance_admission.py`.** The step note
+  says the script "will refuse the new prompts by design (it checks prompt
+  hashes)". The script read the relevance and retrieval-review prompts
+  from the asset files, while runs send `resources.prompts`, which from
+  U2.4 on appends the topic list to the asset text. Left as it was, it
+  would refuse every run, those made after U2.4 included, and its replay
+  requests would lack the topic list. Options: (a) leave the script as
+  it is; (b) take the two prompts from `resources.prompts('off')`, which
+  for runs made before U2.4 hashes exactly as the asset files did.
+  Recommendation and action: (b), in the U2.4 commit
+  (`scripts/experiments/` is in the U2 boundary): runs made before U2.4
+  are still refused (plan 2.3), runs made after it replay. Checked by
+  hand (U2.4 row). Undone by a revert of the script lines, no `RULES.md`
+  change, nothing deleted; no package request byte changes.
 
 ## Escalations
 
@@ -1024,6 +1038,37 @@ Findings of U0.8:
 - Next: U2-1 (implementation, work order U2, steps U2.1 to U2.4);
   blockers: none.
 
+### 2026-11-05 U2-1 (implementation)
+
+- Steps: U2.1, U2.2, U2.3, U2.4 done; none started and stashed.
+- State: HEAD is this entry's commit (parent `b7d1cc5`); tests 280; lock
+  updated by UP-D04 (U2.2, 25 keys), UP-D05 (U2.3, 12 keys) and UP-D07
+  (U2.4, 38 keys), 468 keys, green after each step; U2.1 left it
+  unchanged; rule check 0. Foreign working directory: 280 pass.
+  Installed-wheel acceptance: `"passed": true`, `"commands": 18`.
+  Boundary and hygiene checks of plan 8.8 from `upgrade-u1` print
+  nothing.
+- Findings: decision found during execution D-7 (the replay script takes
+  the prompts as runs send them, so it replays runs made after U2.4 and
+  still refuses older ones). The deferred D-4 item (relevance and route
+  agreement in `measurement`) is bypassed under the owner's standing
+  instruction, because its recommended action needs an owner amendment of
+  the U2 boundary; U2-L1 and U2-L2 keep the one-off scorer
+  `runs/upgrade/tools/score_u0_extra.py` (see "Deferred"). Nothing
+  adopted under the standing instruction. No escalation: no trigger of
+  work order section 6 occurred; no view needed a change to a gate, a
+  schema or the verify request (`format` and `response_schema` are
+  unchanged in every step), and `FixtureTransport` answers every view
+  unchanged. Quality attempt 2 now differs from attempt 1 by
+  `previous_attempt_errors` and by its `request_context`; the two quality
+  experiment scripts build their attempts with `pipeline.quality_request`,
+  because without the request context they would have replayed attempt 1
+  as attempt 2. No live run in this session.
+- Next: U2-L1 (live, work order U2 section 4), whose runs measure the
+  code of `b7d1cc5` (the U2.4 commit; the commits after it change only
+  this record), against the U0.8 sample rows and the U0.6 silver row;
+  then U2-2 (implementation, U2.5 and U2.6); blockers: none.
+
 ## Deferred
 
 - **Relevance and route agreement in `measurement`** (D-4, from U0.6). Add
@@ -1033,3 +1078,22 @@ Findings of U0.8:
   and the rule of D-4. The U2 boundary does not list `measurement.py`; the
   owner decides whether the U2 work order adds it or U2-L reuses the
   archived one-off scorer.
+
+  **Bypassed** by session U2-1 on 2026-11-05 under the owner's standing
+  instruction of 2026-11-04 (item 2). Question: does the U2 work order add
+  `src/aimediator/measurement.py` to its boundary so that a U2
+  implementation session moves both functions into the package before
+  U2-L1, or do U2-L1 and U2-L2 reuse the one-off scorer? Options: (a)
+  amend the U2 boundary and move them, with tests (the recommendation of
+  D-4); (b) U2-L1 and U2-L2 run the one-off scorer
+  `runs/upgrade/tools/score_u0_extra.py` (the D-4 rule; archived as
+  `provenance/score_u0_extra.py` of the U0.6 and U0.8 reports). Why it
+  could not be decided: the recommended action needs an amendment of the
+  work order's boundary, which only the owner makes; a session does not
+  widen its own boundary. Kept: the current state, (b). The U2 live
+  sessions compute relevance agreement and route agreement with the same
+  code and rule that produced the U0.6 and U0.8 references, so the paired
+  comparisons stay like for like; their reports keep a copy under
+  `provenance/`. Skipped: the move into `aimediator.measurement` before
+  U2-L1; the item stays open here. The U3 boundary lists `measurement.py`,
+  so the owner can assign the move to U3. No step of U2-1 depends on it.
