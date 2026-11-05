@@ -29,6 +29,20 @@ the progress table in its own commit. Frozen when the plan is finished (D3).
 | UP-D15 | trial, default off | 2026-11-04 | plan section 9 |
 | UP-D16 | adopt | 2026-11-04 | plan section 9 |
 
+**Standing instruction (owner, 2026-11-04, after U0.6).** The remaining
+sessions of U0 to U7 run unattended, one after another. Where a step, a
+stop condition, an escalation or a review point needs an owner decision,
+approval, review or choice, the session adopts the recommendation (of the
+plan, the work order, this record or its own registered entry) and records
+it as adopted under this instruction. An item without a recommendation, or
+one that needs an action only the owner can take (such as restarting the
+model service with other settings), is marked `bypassed` with the
+question, the options and what was skipped; it holds back only the steps
+that depend on it directly. The hard limits of `RULES.md` and plan section
+1 stay in force: an action that would break one is bypassed, not adopted.
+Reviews and answers recorded under this instruction were not given by the
+owner in person.
+
 ## Progress
 
 The commit of a step is found with `git log --grep 'Step: <ID>'`.
