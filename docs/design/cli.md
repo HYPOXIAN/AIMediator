@@ -593,6 +593,12 @@ every path keeps the exception type it raises.
   `quality_scoring`, `legacy_review`, `design_briefs`) accept both
   `evidence-quality-v1` and `evidence-quality-v2` records, each under its
   own rules (`evidence_quality.stored_annotation_errors`, step U4.5).
+  Fix-up steps U4.F2 to U4.F4 (escalation E-4) reverted U4.F1, U4.5 and
+  U4.4, so the v2 quality view, schema, normalization, routing and
+  readers described here are not in effect: the pipeline sends the v1
+  view of step U2.2 (units with `evidence_id`, `text`, `start` and
+  `end`, `language` and the character reference) and validates, routes
+  and reads v1 annotations.
 - `inference`: `api`, `streamed_chat` (its loop guards scan only the output
   added since their last match and decide as `re.findall` and
   `repeated_claim` over the whole output would; pipeline upgrade step

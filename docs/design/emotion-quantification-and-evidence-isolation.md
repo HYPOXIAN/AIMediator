@@ -27,7 +27,7 @@ The pipeline follows these steps:
 
 ## 3. Segment Annotation
 
-Since pipeline upgrade step U4.4 (annotation v2, [ADR 0005](../decisions/0005-program-segmentation-of-quality-annotations.md)) the program cuts each evidence unit into clause segments (`clause-v1`) and the model only labels them by segment ID and groups them into information points; it no longer writes quotes or offsets. The program converts the answer into the segment form below, with its own offsets and quotes, so the measurement of section 4 and the isolation of section 5 are unchanged. The paragraph below describes the v1 output that earlier runs keep.
+Since pipeline upgrade step U4.4 (annotation v2, [ADR 0005](../decisions/0005-program-segmentation-of-quality-annotations.md)) the program cuts each evidence unit into clause segments (`clause-v1`) and the model only labels them by segment ID and groups them into information points; it no longer writes quotes or offsets. The program converts the answer into the segment form below, with its own offsets and quotes, so the measurement of section 4 and the isolation of section 5 are unchanged. The paragraph below describes the v1 output that earlier runs keep. Fix-up steps U4.F2 to U4.F4 (escalation E-4, 2026-11-05) reverted U4.4, so the pipeline again sends v1 requests and the model again writes the quotes and offsets of the v1 output below.
 
 Each segment contains an exact source quote, an evidence-unit ID, and a half-open character interval `[start, end)`. Offsets use Unicode code points rather than bytes or UTF-16 units.
 
