@@ -3086,6 +3086,46 @@ against the rule with `git revert` of the fix-up commits.
 - Next: the rest of U7-1 (U7.3 from the stash, U7.4, U7.5), the next
   chain session; blockers: none.
 
+### 2026-11-05 U7-1, second part (implementation; steps U7.3 to U7.5)
+
+- Steps: U7.3 (`f9e17dd`, `defb029`, `af5272e`, `dee3c74`), U7.4
+  (`a3b0310`, `2ac04b6`) and U7.5 (`4246494`) done; none started and
+  stashed. At the start `git status --short` showed the uncommitted U7.3
+  work of the stopped chain session `s7-u7` and no stash existed. Per
+  plan 10.4 this session stashed it as `WIP Step U7.3: session s7-u7
+  stopped by the usage limit`, committed the stopped session's log entry
+  (`f9e17dd`, written from the commits, this record and its transcript),
+  read the stash with `git stash show -p`, **popped it**, checked every
+  change against the code and the work order, and finished U7.3. No step
+  was skipped for time or budget.
+- State: HEAD is this entry's commit (parent `4246494`); tests 333;
+  lock green; rule check 0. Foreign directory 333 OK; wheel acceptance
+  passed (18 commands) at `2ac04b6`.
+- Findings:
+  - Stash checked: ADR 0006 matches the U4-L and U4-L2 rows; the
+    validation record matches the U7-L section and the transcript's T9
+    and T10 readings; the configuration key table matches
+    `config.defaults` and `config.validate`; every module of
+    `tests/test_module_layers.py` is in design/cli.md section 5. Added
+    beyond the stash: the index row of the validation record (D4), the
+    guide's `--base-url`, `--num-gpu`, key-table pointer, missing second
+    audit and near-duplicate clusters, and the measured limits in
+    balance-analysis.md and evidence-quality.md section 7.3.
+  - U7.4: the owner's approval of the `RULES.md` v1.5 wording was adopted
+    under the standing instruction, as the session prompt directs; the
+    rule check parses the new baseline 333 with no change to it.
+  - U7.5: criteria 1 to 8 of plan section 13 met, 9 open for U7.6;
+    targets met T2, T6 (development), T10; not met T1, T3, T4, T5, T7,
+    T8, T9. New under "Deferred": D-14, the targets not met, E-8.
+  - Nothing bypassed; no decision found during execution; no new
+    escalation. No live run and the bridge was not started (API spend
+    unchanged by this session). The owner authorization of 2026-11-05
+    03:11 was already in this record (added by U3-1). Tags
+    `upgrade-u7-review` and `upgrade-done` not set, as the session
+    prompt directs.
+- Next: U7-V (the U7 verification checklist), then U7.6 under UP-D18
+  if the final review yields no fix-up step; blockers: none.
+
 ## Deferred
 
 - **Relevance and route agreement in `measurement`** (D-4, from U0.6). Add
