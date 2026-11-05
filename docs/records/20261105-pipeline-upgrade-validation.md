@@ -4,6 +4,7 @@
 - Status: Active
 - Updated: 2026-11-05
 - Applies to: commit `b73f0e9` (tag `upgrade-u6`, the code of the adopted configuration) through the API bridge `openrouter-bridge-2`; `upgrade-samples-v1/latency-benchmark`, the `balance-silver-v1` holdout and the `extraction-precision-v1` test split; `RULES.md` v1.4
+- Final 2026-11-05 (tag `upgrade-done`); frozen from then on (D3).
 
 The acceptance measurements of the [pipeline upgrade](../archive/pipeline-upgrade.md)
 (steps U7.1 and U7.2), with their denominators and intervals, the targets

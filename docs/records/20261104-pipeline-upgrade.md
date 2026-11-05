@@ -4,6 +4,7 @@
 - Status: Active
 - Updated: 2026-11-05
 - Applies to: the [pipeline upgrade plan](../archive/pipeline-upgrade.md); commit `31d00f8` (tag `upgrade-plan`) and later
+- Final 2026-11-05 (tag `upgrade-done`); frozen from then on (D3).
 
 The single change record of the pipeline upgrade. Every step adds its row to
 the progress table in its own commit. Frozen when the plan is finished (D3).
@@ -136,6 +137,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | U7.5 | N | done | 333 | green | Final acceptance under "Batch results": every completion criterion of plan section 13 with its measured value (1 to 8 met; 9, the frozen record and the archived plan, open for U7.6), every target of plan 5.5 with its measured value (met T2, T6 on development, T10; not met T1, T3, T4, T5, T7, T8, T9), and every step skipped (U2.5 with U2-L2, U6.3, U6.6 by UP-D20; U4.6 by its condition), reverted (U4.F1, U4.5, U4.4 by U4.F2 to U4.F4; U5.3, U5.2 by U5.F1, U5.F2) or bypassed (no step; three items) with its reason. Gates, foreign directory (333 OK) and wheel acceptance (passed, 18 commands) at `2ac04b6`. New under "Deferred": D-14, the targets not met, E-8; the U2.4 item gains its U7.1 reading. No tag set |
 | U7.F1 | N | done | 333 | green | Fix-up step of the U7 final review (V-1), adopted under the owner authorization of 2026-11-05 03:11 and executed by session U7-V. The validation record gains under "Limitations" the comments its holdout and test split share with the other set's development split (12 holdout comments in 14 earlier runs, 8 test-split comments in three relevance-only runs) and the readings without them (holdout agreement 16/18; test precision 18/28, recall 18/64); "Deferred" names the overlap for a later plan. No other text of the validation record changes |
 | U7.F2 | N | done | 333 | green | Fix-up step of the U7 final review (V-2), adopted under the owner authorization of 2026-11-05 03:11 and executed by session U7-V. The Status cells of U4.4, U4.5 and U4.F1 (reverted by U4.F4, U4.F3 and U4.F2) and of U5.2 and U5.3 (reverted by U5.F2 and U5.F1) read `reverted (see Live evaluations)`, the status of plan section 11; their notes, which record the state each step reached, stay. The sentence of "Batch results" on these rows follows |
+| U7.6 | N | done | 333 | green | Closure after the final review recorded by session U7-V (UP-D18, owner authorization of 2026-11-05 03:11), with its fix-up steps U7.F1 and U7.F2 done. `407691e`: the plan and its eight work orders moved with `git mv` to `docs/archive/` (names kept, Status Archived, a dated header line); the index rows moved to Archive; every inbound link updated (ADRs 0003 to 0006, the link target only; this record; the validation record); CLAUDE.md and the README point at the archived plan and the records. This commit: the items left open for the owner (under "Batch results", "Closure"), this record and the validation record final, their index rows, the session log. Tag `upgrade-done` |
 
 ## Baseline measurements (U0.4)
 
@@ -2054,6 +2056,59 @@ Open items are under "Deferred": the D-4 scorers, D-14, the targets not
 met, E-7 (pending relevance units, quality failures), E-8 (the test
 split), `enforce` on short comments, and the U2.4 recall question.
 
+### Closure (U7.6, 2026-11-05)
+
+The final review is recorded under "Verification notes" (U7 final
+review, recorded by U7-V). Its fix-up steps U7.F1 and U7.F2 are done.
+The plan and its eight work orders are archived in
+[docs/archive/](../archive/pipeline-upgrade.md) (`407691e`). With this
+commit this record and the
+[validation record](20261105-pipeline-upgrade-validation.md) are final,
+so criterion 9 of plan section 13 is met. Tag `upgrade-done`.
+
+**Items left open for the owner.** Every review, approval and choice
+below was adopted under the owner's standing instruction of 2026-11-04,
+the owner authorization of 2026-11-05 03:11 and UP-D18. None was given in
+person. The owner may confirm or reverse any of them in a later plan.
+
+- **Skipped steps**: U2.5 (response-template trial, UP-D06) with its
+  live session U2-L2; U6.3 (mechanic terms in the request views,
+  UP-D12); U6.6 (second-audit trial, UP-D15; the key `second_audit` does
+  not exist). These three were skipped by UP-D20 (time and budget).
+  U4.6 (quality output budget, LAT-07) was skipped by its own condition:
+  5 U4-L quality requests reached 6,000 tokens or more.
+- **Live runs dropped by UP-D18**: `u4-benchmark-enforce` and the
+  archived quality development sources (U4-L); the benchmark run of
+  U5-L1 to U5-L3; `u6-benchmark-enforce` and the run with
+  `second_audit` false (U6-L); the U7.1 `shadow` run; the `full-balanced`
+  sample, which stays frozen and unused. No local-model run was made
+  after U2-L1 (UP-D19). Plan section 12 leaves the owner the option to
+  rerun U7.1 on the routed local models.
+- **Reverted steps** (plan rule 1.7; the owner may keep any of them
+  against the adoption rule by reverting its fix-up commit): U4.4,
+  U4.5 and U4.F1 (E-4; reverted by U4.F4, U4.F3 and U4.F2; ADR 0006) and
+  U5.2 and U5.3 (E-5 and E-6; reverted by U5.F2 and U5.F1).
+- **Bypassed items**: no step was bypassed. Bypassed items within steps:
+  D-4 (the relevance and route-agreement scorers are not moved into
+  `aimediator.measurement`; still open); D-14 (`collection/balanced.py`
+  and `collection/expansion.py` still write `coarse-v1`; still open); the
+  "not in effect" sentence of U4.F5 in ADR 0005 (closed: ADR 0006 now
+  carries it).
+- **Not fixed**: the targets not met (T1, T3, T4, T5, T7, T8, T9);
+  E-7 (relevance-pending comments and quality failures in every U7 run);
+  E-8 (the test split far below development); `enforce` on short
+  comments (a product question); the U2.4 recall question; V-1 (the
+  comments shared between the evaluation sets). Each is under
+  "Deferred" with its recommendation.
+- **Adopted for the owner**: the reviews of U2, U4, U5 and U7; the
+  wording of `RULES.md` v1.5 (UP-D16); D-16, the U7.1 configuration
+  (`max_parallel_requests` 2, a new empty cache per run); the adopted
+  options of E-2 to E-8 (the owner decided E-1 in person); fix-up steps U4.F1 to U4.F5, U5.F1 to U5.F3,
+  U7.F1 and U7.F2.
+- **API spend**: 0.367605 USD of the 3.00 USD limit for all live runs
+  through the bridge (`runs/upgrade/logs/api-bridge-spend.json`, 2,596
+  requests). The bridge is left as it is.
+
 ## Verification notes
 
 ### 2026-11-05 U0-V
@@ -3255,6 +3310,46 @@ here.
     prompt directs.
 - Next: U7-V (the U7 verification checklist), then U7.6 under UP-D18
   if the final review yields no fix-up step; blockers: none.
+
+### 2026-11-05 U7-V and U7-2 (verification and closure)
+
+- Steps: the U7-V verification (`f871be0`, tag `upgrade-u7-review`);
+  the final review, recorded under the owner's standing instruction, the
+  owner authorization of 2026-11-05 03:11 and UP-D18 (`7dc5556`); fix-up
+  steps U7.F1 (`128be68`) and U7.F2 (`02dd692`); U7.6 (`407691e` and
+  this entry's commit, tag `upgrade-done`). None started and stashed. At
+  the start `git status --short` printed nothing and no `WIP Step` stash
+  existed. No step was skipped for time or budget.
+- State: HEAD is this entry's commit (parent `407691e`); tests 333 after
+  every commit; lock green; rule check 0. The foreign directory (333 OK)
+  and the wheel acceptance (`passed: true`, 18 commands) ran at
+  `b615794`. Every later commit changes documents only.
+- Findings:
+  - U7-V: every item of the U7-V checklist passes. V-1: the
+    `balance-silver-v1` holdout and the `extraction-precision-v1` test
+    split share comments with the other set's development split. 12
+    holdout comments went through 14 earlier runs, and 8 test-split
+    comments went through 3 relevance-only runs. Without them the U7.2
+    readings hardly move (holdout 16/18; test precision 18/28, recall
+    18/64), and E-8 stands. V-2: the reverted steps' rows read `done`.
+  - Final review: U7 and the upgrade are accepted as measured. U7.F1
+    adds V-1 to the validation record's limitations and to "Deferred".
+    U7.F2 gives the five reverted rows the status of plan section 11.
+  - U7.6: the plan and its eight work orders are archived. ADRs 0003 to
+    0006 change only the target of their plan link, because D5 requires
+    every inbound link to follow a move. The items left open for the
+    owner are listed under "Batch results", "Closure". This record and
+    the validation record are final.
+  - Deviation: the U7-V prompt allows only the change record. As U7-2
+    (the session prompt's closure role), this session also changed the
+    validation record (U7.F1, then its final line), the moved documents,
+    ADR links, the index, the README and CLAUDE.md.
+  - Nothing bypassed; no decision found during execution besides the
+    review's two fix-up steps; no new escalation. No live run, and the
+    bridge was not started. The API spend is unchanged at 0.367605 USD
+    of 3.00 (2,596 requests).
+- Next: none. The pipeline upgrade is finished (tag `upgrade-done`), and
+  later work starts a new plan. Blockers: none.
 
 ## Deferred
 
