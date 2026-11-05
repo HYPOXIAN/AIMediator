@@ -475,7 +475,9 @@ character budget.
 - Property order (U5.1): `evidence_ids`, `character`, `target`, `direction`,
   `recommendation`, `specificity`, `parameters`, `uncertain`. The
   duplicate-claim loop guard of `inference.streamed_chat` recognizes claim
-  objects by their first property, so it changes with the order.
+  objects by the first property of the claim schema in the request's
+  `format`, so it follows the order without importing `evidence`, which
+  the layering table forbids.
 - Subjects (U5.2): each comment's object becomes `{subjects, claims}`.
   `subjects` is a unique array of the comment's allowed characters: the
   fighters whose balance the author takes a position on. A program gate adds

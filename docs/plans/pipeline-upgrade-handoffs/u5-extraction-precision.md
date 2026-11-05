@@ -98,9 +98,17 @@ Step notes:
   check that review export and import of a demo run still pass.
   - The duplicate-claim loop guard of `inference.streamed_chat` finds claim
     objects by their first property (today the literal `"character"`).
-    Derive that property from `evidence.CLAIM` instead of a literal, and
-    extend the U1.3 equivalence streams with the new order; without this
-    the guard silently stops detecting repeated claims.
+    Derive that property inside `inference` from the request's own schema:
+    the first key of the claim item properties under
+    `payload['format']['properties']['assessments']['properties'][<comment
+    ID>]['properties']['claims']['items']['properties']` (after U5.2, of
+    the `claims` property inside `{subjects, claims}`). `inference` may not
+    import `evidence` (layering table), and `runner` is outside this work
+    order's boundary. Without this the guard silently stops detecting
+    repeated claims.
+  - Extend the U1.3 equivalence streams with the new order. For those
+    streams the expected result differs from the old copy: the new guard
+    detects the duplicate-claim loop, the copy of the old function does not.
 - **U5.2** B (PRM-03)
   - Each comment's schema becomes `{subjects, claims}`, `subjects` before
     `claims`: an array of the comment's allowed characters with
