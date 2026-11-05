@@ -2022,6 +2022,28 @@ and tools are in the archive with `SHA256SUMS`.
 - Measurements: tests 341 in 33.7 s at HEAD; demo 0.97 s; lock green.
 - Result: accepted, tag `upgrade-u2-review`; the review follows.
 
+### 2026-11-05 U2 review (recorded by U2-V)
+
+Recorded under the owner's standing instruction and the owner
+authorization of 2026-11-05 03:11. The owner did not give this review in
+person. Basis: the U2-V note above, the U2-L1 verdicts, E-3 and its
+outcome, and "U2-R" under "Live evaluations". Rule: the adoption rule
+of plan 5.4. Steps that passed are kept and steps that failed are
+reverted as fix-up steps.
+
+| Step | Class | Verdict | Review outcome |
+| ---- | ----- | ------- | -------------- |
+| U2.1 | N | lock unchanged | kept |
+| U2.2 (UP-D04) | B | kept by U2-L1 | kept |
+| U2.3 (UP-D05) | B | failed rule 4 in U2-L1 (E-3); passed when measured alone (U2-R) | kept. The U5 session decided this before U5.1 under the owner authorization (E-3 outcome: option (b) on the evidence of (c)). This review records that decision and does not decide it again. No fix-up step U2.F1 |
+| U2.4 (UP-D07) | B | kept by U2-L1 (relevance agreement 64/69 against 63/69) | kept. U2-R found that most of the extraction-recall loss of E-3 comes with U2.4 (through admission) and run-to-run variation. That effect is not a D-8 metric of U2.4, and every interval includes 0, so it stays a finding for U7.1 and U7.2. U7 accepts on the adopted configuration, which includes U2.4 |
+| U2.5 with U2-L2 (UP-D06) | B, L | skipped (UP-D20) | not reviewed; the UP-D06 trial did not run |
+| U2.6 | N | lock unchanged | kept; the payload budgets (U2-L1 plus 20 %) stay |
+
+Fix-up steps: none. Under plan 10.5 and UP-D18, U2-V sets `upgrade-u2`
+on this commit, after `upgrade-u2-review`. The owner may still decide
+against the rule (plan 5.4) and revert a kept step in a later session.
+
 ## Session log
 
 ### 2026-11-04 U0-1 (implementation)
