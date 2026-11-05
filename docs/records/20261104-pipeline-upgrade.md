@@ -2225,6 +2225,44 @@ request, the state U2-L1 accepted.
 - Result: tag `upgrade-u5-review`. The batch is accepted once the review
   and its fix-up steps U5.F1 to U5.F3 are committed.
 
+### 2026-11-05 U5 review (recorded by U5-V)
+
+Recorded under the owner's standing instruction and the owner
+authorization of 2026-11-05 03:11. The owner did not give this review in
+person. Basis: the U5-V note above, the U5-L1 to U5-L3 verdicts, E-5,
+E-6 and the U6-L readings. Rule: the adoption rule of plan 5.4.
+
+| Step | Class | Verdict | Review outcome |
+| ---- | ----- | ------- | -------------- |
+| U5.1 (UP-D11) | B | kept by U5-L1 | kept |
+| U5.2 (UP-D11) | B | failed rule 3 in U5-L2 (E-5) | revert as fix-up step U5.F2 (E-5 option (a)) |
+| U5.3 (UP-D11) | B | failed rules 3 and 4 in U5-L3 (E-6) | revert as fix-up step U5.F1, before U5.F2 (E-6 option (a)) |
+| U5.4 | N | — | kept; its text on U5.2 and U5.3 is removed by fix-up step U5.F3 |
+
+The U6-L readings were weighed. U6-L ran HEAD's extraction code, which
+still held U5.2 and U5.3, on the same sample. Against U5.1 it gives
+75.0 % accepted precision and 45.5 % recall: −0.3 and −1.6 points,
+within the rule-4 margin. So U5.3's recall loss in U5-L3 is probably
+run-to-run variation. That does not change the outcome: rule 3 (T7
+precision rising) fails for U5.2 in U5-L2, for U5.3 in U5-L3, and for the
+two together in U6-L (−0.3 points against U5.1). Together they cost
+about 470 more prompt tokens per extraction request (+13.9 %) and more
+output tokens (U5.2: +10.6 %). The subjects gate quarantined no claim in
+U5-L2. The adoption rule therefore reverts both, as E-5 and E-6
+recommend.
+
+Execution check: the trial reverts in a scratch worktree conflict only
+in this record, the lock fixture, and one adjacent block of
+`pipeline.extract_claims`, where U6.1's `target_reference` lines sit
+next to the U5.2 gate. The resolution keeps U6.1's lines and removes
+only the gate. No later step uses `subjects` or the examples, so the
+reverts do not conflict with later work. They also fit the time box, so
+neither is `bypassed`. Each revert regenerates exactly the lock keys of
+the step it reverts (32 and 50 keys), and the suite passes after both
+(333 tests). In `off`, the extraction requests then equal those of U5.1.
+`upgrade-u5` is set after U5.F3. The owner may still keep U5.2 or U5.3
+against the rule with `git revert` of the fix-up commits.
+
 ## Session log
 
 ### 2026-11-04 U0-1 (implementation)
