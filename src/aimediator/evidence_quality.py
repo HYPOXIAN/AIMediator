@@ -11,11 +11,12 @@ import re
 import unicodedata
 
 from .balance_policy import _term_pattern
-from .evidence import SEGMENTATION_VERSION, character_reference, character_terms, numeric_tokens
+from .evidence import SEGMENTATION_VERSION, character_reference, character_terms, clause_segments, numeric_tokens
 from .resources import asset_path
 from .schema import NULLABLE_NONEMPTY_STRING, STRING, enum, quality_obj, schema_errors
 POLICY_PATH = asset_path('configs/evidence-quality-policy.json')
 SCHEMA_V1, SCHEMA_V2 = 'evidence-quality-v1', 'evidence-quality-v2'
+SCHEMA_VERSIONS = (SCHEMA_V1, SCHEMA_V2)
 ROUTES = ('exclude', 'opinion_only', 'mechanism_evidence', 'system_evidence', 'review')
 REASONS = ('empty_venting', 'general_strength', 'concrete_mechanic_condition',
            'system_feedback', 'price_cosmetic_network', 'quoted_emotion',
@@ -267,6 +268,26 @@ def qualify_v2(annotation, row, units, segments, policy=None):
     """Route a v2 annotation by the unchanged qualify on its v1 conversion; the record keeps both annotations."""
     record = qualify(to_v1_annotation(annotation, segments, row['text_original']), row, units, policy)
     return with_annotation_v2(record, annotation)
+
+
+def stored_annotation_errors(record, row, units):
+    """Return the errors of a completed stored record's annotation under its own schema_version (plan 4.2).
+
+    v1 records (and records without a version, written before versions existed) keep the v1 rules on
+    annotation. v2 records are validated by the v2 rules on annotation_v2 against the program's clause
+    segments, and their derived v1 annotation must equal the stored annotation. Other versions are refused.
+    """
+    version = record.get('schema_version')
+    if version in (SCHEMA_V1, None):
+        return validate_annotation(record.get('annotation'), row, units)
+    if version != SCHEMA_V2:
+        return ['Unknown quality schema version']
+    segments = clause_segments(units)
+    annotation = record.get('annotation_v2')
+    errors = validate_annotation_v2(annotation, row, segments, units)
+    if not errors and to_v1_annotation(annotation, segments, row['text_original']) != record.get('annotation'):
+        errors.append('Derived v1 annotation differs from the stored annotation')
+    return errors
 
 
 def failed_record(row, units, attempts, policy=None):

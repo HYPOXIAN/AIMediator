@@ -78,7 +78,8 @@ def load_run(folder):
             if q['status'] == 'failed' and (not q.get('errors') or any(r.get('route') != 'review' for r in q.get('routing', []))):
                 raise Failure(2, 'Failed quality annotation cannot supply eligible evidence')
             if q['status'] == 'completed':
-                errors = evidence_quality.validate_annotation(q['annotation'], sources[cid], evidence.evidence_units(sources[cid]['text_original']))
+                # Each record is validated by the rules of its own schema_version (v1 or v2, plan 4.2).
+                errors = evidence_quality.stored_annotation_errors(q, sources[cid], evidence.evidence_units(sources[cid]['text_original']))
                 recomputed = evidence_quality.qualify(q['annotation'], sources[cid], evidence.evidence_units(sources[cid]['text_original']))
                 if errors or q['routing'] != recomputed['routing'] or q.get('routes_present') != recomputed['routes_present']:
                     raise Failure(2, 'Quality annotation/routing is not source-bound')
