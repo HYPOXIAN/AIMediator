@@ -3,7 +3,7 @@
 - Type: Design
 - Status: Active
 - Updated: 2026-11-05
-- Applies to: evidence-quality module v1 as implemented; written 2026-10-29; section 3 notes annotation v2 (`evidence-quality-v2`, pipeline upgrade batch U4)
+- Applies to: evidence-quality module v1 as implemented; written 2026-10-29; section 3 notes annotation v2 (`evidence-quality-v2`, pipeline upgrade batch U4), reverted by fix-up step U4.F4 ([ADR 0006](../decisions/0006-revert-of-quality-annotation-v2.md))
 - Related: [evidence-quality.md](evidence-quality.md), the pre-implementation specification
 
 **Project:** AI Mediator  

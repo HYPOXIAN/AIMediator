@@ -617,7 +617,8 @@ every path keeps the exception type it raises.
   readers described here are not in effect: the pipeline sends the v1
   view of step U2.2 (units with `evidence_id`, `text`, `start` and
   `end`, `language` and the character reference) and validates, routes
-  and reads v1 annotations.
+  and reads v1 annotations (ADR
+  [0006](../decisions/0006-revert-of-quality-annotation-v2.md)).
 - `inference`: `api`, `streamed_chat` (its loop guards scan only the output
   added since their last match and decide as `re.findall` and
   `repeated_claim` over the whole output would; pipeline upgrade step
@@ -999,6 +1000,33 @@ The generated config uses a versioned schema, rejects unknown keys, and contains
   processes storing the same key at once can collide on the temporary file
   of `common.write` (ADR 0004).
 
+Every key of `config.defaults()` and its check in `config.validate` (a file
+with an unknown or missing top-level key fails with exit 2; a file that
+omits keys is completed from the defaults before validation):
+
+| Key | Default | Accepted values | CLI override |
+| --- | ------- | --------------- | ------------ |
+| `schema_version` | `aimediator-config-v1` | that value only | — |
+| `base_url` | `http://127.0.0.1:11434` | HTTP(S) URL without credentials, query or fragment | `--base-url` |
+| `routing` (`models`, `policy`) | packaged `configs/local-language-routing.json` | the packaged routing only (V1) | — |
+| `inference_options` (`temperature`, `seed`, `num_ctx`) | 0, 42, 8192 | the packaged options only (V1) | — |
+| `connection_timeout` | 10 | finite number, above 0 and at most 3600 seconds | — |
+| `request_timeout` | 1800 | finite number, above 0 and at most 3600 seconds | — |
+| `embedding.provider` | `ollama` | `ollama` or `configured` | `--embedding-provider` |
+| `embedding.model` | `qwen3-embedding:8b` | nonempty string | `--embedding-model` |
+| `embedding.endpoint` | `null` | HTTP(S) URL; required for `configured` | — |
+| `embedding.credential_env` | `EMBEDDING_API_KEY` | environment-variable name | — |
+| `evidence_quality` | `off` | `off`, `shadow`, `enforce` | `--evidence-quality` |
+| `stop_after` | `full` | `relevance` (quality `off` only), `quality` (`shadow` or `enforce` only), `full` | `--stop-after` |
+| `num_gpu` | `null` | nonnegative integer or `null` | `--num-gpu` |
+| `max_parallel_requests` | 1 | integer from 1 to 8 (U3.2, UP-D08) | `--max-parallel-requests` |
+| `cache_dir` | `null` | nonempty path or `null` (U3.3, UP-D09) | `--cache-dir` |
+| `report_scope` | `collection_sample` | that value only | — |
+
+The pipeline upgrade added no other key: the optional second audit
+(UP-D15, step U6.6) was skipped under UP-D20, so `second_audit` does not
+exist.
+
 Keep secrets out of JSON configuration, snapshots, request identities, and logs.
 Configured embedding credentials come from named environment variables or an
 explicit `--env-file` only; do not automatically open `.env` based on the current
@@ -1046,6 +1074,7 @@ without pretending legacy schemas were written by the new CLI.
   requests/<stage>/<identity>/  # request/response/validation, partial attempts,
                                 #   reuse-provenance.json for a shared-cache hit
   retrieval.json
+  near-duplicates.json          # near-duplicates-v1 clusters of retrieval (U6.5)
   relevance.json
   full-pipeline-coverage.json
   validated-claims.json
@@ -1170,6 +1199,11 @@ give. The Markdown heading of a glossary group names the entry (canonical
 name, Chinese label, ID) and lists its literals. The limitation text says
 which targets merge and that the rest can still fragment. Two exports of
 one run stay byte-identical.
+
+`report.json` also carries `near_duplicate_clusters` (step U6.5,
+UP-D14): the `near_duplicate_cosine`, `policy_version` and `clusters` of the
+run's `near-duplicates.json` with a `note` that they annotate only and
+change no count, or null for runs without that file.
 
 Quality mode determines what can appear:
 

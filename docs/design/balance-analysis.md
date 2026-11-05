@@ -173,6 +173,18 @@ It does not manufacture a merged numerical consensus. Repeated comments or
 multiple accounts cannot be inferred to be independent people. Patch
 applicability and the factual truth of reviewer assertions remain unverified.
 
+Measured limits of the adopted pipeline (pipeline upgrade, steps U7.1 and
+U7.2, through a hosted model that answered both routed model names; the
+[validation record](../records/20261105-pipeline-upgrade-validation.md)
+has the denominators and intervals). On the `extraction-precision-v1`
+test split, run once, 59.4 % of the accepted (character, direction)
+claims match a labeled position and 26.8 % of the labeled positions are
+found, against 75.3 % and 47.2 % on the development split; the loss is
+mostly in Chinese comments, and half of the audited claims are rejected
+(50.7 %). The labels are agent silver labels, and the audit uses the same
+model as extraction, so these figures bound the pipeline only as far as
+those labels and that model go.
+
 ## Report files
 
 - `balance-report.json`: strict JSON engineering report, grouped adjustments and coverage.

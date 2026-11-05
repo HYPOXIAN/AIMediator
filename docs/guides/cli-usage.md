@@ -129,6 +129,16 @@ a serial run; fresh answers at a value above 1 are not bitwise
 reproducible, while answers replayed from the run journal or the cache are.
 Do not point two runs that run at the same time at one cache directory.
 
+`--base-url` overrides `base_url` (the model service) and `--num-gpu` sets
+`num_gpu` (a nonnegative integer passed to the service as its `num_gpu`
+option, or `null` to leave it to the service) for one new analysis. Every
+configuration key, with its default, its accepted values and its CLI
+override, is listed in
+[design/cli.md](../design/cli.md)
+section 6. There is no `second_audit` key: the optional second audit of
+the pipeline upgrade was not built, so the claim audit runs on the same
+model that generated the claims.
+
 To use a configured embedding service, explicitly set `embedding.provider` to
 `configured`, `embedding.endpoint` to your HTTP(S) embedding endpoint,
 `embedding.model` to your existing embedding model, and `embedding.credential_env`
@@ -204,7 +214,10 @@ character where the entry is a move) is grouped by that entry across wording
 and language, and the heading names the entry and lists the literals; other
 targets, ambiguous or context-dependent aliases included, are grouped by
 normalized literal. Unknown targets stay unresolved; no fuzzy or semantic
-topic merging occurs. Counts use
+topic merging occurs. The report also lists near-duplicate clusters of the
+run's comments (`near-duplicates.json` of retrieval: comments linked by
+unit-embedding cosines of at least 0.9, the `near_duplicate_cosine` of the
+review policy); they annotate only and change no count. Counts use
 unique comment IDs, with union/overlap information; they are not people counts
 and are not additive across topics. Missing concerns are never invented by
 formatting. Off is unassessed; shadow diagnostics are separate; enforce retains

@@ -3,7 +3,7 @@
 - Type: Design
 - Status: Active
 - Updated: 2026-11-05
-- Applies to: evidence-quality module v1 (`evidence-quality-policy.json` v1); written 2026-10-26 as its pre-implementation specification; section 3.3 adds the v2 contract of pipeline upgrade batch U4 (`evidence-quality-policy-v2`, schema `evidence-quality-v2`, segmentation `clause-v1`)
+- Applies to: evidence-quality module v1 (`evidence-quality-policy.json` v1); written 2026-10-26 as its pre-implementation specification; section 3.3 adds the v2 contract of pipeline upgrade batch U4 (`evidence-quality-policy-v2`, schema `evidence-quality-v2`, segmentation `clause-v1`), not in effect since fix-up step U4.F4 ([ADR 0006](../decisions/0006-revert-of-quality-annotation-v2.md))
 - Related: [emotion-quantification-and-evidence-isolation.md](emotion-quantification-and-evidence-isolation.md), a description of the implemented module
 - Translated 2026-11 from the Chinese original (commit `3ceb123`); only the language changed.
 
@@ -228,6 +228,16 @@ Report: relevance false acceptance, the false-exclusion rate of valid mechanism 
 Evaluate separately: the quality module's performance within the fixed admission set, and the end-to-end performance including the misses of the original coarse screening/retrieval. The module cannot recover comments that never reached it, so conditional recall must not be taken as full-pipeline recall. Review does not count as successful extraction; report the recall loss it causes, so that "review everything" cannot get a falsely high score.
 
 Release candidate targets (not values achieved now, and not small-sample statistical guarantees): mechanism evidence precision ≥95%, false-exclusion rate of concrete valid information ≤5%, false-promotion rate of general opinions ≤2%, eligibility agreement rate of emotion-equivalent pairs ≥95%. Report recall and review rate as well; when independent labels are missing, the sample is too small or a target is not met, keep shadow as the recommended default, still deliver the complete enforce capability, and state that evaluation is not complete.
+
+Measured on the 30-comment `latency-benchmark` sample of the pipeline
+upgrade (step U7.1; v1 annotation with the request view of U2.2, through a
+hosted model; [validation record](../records/20261105-pipeline-upgrade-validation.md)):
+first-attempt validity 21/24 (87.5 %), 2 quality-failed comments, and in
+`enforce` 1 of 24 comments routed to mechanism evidence, which yields no
+supported claim, while `off` accepts 8 claims. On short comments `enforce`
+therefore reports the labeled positions as general opinions, not as formal
+claims. The targets above are not shown to be met, so the rule of the
+previous paragraph applies.
 
 ## 8. Implementation order and completion conditions
 
