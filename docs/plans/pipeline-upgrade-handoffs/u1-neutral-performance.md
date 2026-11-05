@@ -41,9 +41,10 @@ Allowed paths:
   manifest identity of U1.4; assets; exception types on existing paths; the
   write schedule of `pipeline`.
 - **Lock**: unchanged in U1.1, U1.2, U1.3, U1.5 and U1.6. U1.4 regenerates
-  it for the manifest identity only (`manifest.json` of L1 and L2, and the
-  values derived from the run ID if the lock does not already normalize
-  them).
+  it for the run identity only: `manifest.json` of the three L1 and the
+  three L2 runs, and the two reports that embed the CLI run identity
+  (`L1:example-report/report.json`, `L3:reviewed-report/report.json`),
+  eight keys in total. Run IDs and request IDs are already normalized.
 - **Decisions in force**: UP-D03 (U1.4, U1.5).
 - **Owner actions**: none.
 
@@ -163,7 +164,8 @@ Checklist:
 
 1. Boundary and commit hygiene from `upgrade-u0` (plan 8.8).
 2. `git log upgrade-u0..HEAD -- tests/fixtures/behavior-lock.json` lists
-   only the U1.4 commit, and its fixture diff touches only manifest keys.
+   only the U1.4 commit, and its fixture diff touches only the eight keys of
+   section 3.
 3. Gates, foreign directory and wheel acceptance pass.
 4. T9 and T10 are recorded with before and after values; the equivalence
    tests of U1.1 to U1.3 are in the suite and pass.
@@ -179,5 +181,5 @@ Checklist:
 
 - `run-state.json` content differs from the current code at any write.
 - An equivalence test of U1.2 or U1.3 finds a difference.
-- U1.4 changes a lock key that is not part of the manifest identity.
+- U1.4 changes a lock key outside the eight keys of section 3.
 - `/api/version` behaves differently from plan 4.7 on the owner's service.
