@@ -343,11 +343,16 @@ Every finding has an ID that later steps cite.
 
 - **ALG-01** The quality annotation asks a 7B model for absolute Unicode
   code-point offsets and verbatim quotes of every segment, which the program
-  then checks (`evidence_quality.validate_annotation`). The failures
-  observed so far come from this contract (the diagnostic failure in 0.2;
-  compact-quote recovery attempts in the same archive also failed), and it
-  makes the output long. The samples are small; U0.6 measures the failure
-  classes on the benchmark.
+  then checks (`evidence_quality.validate_annotation`), and it makes the
+  output long. The failures observed so far are not offset or quote errors:
+  in the diagnostic failure of 0.2 every offset and quote is correct, and a
+  point names a character literal that its selected segments do not contain
+  (`Literal absent from selected spans`); the two compact-quote recovery runs
+  in the same archive failed with the same error and with a point/segment
+  detail conflict. The v2 contract of 4.2 keeps both checks, so it removes
+  the offset and quote contract but not these failure classes. The samples
+  are small; U0.6 measures the failure classes on the benchmark, and UP-D10
+  is answered with that measurement.
 - **ALG-02** Enumerable fields of the quality schema are free strings
   (`evidence_quality.annotation_schema`, line 43 and 55): `evidence_id` and
   `character_literal`.
@@ -1030,7 +1035,7 @@ recorded as `skipped (UP-Dnn not adopted)`.
 | UP-D07 | Anchors in the relevance system prompts; topics by ID | adopt | U2.4 |
 | UP-D08 | Bounded concurrency, configuration key `max_parallel_requests` (default 1) | adopt | U3.1, U3.2 |
 | UP-D09 | Shared cache (`cache_dir`, default off), per-text embedding cache, batch 32 | adopt | U3.3, U3.4 |
-| UP-D10 | Quality annotation v2 with program segmentation | adopt | U4.4 to U4.6 |
+| UP-D10 | Quality annotation v2 with program segmentation | adopt, answered after U0.6 measures the failure classes (ALG-01) | U4.4 to U4.6 |
 | UP-D11 | Extraction v2: evidence-first order, `subjects`, examples | adopt, each step under the adoption rule | U5.1 to U5.3 |
 | UP-D12 | Glossary target references; report `aimediator-report-v2` | adopt | U6.1 to U6.3 |
 | UP-D13 | Screening `coarse-v2` from the glossary | adopt after the offline comparison | U6.4 |
@@ -1079,8 +1084,10 @@ U3-L.
 reused response is marked, so reports can separate fresh from reused
 inference, as the 600-comment validation did by hand.
 
-**UP-D10 Quality v2.** Removes offsets and quotes from model output, and so
-the largest failure class. It cannot split finer than the program's
+**UP-D10 Quality v2.** Removes offsets and quotes from model output and
+shortens it. It does not by itself remove the failure class observed so far
+(a point literal outside its selected segments, ALG-01), which the repair
+attempt of U2.2 addresses. It cannot split finer than the program's
 clauses. Readers keep v1.
 
 **UP-D11 Extraction v2.** Three independent changes, each kept only when its
