@@ -1,7 +1,7 @@
 # 0005 Program segmentation of quality annotations
 
 - Type: Decision
-- Status: Active
+- Status: Superseded by [0006-revert-of-quality-annotation-v2.md](0006-revert-of-quality-annotation-v2.md)
 - Updated: 2026-11-05
 - Applies to: `aimediator` 0.1.0 from pipeline upgrade batch U4 (steps U4.1 to U4.5, measured by U4-L); `evidence-quality-policy-v2`, schema `evidence-quality-v2`, segmentation `clause-v1`; `RULES.md` v1.4
 - Owner decision UP-D10 of the

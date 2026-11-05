@@ -33,7 +33,8 @@ RULES.md D1. Records, decisions and meeting notes are frozen once final
 | [0002-module-boundaries-and-entry-points.md](decisions/0002-module-boundaries-and-entry-points.md) | Decision | Active | Package modules in layers with an import table the tests enforce; research commands as `python3 -m aimediator.<module>`; compatibility layers removed. |
 | [0003-model-visible-request-views.md](decisions/0003-model-visible-request-views.md) | Decision | Active | Each model request sends only the model-visible view of its stage; `stages.MODEL_VISIBLE` and a payload test with character budgets pin the contract. |
 | [0004-bounded-concurrency-and-shared-cache.md](decisions/0004-bounded-concurrency-and-shared-cache.md) | Decision | Active | Independent requests run through an ordered executor (`max_parallel_requests`, default 1) that keeps serial artifact order; an optional shared cache (`cache_dir`) reuses answers across runs with reuse provenance; embeddings per text in batches of 32. |
-| [0005-program-segmentation-of-quality-annotations.md](decisions/0005-program-segmentation-of-quality-annotations.md) | Decision | Active | The program cuts evidence units into clause segments (`clause-v1`) and the model only labels them (`evidence-quality-v2`); answers convert into the v1 shape and route by the unchanged rules; readers accept both versions. |
+| [0005-program-segmentation-of-quality-annotations.md](decisions/0005-program-segmentation-of-quality-annotations.md) | Decision | Superseded by 0006 | The program cuts evidence units into clause segments (`clause-v1`) and the model only labels them (`evidence-quality-v2`); answers convert into the v1 shape and route by the unchanged rules; readers accept both versions. |
+| [0006-revert-of-quality-annotation-v2.md](decisions/0006-revert-of-quality-annotation-v2.md) | Decision | Active | Quality annotation v2 is reverted in the pipeline after E-4 (fix-up steps U4.F2 to U4.F5): v1 requests and records again, the `clause-v1` code of U4.1 to U4.3 kept unused; supersedes the pipeline decisions of 0005. |
 
 ## Plans and status
 
@@ -65,6 +66,7 @@ RULES.md D1. Records, decisions and meeting notes are frozen once final
 | [20261103-dead-file-cleanup.md](records/20261103-dead-file-cleanup.md) | Record | Active | Workspace review for dead files after the reorganization: findings, the archived `runs/` output and what was kept. |
 | [20261103-code-restructuring.md](records/20261103-code-restructuring.md) | Record | Active | Change record of the code restructuring: decisions, progress, session log, verification notes and archives; final 2026-11-04 (tag `restructure-done`). |
 | [20261104-pipeline-upgrade.md](records/20261104-pipeline-upgrade.md) | Record | Active | Change record of the pipeline upgrade: owner decisions UP-D01 to UP-D16, progress, baselines, live evaluations, session log and verification notes. |
+| [20261105-pipeline-upgrade-validation.md](records/20261105-pipeline-upgrade-validation.md) | Record | Active | Acceptance measurements of the pipeline upgrade (U7.1 and U7.2): benchmark runs in `off` and `enforce`, the holdout and the test split once each, the plan 5.5 targets with measured values, limitations. |
 
 ## Reference
 
