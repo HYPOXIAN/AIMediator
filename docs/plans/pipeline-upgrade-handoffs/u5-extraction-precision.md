@@ -156,6 +156,11 @@ of generated claims, recall over all and over admitted positions, by
 language; the share of audited claims rejected (T6); claims per comment for
 comments over 400 characters; extraction prompt and output tokens; failures.
 
+Inputs (UP-D17): `extraction-precision-v1` development means its
+`extraction-development` sample of plan 5.3 (114 comments) and the
+benchmark its `latency-benchmark` sample (30); scoring keeps the labels of
+`extraction-precision-v1` and the development split.
+
 ### U5-V (verification)
 
 ```text

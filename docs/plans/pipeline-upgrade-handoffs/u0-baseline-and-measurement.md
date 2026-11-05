@@ -19,6 +19,8 @@ and the offline, archived and live baselines.
 - Measure the offline baseline and the archived run with the committed tool
   (U0.4).
 - Record the live environment and the live reference runs (U0.6).
+- Freeze the smaller samples of UP-D17 (U0.7) and run the sample reference
+  runs (U0.8).
 
 ## 2. Entry conditions
 
@@ -39,7 +41,7 @@ and the offline, archived and live baselines.
 Allowed paths:
 
 ```text
-^(src/aimediator/measurement\.py$|tests/|scripts/experiments/(measure_run_requests|materialize_evaluation_input|score_extraction)\.py$|data/evaluation/(latency-benchmark-v1|extraction-precision-v1)/|reports/[0-9]{8}-upgrade-baseline/|docs/records/[0-9]{8}-pipeline-upgrade\.md$|docs/README\.md$|docs/design/cli\.md$)
+^(src/aimediator/measurement\.py$|tests/|scripts/experiments/(measure_run_requests|materialize_evaluation_input|score_extraction)\.py$|data/evaluation/(latency-benchmark-v1|extraction-precision-v1|upgrade-samples-v1)/|reports/[0-9]{8}-upgrade-baseline(-samples)?/|docs/records/[0-9]{8}-pipeline-upgrade\.md$|docs/README\.md$|docs/design/cli\.md$)
 ```
 
 - **Allowed**:
@@ -48,11 +50,17 @@ Allowed paths:
     contracts of design/cli.md section 5;
   - the lock fixture, only to add the three existence-only keys of the new
     module (plan rule 1.3), in the U0.2 commit;
-  - the two new evaluation sets, each in its own `data` commit;
-  - one curated report directory from U0.6.
+  - the two new evaluation sets, each in its own `data` commit, and the
+    samples of U0.7 in a third;
+  - one curated report directory from U0.6 and one from U0.8.
 - **Not allowed**: any other package module, any asset, any request byte,
   any existing evaluation set or report, the archive (read only), `.env`.
-- **Decisions in force**: UP-D01 (U0.2), UP-D02 (U0.3, U0.5).
+- **Owner amendment**: the `docs` commit with `Decision: UP-D17` changes
+  the plan and the work orders outside this pattern, by the owner's
+  decision of 2026-11-04. Checklist item 1 names it and does not count it
+  as a boundary violation.
+- **Decisions in force**: UP-D01 (U0.2), UP-D02 (U0.3, U0.5), UP-D17
+  (U0.7, U0.8).
 - **Owner actions**: answer UP-D01 and UP-D02; provide the live environment
   for U0-L or run it; set the embedding keys of the live configuration.
 
@@ -239,7 +247,56 @@ Step notes:
 - Full runs go to `~/Archives/AIMediator/reports/<YYYYMMDD>-upgrade-baseline/`
   with `SHA256SUMS`.
 - Fill the "Live evaluations" table with one row per run. These rows are
-  the reference of U2.
+  the full-set baseline; for the sampled sets, U0.8 gives the reference of
+  U2 (UP-D17).
+
+### U0-L2 (live): step U0.8
+
+Step U0.7 (the samples) is committed by the owner's amendment before this
+session starts.
+
+```text
+You are session U0-L2 (live) of the AIMediator pipeline upgrade, step
+U0.8. You run on the owner's machine with the local model service.
+Read: RULES.md; this work order; the plan docs/plans/pipeline-upgrade.md,
+sections 1, 5.3, 5.4 and 8.6 and the U0 part of section 7; the change
+record, especially the U0.6 sections.
+Task: check the environment against the U0.6 record, materialize the
+samples, run the four sample reference runs of U0.8 at HEAD, measure and
+score them, archive the full runs, commit a curated report and the
+change-record entries with "Step: U0.8".
+Rules: never open, print or copy .env. If the environment differs from the
+U0.6 record or doctor fails, stop and report. Never add attribution.
+Finish with a session-log entry; your final message repeats it.
+```
+
+Step notes:
+
+- Environment: checked as in U0.6; `runs/upgrade/live-config.json`
+  unchanged.
+- Inputs: materialize all four samples with the command in each sample's
+  manifest (`full-balanced` too, for U7.1); check the row counts 30, 114,
+  19 and 120 and record each file's SHA-256.
+- Runs, each in its own run directory and process session, with the U0.6
+  commands: `u0s-benchmark-off`, `u0s-benchmark-shadow`,
+  `u0s-extraction-development-off`, `u0s-quality-synthetic-shadow`
+  (`--stop-after quality`). Time each with the measurement tool's wall
+  time.
+- Scores: `score_extraction.py` with the labels of
+  `extraction-precision-v1`, split development; route agreement with the
+  one-off scorer of D-4 over the 19 sample cases only (give it a copy of
+  `cases.json` filtered to the sample's IDs, written under
+  `runs/upgrade/inputs/`).
+- Record: one "Live evaluations" row per run, the set named
+  `upgrade-samples-v1/<sample>` with its size; the plan 5.5 baselines T1
+  to T7 on the samples beside the U0.6 values; a comparison of each sample
+  row with its U0.6 row, where a difference beyond the intervals is a
+  finding, not a stop.
+- The curated report `reports/<YYYYMMDD>-upgrade-baseline-samples/` holds
+  `manifest.json` (P2) and `summary/`, no source text; the U0.6 report is
+  not changed. Full runs go to
+  `~/Archives/AIMediator/reports/<YYYYMMDD>-upgrade-baseline-samples/`
+  with `SHA256SUMS`.
 
 ### U0-V (verification)
 
@@ -264,10 +321,13 @@ Checklist:
    least 241.
 4. Recompute `ids_sha256` and `labels_sha256` of both sets; rerun the U0.3
    selection rule and compare the IDs; check the split rule on
-   `extraction-precision-v1`.
+   `extraction-precision-v1`. Recompute the four `ids_sha256` of
+   `upgrade-samples-v1`, rerun their rules from the manifests and compare
+   the IDs.
 5. Rerun plan 8.7 and compare with the U0.4 entry.
-6. The U0.6 report manifest names the archive path, and its `SHA256SUMS`
-   file exists; the "Live evaluations" table has the five reference rows.
+6. The U0.6 and U0.8 report manifests name their archive paths, and their
+   `SHA256SUMS` files exist; the "Live evaluations" table has the five
+   reference rows of U0.6 and the four sample rows of U0.8.
 
 ## 5. Exit and handoff out
 

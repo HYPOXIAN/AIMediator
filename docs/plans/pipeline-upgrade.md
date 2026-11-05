@@ -649,6 +649,24 @@ It reads CLI runs, legacy runs and the archived run, and writes JSON only.
 The test split of `extraction-precision-v1` and the holdout of
 `balance-silver-v1` run once each, in U7.2.
 
+**Samples (UP-D17).** From U0.8 on, live runs use smaller samples, frozen
+in step U0.7 as `data/evaluation/upgrade-samples-v1/`. Each subdirectory
+is a set that `materialize` reads; its manifest states the rule in full.
+
+| Sample | Comments | Replaces | Rule |
+| ------ | -------- | -------- | ---- |
+| `latency-benchmark` | 30 | `latency-benchmark-v1` (60) | the first 5 per language and tercile in the set's own order (SHA-256 of `latency-benchmark-v1:<record_id>`); every ID is in the set |
+| `extraction-development` | 114 | `extraction-precision-v1` development (227) | per language, the first half by SHA-256 of `upgrade-samples-v1:<comment_id>` (45 English, 69 Chinese); scored with the labels of `extraction-precision-v1`, which skip labeled comments absent from the run |
+| `quality-synthetic` | 19 | `evidence-quality-synthetic-v1` (38) | one case per category, Chinese and English alternating in category order |
+| `full-balanced` | 120 | the 600-comment dataset of U7.1 | 20 per language and tercile (the cut points of `latency-benchmark-v1`) by SHA-256 of `upgrade-samples-v1:<record_id>` |
+
+Kept in full: the `balance-silver-v1` development split (about 3 minutes
+per run), the U7.2 holdout and test runs, the archived quality development
+sources (U4-L) and the PRM-06 spot check (U6-L). Wherever this plan or a
+work order names a replaced input for a live run from U0.8 on, the run
+uses the sample and keeps its run directory name. The U0.6 rows stay the
+full-set baseline; the U0.8 rows are the sample reference.
+
 ### 5.4 Live evaluation protocol
 
 - **Environment**, recorded in U0.6 and checked at the start of every L
@@ -667,7 +685,11 @@ The test split of `extraction-precision-v1` and the holdout of
   (P2) and `summary/`; full runs are archived to
   `~/Archives/AIMediator/reports/<same name>/` with `SHA256SUMS`.
 - **Reference**: the most recent accepted L measurement of the same set and
-  mode; for U2 the U0.6 baseline.
+  mode; for U2 the U0.8 sample runs (UP-D17), and the U0.6 run for the
+  `balance-silver-v1` development split, which is kept in full. On the
+  samples the comparison is paired (the same comments on both sides), and
+  the live session reports the Wilson intervals beside each difference,
+  because the margins of rule 4 are close to the sampling error.
 - **Adoption rule** for a B step that changes model-visible content. Keep
   the step when all hold:
   1. the gates pass;
@@ -687,7 +709,9 @@ The test split of `extraction-precision-v1` and the holdout of
 ### 5.5 Objectives
 
 Candidate targets, not guarantees. Each is measured by the L session of its
-batch on `latency-benchmark-v1` unless stated otherwise.
+batch on `latency-benchmark-v1` unless stated otherwise. From U0.8 on, the
+sets are the samples of 5.3 (UP-D17), and a baseline named U0.6 is the
+U0.8 run of the same sample and mode.
 
 | ID | Metric | Baseline | Target | Batch |
 | -- | ------ | -------- | ------ | ----- |
@@ -708,7 +732,7 @@ batch on `latency-benchmark-v1` unless stated otherwise.
 
 | Batch | Goal | Step classes | Decisions | Live session | Review point | Exit tag |
 | ----- | ---- | ------------ | --------- | ------------ | ------------ | -------- |
-| U0 | Baseline, measurement tool, evaluation sets | N, D, L | UP-D01, UP-D02 | U0-L (baseline) | none | `upgrade-u0` |
+| U0 | Baseline, measurement tool, evaluation sets | N, D, L | UP-D01, UP-D02, UP-D17 | U0-L (baseline), U0-L2 (sample reference) | none | `upgrade-u0` |
 | U1 | Behavior-neutral performance, service identity | N, B | UP-D03 | none | none | `upgrade-u1` |
 | U2 | Request views | N, B, L | UP-D04 to UP-D07 | U2-L1, U2-L2 | owner | `upgrade-u2` |
 | U3 | Concurrency and caching | N, B, L | UP-D08, UP-D09 | U3-L | none | `upgrade-u3` |
@@ -759,6 +783,16 @@ UP-D01 and UP-D02 answered.
   `--stop-after quality` (route agreement over the cases that reach the
   quality stage, with denominators). Measure and score; curated summary
   `reports/<YYYYMMDD>-upgrade-baseline/`.
+- **U0.7** D `data` (UP-D17): `data/evaluation/upgrade-samples-v1/` with
+  the four samples of 5.3 and their manifests; added by the owner's
+  amendment of 2026-11-04 after U0.6.
+- **U0.8** L (UP-D17): the sample reference runs at the U0.7 commit, in
+  session U0-L2: `u0s-benchmark-off` and `u0s-benchmark-shadow` (sample
+  `latency-benchmark`), `u0s-extraction-development-off` (sample
+  `extraction-development`) and `u0s-quality-synthetic-shadow` (sample
+  `quality-synthetic`, `--stop-after quality`). Measure and score as in
+  U0.6, with the 5.5 baselines on the samples; curated summary
+  `reports/<YYYYMMDD>-upgrade-baseline-samples/`.
 
 ### U1 Behavior-neutral performance and service identity
 
@@ -891,9 +925,10 @@ and the benchmark in `off`.
 
 ### U7 Acceptance and documents
 
-- **U7.1** L: the full 600-comment set in `off`, `shadow` and `enforce`, with
-  the adopted configuration; compared with the archived `off` run and the
-  U0.6 baseline.
+- **U7.1** L: the `full-balanced` sample (120 of the 600 comments, UP-D17)
+  in `off`, `shadow` and `enforce`, with the adopted configuration;
+  compared per comment and per request with the archived `off` run and
+  with the U0.6 and U0.8 baselines.
 - **U7.2** L: the `balance-silver-v1` holdout and the
   `extraction-precision-v1` test split, once each.
 - **U7.3** N `docs`: design documents, the CLI guide, the README, and a
@@ -994,6 +1029,12 @@ The `balance-silver-v1` comments come from
 them the same way with the set's own labels file (U0.2 supports both
 formats).
 
+From U0.8 on (UP-D17), live runs read the materialized samples of 5.3,
+`runs/upgrade/inputs/upgrade-sample-<name>.jsonl`, written in U0.8 with the
+`materialize` command in each sample's manifest. `score_extraction.py`
+keeps `--labels data/evaluation/extraction-precision-v1 --split
+development`. A route scorer counts only the cases of the run's input.
+
 ### 8.7 Archived baseline (read-only)
 
 ```sh
@@ -1041,6 +1082,7 @@ recorded as `skipped (UP-Dnn not adopted)`.
 | UP-D14 | Near-duplicate clusters; `balance-review-policy-v3` | adopt | U6.5 |
 | UP-D15 | Optional second audit by the other routed model | trial, default off | U6.6 |
 | UP-D16 | `RULES.md` v1.5: P4 floor raised to the final count | adopt | U7.4 |
+| UP-D17 | Smaller live samples from U0.8 on (raised by the owner after U0.6) | adopt | U0.7, U0.8, every live run of U2 to U7 |
 
 **UP-D01 New modules.** `measurement` keeps evaluation logic out of scripts
 (P3: tests use it); `cache` and `topics` give the shared cache and the
@@ -1107,6 +1149,14 @@ model switch and one more request per accepted claim. The routing asset
 changes; the default stays off until the owner adopts it after U6-L.
 
 **UP-D16 Test floor.** Same procedure as CR-D10 of the restructuring.
+
+**UP-D17 Live samples.** Raised by the owner on 2026-11-04 after U0.6, to
+shorten the live sessions: at the U0.6 speeds the live runs of U2 to U7
+take about 30 hours on the full sets and about 11 with the samples, U0.8
+included. Costs: one more live session (U0.8, about an hour), so that
+every comparison stays paired on the same comments; wider intervals, so a
+verdict near a margin of rule 4 is less certain; U7.1 accepts on 120
+comments instead of 600.
 
 Owner actions: close the restructuring (entry condition); answer this
 section; provide the live environment or run the L sessions (5.4); review at
@@ -1267,6 +1317,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | Parallel requests reorder artifacts or race on a journal folder | Ordered commit and per-identity locks (4.5); N = 1 keeps the lock unchanged |
 | Shared-cache hits are mistaken for fresh inference | Reuse provenance per request; measurement counts both |
 | The live environment drifts between L sessions | Environment record and check at every L session start (5.4) |
+| Samples make verdicts noisier (UP-D17) | Paired comparisons against the U0.8 sample references; intervals reported beside differences; the full-set U0.6 rows kept |
 | Live sessions are unavailable | L steps are owner actions; implementation continues with independent steps; batch exits wait |
 | Credentials leak through live commands | `.env` is passed by path only and never opened (G9); configurations hold variable names only |
 | Tooling adds attribution trailers | Rule 1.2 (P6); commit-hygiene check (8.8) |
@@ -1286,7 +1337,8 @@ The upgrade is complete when all of the following hold:
 4. Every live evaluation is in the change record, with a curated report for
    each batch that had one.
 5. The targets of 5.5 are reported with their measured values, met or not.
-6. The full 600-comment runs of U7.1 account for every input row.
+6. The U7.1 runs (the `full-balanced` sample, UP-D17) account for every
+   input row.
 7. The design documents, the guide and the README describe the code (U7.3).
 8. `RULES.md` matches the tree (U7.4).
 9. The change record is final and frozen; this plan and its handoffs are

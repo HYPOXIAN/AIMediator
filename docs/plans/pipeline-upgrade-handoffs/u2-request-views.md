@@ -8,8 +8,9 @@
 Work order for batch U2. The steps are defined in plan section 7 (U2) and
 the target in plan 4.1, 4.3 and 4.4. This is the first batch that changes
 what the models see. Every B step is measured by a live session against the
-U0.6 reference and kept only under the adoption rule (plan 5.4). U2 ends at
-an owner review.
+U0.8 sample reference (U0.6 for the `balance-silver-v1` development split;
+UP-D17) and kept only under the adoption rule (plan 5.4). U2 ends at an
+owner review.
 
 ## 1. Mission
 
@@ -25,7 +26,7 @@ an owner review.
 
 - Tag `upgrade-u1` exists. Clean tree, no `WIP Step` stash, the gates pass.
 - UP-D04, UP-D05 and UP-D07 are answered; UP-D06 is needed for U2.5 only.
-- The U0.6 reference rows exist in the change record.
+- The U0.6 and U0.8 reference rows exist in the change record.
 
 ## 3. Responsibility boundary
 
@@ -153,7 +154,7 @@ Step notes:
 You are session U2-L<k> (live) of the AIMediator pipeline upgrade. You run
 on the owner's machine with the local model service.
 Read: RULES.md; this work order; the plan, sections 1, 5 and 8.6 and the U2
-part of section 7; the change record, especially the U0.6 rows.
+part of section 7; the change record, especially the U0.6 and U0.8 rows.
 Task: check the environment against the U0.6 record, run the runs listed
 for your session at HEAD, measure and score them, apply the adoption rule
 to each step under evaluation, archive the full runs, and record the
@@ -179,6 +180,12 @@ Runs:
   creates it, U2-L2 adds its summary file in its own commit.
 - **U2-L2** at the U2.5 commit: `u2l2-benchmark-off`,
   `u2l2-extraction-development-off`; reference U2-L1. Verdict on U2.5.
+
+Inputs (UP-D17): every run uses the sample of plan 5.3 for its set
+(`latency-benchmark`, `extraction-development`, `quality-synthetic`) and
+keeps its run name; `u2l1-silver-development-relevance` runs the full
+`balance-silver-v1` development split. The reference of U2-L1 is the U0.8
+row of the same sample and mode, and the U0.6 row for the silver split.
 
 ### U2-V (verification)
 

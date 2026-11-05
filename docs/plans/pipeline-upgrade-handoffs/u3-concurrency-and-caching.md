@@ -162,10 +162,14 @@ Runs, all on the benchmark in `shadow`, each with a new empty
    provenance and elapsed times.
 5. Retrieval check: the largest absolute difference of positive and
    negative scores and the number of changed `retrieval_related` decisions
-   between run 1 and `u0-benchmark-shadow` (batch 8 against 32).
+   between run 1 and `u0s-benchmark-shadow` (U0.8, the same sample; batch
+   8 against 32).
 
 Record per-stage throughput (requests and output tokens per second) and the
 memory the service reports in `/api/ps` during runs 2 and 3.
+
+Inputs (UP-D17): the benchmark is the `latency-benchmark` sample of plan
+5.3 (30 comments).
 
 ### U3-V (verification)
 

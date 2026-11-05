@@ -172,6 +172,10 @@ classes of failed attempts, route agreement on the synthetic cases, the
 largest prompt plus output token count (for the `num_ctx` follow-up), and
 the extraction and audit counts of the `enforce` run.
 
+Inputs (UP-D17): the benchmark and the synthetic cases are the
+`latency-benchmark` and `quality-synthetic` samples of plan 5.3; the
+archived quality development sources run in full.
+
 ### U4-V (verification)
 
 ```text

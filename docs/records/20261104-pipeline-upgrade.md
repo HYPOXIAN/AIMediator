@@ -28,6 +28,7 @@ the progress table in its own commit. Frozen when the plan is finished (D3).
 | UP-D14 | adopt | 2026-11-04 | plan section 9 |
 | UP-D15 | trial, default off | 2026-11-04 | plan section 9 |
 | UP-D16 | adopt | 2026-11-04 | plan section 9 |
+| UP-D17 | adopt (raised by the owner) | 2026-11-04 | plan section 9; smaller live samples from U0.8 on (`upgrade-samples-v1`, steps U0.7 and U0.8); given after U0.6 |
 
 **Standing instruction (owner, 2026-11-04, after U0.6).** The remaining
 sessions of U0 to U7 run unattended, one after another. Where a step, a

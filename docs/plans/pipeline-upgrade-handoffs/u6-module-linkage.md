@@ -182,6 +182,10 @@ resolved target reference, the number of report groups before and after
 glossary grouping, the near-duplicate clusters found, and for the second
 audit the precision and recall change and the added time.
 
+Inputs (UP-D17): the benchmark and the extraction development split are
+the `latency-benchmark` and `extraction-development` samples of plan 5.3;
+the PRM-06 spot check is unchanged.
+
 ### U6-V (verification)
 
 ```text
