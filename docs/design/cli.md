@@ -547,13 +547,16 @@ every path keeps the exception type it raises.
   `chat`, and `probe(cfg, transport, require_embedding=True)`, which checks
   availability only.
 - `runner`: `Runner(base, folder, prompts, quality_identity=None,
-  quality_policy=None, chat_transport=None, progress=None, log=None)` with
+  quality_policy=None, chat_transport=None, progress=None, log=None,
+  journal=None)` with
   `runtime_options` (default `{}`), `cached_single_ids(model, language,
   stage)` and `generate(model, language, stage, data, ids) -> (parsed or
   None, meta)`; `meta` holds `request_id`, `errors` and `elapsed_seconds`.
   `progress(stage, ids, None)` runs before a request and `progress(stage,
-  ids, bool(parsed))` after it; `log` receives `'<stage>: <model>, <n>
-  items'`. Each request is journaled under `requests/<stage>/<request_id>/`
+  ids, bool(parsed))` after it; `journal(<request directory relative to the
+  run folder>, <no errors>)` runs after each `validation.json` write
+  (`operations.analyze` passes `run_store.record_request`); `log` receives
+  `'<stage>: <model>, <n> items'`. Each request is journaled under `requests/<stage>/<request_id>/`
   (`request.json`, `response.json`, `validation.json`,
   `partial-output.txt`). Stages other than `quality` propagate transport
   errors and unreadable cache files; `quality` turns them into failed
@@ -575,9 +578,19 @@ every path keeps the exception type it raises.
   `process`; `operations.analyze` handles it.
 - `run_store`: run identity (`code_manifest`, `resource_manifest`,
   `identity`), `initialize`, the advisory `lock`, `state(folder, status,
-  stage, reason=None)` (reads only request validations that are new or
-  changed since its last call), `load_resume`, `coverage`,
-  `technical_failures` and `snapshot_artifacts`.
+  stage, reason=None)`, `record_request(folder, relative, completed)`,
+  `load_resume`, `coverage`, `technical_failures` and
+  `snapshot_artifacts`. `state` writes the completed request directories in
+  the order of their sorted `validation.json` paths (relative path parts).
+  It takes them from a request index of the last run folder: `initialize`
+  starts it empty, `record_request` (the runner's journal) updates it, and
+  the first `state` call for a folder without one, as on resume
+  (`load_resume` drops the folder's index), lists and reads
+  `requests/**/validation.json` once (pipeline upgrade step U1.1). A
+  `state` write with status `interrupted` or `failed` lists again, because
+  the interruption may fall between a validation write and its journal
+  call. A validation file written outside the journal is otherwise seen
+  only at the next listing.
 - `fixture_transport`: `FixtureTransport(cfg, key=None, folder=None)`, with
   provenance `agent_authored_synthetic_fixture_transports`; `demo` imports
   it, so `demo.FixtureTransport` stays importable.

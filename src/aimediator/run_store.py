@@ -1,12 +1,12 @@
 """Portable run identity, snapshots, advisory locking and lifecycle state."""
 from __future__ import annotations
 
+import bisect
 from collections import Counter
 from contextlib import contextmanager
 from datetime import datetime, timezone
 import fcntl
 from importlib.resources import files
-import os
 from pathlib import Path
 import platform
 from typing import Any, Iterator
@@ -76,36 +76,63 @@ def initialize(folder: Path, raw: bytes, rows: list[dict[str, Any]], cfg: dict[s
         target = folder / 'resource-snapshot' / name
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(asset_path(name).read_bytes())
+    # The folder is new, so its request index is known to be empty.
+    _requests.clear()
+    _requests[str(folder)] = ({}, [])
     state(folder, 'created', 'preflight')
 
 
-# Validation files already read by _completed_requests, for the last run folder
-# only: path -> (stat signature, sort key, request directory, completed).
-_validations = {}
+# Request index of the last run folder only: run folder -> (completed flag by
+# request directory relative to the run folder, [(sort key, request directory)]
+# kept sorted). The sort key is the relative path parts of the request's
+# validation.json, so the order is that of the sorted validation paths.
+_requests = {}
+
+
+def record_request(folder: Path, relative: Path | str, completed: bool) -> None:
+    """Record that a request's validation.json was written, with or without errors, in the folder's index.
+
+    The runner's journal callback. A folder without an index is ignored: the next
+    ``state`` call lists its validation files, this one included.
+    """
+    index = _requests.get(str(folder))
+    if index is not None:
+        flags, order = index
+        relative = Path(relative)
+        directory = str(relative)
+        if directory not in flags:
+            bisect.insort(order, ((relative / 'validation.json').parts, directory))
+        flags[directory] = completed
 
 
 def _completed_requests(folder: Path) -> list[str]:
-    """Return the request directories whose validation.json has no errors, reading only new or changed files."""
-    known = _validations.pop(str(folder), {})
-    _validations.clear()
-    entries = []
-    for path in (folder / 'requests').rglob('validation.json'):
-        info = os.stat(path)
-        # Writers replace files (common.write), so a rewrite also changes the inode.
-        signature = (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns)
-        entry = known.get(str(path))
-        if entry is None or entry[0] != signature:
+    """Return the request directories whose validation.json has no errors.
+
+    The first call for a folder in a process lists and reads every validation file
+    (a new or resumed run); later calls use the index that ``record_request`` keeps.
+    """
+    index = _requests.get(str(folder))
+    if index is None:
+        flags, order = {}, []
+        for path in (folder / 'requests').rglob('validation.json'):
             relative = path.relative_to(folder)
-            entry = (signature, relative.parts, str(relative.parent), not read(path).get('errors'))
-        entries.append((str(path), entry))
-    _validations[str(folder)] = dict(entries)
-    # The paths share the folder prefix, so ordering by parts is the order of sorted paths.
-    return [entry[2] for _, entry in sorted(entries, key=lambda item: item[1][1]) if entry[3]]
+            flags[str(relative.parent)] = not read(path).get('errors')
+            order.append((relative.parts, str(relative.parent)))
+        # The paths share the folder prefix, so ordering by parts is the order of sorted paths.
+        order.sort()
+        index = flags, order
+        _requests.clear()
+        _requests[str(folder)] = index
+    flags, order = index
+    return [directory for _, directory in order if flags[directory]]
 
 
 def state(folder: Path, status: str, stage: str, reason: str | None = None) -> None:
     """Update run-state.json with the status, stage and reason, and the completed request identities."""
     previous = read(folder / 'run-state.json') if (folder / 'run-state.json').exists() else {}
+    if status in ('interrupted', 'failed'):
+        # The interruption or error may fall between a validation.json write and its journal call.
+        _requests.pop(str(folder), None)
     completed = _completed_requests(folder)
     write(folder / 'run-state.json', {**previous, 'schema_version': 'aimediator-state-v1',
           'run_state': status, 'stage': stage, 'updated_at_utc': now(), 'reason': reason,
@@ -115,6 +142,8 @@ def state(folder: Path, status: str, stage: str, reason: str | None = None) -> N
 
 def load_resume(folder: Path) -> tuple[dict[str, Any], dict[str, Any], list[dict[str, Any]]]:
     """Return the manifest, configuration and rows of a run whose recorded identity still holds, or raise Failure(4)."""
+    # A resume lists the request directories again, also within one process.
+    _requests.pop(str(folder), None)
     manifest = read(folder / 'manifest.json')
     if manifest.get('schema_version') != 'aimediator-run-v1':
         raise Failure(4, 'Only aimediator-run-v1 runs can be resumed')

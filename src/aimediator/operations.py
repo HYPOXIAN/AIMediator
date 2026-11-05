@@ -109,7 +109,8 @@ def analyze(input_path=None, out=None, cfg=None, resume=None, env_file=None, tra
                           file=sys.stderr, flush=True)
 
             def runner_factory(*values):
-                return runner.Runner(*values, chat_transport=transport.chat, progress=progress)
+                return runner.Runner(*values, chat_transport=transport.chat, progress=progress,
+                                     journal=lambda relative, completed: store.record_request(folder, relative, completed))
 
             def retrieve(*values):
                 if not quiet:

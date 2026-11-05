@@ -19,7 +19,8 @@ class Runner:
                  quality_identity: dict[str, Any] | None = None, quality_policy: dict[str, Any] | None = None,
                  chat_transport: Callable[..., dict[str, Any]] | None = None,
                  progress: Callable[[str, list[str], bool | None], None] | None = None,
-                 log: Callable[[str], None] | None = None) -> None:
+                 log: Callable[[str], None] | None = None,
+                 journal: Callable[[Path, bool], None] | None = None) -> None:
         self.base, self.folder, self.prompts = base, folder, prompts
         self.quality_identity = quality_identity
         self.quality_policy = quality_policy
@@ -27,6 +28,7 @@ class Runner:
         self.progress = progress
         self.log = log
         self.chat_transport = chat_transport
+        self.journal = journal
 
     def cached_single_ids(self, model: str, language: str, stage: str) -> set[str]:
         """Return the comment IDs with a valid single-comment response from this model and prompt."""
@@ -91,6 +93,8 @@ class Runner:
         if result.get('done') is not True or result.get('done_reason') != 'stop':
             errors.append('Incomplete generation')
         write_json(folder / 'validation.json', {'errors': errors, 'schema': schema})
+        if self.journal is not None:
+            self.journal(folder.relative_to(self.folder), not errors)
         return parsed if not errors else None, {'request_id': identity, 'errors': errors,
             'elapsed_seconds': response.get('elapsed_seconds', 0)}
 
