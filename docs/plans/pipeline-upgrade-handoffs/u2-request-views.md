@@ -85,7 +85,11 @@ Step notes:
     `data` itself in this step. Keep `prepare` as an alias if a caller
     needs it.
   - `Runner._generate` builds the payload from the view and passes the
-    full `data` to `stages.normalize` and `stages.schema_for`.
+    full `data` to `stages.schema_for`. `stages.normalize` receives the
+    full `data` for relevance, retrieval review, quality and extract, and
+    the view for `verify`, whose verdict `scope` reads
+    `selected_source_segments` from the view (`stages.py` line 128).
+    Passing the full `data` there changes 13 lock keys in `enforce`.
   - `stages.MODEL_VISIBLE`: per stage, the set of top-level and
     `comments[]` keys the view may hold, equal to today's keys.
   - `Runner` accepts an optional `request_context` (default `None`) that

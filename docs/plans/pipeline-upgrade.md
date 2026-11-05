@@ -413,8 +413,11 @@ Every finding has an ID that later steps cite.
 
 `stages.view(stage, data, ids)` returns the model-visible data. `Runner`
 sends `{**view, 'response_schema': schema}` (or the response template of
-4.3) and keeps `data` as context for `stages.normalize(stage, parsed, ids,
-data)`. The cache identity stays the SHA-256 of the payload with `stream`
+4.3) and keeps `data` as context for `stages.schema_for` and, except for
+`verify`, for `stages.normalize(stage, parsed, ids, data)`; the verify
+verdict's `scope` reads `selected_source_segments`, which only the view
+holds (`stages.py` line 128). The cache identity stays the SHA-256 of the
+payload with `stream`
 false plus `pipeline_quality_identity`, and adds a `request_context` for
 program context that must separate requests, such as the quality attempt.
 `stages.MODEL_VISIBLE` lists the allowed keys per stage. A test checks every
