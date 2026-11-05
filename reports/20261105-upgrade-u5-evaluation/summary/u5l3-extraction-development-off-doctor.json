@@ -1,0 +1,32 @@
+{
+  "command": "doctor",
+  "status": "ok",
+  "artifacts": {},
+  "counts": {},
+  "warnings": [],
+  "error_code": null,
+  "error_message": null,
+  "details": {
+    "checks": {
+      "dependencies": "passed",
+      "resources": "passed",
+      "configuration": "passed",
+      "input": "not_provided",
+      "output": "not_provided",
+      "service_models": "passed",
+      "embedding_probe": "passed"
+    },
+    "installed_models": {
+      "llama3.1:latest": "5d41ee66bd5e06ce8ab073183af15eef121e9672fb55dacf331d6d466a1d76e3",
+      "qwen2.5:7b": "1a7f84d0ce55a0f32267af827657ae645670fd8245df828a55c2489e8c338c66",
+      "qwen3-embedding:8b": "cd11cb615c74ae997aa0bbe3f1ad22e1f00f1fb4a27736bd9ca1cf6f1726539b"
+    },
+    "input_comments": null,
+    "remote_digest_verified": true,
+    "runtime": {
+      "package_version": "0.1.0",
+      "python": "3.14.8",
+      "numpy": "2.4.6"
+    }
+  }
+}

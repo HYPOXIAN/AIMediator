@@ -1,0 +1,134 @@
+{
+ "schema": "aimediator-report-manifest-v1",
+ "name": "20261105-upgrade-u5-evaluation",
+ "record": "docs/records/20261104-pipeline-upgrade.md",
+ "session": "U5-L3",
+ "decisions": [
+  "UP-D11",
+  "UP-D17",
+  "UP-D18",
+  "UP-D19",
+  "UP-D20",
+  "D-8",
+  "E-3"
+ ],
+ "reason": "U5 live measurements of extraction precision and recall on the extraction-development sample (U5-L1 to U5-L3 against the latest accepted state) and the E-3 measurement of U2.3 alone; cited by the change record",
+ "archive": {
+  "path": "~/Archives/AIMediator/reports/20261105-upgrade-u5-evaluation/",
+  "checksums": "SHA256SUMS",
+  "files": 6427,
+  "bytes": 208654055,
+  "archived_on": "2026-11-05",
+  "contents": "runs/, measurements/, logs/ (run logs; the bridge log, counters and timings only), config/ (API configuration), inputs/ (the materialized sample, source text), provenance/"
+ },
+ "runs": {
+  "u2r-extraction-development-off": {
+   "code": "39a1efd",
+   "why": "E-3 option (c): U2.3 without U2.4",
+   "manifest": "runs/u2r-extraction-development-off/manifest.json"
+  },
+  "u5r-extraction-development-off": {
+   "code": "e34e08d",
+   "why": "U5 entry state rerun (code of the U4 session); decides nothing",
+   "manifest": "runs/u5r-extraction-development-off/manifest.json"
+  },
+  "u5l1-extraction-development-off": {
+   "code": "e64701d",
+   "why": "U5-L1: U5.1",
+   "manifest": "runs/u5l1-extraction-development-off/manifest.json"
+  },
+  "u5l2-extraction-development-off": {
+   "code": "30d41be",
+   "why": "U5-L2: U5.2",
+   "manifest": "runs/u5l2-extraction-development-off/manifest.json"
+  },
+  "u5l3-extraction-development-off": {
+   "code": "476d502",
+   "why": "U5-L3: U5.3",
+   "manifest": "runs/u5l3-extraction-development-off/manifest.json"
+  }
+ },
+ "datasets": {
+  "upgrade-samples-v1/extraction-development": "data/evaluation/upgrade-samples-v1/extraction-development, 114 (every run)",
+  "extraction-precision-v1": "data/evaluation/extraction-precision-v1, development split (scores); the test split is not read",
+  "inputs_sha256": {
+   "upgrade-sample-extraction-development.jsonl": "46e5bb22d38c7b76f8521b376eaac5635ac8988007b9d3c37510315273c6b311"
+  }
+ },
+ "references": {
+  "u2r-extraction-development-off": "u2l0-extraction-development-off of reports/20261105-upgrade-api-reference (U2-L0)",
+  "U5": "u2l1-extraction-development-off of reports/20261105-upgrade-u2-evaluation (U2-L1), or the latest U5-L run that passed the adoption rule, as the change record names it"
+ },
+ "environment": {
+  "service": "API bridge runs/upgrade/tools/api_bridge.py, version openrouter-bridge-2, sha256 f42e0087ebcde0b193eaaa1d60cd2c735b7630fa7735ccda14acd7403e1137e9",
+  "configuration": "runs/upgrade/live-config-api.json, sha256 b44df0f2f8d7d0d6e295d7daa1314a729e2c285ec345596beff56a71fc1c4530"
+ },
+ "wall_seconds": {
+  "u2r-extraction-development-off": 447.5,
+  "u5r-extraction-development-off": 1000.8,
+  "u5l1-extraction-development-off": 424.4,
+  "u5l2-extraction-development-off": 405.4,
+  "u5l3-extraction-development-off": 462.7
+ },
+ "code_version": {
+  "git_commit": "476d502",
+  "head_when_built": "90a7dd1",
+  "note": "Each run ran from a git archive copy of its code commit first on sys.path (runs.<run>.code)."
+ },
+ "summary": [
+  "summary/u2r-extraction-development-off-metrics.json",
+  "summary/u2r-extraction-development-off-scores.json",
+  "summary/u2r-extraction-development-off-doctor.json",
+  "summary/u2r-identity.json",
+  "summary/u2r-comparison-u2l0.json",
+  "summary/u2r-comparison-u2l1-against-u2r.json",
+  "summary/u5r-extraction-development-off-metrics.json",
+  "summary/u5r-extraction-development-off-scores.json",
+  "summary/u5r-extraction-development-off-doctor.json",
+  "summary/u5r-identity.json",
+  "summary/u5r-comparison-u2l1.json",
+  "summary/u5l1-extraction-development-off-metrics.json",
+  "summary/u5l1-extraction-development-off-scores.json",
+  "summary/u5l1-extraction-development-off-doctor.json",
+  "summary/u5l1-identity.json",
+  "summary/u5l1-comparison-u2l1.json",
+  "summary/u5l1-comparison-u5r.json",
+  "summary/u5l2-extraction-development-off-metrics.json",
+  "summary/u5l2-extraction-development-off-scores.json",
+  "summary/u5l2-extraction-development-off-doctor.json",
+  "summary/u5l2-identity.json",
+  "summary/u5l2-comparison-u5l1.json",
+  "summary/u5l3-extraction-development-off-metrics.json",
+  "summary/u5l3-extraction-development-off-scores.json",
+  "summary/u5l3-extraction-development-off-doctor.json",
+  "summary/u5l3-identity.json",
+  "summary/u5l3-comparison-u5l1.json",
+  "summary/u5l3-comparison-u5l2.json"
+ ],
+ "provenance": [
+  {
+   "path": "provenance/u5_api_run.sh",
+   "sha256": "d02c4775b1a5e2b1412032b5902bbd4b1f1884437f46fc0b3077e3442612fcf9"
+  },
+  {
+   "path": "provenance/u5_compare.py",
+   "sha256": "424ebbc59f935442db8f304bdb01204ae672c53bc4c90127764e003a56514d75"
+  },
+  {
+   "path": "provenance/u5_identity.py",
+   "sha256": "32afc3b6672bb200ee13bad0c9305230d74a88d3d7800b438a76b5f6d8fc5e42"
+  },
+  {
+   "path": "provenance/build_u5_report.py",
+   "sha256": "00990d3379d42588e3873511e1c7f74d7bb4b9eb3376616b65fe5b8a971923f7"
+  },
+  {
+   "path": "provenance/api_bridge.py",
+   "sha256": "f42e0087ebcde0b193eaaa1d60cd2c735b7630fa7735ccda14acd7403e1137e9"
+  },
+  {
+   "path": "provenance/api_bridge_start.sh",
+   "sha256": "02cbce21e8ed78f79099a526ebd70c55c95c236a1db53e101ab7da97141ac1fc"
+  }
+ ]
+}

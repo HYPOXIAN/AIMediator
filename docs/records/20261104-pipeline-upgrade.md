@@ -113,6 +113,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | U5-L2 | L | done | 324 | green | UP-D11, UP-D18, UP-D19, UP-D20, D-13. `u5l2-extraction-development-off` at the U5.2 commit `30d41be` (a `git archive` copy first on `sys.path`) through bridge version 2 (identity check passed; all 191 chat attempts from `deepseek/deepseek-v4-flash` on DeepInfra). Reference `u5l1-extraction-development-off` (U5.1 passed). Verdict (D-13): U5.2 **fails rule 3**: precision of accepted claims 61/81 (75.3 %) against 58/77 (75.3 %), −0.02 points (Newcombe −13.3 to +13.4), not above the reference; rules 2 (0 against 0 technical failures, coverage complete) and 4 (precision −0.0, recall 60/123 against 58/123, +1.6 points) hold. The subjects gate quarantined no claim. Escalation E-5; not reverted (the session's instruction: a failed step stays for the review). See "U5-L2" under "Live evaluations". Spend 0.0253 USD (0.2587 to 0.2841 USD) |
 | U5.3 | B | done | 326 | updated by UP-D11 | PRM-04, PRM-01, plan 4.3. Authored synthetic examples at the end of the prompt pair `summarize-balance.{en,zh}`, headed as authored for the prompt and not real comments, each one line of input units (`E1 "..." E2 "..."`) and one line with the expected entry of `assessments` in the U5.1 and U5.2 shape: English 3 (a long pros-and-cons review that only mentions Ken and Marisa: empty `subjects` and `claims`; a conditional threat on Guile's Sonic Boom: `nerf`; a system complaint next to Luke's name: empty), Chinese 5 (the same three, an ironic remark on Manon: `unclear` with `uncertain` true, and a general complaint on Luke: a qualitative `nerf`). Example sizes in characters: English 214, 310, 142; Chinese 107, 238, 66, 247, 224 (all under 400). Prompt sizes in characters: English 3,480 to 4,271, Chinese 1,330 to 2,268 (UTF-8 bytes 3,480 to 4,271 and 3,178 to 4,498); in `enforce` `quality-extract` still follows them. No example text comes from an evaluation set: every text was written for the prompt; the first 30 characters of none of the 227 development comments of `extraction-precision-v1` occur in the new example lines (the one development comment found in the prompt, the 4-character `加强曼侬`, matches the recommendation line `加强曼侬。` that predates U5; the test split was not read; checklist item 5 of U5-V). New `tests/test_prompt_examples.py` (+2): the examples are last, marked and under 400 characters (3 and 5); each example's units equal `evidence_units` of its own text, its expected entry is valid under `schema_for('extract', ...)` built for that text, every claim's character is a declared subject, and the directions and `uncertain` values are those listed above. Lock regenerated (771 keys): exactly the 32 keys under "Behavior changes" (prompt assets and snapshots, manifests and the two reports through the prompt hashes, extraction request digests); no response or other artifact changed. Design documents follow in U5.4 |
 | U5.4 | N | done | 326 | green | Design documents of U5.1 to U5.3 (D9). balance-analysis.md: the prompt pair with the `subjects` definition and the authored synthetic examples (kinds, size limit, no evaluation-set text, the example test); the claim order (evidence first, the loop guard following the request's schema, readers keyed by name, fingerprints sorting keys); the model boundary `{subjects, claims}` with the subjects gate and its open review (E-5). design/cli.md section 5: `evidence.CLAIM` order; `stages.schema_for` and `normalize` for `extract` (claim order kept, `quality_point_ids` last, `{subjects, claims}`, `subjects` bounds) and the gate in `pipeline.extract_claims`; `inference.claim_key`, `claim_pattern` and `repeated_claim(output, allowed_ids, first_key)`. No guide change (no CLI option or behavior visible to the user changed). Lock unchanged (771 keys) |
+| U5-L3 | L | done | 326 | green | UP-D11, UP-D18, UP-D19, UP-D20, D-13. `u5l3-extraction-development-off` at the U5.3 commit `476d502` (a `git archive` copy first on `sys.path`; U5.2 included) through bridge version 2 (identity check passed; all 190 chat attempts from `deepseek/deepseek-v4-flash` on DeepInfra). Reference `u5l1-extraction-development-off` (U5.1, the latest step that passed; D-13). Verdict: U5.3 **fails rules 3 and 4**: precision of accepted claims 52/71 (73.2 %) against 58/77 (75.3 %), −2.1 points (Newcombe −16.1 to +11.8); recall 52/123 (42.3 %) against 58/123 (47.2 %), −4.9 points (−17.0 to +7.5), beyond 3; T6 54/126 (42.9 %) against 40/119 (33.6 %); rule 2 holds (0 against 0, coverage complete). Against the U5.2 run: −2.1 and −6.5 points. Escalation E-6; not reverted. Run U5-L3 ran while U5.4 (documents) was committed. Curated report `reports/20261105-upgrade-u5-evaluation/` (D-13) with the five U5 runs; full runs archived with `SHA256SUMS`. See "U5-L3" under "Live evaluations". Spend 0.0256 USD (0.2841 to 0.3097 USD) |
 
 ## Baseline measurements (U0.4)
 
@@ -1059,6 +1060,54 @@ extraction request (+5.3 % and +10.6 %) and more Chinese claims generated
 (precision of generated claims 61.0 % against 65.5 %) with accepted
 precision unchanged. T6 34.9 %, still within the T6 target of 35 %.
 
+### U5-L3 (UP-D11; API, UP-D19)
+
+Run of 2026-11-05 from 05:36 to 05:44, started by the U5 session in its
+own process session: `u5l3-extraction-development-off` at the U5.3 commit
+`476d502` (which includes U5.2) from a `git archive` copy first on
+`sys.path`. Identity check passed as in U5-L1 (module hashes equal to
+`476d502`, bridge version 2 with the recorded SHA-256 and digests,
+configuration unchanged, `doctor` passed, input equal to the reference,
+all 190 chat attempts from `deepseek/deepseek-v4-flash` on DeepInfra).
+Reference: `u5l1-extraction-development-off`, the latest step that passed
+(D-13); the U5.2 run is reported beside it.
+
+| Run | Precision accepted | Precision generated | Recall | Recall admitted | T6 rejected | Claims per long comment (generated, accepted) | Extraction prompt (uncached) | Output | Failures |
+| --- | ------------------ | ------------------- | ------ | --------------- | ----------- | --------------------------------------------- | ---------------------------- | ------ | -------- |
+| `u5l1-extraction-development-off` (reference, U5.1) | 58/77 (75.3 %) | 74/113 (65.5 %) | 58/123 (47.2 %) | 58/121 | 40/119 (33.6 %) | 0.97, 0.52 (31 comments) | 3,389 (2,939) | 369 | 0 |
+| `u5l2-extraction-development-off` (U5.2) | 61/81 (75.3 %) | 72/118 (61.0 %) | 60/123 (48.8 %) | 60/121 | 44/126 (34.9 %) | 1.06, 0.58 (31) | 3,567 (3,117) | 408 | 0 |
+| `u5l3-extraction-development-off` (U5.3 with U5.2) | 52/71 (73.2 %) | 78/121 (64.5 %) | 52/123 (42.3 %) | 52/122 | 54/126 (42.9 %) | 1.03, 0.53 (32) | 3,859 (3,046) | 416 | 0 |
+
+By language against the reference: English precision of accepted claims
+23/25 against 30/33, recall 23/46 against 30/46 (−15.2 points, −33.6 to
++4.8); Chinese 29/46 against 28/44 and 29/77 against 28/77. Source
+binding quarantined 4 claims in each of the two runs; in U5-L3 they carry
+25 errors, mostly numeric (11 `Numerical adjustment intent absent or
+ambiguous; review required`, 9 `Parameter lacks requested target or
+delta`), against 5 errors in U5-L1. The subjects gate quarantined no claim.
+
+Verdict of U5-L3 (D-13):
+
+| Step | Rule 1 gates | Rule 2 failures and coverage | Rule 3 T7 precision of accepted claims | Rule 4 no inferiority | Verdict |
+| ---- | ------------ | ---------------------------- | -------------------------------------- | --------------------- | ------- |
+| U5.3 (UP-D11) | pass (326 tests, rule check 0, lock 771 keys) | 0 against 0; coverage complete | 73.2 % against 75.3 %, −2.1 points (−16.1 to +11.8): not above | precision −2.1 points, within 3; recall −4.9 points (−17.0 to +7.5), beyond 3 | **fails rules 3 and 4**; recorded for the review (E-6), not reverted |
+
+Findings of U5-L3: the loss is English: fewer English claims are accepted
+(25 against 33) while the audit rejects more (T6 42.9 %); the examples add
+292 prompt tokens per extraction request against the U5.2 run (+8.2 %),
+470 with U5.2 against U5.1 (+13.9 %; 107 uncached, the rest cached by the
+provider). Targets of plan 5.5 after U5 (indicative, API; the T7 baseline
+is the U2-L0 run, 61/80, 76.2 %, plan 5.4): T6 (at most 35 %) is met by
+the U5.1 run (33.6 %) and the U5.2 run (34.9 %), not by U5.3; T7 (+10
+points with recall within 3) is met by none (U5.1 and U5.2 −0.9, U5.3
+−3.0 points).
+
+Curated report (D-13): [`reports/20261105-upgrade-u5-evaluation/`](../../reports/20261105-upgrade-u5-evaluation/manifest.json)
+holds the metrics, scores, comparisons, identity checks and `doctor`
+outputs of `u2r`, `u5r`, `u5l1`, `u5l2` and `u5l3`, and the tools under
+`provenance/`; the full runs, logs, configuration, input and tools are in
+the archive with `SHA256SUMS`.
+
 ## Behavior changes (P7)
 
 | Step | Decision | Asset or request part | Old SHA-256 | New SHA-256 | Lock paths |
@@ -1530,7 +1579,7 @@ precision unchanged. T6 34.9 %, still within the T6 target of 35 %.
   step targets (D-13), is 61/81 (75.3 %) against 58/77 (75.3 %) for the
   U5.1 run, −0.02 points; rules 2 and 4 hold (recall +1.6 points); the
   subjects gate quarantined no claim (see the U5-L2 verdicts). Options:
-  (a) revert U5.2 as fix-up step U5.F1 of the U5 review (plan 1.7, 5.4),
+  (a) revert U5.2 as a fix-up step of the U5 review (plan 1.7, 5.4),
   which also removes `subjects` from the expected entries of the U5.3
   examples and from `tests/test_prompt_examples.py` when U5.3 is kept;
   (b) keep U5.2 against the rule, with the reason recorded (a fail-closed
@@ -1544,8 +1593,31 @@ precision unchanged. T6 34.9 %, still within the T6 target of 35 %.
   the session's instruction keeps a failed step for the review and
   forbids a revert here, so U5.2 stays, U5.3 and U5-L3 proceed on top of
   it (U5-L3 keeps the U5.1 run as its reference, D-13), and the review of
-  batch U5 (the verification session, UP-D20) applies (a) as U5.F1, after
-  any revert that U5-L3 calls for. Blocked: nothing in this session.
+  batch U5 (the verification session, UP-D20) applies (a), after any
+  revert that U5-L3 calls for (E-6 numbers them: U5.F1 reverts U5.3,
+  U5.F2 reverts U5.2). Blocked: nothing in this session.
+
+- **E-6 (U5-L3) U5.3 fails adoption rules 3 and 4.** Raised on
+  2026-11-05 by the U5 session at U5-L3. Against the U5.1 run, precision
+  of accepted claims is 73.2 % against 75.3 % (−2.1 points) and recall
+  42.3 % against 47.2 % (−4.9 points, beyond the 3-point margin); T6
+  rises to 42.9 % (see the U5-L3 verdicts). The loss is English (recall
+  23/46 against 30/46). Options: (a) revert U5.3 as fix-up step U5.F1 of
+  the U5 review (plan 1.7, 5.4), before the revert of U5.2 that E-5
+  recommends (U5.F2), then a documentation fix-up of U5.4 for the
+  reverted parts; (b) keep U5.3 against the rule; (c) a prompt fix-up
+  with other examples, measured by a rerun. Recommendation: (a), the
+  plan's rule: both intervals include 0, but no metric moved in the
+  intended direction and the examples cost 8 % more prompt tokens per
+  extraction request.
+  Adopted under the owner authorization of 2026-11-05 03:11 as far as
+  this session may: the step stays for the review (the session's
+  instruction forbids its own revert); the verification session of
+  UP-D20 reverts U5.3 (U5.F1) and U5.2 (U5.F2, E-5) in that order, with
+  `Step:` and `Reverts:` lines and the lock regenerated by each revert,
+  and updates the U5.4 text of balance-analysis.md and design/cli.md for
+  the reverted parts (U5.F3); U5.1 stays. Blocked: nothing in this
+  session.
 
 ## Verification notes
 

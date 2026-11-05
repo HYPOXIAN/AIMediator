@@ -1,0 +1,21 @@
+{
+ "run": "u5l1-extraction-development-off",
+ "commit": "e64701d",
+ "modules": 31,
+ "modules_mismatched": [],
+ "service": {
+  "ollama_version": "openrouter-bridge-2"
+ },
+ "digests_equal_doctor": true,
+ "doctor_status": "ok",
+ "input_equal_reference": true,
+ "sources_equal_reference": true,
+ "digests_equal_record": true,
+ "bridge_sha256_equal_record": true,
+ "config_sha256_equal_record": true,
+ "chat_attempts_by_remote": {
+  "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-2": 182
+ },
+ "chat_cost_usd": 0.023778,
+ "passed": true
+}

@@ -1,0 +1,2065 @@
+{
+  "request_metrics": {
+    "schema_version": "aimediator-request-metrics-v1",
+    "run": {
+      "name": "u5l2-extraction-development-off",
+      "format": "cli",
+      "created_at_utc": "2026-11-05T13:28:08.621043+00:00",
+      "updated_at_utc": "2026-11-05T13:34:53.975932+00:00",
+      "run_state": "partial",
+      "stage": "full",
+      "wall_seconds": 405.354889
+    },
+    "stages": {
+      "relevance": {
+        "all": {
+          "requests": 25,
+          "fresh": 25,
+          "reused": 0,
+          "done_reason": {
+            "stop": 25
+          },
+          "with_validation_errors": 0,
+          "without_validation": 0,
+          "fresh_metrics": {
+            "prompt_tokens": {
+              "count": 25,
+              "sum": 57357.0,
+              "mean": 2294.28,
+              "median": 1919.0,
+              "max": 4640.0
+            },
+            "cached_tokens": {
+              "count": 25,
+              "sum": 10752.0,
+              "mean": 430.08,
+              "median": 512.0,
+              "max": 512.0
+            },
+            "uncached_tokens": {
+              "count": 25,
+              "sum": 46605.0,
+              "mean": 1864.2,
+              "median": 1445.0,
+              "max": 4128.0
+            },
+            "output_tokens": {
+              "count": 25,
+              "sum": 435.0,
+              "mean": 17.4,
+              "median": 23.0,
+              "max": 26.0
+            },
+            "prefill_seconds": {
+              "count": 25,
+              "sum": 21.592601378,
+              "mean": 0.86370405512,
+              "median": 0.703937939,
+              "max": 2.344202878
+            },
+            "decode_seconds": {
+              "count": 25,
+              "sum": 4.7312190659999995,
+              "mean": 0.18924876263999998,
+              "median": 0.094526998,
+              "max": 1.144066507
+            },
+            "load_seconds": {
+              "count": 25,
+              "sum": 0.0,
+              "mean": 0.0,
+              "median": 0.0,
+              "max": 0.0
+            },
+            "elapsed_seconds": {
+              "count": 25,
+              "sum": 27.000434479001342,
+              "mean": 1.0800173791600536,
+              "median": 1.0137003079998976,
+              "max": 2.4638626409996505
+            }
+          },
+          "reused_metrics": {
+            "prompt_tokens": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "cached_tokens": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "uncached_tokens": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "output_tokens": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "prefill_seconds": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "decode_seconds": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "load_seconds": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "elapsed_seconds": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            }
+          },
+          "composition": {
+            "requests": 25,
+            "system_prompt": 2376.44,
+            "format": 212.0,
+            "user_message": 4794.24,
+            "user_keys": {
+              "comments": {
+                "requests": 25,
+                "mean": 4547.24
+              },
+              "response_schema": {
+                "requests": 25,
+                "mean": 212.0
+              }
+            },
+            "nested": {
+              "comments[].units[].text": 0.0,
+              "comments[].text": 3443.04,
+              "comments[].retrieved_topics": 740.52
+            }
+          }
+        },
+        "models": {
+          "llama3.1:latest": {
+            "requests": 13,
+            "fresh": 13,
+            "reused": 0,
+            "done_reason": {
+              "stop": 13
+            },
+            "with_validation_errors": 0,
+            "without_validation": 0,
+            "fresh_metrics": {
+              "prompt_tokens": {
+                "count": 13,
+                "sum": 31703.0,
+                "mean": 2438.6923076923076,
+                "median": 1860.0,
+                "max": 4640.0
+              },
+              "cached_tokens": {
+                "count": 13,
+                "sum": 4608.0,
+                "mean": 354.46153846153845,
+                "median": 512.0,
+                "max": 512.0
+              },
+              "uncached_tokens": {
+                "count": 13,
+                "sum": 27095.0,
+                "mean": 2084.230769230769,
+                "median": 1558.0,
+                "max": 4128.0
+              },
+              "output_tokens": {
+                "count": 13,
+                "sum": 204.0,
+                "mean": 15.692307692307692,
+                "median": 10.0,
+                "max": 26.0
+              },
+              "prefill_seconds": {
+                "count": 13,
+                "sum": 11.357152471,
+                "mean": 0.8736271131538461,
+                "median": 0.757718191,
+                "max": 1.660425488
+              },
+              "decode_seconds": {
+                "count": 13,
+                "sum": 2.058888097,
+                "mean": 0.15837600746153846,
+                "median": 0.053294394,
+                "max": 0.528197002
+              },
+              "load_seconds": {
+                "count": 13,
+                "sum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "max": 0.0
+              },
+              "elapsed_seconds": {
+                "count": 13,
+                "sum": 13.761826006002593,
+                "mean": 1.058602000461738,
+                "median": 1.0137003079998976,
+                "max": 2.26516291200096
+              }
+            },
+            "reused_metrics": {
+              "prompt_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "cached_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "uncached_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "output_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "prefill_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "decode_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "load_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "elapsed_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              }
+            },
+            "composition": {
+              "requests": 13,
+              "system_prompt": 2699.0,
+              "format": 212.0,
+              "user_message": 6627.615384615385,
+              "user_keys": {
+                "comments": {
+                  "requests": 13,
+                  "mean": 6380.615384615385
+                },
+                "response_schema": {
+                  "requests": 13,
+                  "mean": 212.0
+                }
+              },
+              "nested": {
+                "comments[].units[].text": 0.0,
+                "comments[].text": 5473.384615384615,
+                "comments[].retrieved_topics": 596.5384615384615
+              }
+            }
+          },
+          "qwen2.5:7b": {
+            "requests": 12,
+            "fresh": 12,
+            "reused": 0,
+            "done_reason": {
+              "stop": 12
+            },
+            "with_validation_errors": 0,
+            "without_validation": 0,
+            "fresh_metrics": {
+              "prompt_tokens": {
+                "count": 12,
+                "sum": 25654.0,
+                "mean": 2137.8333333333335,
+                "median": 1938.0,
+                "max": 4072.0
+              },
+              "cached_tokens": {
+                "count": 12,
+                "sum": 6144.0,
+                "mean": 512.0,
+                "median": 512.0,
+                "max": 512.0
+              },
+              "uncached_tokens": {
+                "count": 12,
+                "sum": 19510.0,
+                "mean": 1625.8333333333333,
+                "median": 1426.0,
+                "max": 3560.0
+              },
+              "output_tokens": {
+                "count": 12,
+                "sum": 231.0,
+                "mean": 19.25,
+                "median": 23.0,
+                "max": 24.0
+              },
+              "prefill_seconds": {
+                "count": 12,
+                "sum": 10.235448907,
+                "mean": 0.8529540755833334,
+                "median": 0.65139251,
+                "max": 2.344202878
+              },
+              "decode_seconds": {
+                "count": 12,
+                "sum": 2.672330969,
+                "mean": 0.22269424741666666,
+                "median": 0.1142067835,
+                "max": 1.144066507
+              },
+              "load_seconds": {
+                "count": 12,
+                "sum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "max": 0.0
+              },
+              "elapsed_seconds": {
+                "count": 12,
+                "sum": 13.238608472998749,
+                "mean": 1.1032173727498957,
+                "median": 0.9775206859994796,
+                "max": 2.4638626409996505
+              }
+            },
+            "reused_metrics": {
+              "prompt_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "cached_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "uncached_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "output_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "prefill_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "decode_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "load_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "elapsed_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              }
+            },
+            "composition": {
+              "requests": 12,
+              "system_prompt": 2027.0,
+              "format": 212.0,
+              "user_message": 2808.0833333333335,
+              "user_keys": {
+                "comments": {
+                  "requests": 12,
+                  "mean": 2561.0833333333335
+                },
+                "response_schema": {
+                  "requests": 12,
+                  "mean": 212.0
+                }
+              },
+              "nested": {
+                "comments[].units[].text": 0.0,
+                "comments[].text": 1243.5,
+                "comments[].retrieved_topics": 896.5
+              }
+            }
+          }
+        }
+      },
+      "retrieval_review": {
+        "all": {
+          "requests": 7,
+          "fresh": 7,
+          "reused": 0,
+          "done_reason": {
+            "stop": 7
+          },
+          "with_validation_errors": 0,
+          "without_validation": 0,
+          "fresh_metrics": {
+            "prompt_tokens": {
+              "count": 7,
+              "sum": 19677.0,
+              "mean": 2811.0,
+              "median": 2574.0,
+              "max": 5824.0
+            },
+            "cached_tokens": {
+              "count": 7,
+              "sum": 4864.0,
+              "mean": 694.8571428571429,
+              "median": 512.0,
+              "max": 2816.0
+            },
+            "uncached_tokens": {
+              "count": 7,
+              "sum": 14813.0,
+              "mean": 2116.1428571428573,
+              "median": 1082.0,
+              "max": 5824.0
+            },
+            "output_tokens": {
+              "count": 7,
+              "sum": 129.0,
+              "mean": 18.428571428571427,
+              "median": 10.0,
+              "max": 32.0
+            },
+            "prefill_seconds": {
+              "count": 7,
+              "sum": 5.08492337,
+              "mean": 0.7264176242857143,
+              "median": 0.670082656,
+              "max": 1.257589929
+            },
+            "decode_seconds": {
+              "count": 7,
+              "sum": 1.35668808,
+              "mean": 0.19381258285714287,
+              "median": 0.024268529,
+              "max": 0.767554169
+            },
+            "load_seconds": {
+              "count": 7,
+              "sum": 0.0,
+              "mean": 0.0,
+              "median": 0.0,
+              "max": 0.0
+            },
+            "elapsed_seconds": {
+              "count": 7,
+              "sum": 6.612204745999406,
+              "mean": 0.9446006779999152,
+              "median": 0.9472662000007404,
+              "max": 1.4641754690001108
+            }
+          },
+          "reused_metrics": {
+            "prompt_tokens": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "cached_tokens": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "uncached_tokens": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "output_tokens": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "prefill_seconds": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "decode_seconds": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "load_seconds": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "elapsed_seconds": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            }
+          },
+          "composition": {
+            "requests": 7,
+            "system_prompt": 2673.285714285714,
+            "format": 212.0,
+            "user_message": 7041.428571428572,
+            "user_keys": {
+              "comments": {
+                "requests": 7,
+                "mean": 6794.428571428572
+              },
+              "response_schema": {
+                "requests": 7,
+                "mean": 212.0
+              }
+            },
+            "nested": {
+              "comments[].units[].text": 0.0,
+              "comments[].text": 5901.285714285715,
+              "comments[].retrieved_topics": 585.7142857142857
+            }
+          }
+        },
+        "models": {
+          "llama3.1:latest": {
+            "requests": 5,
+            "fresh": 5,
+            "reused": 0,
+            "done_reason": {
+              "stop": 5
+            },
+            "with_validation_errors": 0,
+            "without_validation": 0,
+            "fresh_metrics": {
+              "prompt_tokens": {
+                "count": 5,
+                "sum": 14482.0,
+                "mean": 2896.4,
+                "median": 2574.0,
+                "max": 5824.0
+              },
+              "cached_tokens": {
+                "count": 5,
+                "sum": 4352.0,
+                "mean": 870.4,
+                "median": 512.0,
+                "max": 2816.0
+              },
+              "uncached_tokens": {
+                "count": 5,
+                "sum": 10130.0,
+                "mean": 2026.0,
+                "median": 1082.0,
+                "max": 5824.0
+              },
+              "output_tokens": {
+                "count": 5,
+                "sum": 88.0,
+                "mean": 17.6,
+                "median": 10.0,
+                "max": 32.0
+              },
+              "prefill_seconds": {
+                "count": 5,
+                "sum": 3.0697261080000002,
+                "mean": 0.6139452216000001,
+                "median": 0.485105402,
+                "max": 1.025400742
+              },
+              "decode_seconds": {
+                "count": 5,
+                "sum": 1.17327447,
+                "mean": 0.234654894,
+                "median": 0.024268529,
+                "max": 0.767554169
+              },
+              "load_seconds": {
+                "count": 5,
+                "sum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "max": 0.0
+              },
+              "elapsed_seconds": {
+                "count": 5,
+                "sum": 4.369959648998702,
+                "mean": 0.8739919297997403,
+                "median": 0.5340758120000828,
+                "max": 1.4641754690001108
+              }
+            },
+            "reused_metrics": {
+              "prompt_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "cached_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "uncached_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "output_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "prefill_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "decode_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "load_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "elapsed_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              }
+            },
+            "composition": {
+              "requests": 5,
+              "system_prompt": 2921.0,
+              "format": 212.0,
+              "user_message": 8508.4,
+              "user_keys": {
+                "comments": {
+                  "requests": 5,
+                  "mean": 8261.4
+                },
+                "response_schema": {
+                  "requests": 5,
+                  "mean": 212.0
+                }
+              },
+              "nested": {
+                "comments[].units[].text": 0.0,
+                "comments[].text": 7415.8,
+                "comments[].retrieved_topics": 547.6
+              }
+            }
+          },
+          "qwen2.5:7b": {
+            "requests": 2,
+            "fresh": 2,
+            "reused": 0,
+            "done_reason": {
+              "stop": 2
+            },
+            "with_validation_errors": 0,
+            "without_validation": 0,
+            "fresh_metrics": {
+              "prompt_tokens": {
+                "count": 2,
+                "sum": 5195.0,
+                "mean": 2597.5,
+                "median": 2597.5,
+                "max": 4071.0
+              },
+              "cached_tokens": {
+                "count": 2,
+                "sum": 512.0,
+                "mean": 256.0,
+                "median": 256.0,
+                "max": 512.0
+              },
+              "uncached_tokens": {
+                "count": 2,
+                "sum": 4683.0,
+                "mean": 2341.5,
+                "median": 2341.5,
+                "max": 4071.0
+              },
+              "output_tokens": {
+                "count": 2,
+                "sum": 41.0,
+                "mean": 20.5,
+                "median": 20.5,
+                "max": 31.0
+              },
+              "prefill_seconds": {
+                "count": 2,
+                "sum": 2.015197262,
+                "mean": 1.007598631,
+                "median": 1.007598631,
+                "max": 1.257589929
+              },
+              "decode_seconds": {
+                "count": 2,
+                "sum": 0.18341361,
+                "mean": 0.091706805,
+                "median": 0.091706805,
+                "max": 0.16705584
+              },
+              "load_seconds": {
+                "count": 2,
+                "sum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "max": 0.0
+              },
+              "elapsed_seconds": {
+                "count": 2,
+                "sum": 2.242245097000705,
+                "mean": 1.1211225485003524,
+                "median": 1.1211225485003524,
+                "max": 1.2949788969999645
+              }
+            },
+            "reused_metrics": {
+              "prompt_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "cached_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "uncached_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "output_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "prefill_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "decode_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "load_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "elapsed_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              }
+            },
+            "composition": {
+              "requests": 2,
+              "system_prompt": 2054.0,
+              "format": 212.0,
+              "user_message": 3374.0,
+              "user_keys": {
+                "comments": {
+                  "requests": 2,
+                  "mean": 3127.0
+                },
+                "response_schema": {
+                  "requests": 2,
+                  "mean": 212.0
+                }
+              },
+              "nested": {
+                "comments[].units[].text": 0.0,
+                "comments[].text": 2115.0,
+                "comments[].retrieved_topics": 681.0
+              }
+            }
+          }
+        }
+      },
+      "extract": {
+        "all": {
+          "requests": 33,
+          "fresh": 33,
+          "reused": 0,
+          "done_reason": {
+            "stop": 33
+          },
+          "with_validation_errors": 0,
+          "without_validation": 0,
+          "fresh_metrics": {
+            "prompt_tokens": {
+              "count": 33,
+              "sum": 117716.0,
+              "mean": 3567.151515151515,
+              "median": 3610.0,
+              "max": 5224.0
+            },
+            "cached_tokens": {
+              "count": 33,
+              "sum": 14848.0,
+              "mean": 449.93939393939394,
+              "median": 512.0,
+              "max": 512.0
+            },
+            "uncached_tokens": {
+              "count": 33,
+              "sum": 102868.0,
+              "mean": 3117.212121212121,
+              "median": 3167.0,
+              "max": 4712.0
+            },
+            "output_tokens": {
+              "count": 33,
+              "sum": 13454.0,
+              "mean": 407.6969696969697,
+              "median": 436.0,
+              "max": 991.0
+            },
+            "prefill_seconds": {
+              "count": 33,
+              "sum": 34.357027807,
+              "mean": 1.041122054757576,
+              "median": 0.891677937,
+              "max": 2.77955157
+            },
+            "decode_seconds": {
+              "count": 33,
+              "sum": 202.82594322,
+              "mean": 6.146240703636364,
+              "median": 5.819281041,
+              "max": 15.03653673
+            },
+            "load_seconds": {
+              "count": 33,
+              "sum": 0.0,
+              "mean": 0.0,
+              "median": 0.0,
+              "max": 0.0
+            },
+            "elapsed_seconds": {
+              "count": 33,
+              "sum": 238.96485595700506,
+              "mean": 7.241359271424396,
+              "median": 7.282099894999192,
+              "max": 16.079261540000516
+            }
+          },
+          "reused_metrics": {
+            "prompt_tokens": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "cached_tokens": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "uncached_tokens": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "output_tokens": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "prefill_seconds": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "decode_seconds": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "load_seconds": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "elapsed_seconds": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            }
+          },
+          "composition": {
+            "requests": 33,
+            "system_prompt": 2176.969696969697,
+            "format": 5068.636363636364,
+            "user_message": 8706.757575757576,
+            "user_keys": {
+              "comments": {
+                "requests": 33,
+                "mean": 2865.6969696969695
+              },
+              "character_normalization_reference": {
+                "requests": 33,
+                "mean": 698.4242424242424
+              },
+              "response_schema": {
+                "requests": 33,
+                "mean": 5068.636363636364
+              }
+            },
+            "nested": {
+              "comments[].units[].text": 1855.5151515151515,
+              "comments[].text": 0.0,
+              "comments[].retrieved_topics": 0.0
+            }
+          }
+        },
+        "models": {
+          "llama3.1:latest": {
+            "requests": 13,
+            "fresh": 13,
+            "reused": 0,
+            "done_reason": {
+              "stop": 13
+            },
+            "with_validation_errors": 0,
+            "without_validation": 0,
+            "fresh_metrics": {
+              "prompt_tokens": {
+                "count": 13,
+                "sum": 52234.0,
+                "mean": 4018.0,
+                "median": 3972.0,
+                "max": 5224.0
+              },
+              "cached_tokens": {
+                "count": 13,
+                "sum": 5632.0,
+                "mean": 433.2307692307692,
+                "median": 512.0,
+                "max": 512.0
+              },
+              "uncached_tokens": {
+                "count": 13,
+                "sum": 46602.0,
+                "mean": 3584.769230769231,
+                "median": 3625.0,
+                "max": 4712.0
+              },
+              "output_tokens": {
+                "count": 13,
+                "sum": 4686.0,
+                "mean": 360.46153846153845,
+                "median": 344.0,
+                "max": 991.0
+              },
+              "prefill_seconds": {
+                "count": 13,
+                "sum": 13.489435669,
+                "mean": 1.0376488976153846,
+                "median": 0.823073653,
+                "max": 2.77955157
+              },
+              "decode_seconds": {
+                "count": 13,
+                "sum": 58.946461869,
+                "mean": 4.534343220692308,
+                "median": 4.468358186,
+                "max": 12.337673075
+              },
+              "load_seconds": {
+                "count": 13,
+                "sum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "max": 0.0
+              },
+              "elapsed_seconds": {
+                "count": 13,
+                "sum": 73.14384606400381,
+                "mean": 5.626449697231062,
+                "median": 5.449167565000607,
+                "max": 13.270002172001114
+              }
+            },
+            "reused_metrics": {
+              "prompt_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "cached_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "uncached_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "output_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "prefill_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "decode_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "load_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "elapsed_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              }
+            },
+            "composition": {
+              "requests": 13,
+              "system_prompt": 3480.0,
+              "format": 5085.615384615385,
+              "user_message": 10931.076923076924,
+              "user_keys": {
+                "comments": {
+                  "requests": 13,
+                  "mean": 5173.461538461538
+                },
+                "character_normalization_reference": {
+                  "requests": 13,
+                  "mean": 598.0
+                },
+                "response_schema": {
+                  "requests": 13,
+                  "mean": 5085.615384615385
+                }
+              },
+              "nested": {
+                "comments[].units[].text": 3621.5384615384614,
+                "comments[].text": 0.0,
+                "comments[].retrieved_topics": 0.0
+              }
+            }
+          },
+          "qwen2.5:7b": {
+            "requests": 20,
+            "fresh": 20,
+            "reused": 0,
+            "done_reason": {
+              "stop": 20
+            },
+            "with_validation_errors": 0,
+            "without_validation": 0,
+            "fresh_metrics": {
+              "prompt_tokens": {
+                "count": 20,
+                "sum": 65482.0,
+                "mean": 3274.1,
+                "median": 3208.5,
+                "max": 4567.0
+              },
+              "cached_tokens": {
+                "count": 20,
+                "sum": 9216.0,
+                "mean": 460.8,
+                "median": 512.0,
+                "max": 512.0
+              },
+              "uncached_tokens": {
+                "count": 20,
+                "sum": 56266.0,
+                "mean": 2813.3,
+                "median": 2736.0,
+                "max": 4055.0
+              },
+              "output_tokens": {
+                "count": 20,
+                "sum": 8768.0,
+                "mean": 438.4,
+                "median": 469.5,
+                "max": 800.0
+              },
+              "prefill_seconds": {
+                "count": 20,
+                "sum": 20.867592138,
+                "mean": 1.0433796068999999,
+                "median": 0.9093066395,
+                "max": 2.169346153
+              },
+              "decode_seconds": {
+                "count": 20,
+                "sum": 143.879481351,
+                "mean": 7.19397406755,
+                "median": 8.040116878,
+                "max": 15.03653673
+              },
+              "load_seconds": {
+                "count": 20,
+                "sum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "max": 0.0
+              },
+              "elapsed_seconds": {
+                "count": 20,
+                "sum": 165.82100989300125,
+                "mean": 8.291050494650062,
+                "median": 8.774760617000538,
+                "max": 16.079261540000516
+              }
+            },
+            "reused_metrics": {
+              "prompt_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "cached_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "uncached_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "output_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "prefill_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "decode_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "load_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "elapsed_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              }
+            },
+            "composition": {
+              "requests": 20,
+              "system_prompt": 1330.0,
+              "format": 5057.6,
+              "user_message": 7260.95,
+              "user_keys": {
+                "comments": {
+                  "requests": 20,
+                  "mean": 1365.65
+                },
+                "character_normalization_reference": {
+                  "requests": 20,
+                  "mean": 763.7
+                },
+                "response_schema": {
+                  "requests": 20,
+                  "mean": 5057.6
+                }
+              },
+              "nested": {
+                "comments[].units[].text": 707.6,
+                "comments[].text": 0.0,
+                "comments[].retrieved_topics": 0.0
+              }
+            }
+          }
+        }
+      },
+      "verify": {
+        "all": {
+          "requests": 126,
+          "fresh": 126,
+          "reused": 0,
+          "done_reason": {
+            "stop": 126
+          },
+          "with_validation_errors": 0,
+          "without_validation": 0,
+          "fresh_metrics": {
+            "prompt_tokens": {
+              "count": 126,
+              "sum": 112490.0,
+              "mean": 892.7777777777778,
+              "median": 834.0,
+              "max": 1985.0
+            },
+            "cached_tokens": {
+              "count": 126,
+              "sum": 42496.0,
+              "mean": 337.26984126984127,
+              "median": 256.0,
+              "max": 768.0
+            },
+            "uncached_tokens": {
+              "count": 126,
+              "sum": 69994.0,
+              "mean": 555.5079365079365,
+              "median": 478.0,
+              "max": 1729.0
+            },
+            "output_tokens": {
+              "count": 126,
+              "sum": 826.0,
+              "mean": 6.555555555555555,
+              "median": 6.0,
+              "max": 8.0
+            },
+            "prefill_seconds": {
+              "count": 126,
+              "sum": 107.093034336,
+              "mean": 0.8499447169523809,
+              "median": 0.6084637155,
+              "max": 8.633893737
+            },
+            "decode_seconds": {
+              "count": 126,
+              "sum": 4.470143812,
+              "mean": 0.03547733184126984,
+              "median": 0.011906219,
+              "max": 0.528978332
+            },
+            "load_seconds": {
+              "count": 126,
+              "sum": 0.0,
+              "mean": 0.0,
+              "median": 0.0,
+              "max": 0.0
+            },
+            "elapsed_seconds": {
+              "count": 126,
+              "sum": 114.72611347700513,
+              "mean": 0.9105247101349614,
+              "median": 0.6539647544996114,
+              "max": 8.728429340999355
+            }
+          },
+          "reused_metrics": {
+            "prompt_tokens": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "cached_tokens": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "uncached_tokens": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "output_tokens": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "prefill_seconds": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "decode_seconds": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "load_seconds": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            },
+            "elapsed_seconds": {
+              "count": 0,
+              "sum": null,
+              "mean": null,
+              "median": null,
+              "max": null
+            }
+          },
+          "composition": {
+            "requests": 126,
+            "system_prompt": 1397.0,
+            "format": 172.0,
+            "user_message": 1229.2619047619048,
+            "user_keys": {
+              "original_evidence": {
+                "requests": 126,
+                "mean": 395.6825396825397
+              },
+              "proposed_claim": {
+                "requests": 126,
+                "mean": 122.74603174603175
+              },
+              "naming_reference": {
+                "requests": 126,
+                "mean": 419.8174603174603
+              },
+              "claim_id": {
+                "requests": 126,
+                "mean": 19.015873015873016
+              },
+              "response_schema": {
+                "requests": 126,
+                "mean": 172.0
+              }
+            },
+            "nested": {
+              "comments[].units[].text": 0.0,
+              "comments[].text": 0.0,
+              "comments[].retrieved_topics": 0.0
+            }
+          }
+        },
+        "models": {
+          "llama3.1:latest": {
+            "requests": 42,
+            "fresh": 42,
+            "reused": 0,
+            "done_reason": {
+              "stop": 42
+            },
+            "with_validation_errors": 0,
+            "without_validation": 0,
+            "fresh_metrics": {
+              "prompt_tokens": {
+                "count": 42,
+                "sum": 40647.0,
+                "mean": 967.7857142857143,
+                "median": 1029.0,
+                "max": 1569.0
+              },
+              "cached_tokens": {
+                "count": 42,
+                "sum": 15360.0,
+                "mean": 365.7142857142857,
+                "median": 256.0,
+                "max": 768.0
+              },
+              "uncached_tokens": {
+                "count": 42,
+                "sum": 25287.0,
+                "mean": 602.0714285714286,
+                "median": 561.0,
+                "max": 1313.0
+              },
+              "output_tokens": {
+                "count": 42,
+                "sum": 273.0,
+                "mean": 6.5,
+                "median": 6.0,
+                "max": 8.0
+              },
+              "prefill_seconds": {
+                "count": 42,
+                "sum": 37.437111444,
+                "mean": 0.8913597962857144,
+                "median": 0.672561636,
+                "max": 3.705585054
+              },
+              "decode_seconds": {
+                "count": 42,
+                "sum": 2.412173702,
+                "mean": 0.05743270719047619,
+                "median": 0.0125064505,
+                "max": 0.528978332
+              },
+              "load_seconds": {
+                "count": 42,
+                "sum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "max": 0.0
+              },
+              "elapsed_seconds": {
+                "count": 42,
+                "sum": 40.880926944006205,
+                "mean": 0.9733554034287192,
+                "median": 0.7551748059995589,
+                "max": 3.8111605280009826
+              }
+            },
+            "reused_metrics": {
+              "prompt_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "cached_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "uncached_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "output_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "prefill_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "decode_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "load_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "elapsed_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              }
+            },
+            "composition": {
+              "requests": 42,
+              "system_prompt": 2465.0,
+              "format": 172.0,
+              "user_message": 1690.8333333333333,
+              "user_keys": {
+                "original_evidence": {
+                  "requests": 42,
+                  "mean": 694.3333333333334
+                },
+                "proposed_claim": {
+                  "requests": 42,
+                  "mean": 144.78571428571428
+                },
+                "naming_reference": {
+                  "requests": 42,
+                  "mean": 560.6666666666666
+                },
+                "claim_id": {
+                  "requests": 42,
+                  "mean": 19.047619047619047
+                },
+                "response_schema": {
+                  "requests": 42,
+                  "mean": 172.0
+                }
+              },
+              "nested": {
+                "comments[].units[].text": 0.0,
+                "comments[].text": 0.0,
+                "comments[].retrieved_topics": 0.0
+              }
+            }
+          },
+          "qwen2.5:7b": {
+            "requests": 84,
+            "fresh": 84,
+            "reused": 0,
+            "done_reason": {
+              "stop": 84
+            },
+            "with_validation_errors": 0,
+            "without_validation": 0,
+            "fresh_metrics": {
+              "prompt_tokens": {
+                "count": 84,
+                "sum": 71843.0,
+                "mean": 855.2738095238095,
+                "median": 779.5,
+                "max": 1985.0
+              },
+              "cached_tokens": {
+                "count": 84,
+                "sum": 27136.0,
+                "mean": 323.04761904761904,
+                "median": 256.0,
+                "max": 768.0
+              },
+              "uncached_tokens": {
+                "count": 84,
+                "sum": 44707.0,
+                "mean": 532.2261904761905,
+                "median": 463.0,
+                "max": 1729.0
+              },
+              "output_tokens": {
+                "count": 84,
+                "sum": 553.0,
+                "mean": 6.583333333333333,
+                "median": 7.0,
+                "max": 8.0
+              },
+              "prefill_seconds": {
+                "count": 84,
+                "sum": 69.655922892,
+                "mean": 0.8292371772857143,
+                "median": 0.5841808235,
+                "max": 8.633893737
+              },
+              "decode_seconds": {
+                "count": 84,
+                "sum": 2.05797011,
+                "mean": 0.024499644166666664,
+                "median": 0.0109518285,
+                "max": 0.385783952
+              },
+              "load_seconds": {
+                "count": 84,
+                "sum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "max": 0.0
+              },
+              "elapsed_seconds": {
+                "count": 84,
+                "sum": 73.84518653299892,
+                "mean": 0.8791093634880824,
+                "median": 0.6340909660011675,
+                "max": 8.728429340999355
+              }
+            },
+            "reused_metrics": {
+              "prompt_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "cached_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "uncached_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "output_tokens": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "prefill_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "decode_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "load_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              },
+              "elapsed_seconds": {
+                "count": 0,
+                "sum": null,
+                "mean": null,
+                "median": null,
+                "max": null
+              }
+            },
+            "composition": {
+              "requests": 84,
+              "system_prompt": 863.0,
+              "format": 172.0,
+              "user_message": 998.4761904761905,
+              "user_keys": {
+                "original_evidence": {
+                  "requests": 84,
+                  "mean": 246.35714285714286
+                },
+                "proposed_claim": {
+                  "requests": 84,
+                  "mean": 111.72619047619048
+                },
+                "naming_reference": {
+                  "requests": 84,
+                  "mean": 349.39285714285717
+                },
+                "claim_id": {
+                  "requests": 84,
+                  "mean": 19.0
+                },
+                "response_schema": {
+                  "requests": 84,
+                  "mean": 172.0
+                }
+              },
+              "nested": {
+                "comments[].units[].text": 0.0,
+                "comments[].text": 0.0,
+                "comments[].retrieved_topics": 0.0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "claim_outcomes": {
+    "schema_version": "aimediator-claim-outcomes-v1",
+    "run": "u5l2-extraction-development-off",
+    "claims": {
+      "generated": 128,
+      "binding_quarantined": 2,
+      "audited": 126,
+      "audit_rejected": 44,
+      "accepted": 82,
+      "audit_rejection": {
+        "numerator": 44,
+        "denominator": 126,
+        "value": 0.3492063492063492,
+        "wilson95": [
+          0.2715482562775235,
+          0.4357871330107585
+        ]
+      }
+    },
+    "binding_errors": {
+      "Numerical adjustment intent absent or ambiguous; review required": 2,
+      "Parameter lacks requested target or delta": 1
+    },
+    "audit_status": {
+      "unsupported": 44
+    },
+    "by_language": {
+      "en": {
+        "generated": 43,
+        "binding_quarantined": 1,
+        "audited": 42,
+        "audit_rejected": 10,
+        "accepted": 32,
+        "audit_rejection": {
+          "numerator": 10,
+          "denominator": 42,
+          "value": 0.23809523809523808,
+          "wilson95": [
+            0.13480964224647127,
+            0.38527543868318304
+          ]
+        }
+      },
+      "zh": {
+        "generated": 85,
+        "binding_quarantined": 1,
+        "audited": 84,
+        "audit_rejected": 34,
+        "accepted": 50,
+        "audit_rejection": {
+          "numerator": 34,
+          "denominator": 84,
+          "value": 0.40476190476190477,
+          "wilson95": [
+            0.3061960226154048,
+            0.5116576399397685
+          ]
+        }
+      }
+    },
+    "by_language_direction": {
+      "en": {
+        "buff": {
+          "generated": 5,
+          "binding_quarantined": 0,
+          "audited": 5,
+          "audit_rejected": 1,
+          "accepted": 4,
+          "audit_rejection": {
+            "numerator": 1,
+            "denominator": 5,
+            "value": 0.2,
+            "wilson95": [
+              0.03622410863243014,
+              0.6244653702374747
+            ]
+          }
+        },
+        "keep": {
+          "generated": 3,
+          "binding_quarantined": 0,
+          "audited": 3,
+          "audit_rejected": 1,
+          "accepted": 2,
+          "audit_rejection": {
+            "numerator": 1,
+            "denominator": 3,
+            "value": 0.3333333333333333,
+            "wilson95": [
+              0.06149194472039621,
+              0.7923403991979522
+            ]
+          }
+        },
+        "nerf": {
+          "generated": 31,
+          "binding_quarantined": 1,
+          "audited": 30,
+          "audit_rejected": 4,
+          "accepted": 26,
+          "audit_rejection": {
+            "numerator": 4,
+            "denominator": 30,
+            "value": 0.13333333333333333,
+            "wilson95": [
+              0.053096554840547455,
+              0.296813266820363
+            ]
+          }
+        },
+        "unclear": {
+          "generated": 4,
+          "binding_quarantined": 0,
+          "audited": 4,
+          "audit_rejected": 4,
+          "accepted": 0,
+          "audit_rejection": {
+            "numerator": 4,
+            "denominator": 4,
+            "value": 1.0,
+            "wilson95": [
+              0.5101091635454027,
+              1
+            ]
+          }
+        }
+      },
+      "zh": {
+        "buff": {
+          "generated": 18,
+          "binding_quarantined": 0,
+          "audited": 18,
+          "audit_rejected": 4,
+          "accepted": 14,
+          "audit_rejection": {
+            "numerator": 4,
+            "denominator": 18,
+            "value": 0.2222222222222222,
+            "wilson95": [
+              0.09000928108601694,
+              0.45214584316212625
+            ]
+          }
+        },
+        "keep": {
+          "generated": 2,
+          "binding_quarantined": 0,
+          "audited": 2,
+          "audit_rejected": 2,
+          "accepted": 0,
+          "audit_rejection": {
+            "numerator": 2,
+            "denominator": 2,
+            "value": 1.0,
+            "wilson95": [
+              0.34238022750665303,
+              1
+            ]
+          }
+        },
+        "nerf": {
+          "generated": 57,
+          "binding_quarantined": 1,
+          "audited": 56,
+          "audit_rejected": 21,
+          "accepted": 35,
+          "audit_rejection": {
+            "numerator": 21,
+            "denominator": 56,
+            "value": 0.375,
+            "wilson95": [
+              0.260102143264709,
+              0.5059463409149819
+            ]
+          }
+        },
+        "unclear": {
+          "generated": 8,
+          "binding_quarantined": 0,
+          "audited": 8,
+          "audit_rejected": 7,
+          "accepted": 1,
+          "audit_rejection": {
+            "numerator": 7,
+            "denominator": 8,
+            "value": 0.875,
+            "wilson95": [
+              0.5291118177871464,
+              0.9775825085499433
+            ]
+          }
+        }
+      }
+    },
+    "coverage_status": {
+      "extraction_completed": 106,
+      "relevance_pending_or_failed": 2,
+      "relevance_rejected": 6
+    },
+    "extraction_dispositions": {
+      "extracted": 85,
+      "no_supported_character_claim": 21
+    },
+    "quality": {
+      "comments": 0,
+      "status": {},
+      "first_attempt_valid": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null,
+        "wilson95": null
+      },
+      "attempts": {
+        "total": 0,
+        "per_comment": {}
+      },
+      "attempt_errors": {},
+      "route_comments": {},
+      "route_items": {}
+    }
+  }
+}

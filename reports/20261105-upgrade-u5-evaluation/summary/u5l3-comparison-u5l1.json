@@ -1,0 +1,359 @@
+{
+ "schema": "aimediator-u5-comparison-v1",
+ "candidate": "u5l3-extraction-development-off",
+ "reference": "u5l1-extraction-development-off",
+ "scores": {
+  "overall": {
+   "precision_accepted": {
+    "candidate": "52/71",
+    "candidate_value": 0.7323943661971831,
+    "reference": "58/77",
+    "reference_value": 0.7532467532467533,
+    "difference_points": -2.0852387049570154,
+    "difference_points_ci95": [
+     -16.083632619348833,
+     11.820460004334185
+    ]
+   },
+   "precision_generated": {
+    "candidate": "78/121",
+    "candidate_value": 0.6446280991735537,
+    "reference": "74/113",
+    "reference_value": 0.6548672566371682,
+    "difference_points": -1.0239157463614479,
+    "difference_points_ci95": [
+     -13.040705778633455,
+     11.101417937240395
+    ]
+   },
+   "recall": {
+    "candidate": "52/123",
+    "candidate_value": 0.42276422764227645,
+    "reference": "58/123",
+    "reference_value": 0.4715447154471545,
+    "difference_points": -4.878048780487804,
+    "difference_points_ci95": [
+     -17.001333248829475,
+     7.451831833780628
+    ]
+   },
+   "recall_admitted": {
+    "candidate": "52/122",
+    "candidate_value": 0.4262295081967213,
+    "reference": "58/121",
+    "reference_value": 0.4793388429752066,
+    "difference_points": -5.310933477848534,
+    "difference_points_ci95": [
+     -17.508498879652617,
+     7.1123335568260435
+    ]
+   },
+   "comments": [
+    105,
+    105
+   ],
+   "admitted_comments": [
+    99,
+    98
+   ]
+  },
+  "en": {
+   "precision_accepted": {
+    "candidate": "23/25",
+    "candidate_value": 0.92,
+    "reference": "30/33",
+    "reference_value": 0.9090909090909091,
+    "difference_points": 1.090909090909098,
+    "difference_points_ci95": [
+     -16.888453549335185,
+     16.68271320089513
+    ]
+   },
+   "precision_generated": {
+    "candidate": "33/44",
+    "candidate_value": 0.75,
+    "reference": "35/42",
+    "reference_value": 0.8333333333333334,
+    "difference_points": -8.333333333333337,
+    "difference_points_ci95": [
+     -25.014609743384163,
+     9.072020849640673
+    ]
+   },
+   "recall": {
+    "candidate": "23/46",
+    "candidate_value": 0.5,
+    "reference": "30/46",
+    "reference_value": 0.6521739130434783,
+    "difference_points": -15.217391304347828,
+    "difference_points_ci95": [
+     -33.63295540610027,
+     4.817810790708435
+    ]
+   },
+   "recall_admitted": {
+    "candidate": "23/45",
+    "candidate_value": 0.5111111111111111,
+    "reference": "30/45",
+    "reference_value": 0.6666666666666666,
+    "difference_points": -15.555555555555555,
+    "difference_points_ci95": [
+     -34.0592073162504,
+     4.622285973966703
+    ]
+   },
+   "comments": [
+    44,
+    44
+   ],
+   "admitted_comments": [
+    40,
+    40
+   ]
+  },
+  "zh": {
+   "precision_accepted": {
+    "candidate": "29/46",
+    "candidate_value": 0.6304347826086957,
+    "reference": "28/44",
+    "reference_value": 0.6363636363636364,
+    "difference_points": -0.5928853754940677,
+    "difference_points_ci95": [
+     -19.746745622185678,
+     18.713233027101335
+    ]
+   },
+   "precision_generated": {
+    "candidate": "45/77",
+    "candidate_value": 0.5844155844155844,
+    "reference": "39/71",
+    "reference_value": 0.5492957746478874,
+    "difference_points": 3.511980976769702,
+    "difference_points_ci95": [
+     -12.167654367484948,
+     19.00435646521439
+    ]
+   },
+   "recall": {
+    "candidate": "29/77",
+    "candidate_value": 0.37662337662337664,
+    "reference": "28/77",
+    "reference_value": 0.36363636363636365,
+    "difference_points": 1.2987012987012991,
+    "difference_points_ci95": [
+     -13.676674685665652,
+     16.19293681721526
+    ]
+   },
+   "recall_admitted": {
+    "candidate": "29/77",
+    "candidate_value": 0.37662337662337664,
+    "reference": "28/76",
+    "reference_value": 0.3684210526315789,
+    "difference_points": 0.8202323991797711,
+    "difference_points_ci95": [
+     -14.213830311283187,
+     15.786488824067172
+    ]
+   },
+   "comments": [
+    61,
+    61
+   ],
+   "admitted_comments": [
+    59,
+    58
+   ]
+  }
+ },
+ "claims": {
+  "candidate": {
+   "claims": {
+    "generated": 130,
+    "binding_quarantined": 4,
+    "audited": 126,
+    "audit_rejected": 54,
+    "accepted": 72
+   },
+   "t6_audit_rejection": {
+    "numerator": 54,
+    "denominator": 126,
+    "value": 0.42857142857142855,
+    "wilson95": [
+     0.34553800493777653,
+     0.5158313899882517
+    ]
+   },
+   "t6_by_language": {
+    "en": {
+     "numerator": 18,
+     "denominator": 43,
+     "value": 0.4186046511627907,
+     "wilson95": [
+      0.28384550927849195,
+      0.5667142261303578
+     ]
+    },
+    "zh": {
+     "numerator": 36,
+     "denominator": 83,
+     "value": 0.43373493975903615,
+     "wilson95": [
+      0.3323916544628671,
+      0.5409407359716114
+     ]
+    }
+   },
+   "binding_errors": {
+    "Numerical adjustment intent absent or ambiguous; review required": 11,
+    "Parameter lacks requested target or delta": 9,
+    "Parameter unit absent from its original span": 2,
+    "Unsupported number in recommendation or target": 1,
+    "Parameter current absent from its original span": 1,
+    "Parameter current numeric token mismatch": 1
+   },
+   "coverage_status": {
+    "extraction_completed": 108,
+    "relevance_pending_or_failed": 2,
+    "relevance_rejected": 4
+   },
+   "extraction_dispositions": {
+    "extracted": 85,
+    "no_supported_character_claim": 23
+   },
+   "long_comments": {
+    "comments_over_400": 35,
+    "extracted_comments_over_400": 32,
+    "generated_claims": 33,
+    "accepted_claims": 17,
+    "generated_per_comment": 1.03125,
+    "accepted_per_comment": 0.53125
+   },
+   "extract_tokens": {
+    "prompt_tokens": 3858.705882352941,
+    "uncached_tokens": 3045.529411764706,
+    "output_tokens": 415.97058823529414
+   },
+   "extract_requests": 34,
+   "failures": {
+    "requests_with_validation_errors": {},
+    "transport_failures": 0,
+    "generation_failed_comments": 0,
+    "quality_failed_comments": 0,
+    "pending_units": 2
+   },
+   "coverage_complete": true,
+   "subject_gate": {
+    "gated_claims": 0,
+    "gated_by_this_error_only": 0,
+    "gated_on_labeled_comments": 0,
+    "gated_correct_by_label": 0,
+    "gated_correct_by_label_this_error_only": 0
+   }
+  },
+  "reference": {
+   "claims": {
+    "generated": 123,
+    "binding_quarantined": 4,
+    "audited": 119,
+    "audit_rejected": 40,
+    "accepted": 79
+   },
+   "t6_audit_rejection": {
+    "numerator": 40,
+    "denominator": 119,
+    "value": 0.33613445378151263,
+    "wilson95": [
+     0.2575660663296195,
+     0.4249515431614364
+    ]
+   },
+   "t6_by_language": {
+    "en": {
+     "numerator": 7,
+     "denominator": 40,
+     "value": 0.175,
+     "wilson95": [
+      0.0874541374603592,
+      0.31949990331787714
+     ]
+    },
+    "zh": {
+     "numerator": 33,
+     "denominator": 79,
+     "value": 0.4177215189873418,
+     "wilson95": [
+      0.315266281401218,
+      0.527807462288668
+     ]
+    }
+   },
+   "binding_errors": {
+    "Numerical adjustment intent absent or ambiguous; review required": 3,
+    "Parameter lacks requested target or delta": 1,
+    "Unsupported number in recommendation or target": 1
+   },
+   "coverage_status": {
+    "extraction_completed": 107,
+    "relevance_pending_or_failed": 2,
+    "relevance_rejected": 5
+   },
+   "extraction_dispositions": {
+    "extracted": 82,
+    "no_supported_character_claim": 25
+   },
+   "long_comments": {
+    "comments_over_400": 35,
+    "extracted_comments_over_400": 31,
+    "generated_claims": 30,
+    "accepted_claims": 16,
+    "generated_per_comment": 0.967741935483871,
+    "accepted_per_comment": 0.5161290322580645
+   },
+   "extract_tokens": {
+    "prompt_tokens": 3388.878787878788,
+    "uncached_tokens": 2938.939393939394,
+    "output_tokens": 369.0
+   },
+   "extract_requests": 33,
+   "failures": {
+    "requests_with_validation_errors": {},
+    "transport_failures": 0,
+    "generation_failed_comments": 0,
+    "quality_failed_comments": 0,
+    "pending_units": 2
+   },
+   "coverage_complete": true,
+   "subject_gate": {
+    "gated_claims": 0,
+    "gated_by_this_error_only": 0,
+    "gated_on_labeled_comments": 0,
+    "gated_correct_by_label": 0,
+    "gated_correct_by_label_this_error_only": 0
+   }
+  },
+  "t6_difference_points_ci95": [
+   -2.9148488182624055,
+   20.985627632614662
+  ]
+ },
+ "adoption": {
+  "rule2": {
+   "pass": true,
+   "technical_failures": [
+    0,
+    0
+   ],
+   "coverage_complete": true
+  },
+  "rule3": {
+   "target": "precision",
+   "pass": false
+  },
+  "rule4": {
+   "pass": false,
+   "precision_accepted_points": -2.0852387049570154,
+   "recall_points": -4.878048780487804
+  }
+ }
+}
