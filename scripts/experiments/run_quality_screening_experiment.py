@@ -185,7 +185,7 @@ def main():
             parsed,meta=runner.generate(models[row['language']],row['language'],'quality',data,[cid],request_context=context)
             attempts.append(meta)
             if parsed is not None:
-                record=q.qualify(parsed,row,units,policy)
+                record=q.qualify_v2(parsed,row,units,data['segments'],policy)
                 if not record['errors']:
                     break
                 record=None

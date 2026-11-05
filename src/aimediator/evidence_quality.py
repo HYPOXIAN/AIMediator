@@ -11,10 +11,11 @@ import re
 import unicodedata
 
 from .balance_policy import _term_pattern
-from .evidence import character_reference, character_terms, numeric_tokens
+from .evidence import SEGMENTATION_VERSION, character_reference, character_terms, numeric_tokens
 from .resources import asset_path
 from .schema import NULLABLE_NONEMPTY_STRING, STRING, enum, quality_obj, schema_errors
 POLICY_PATH = asset_path('configs/evidence-quality-policy.json')
+SCHEMA_V1, SCHEMA_V2 = 'evidence-quality-v1', 'evidence-quality-v2'
 ROUTES = ('exclude', 'opinion_only', 'mechanism_evidence', 'system_evidence', 'review')
 REASONS = ('empty_venting', 'general_strength', 'concrete_mechanic_condition',
            'system_feedback', 'price_cosmetic_network', 'quoted_emotion',
@@ -25,6 +26,9 @@ REASONS = ('empty_venting', 'general_strength', 'concrete_mechanic_condition',
 def load_policy():
     policy = json.loads(POLICY_PATH.read_text(encoding='utf-8'))
     if (policy['max_attempts'] != 2 or policy['request_batch_size'] != 1
+            or policy.get('version') != 'evidence-quality-policy-v2'
+            or policy.get('schema_version') != SCHEMA_V2
+            or policy.get('segmentation_version') != SEGMENTATION_VERSION
             or policy['measurement_version'] != 'unicode-LNMS-codepoint-v1'
             or type(policy['num_predict']) is not int or policy['num_predict'] < 1
             or type(policy['num_ctx']) is not int or policy['num_ctx'] < 1
@@ -249,10 +253,28 @@ def qualify(annotation, row, units, policy=None):
             'point_counts': counts}
 
 
+def with_annotation_v2(record, annotation_v2):
+    """Return the record with annotation_v2 placed right after annotation (the derived v1 annotation)."""
+    result = {}
+    for key, value in record.items():
+        result[key] = value
+        if key == 'annotation':
+            result['annotation_v2'] = annotation_v2
+    return result
+
+
+def qualify_v2(annotation, row, units, segments, policy=None):
+    """Route a v2 annotation by the unchanged qualify on its v1 conversion; the record keeps both annotations."""
+    record = qualify(to_v1_annotation(annotation, segments, row['text_original']), row, units, policy)
+    return with_annotation_v2(record, annotation)
+
+
 def failed_record(row, units, attempts, policy=None):
     record = qualify(None, row, units, policy)
     record.update(attempts=attempts, errors=[e for a in attempts for e in a['errors']])
     record['routing'][0]['reason'] = 'quality_attempts_exhausted'
+    if record['schema_version'] == SCHEMA_V2:
+        record = with_annotation_v2(record, None)
     return record
 
 

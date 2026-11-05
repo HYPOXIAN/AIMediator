@@ -20,8 +20,7 @@ MODEL_VISIBLE = {
                   'comments': frozenset({'comment_id', 'text', 'retrieved_topics'})},
     'retrieval_review': {'top': frozenset({'comments'}),
                          'comments': frozenset({'comment_id', 'text', 'retrieved_topics'})},
-    'quality': {'top': frozenset({'comments', 'language', 'character_normalization_reference',
-                                  'previous_attempt_errors'}),
+    'quality': {'top': frozenset({'comments', 'language', 'character_literals', 'previous_attempt_errors'}),
                 'comments': frozenset({'comment_id', 'units'})},
     'extract': {'top': frozenset({'comments', 'character_normalization_reference'}),
                 'comments': frozenset({'comment_id', 'units', 'allowed_quality_points'})},
@@ -38,7 +37,9 @@ def schema_for(stage: str, ids: list[str], data: dict[str, Any] | None = None) -
         return obj({'decisions': {**arr({'enum': ['related', 'unrelated', 'uncertain']}),
                                   'minItems': len(ids), 'maxItems': len(ids)}})
     if stage == 'quality':
-        return quality.annotation_schema(ids)
+        if len(ids) != 1:
+            raise ValueError('Quality annotation requires exactly one comment')
+        return quality.annotation_schema_v2(ids[0], data['segments'], data['character_literals'])
     if stage == 'extract':
         records = {r['comment_id']: r for r in data['comments']} if data else {}
         properties = {}
@@ -135,19 +136,20 @@ def view(stage: str, data: dict[str, Any], ids: list[str]) -> dict[str, Any]:
 
 
 def _quality_view(data: dict[str, Any]) -> dict[str, Any]:
-    """Return the comment units, the language and the reference entries of the comment's character candidates.
+    """Return the comment units with their clause segments, the language and the character literals (plan 4.1, v2).
 
-    The source row, the quality contract and the attempt number stay in the context. After a failed attempt,
+    Each unit lists its segments by segment_id and text: no offsets, quotes or reference entries. The source
+    row, the quality contract and the attempt number stay in the context. After a failed attempt,
     data['previous_attempt'] ({'errors', 'transport_failure'}) adds previous_attempt_errors: at most 20
     errors, each cut to 300 characters, or the single entry 'transport failure' without remote text.
     """
-    reference = data['character_normalization_reference']
-    candidates = character_candidates(data['source']['text_original'], reference)
+    segments = data['segments']
     result = {'comments': [{'comment_id': c['comment_id'], 'units': [
-                  {key: u[key] for key in ('evidence_id', 'text', 'start', 'end')} for u in c['units']]}
-                  for c in data['comments']],
+                  {'evidence_id': u['evidence_id'], 'segments': [{'segment_id': s['segment_id'], 'text': s['text']}
+                                                                 for s in segments if s['evidence_id'] == u['evidence_id']]}
+                  for u in c['units']]} for c in data['comments']],
               'language': data['language'],
-              'character_normalization_reference': [e for e in reference if e['canonical_name'] in candidates]}
+              'character_literals': data['character_literals']}
     previous = data.get('previous_attempt')
     if previous is not None:
         result['previous_attempt_errors'] = (['transport failure'] if previous['transport_failure']
@@ -202,7 +204,8 @@ def normalize(stage: str, parsed: dict[str, Any], ids: list[str],
             'uncertain': status == 'uncertain', 'reason': 'Ordered model status: ' + status}
             for identity, status in zip(ids, parsed['decisions'])]}
     elif stage == 'quality':
-        errors.extend(quality.validate_annotation(parsed, data['source'], data['comments'][0]['units']))
+        errors.extend(quality.validate_annotation_v2(parsed, data['source'], data['segments'],
+                                                     data['comments'][0]['units'], data['character_literals']))
     elif stage == 'verify':
         status = parsed['support']
         parsed = {'verdicts': [{'claim_id': ids[0], 'supported': status == 'supported',

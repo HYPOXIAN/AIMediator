@@ -113,7 +113,7 @@ class ProductTests(unittest.TestCase):
         original=self.transport.chat
         calls=[]
         def chat(base,payload,partial):
-            if 'segments' in payload['format']['properties']:
+            if 'segment_labels' in payload['format']['properties']:
                 calls.append(payload)
                 return {'done':True,'done_reason':'stop','message':{'content':'{}'}}
             return original(base,payload,partial)
@@ -137,7 +137,7 @@ class ProductTests(unittest.TestCase):
     def test_quality_interruption_resumes_remaining_attempt(self):
         calls=[];original=self.transport.chat
         def chat(base,payload,partial):
-            if 'segments' in payload['format']['properties']:
+            if 'segment_labels' in payload['format']['properties']:
                 calls.append(1)
                 if len(calls)==1:
                     partial.write_text('{"partial":',encoding='utf-8');raise KeyboardInterrupt()

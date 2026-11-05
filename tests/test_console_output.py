@@ -13,8 +13,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 import behavior_lock as lock
 
 # (stage, items) for every request one model makes, in order.
-REQUESTS = ([('relevance', 8), ('relevance', 8), ('relevance', 3)] + [('quality', 1)] * 19
-            + [('extract', 4), ('extract', 4), ('extract', 1)] + [('verify', 1)] * 10)
+# Step U4.4 (UP-D10): the routing context of a point holds its clause segments, so the larger Chinese
+# context splits the extraction batches 3 + 4 + 1 + 1 instead of 4 + 4 + 1 (batches are sized on the context).
+REQUESTS = {model: [('relevance', 8), ('relevance', 8), ('relevance', 3)] + [('quality', 1)] * 19 + extract
+            + [('verify', 1)] * 10 for model, extract in (
+                ('llama3.1:latest', [('extract', 4), ('extract', 4), ('extract', 1)]),
+                ('qwen2.5:7b', [('extract', 3), ('extract', 4), ('extract', 1), ('extract', 1)]))}
 
 SUMMARY = '''{
   "version": "balance-evidence-v2",
@@ -69,7 +73,7 @@ def expected_lines():
     # Step U3.4: one record per text, the missing texts embedded in batches of 32.
     embedding = ['Embedding %d/58' % n for n in (32, 58)]
     requests = ['%s: %s, %d items' % (stage, model, items)
-                for model in ('llama3.1:latest', 'qwen2.5:7b') for stage, items in REQUESTS]
+                for model in ('llama3.1:latest', 'qwen2.5:7b') for stage, items in REQUESTS[model]]
     return embedding + requests + SUMMARY.split('\n')
 
 
