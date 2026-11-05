@@ -696,7 +696,7 @@ Findings of U2-L1:
   against 23/26 (88.5 %); of the 24 common comments 20 valid in both, 1
   valid only in U2-L1 and 1 only in U2-L0. Quality output and elapsed
   time per comment are unchanged (775 against 782 tokens, 18.5 s against
-  18.3 s). Attempt 2 now carries `previous_attempt_errors`; 2 of 3
+  18.3 s). Attempt 2 now carries `previous_attempt_errors`; 1 of 3
   benchmark retries succeeded (U2-L0: 0 of 3; synthetic: 0 of 3 in both).
 - **Budgets for U2.6** (`budgets_u2_6` of the comparison): the largest
   non-comment characters of a user message over the 342 requests of the
