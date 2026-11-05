@@ -1,0 +1,75 @@
+{
+  "commit": "2614453",
+  "live_config_api_sha256": "b44df0f2f8d7d0d6e295d7daa1314a729e2c285ec345596beff56a71fc1c4530",
+  "passed": false,
+  "prefix": "u4",
+  "runs": {
+    "u4-benchmark-off": {
+      "present": false
+    },
+    "u4-benchmark-shadow": {
+      "chat_responses": 60,
+      "chat_responses_without_remote": 0,
+      "embedding_digest_equal_doctor": true,
+      "embedding_endpoint": "http://127.0.0.1:11435",
+      "input_equal_reference": true,
+      "input_sha256": "ce7ee3df8efc73d36840b96dff00407e42cea9f29de2369ccb64aa4abac28f4a",
+      "models_equal_doctor": true,
+      "modules_checked": 31,
+      "modules_mismatched": [],
+      "passed": false,
+      "present": true,
+      "reference": "u0s-benchmark-shadow",
+      "remote_cost_usd": 0.013581,
+      "remote_model_provider_bridge": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-2": 60
+      },
+      "resources_checked": 21,
+      "resources_mismatched": [],
+      "run_state": null,
+      "service": {
+        "ollama_version": "openrouter-bridge-2"
+      },
+      "sources_equal_reference": true,
+      "tracked_modules_missing_from_manifest": [],
+      "transport_attempts_remote_model_provider_bridge": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-2": 60
+      }
+    },
+    "u4-extraction-development-off": {
+      "present": false
+    },
+    "u4-quality-synthetic-shadow": {
+      "chat_responses": 23,
+      "chat_responses_without_remote": 0,
+      "embedding_digest_equal_doctor": true,
+      "embedding_endpoint": "http://127.0.0.1:11435",
+      "input_equal_reference": true,
+      "input_sha256": "0d7a8e8adf6650ee673145d93530abfd0a2c79785712b5bfc2fa58af1590a8e4",
+      "models_equal_doctor": true,
+      "modules_checked": 31,
+      "modules_mismatched": [],
+      "passed": false,
+      "present": true,
+      "reference": "u0s-quality-synthetic-shadow",
+      "remote_cost_usd": 0.004259,
+      "remote_model_provider_bridge": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-2": 23
+      },
+      "resources_checked": 21,
+      "resources_mismatched": [],
+      "run_state": null,
+      "service": {
+        "ollama_version": "openrouter-bridge-2"
+      },
+      "sources_equal_reference": true,
+      "tracked_modules_missing_from_manifest": [],
+      "transport_attempts_remote_model_provider_bridge": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-2": 23
+      }
+    },
+    "u4-silver-development-relevance": {
+      "present": false
+    }
+  }
+}

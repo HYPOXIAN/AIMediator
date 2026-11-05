@@ -101,6 +101,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | U4.3 | N | done | 310 | green | ALG-01, ALG-02, plan 4.2; not used by the pipeline yet. In `evidence_quality`: `character_literals(text)` (the canonical names, Chinese labels and permitted aliases of `character_reference(text)` as the text writes them, Latin terms by the whole-word, case-free pattern of `term_matches` (`balance_policy._term_pattern`), by first occurrence, longer first); `annotation_schema_v2(comment_id, segments, literals)` with `quality_obj` objects in the order `comment_id`, `segment_labels` (one required key per segment ID, each `scope`, `content_kind`, `emotional_tone`, `reason_code`), `information_points` (the v1 point order; `segment_ids` limited to the segment IDs, `minItems` 1, `uniqueItems`; `character_literal` an enum of `null` and the literals; `mechanic_literal` nullable nonempty string); `to_v1_annotation(annotation, segments, text)` (one v1 segment per clause with program offsets and quotes, clause IDs as v1 segment IDs, points unchanged); `validate_annotation_v2(annotation, row, segments, units, literals=None)`: the v2 schema, then the unchanged `validate_annotation` on the conversion, so a valid v2 annotation always converts into a valid v1 annotation (work order section 6, third trigger, by construction) and the mechanic literal is checked inside the selected segments. `fixture_transport.v2_annotation(annotation, text)` derives the v2 answer of a v1 fixture annotation from the U4.2 mapping (used by the transport in U4.4). New `tests/test_quality_v2.py` (+7): the serialized schema pinned as in `tests/test_schema.py`; literals; a valid annotation, its v1 offsets, quotes and key order, routed by `qualify`; missing, extra and out-of-enum labels, offsets in the answer, a foreign comment ID, duplicate points; foreign and repeated segment IDs; character and mechanic literals outside the selected segments and an unknown literal; the round trip v2 → v1 → `qualify` on the 38 fixture cases (same status, routes present, expected routes, point routes and reasons, fragment routes, emotion measurement and point counts as the v1 annotations). Lock unchanged |
 | U4.4 | B | done | 310 | updated by UP-D10 | ALG-01, plan 4.1 and 4.2. `pipeline.quality_request` adds the context keys `segments` (`evidence.clause_segments(units)`) and `character_literals` (`evidence_quality.character_literals`) and no longer holds the character reference; `stages.view` sends the quality view v2 (`MODEL_VISIBLE['quality']` follows); `schema_for('quality', ids, data)` builds `annotation_schema_v2` from the context; `normalize` validates v2 (`validate_annotation_v2`, which runs the v1 rules on the conversion); `assess_quality` routes with the new `evidence_quality.qualify_v2` (the unchanged `qualify` on `to_v1_annotation`), and the record keeps `annotation` (the derived v1 annotation, so routing and readers stay) and `annotation_v2` right after it (`null` in failed v2 records, `failed_record`). Policy in place: `evidence-quality-policy-v2`, `evidence-quality-v2`, `segmentation_version` `clause-v1`; `load_policy` checks the three. Prompt pair `evidence-quality.{en,zh}` rewritten for labeling given segments (two authored synthetic examples per language, each valid under `validate_annotation_v2` and routed as intended); `quality-extract` and `quality-verify` unchanged (see "Behavior changes"). `FixtureTransport` answers v2 with `v2_annotation` (the U4.2 mapping). `design_briefs.quality_design_errors` accepts both schema versions (D-11, part 2). Scripts `diagnose_evidence_quality_live.py` and `run_quality_screening_experiment.py` route with `qualify_v2`. Tests: the mock transports of `test_cli_product`, `test_context_guard`, `test_evidence_quality` and `test_request_views` answer v2; `test_stages` normalizes v2; `test_request_views` checks the v2 view (no offsets, quotes or reference entries); `test_request_payload` counts segment texts as comment texts and adds the per-segment schema part to the quality budget (D-11, part 1); `test_console_output` pins the legacy `enforce` extraction batches of `qwen2.5:7b` as 3, 4, 1, 1 (was 4, 4, 1): batches are sized on the context, whose routing entries now hold clause segments; routes, claims and summaries of the fixture runs are unchanged (the two `injection` cases add one `exclude` fragment each). Lock regenerated (771 keys): exactly the 100 keys under "Behavior changes". Design documents follow in U4.7 (work order) |
 | U4.5 | B | done | 316 | green | Plan 4.2, UP-D10. New `evidence_quality.stored_annotation_errors(record, row, units)` dispatches on the record's `schema_version`: `evidence-quality-v1` (and records without a version) keep `validate_annotation` on `annotation`; `evidence-quality-v2` records are validated by `validate_annotation_v2` on `annotation_v2` against `clause_segments(units)`, and `to_v1_annotation` of it must equal the stored `annotation`; any other version is refused (`SCHEMA_VERSIONS`). `review.load_run` uses it before the unchanged routing recomputation, so `evaluation.evaluate_quality` (which reads through `load_run`) follows. `quality_scoring.evaluate` refuses unknown versions and reads the v1-shaped annotation and routing that both versions hold. `legacy_review.apply_review` refuses a qualification of unknown version (`Review cannot bypass evidence quality: unknown schema version`) and binds v1 and v2 qualifications alike. `design_briefs.quality_design_errors` accepts both since U4.4 (D-11). New `tests/test_quality_readers.py` (+6): the v2 demo `enforce` run (every record `evidence-quality-v2`, `annotation_v2` after `annotation`) passes `load_run`, review export, review import and report; tampered v2 records (a label, the derived annotation, a missing `annotation_v2`, an unknown version) fail `load_run` with exit 2; a run folder whose quality records are v1 records built by `qualify` from the v1 fixture annotations under the v1 policy (the demo `shadow` run, whose claims are not bound to quality points) passes `load_run`, review and report, and fails with a tampered quote; `quality_scoring.evaluate` gives equal scores for v1 and v2 versions of the records and refuses an unknown one; design briefs and `apply_review` accept both versions and refuse an unknown one; the dispatch itself. The behavior lock passes unchanged (771 keys): no artifact of the fixture runs changes. Checking out older code is left to checklist item 4 of U4-V |
+| U4-L | L | done | 316 | green | UP-D10, UP-D18, UP-D19, UP-D20. The two runs that UP-D18 keeps (`u4-benchmark-shadow`, `u4-quality-synthetic-shadow`) at the U4.5 commit `2614453` through bridge `openrouter-bridge-2` (SHA-256, digests and `live-config-api.json` equal to the record; `doctor` passed; every response from `deepseek/deepseek-v4-flash` on DeepInfra), started by this session in its own process session; reference the U2-L1 rows (U2.2 kept). Measured and scored with the committed tools and the D-4 route scorer; compared in `u4l_analyze.py`. Verdict: U4.4 and U4.5 fail rules 2 (benchmark quality-failed comments 4 against 2) and 3 (T5 18/23 against 21/24); rule 4 holds (synthetic validity 16/16 against 13/16, route agreement 14/16 against 11/16); T4 11.2 s per comment, 60.4 % of the reference (indicative; target not met); escalation E-4, not reverted. Largest prompt plus output 14,346 tokens (U4.6). See "U4-L" under "Live evaluations". Curated report `reports/20261105-upgrade-u4-evaluation/`; full runs archived with `SHA256SUMS` (721 files). Spend of `doctor` and the two runs 0.0179 USD (0.1486 to 0.1665 USD) |
 
 ## Baseline measurements (U0.4)
 
@@ -376,6 +377,8 @@ For every API session it replaces the local items of the record above
 | U2-L1 (`u2l1-extraction-development-off`) | `b7d1cc5` | `upgrade-samples-v1/extraction-development` (114) | `off` | 347.5 s | relevance 2,256 (1,826); retrieval_review 2,795 (2,027); extract 3,353 (2,841); verify 975 (604) | relevance 17; retrieval_review 20; extract 362; verify 7 | 0 requests with errors; 0 transport; 0 generation-failed comments; 2 pending | 130 / 76 (1 quarantined; 53 of 129 audited rejected, 41.1 %) | accepted 55/74 (74.3 %, Wilson 63.3–82.9 %) / 54/123 (43.9 %, Wilson 35.4–52.7 %); generated 74/120 (61.7 %); recall over admitted 54/121 (44.6 %) | — | U2.3 rule 4 fails: recall 4.9 points below the reference |
 | U2-L1 (`u2l1-silver-development-relevance`) | `b7d1cc5` | `balance-silver-v1` development (70) | `off`, `--stop-after relevance` | 35.7 s | relevance 2,082 (1,634); retrieval_review 1,645 (1,154) | relevance 16; retrieval_review 15 | 0 requests with errors; 0 transport; 0 generation-failed comments; 6 pending | — | relevance agreement 64/69 (92.8 %, Wilson 84.1–96.9 %): 58 TP, 6 TN, 5 FN, 0 FP; 1 uncertain excluded | — | U2.4 rule 4 holds: one agreeing comment more |
 | U2-L1 (`u2l1-quality-synthetic-shadow`) | `b7d1cc5` | `upgrade-samples-v1/quality-synthetic` (19) | `shadow`, `--stop-after quality` | 112.2 s | relevance 1,313 (1,185); retrieval_review 958 (617); quality 1,799 (1,233) | relevance 16; retrieval_review 11; quality 418 | 6 quality requests with validation errors; 0 transport; 3 quality-failed comments; 0 generation-failed comments; 2 pending | — | — | first attempt 13/16 (81.2 %, Wilson 57.0–93.4 %); 19 attempts; route agreement 11/16 (68.8 %, Wilson 44.4–85.8 %), English 5/7, Chinese 6/9; 16 of 19 cases reach quality | U2.2 rule 4 holds: validity and route agreement equal |
+| U4-L (`u4-benchmark-shadow`) | `2614453` | `upgrade-samples-v1/latency-benchmark` (30) | `shadow` | 321.1 s | relevance 1,474 (1,090); retrieval_review 1,353 (1,046); quality 3,673 (2,630); extract 2,788 (2,495); verify 742 (571) | relevance 15; retrieval_review 14; quality 501; extract 200; verify 7 | 9 quality requests with validation errors; 0 transport; 4 quality-failed comments; 0 generation-failed comments; 3 pending | 12 / 8 (0 quarantined; 4 of 12 audited rejected, 33.3 %) | 4/6 (66.7 %) / 4/10 (40.0 %), the 11 scored sample comments of the development split | first attempt 18/23 (78.3 %, Wilson 58.1–90.3 %); 28 attempts; final 19/23 | U4.4 and U4.5: rules 2 and 3 (T5) fail; see the verdicts |
+| U4-L (`u4-quality-synthetic-shadow`) | `2614453` | `upgrade-samples-v1/quality-synthetic` (19) | `shadow`, `--stop-after quality` | 127.7 s | relevance 1,312 (928); retrieval_review 958 (446); quality 2,865 (1,745) | relevance 16; retrieval_review 11; quality 311 | 0 quality requests with validation errors; 0 transport; 0 quality-failed comments; 2 pending | — | — | first attempt 16/16 (100 %, Wilson 80.6–100 %); 16 attempts; route agreement 14/16 (87.5 %, Wilson 64.0–96.5 %), English 5/7, Chinese 9/9; 16 of 19 cases reach quality | rule 4 holds: validity and route agreement up |
 
 Rows of U0.6 (2026-11-04, session U0-L): the five reference runs of plan
 7 U0.6, environment and configuration as in the section above. Token
@@ -809,6 +812,82 @@ to p1 in brackets):
 - **Spend**: 0.0288 USD for the doctor call and the four runs (bridge total
   0.1198 to 0.1486 USD; 2.83 USD remain below the refusal point).
 
+
+### U4-L (UP-D10; API, UP-D19)
+
+Rows of U4-L (2026-11-05, runs from 04:33:22 to 04:40:54, session U4-1 to
+U4-3 and U4-L in one agent, UP-D20): the two runs of the work order that
+UP-D18 keeps, `u4-benchmark-shadow` and `u4-quality-synthetic-shadow`, at
+the U4.5 commit `2614453` (HEAD; `pip install -e .`), started by this
+session in its own process session (`runs/upgrade/tools/u4l_api_runs.sh`),
+one after another, with `max_parallel_requests` 1 and no `cache_dir`
+(D-10). Environment check (plan 5.4, "Hosted API"): `/api/version`
+answers `openrouter-bridge-2`; `api_bridge.py` SHA-256
+`f42e0087ebcde0b193eaaa1d60cd2c735b7630fa7735ccda14acd7403e1137e9` and
+the three digests of `doctor` (passed) equal the record (version 2);
+`live-config-api.json` unchanged (SHA-256 `b44df0f2…c4530`). Identity of
+each run (`check_api_identity.py --prefix u4 --commit 2614453`): the 31
+module and 21 resource hashes of the manifest equal `2614453`, digests
+equal `doctor`, inputs and sources equal the reference runs, service
+`{"ollama_version": "openrouter-bridge-2"}`, every chat response (60 and
+23, and every transport attempt) from `deepseek/deepseek-v4-flash` on
+DeepInfra through version 2. The tool reports `passed: false` only because
+it pins version 1 (it was written for U2-L0 and U2-L1); every item holds
+for version 2. Spend: 0.0179 USD for `doctor` and the two runs (bridge
+total 0.1486 to 0.1665 USD; the `remote` objects give 0.0136 and
+0.0043 USD).
+
+Reference (session prompt): the most recent API row of the same sample and
+mode whose steps passed the adoption rule. U2.2 passed in U2-L1, so the
+references are `u2l1-benchmark-shadow` and `u2l1-quality-synthetic-shadow`
+(U2-L1 rows above). The U3-L run `u3-benchmark-shadow-p1` is later but
+measured U3 steps that do not change model-visible content, and the
+prompt names U2-L1; it is not used. Measurements, scores, the identity
+check and the comparison (`summary/u4l-analysis.json`: Wilson intervals,
+Newcombe intervals of the differences, paired first attempts, error
+classes, the largest prompt plus output) are in
+[`reports/20261105-upgrade-u4-evaluation/`](../../reports/20261105-upgrade-u4-evaluation/manifest.json);
+full runs in the archive (see "Archive and deletions").
+
+Verdicts of U4-L (adoption rule of plan 5.4; U4.4 and U4.5 measured
+together, U4.5 changes no request):
+
+| Step | Rule 1 gates | Rule 2 failure units and coverage | Rule 3 target metrics | Rule 4 no inferiority | Verdict |
+| ---- | ------------ | --------------------------------- | --------------------- | --------------------- | ------- |
+| U4.4 and U4.5 (UP-D10) | pass (316 tests, rule check 0, lock green at `2614453`) | benchmark quality-failed comments 4 against 2 (+2, beyond the margin of 1); 0 transport; 0 generation-failed; coverage complete (30 records); pending 3 against 3 | T4: quality 11.2 s per comment (257.6 s for 23) against 18.5 s (445.0 s for 24), 60.4 % (U2-L0 baseline 18.3 s: 61.2 %, target at most 50 %, indicative); T5: benchmark first-attempt validity 18/23 (78.3 %) against 21/24 (87.5 %), −9.2 points (Newcombe −31.0 to +12.9), the wrong direction | synthetic first-attempt validity 16/16 against 13/16 (+18.8 points, −4.1 to +43.0); route agreement 14/16 against 11/16 (+18.8, −10.3 to +44.7), 5 cases newly agreeing and 2 no longer; extraction precision and recall on `extraction-precision-v1` development not run (UP-D18); benchmark scores equal (4/6, 4/10) | **fails rules 2 and 3 (T5)**; escalation E-4 (work order section 6, fourth trigger); not reverted in this session |
+
+Targets of plan 5.5 through the API: T4 11.2 s per comment, 61.2 % of
+the U2-L0 baseline, not met (at most 50 %, 9.2 s; indicative); T5 78.3 %
+on the benchmark, not met (at least 95 %; the synthetic sample reaches
+16/16).
+
+Findings of U4-L:
+
+- **The offset failure classes are gone; one semantic class remains.**
+  Attempt errors on the benchmark: `Point/segment detail conflict: P1` 7,
+  `Literal absent from selected spans: character_literal` 2 (U2-L1: 21 of
+  27 were quote, offset or overlap errors). The 4 failed comments are 3
+  Chinese comments whose concrete point selects clauses the answer labels
+  `general_opinion` (both attempts), and 1 Chinese comment whose literal
+  lies outside its selected clauses (both attempts); the repair attempt
+  fixed 1 of 5 first-attempt failures. In v1 the model could cover a
+  naming clause and a concrete clause with one concrete segment; with
+  program clauses each clause takes its own label, and the concrete point
+  rejects a general one. Of the 23 common comments, 15 are valid on the
+  first attempt in both runs, 3 only in U4-L and 5 only in U2-L1.
+- **Output falls, prompts grow.** Quality output 501 tokens per request
+  against 775 (synthetic 311 against 418); prompt 3,673 against 1,957
+  (synthetic 2,865 against 1,799) because the label schema repeats per
+  clause (D-11). Elapsed 9.2 s per request against 16.5 s.
+- **Largest prompt plus output (U4.6).** 13,520 tokens on the benchmark
+  (11,453 prompt and 2,067 output, attempt 1) and 14,346 on the synthetic
+  sample (12,260 and 2,086); 4 benchmark requests and 1 synthetic request
+  reach 6,000 or more. U2-L1: 6,557 and 6,275.
+- **Admission.** The benchmark admits 23 comments to quality against 24
+  (4 rejected at relevance against 3); the synthetic sample 16 against 16.
+  These relevance differences are run-to-run variation of the unchanged
+  relevance stage.
+
 ## Behavior changes (P7)
 
 | Step | Decision | Asset or request part | Old SHA-256 | New SHA-256 | Lock paths |
@@ -911,6 +990,7 @@ to p1 in brackets):
 | `runs/upgrade/` (the four U0.8 sample runs, their measurements and the comparison, the materialized samples and derived inputs, logs, live configuration, doctor output and environment check, one-off scripts; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-baseline-samples/` | `SHA256SUMS` at the archive root, 2,693 files, 74,493,575 bytes | full runs of the U0.8 sample reference (P2); the curated report keeps the manifest and summary | U0.8 |
 | `runs/upgrade/` (the five U2-L0 runs, their measurements, identity check, environment record and comparison with the local rows, the materialized inputs, run logs and the bridge log, the API configuration and doctor output, the bridge and one-off scripts; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-api-reference/` | `SHA256SUMS` at the archive root, 2,446 files, 118,026,987 bytes | full runs of the U2-L0 API reference (P2); the curated report keeps the manifest, summary and provenance | U2-L0 |
 | `runs/upgrade/` (the five U2-L1 runs, their measurements, identity check and comparison, the materialized inputs, run logs and the bridge log, the API configuration and doctor output, the bridge and one-off scripts; the local runs `u2l1-local-benchmark-off`, `u2l1-local-benchmark-shadow` and `u2l1-local-extraction-development-off-interrupted` with their measurements and logs under `local/`; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-u2-evaluation/` | `SHA256SUMS` at the archive root, 3,244 files, 156,077,243 bytes | full runs of the U2-L1 evaluation (P2); the curated report keeps the manifest, summary and provenance | U2-L1 |
+| `runs/upgrade/` (the two U4-L runs, their measurements, route scores, identity check and comparison, the materialized benchmark and synthetic samples with the synthetic cases, run logs and the bridge log, the API configuration and doctor output, the spend before and after, the bridge and one-off scripts; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-u4-evaluation/` | `SHA256SUMS` at the archive root, 721 files, 32,688,012 bytes | full runs of the U4-L evaluation (P2); the curated report keeps the manifest, summary and provenance | U4-L |
 
 ## Decisions found during execution
 
@@ -1169,6 +1249,27 @@ to p1 in brackets):
   the owner's review and forbids a revert in the live session; it is
   recorded for U2-V and the review recorded under the owner's standing
   instruction. Blocked: nothing in this session; U2.6 proceeds on HEAD.
+
+- **E-4 (U4-L) U4.4 and U4.5 fail adoption rules 2 and 3.** Raised on
+  2026-11-05 by session U4-L. On the benchmark 4 comments fail quality
+  against 2 for the U2-L1 reference (margin 1), and first-attempt validity
+  is 18/23 against 21/24 (work order section 6, fourth trigger); on the
+  synthetic sample validity and route agreement rise (16/16 and 14/16
+  against 13/16 and 11/16) and T4 falls to 60.4 % (see the U4-L verdicts).
+  Options: (a) revert U4.4 and U4.5 as fix-up steps of the U4 review (plan
+  1.7, 5.4; U4.1 to U4.3 are N and stay); (b) keep both against the rule,
+  with the reason recorded (synthetic gains, the T4 gain, the benchmark
+  loss inside its interval, one remaining failure class); (c) a fix-up
+  prompt step U4.F1 aimed at that class (a concrete point that selects a
+  clause labeled `general_opinion`), measured by a rerun of the two U4-L
+  runs, with (a) if rule 2 or the fourth trigger still fails.
+  Recommendation: (c) with (a) as its fallback. Adopted under the owner
+  authorization of 2026-11-05 03:11 as far as this session's role allows:
+  the live session does not revert (plan 10.1); this session records U4-L,
+  executes U4.6 and U4.7, and then executes U4.F1 with its rerun only if
+  the step, the runs and their record can be committed by 06:00; whatever
+  it does not finish passes to U4-V, which applies the rest of the adopted
+  recommendation. Blocked: nothing in this session.
 
 ## Verification notes
 

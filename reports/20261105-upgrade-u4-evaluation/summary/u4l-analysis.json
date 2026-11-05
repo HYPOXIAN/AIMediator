@@ -1,0 +1,779 @@
+{
+ "reference_rule": "most recent API row of the same sample and mode whose steps passed the adoption rule: U2-L1 (U2.2 kept)",
+ "pairs": {
+  "benchmark-shadow": {
+   "u4l": {
+    "run": "u4-benchmark-shadow",
+    "wall_seconds": 321.080812,
+    "quality_comments": 23,
+    "quality_requests": 28,
+    "quality_elapsed_seconds": 257.62235547800265,
+    "t4_seconds_per_comment": 11.200971977304462,
+    "first_attempt_valid": {
+     "numerator": 18,
+     "denominator": 23,
+     "value": 0.782608695652174,
+     "wilson95": [
+      0.5809651698373599,
+      0.9033602197341379
+     ]
+    },
+    "final_valid": {
+     "numerator": 19,
+     "denominator": 23,
+     "value": 0.8260869565217391,
+     "wilson95": [
+      0.6286235235977385,
+      0.9302134643693744
+     ]
+    },
+    "status": {
+     "completed": 19,
+     "failed": 4
+    },
+    "attempts": {
+     "total": 28,
+     "per_comment": {
+      "1": 18,
+      "2": 5
+     }
+    },
+    "attempt_errors": {
+     "Point/segment detail conflict: P1": 7,
+     "Literal absent from selected spans: character_literal": 2
+    },
+    "attempt_error_classes": {
+     "Point/segment detail conflict": 7,
+     "Literal absent from selected spans": 2
+    },
+    "prompt_tokens": {
+     "count": 28,
+     "sum": 102831.0,
+     "mean": 3672.535714285714,
+     "median": 2706.5,
+     "max": 11453.0
+    },
+    "uncached_tokens": {
+     "count": 28,
+     "sum": 73647.0,
+     "mean": 2630.25,
+     "median": 2138.0,
+     "max": 10173.0
+    },
+    "output_tokens": {
+     "count": 28,
+     "sum": 14027.0,
+     "mean": 500.9642857142857,
+     "median": 317.5,
+     "max": 2067.0
+    },
+    "elapsed_seconds": {
+     "count": 28,
+     "sum": 257.62235547800265,
+     "mean": 9.200798409928666,
+     "median": 6.874400827500267,
+     "max": 38.812407652999354
+    },
+    "largest_prompt_plus_output": 13520,
+    "largest_request": {
+     "prompt_tokens": 11453,
+     "output_tokens": 2067,
+     "attempt": 1
+    },
+    "requests_at_or_above_6000": 4,
+    "route_comments": {
+     "exclude": 11,
+     "opinion_only": 7,
+     "review": 10,
+     "system_evidence": 9
+    },
+    "pending_and_coverage": {
+     "extraction_completed": 23,
+     "relevance_pending_or_failed": 3,
+     "relevance_rejected": 4
+    }
+   },
+   "reference": {
+    "run": "u2l1-benchmark-shadow",
+    "wall_seconds": 510.205752,
+    "quality_comments": 24,
+    "quality_requests": 27,
+    "quality_elapsed_seconds": 445.0242645439995,
+    "t4_seconds_per_comment": 18.542677689333313,
+    "first_attempt_valid": {
+     "numerator": 21,
+     "denominator": 24,
+     "value": 0.875,
+     "wilson95": [
+      0.6899611872949993,
+      0.9565566591987655
+     ]
+    },
+    "final_valid": {
+     "numerator": 22,
+     "denominator": 24,
+     "value": 0.9166666666666666,
+     "wilson95": [
+      0.741511978067893,
+      0.9768411847029567
+     ]
+    },
+    "status": {
+     "completed": 22,
+     "failed": 2
+    },
+    "attempts": {
+     "total": 27,
+     "per_comment": {
+      "1": 21,
+      "2": 3
+     }
+    },
+    "attempt_errors": {
+     "Overlapping or out-of-order spans": 8,
+     "Quote/offset mismatch: S4": 2,
+     "Quote/offset mismatch: S5": 2,
+     "Quote/offset mismatch: S6": 2,
+     "Quote/offset mismatch: S15": 2,
+     "Quote/offset mismatch: S16": 2,
+     "Quote/offset mismatch: S17": 2,
+     "Literal absent from selected spans: character_literal": 2,
+     "Point/segment detail conflict: P1": 1,
+     "Point/segment detail conflict: P4": 1,
+     "Point/segment detail conflict: P5": 1,
+     "Point/segment detail conflict: P6": 1,
+     "Quote/offset mismatch: S2": 1
+    },
+    "attempt_error_classes": {
+     "Quote/offset mismatch": 13,
+     "Overlapping or out-of-order spans": 8,
+     "Point/segment detail conflict": 4,
+     "Literal absent from selected spans": 2
+    },
+    "prompt_tokens": {
+     "count": 27,
+     "sum": 52840.0,
+     "mean": 1957.037037037037,
+     "median": 1865.0,
+     "max": 2915.0
+    },
+    "uncached_tokens": {
+     "count": 27,
+     "sum": 34920.0,
+     "mean": 1293.3333333333333,
+     "median": 1130.0,
+     "max": 2867.0
+    },
+    "output_tokens": {
+     "count": 27,
+     "sum": 20937.0,
+     "mean": 775.4444444444445,
+     "median": 357.0,
+     "max": 3690.0
+    },
+    "elapsed_seconds": {
+     "count": 27,
+     "sum": 445.0242645439995,
+     "mean": 16.482380168296277,
+     "median": 7.659393582999883,
+     "max": 65.27335367199998
+    },
+    "largest_prompt_plus_output": 6557,
+    "largest_request": {
+     "prompt_tokens": 2867,
+     "output_tokens": 3690,
+     "attempt": 1
+    },
+    "requests_at_or_above_6000": 2,
+    "route_comments": {
+     "exclude": 7,
+     "mechanism_evidence": 2,
+     "opinion_only": 12,
+     "review": 9,
+     "system_evidence": 7
+    },
+    "pending_and_coverage": {
+     "extraction_completed": 24,
+     "relevance_pending_or_failed": 3,
+     "relevance_rejected": 3
+    }
+   },
+   "first_attempt_difference_points_ci95": [
+    -30.990360322467847,
+    12.856184176101179
+   ],
+   "final_difference_points_ci95": [
+    -29.700834179042158,
+    11.31885272589353
+   ],
+   "t4_ratio_to_reference": 0.6040644272077181,
+   "paired_first_attempt": {
+    "common": 23,
+    "only_new": [],
+    "only_reference": [
+     "steam:229390012"
+    ],
+    "new": {
+     "numerator": 18,
+     "denominator": 23,
+     "value": 0.782608695652174,
+     "wilson95": [
+      0.5809651698373599,
+      0.9033602197341379
+     ]
+    },
+    "reference": {
+     "numerator": 20,
+     "denominator": 23,
+     "value": 0.8695652173913043,
+     "wilson95": [
+      0.6787251772990404,
+      0.9546234090636876
+     ]
+    },
+    "both_valid": 15,
+    "only_new_valid": [
+     "steam:217837645",
+     "steam:221768502",
+     "steam:238162977"
+    ],
+    "only_reference_valid": [
+     "steam:232121391",
+     "steam:232702842",
+     "steam:237706669",
+     "steam:237778840",
+     "steam:237780586"
+    ],
+    "neither": 0
+   },
+   "extraction_scores": {
+    "u4l": {
+     "comments": 11,
+     "admitted_comments": 11,
+     "precision_accepted": {
+      "numerator": 4,
+      "denominator": 6,
+      "value": 0.6666666666666666,
+      "wilson95": [
+       0.299993315138392,
+       0.9032285888942195
+      ]
+     },
+     "precision_generated": {
+      "numerator": 5,
+      "denominator": 10,
+      "value": 0.5,
+      "wilson95": [
+       0.236593090512564,
+       0.7634069094874361
+      ]
+     },
+     "recall": {
+      "numerator": 4,
+      "denominator": 10,
+      "value": 0.4,
+      "wilson95": [
+       0.16818032970623614,
+       0.6873262302663417
+      ]
+     },
+     "recall_admitted": {
+      "numerator": 4,
+      "denominator": 10,
+      "value": 0.4,
+      "wilson95": [
+       0.16818032970623614,
+       0.6873262302663417
+      ]
+     },
+     "uncertain": {
+      "comments": 2,
+      "accepted_claims": 2,
+      "generated_claims": 2
+     }
+    },
+    "reference": {
+     "comments": 11,
+     "admitted_comments": 11,
+     "precision_accepted": {
+      "numerator": 4,
+      "denominator": 6,
+      "value": 0.6666666666666666,
+      "wilson95": [
+       0.299993315138392,
+       0.9032285888942195
+      ]
+     },
+     "precision_generated": {
+      "numerator": 5,
+      "denominator": 11,
+      "value": 0.45454545454545453,
+      "wilson95": [
+       0.21271271622459764,
+       0.719908462590678
+      ]
+     },
+     "recall": {
+      "numerator": 4,
+      "denominator": 10,
+      "value": 0.4,
+      "wilson95": [
+       0.16818032970623614,
+       0.6873262302663417
+      ]
+     },
+     "recall_admitted": {
+      "numerator": 4,
+      "denominator": 10,
+      "value": 0.4,
+      "wilson95": [
+       0.16818032970623614,
+       0.6873262302663417
+      ]
+     },
+     "uncertain": {
+      "comments": 2,
+      "accepted_claims": 2,
+      "generated_claims": 2
+     }
+    }
+   }
+  },
+  "quality-synthetic-shadow": {
+   "u4l": {
+    "run": "u4-quality-synthetic-shadow",
+    "wall_seconds": 127.733745,
+    "quality_comments": 16,
+    "quality_requests": 16,
+    "quality_elapsed_seconds": 113.09700556199823,
+    "t4_seconds_per_comment": 7.068562847624889,
+    "first_attempt_valid": {
+     "numerator": 16,
+     "denominator": 16,
+     "value": 1.0,
+     "wilson95": [
+      0.8063923194655637,
+      1
+     ]
+    },
+    "final_valid": {
+     "numerator": 16,
+     "denominator": 16,
+     "value": 1.0,
+     "wilson95": [
+      0.8063923194655637,
+      1
+     ]
+    },
+    "status": {
+     "completed": 16
+    },
+    "attempts": {
+     "total": 16,
+     "per_comment": {
+      "1": 16
+     }
+    },
+    "attempt_errors": {},
+    "attempt_error_classes": {},
+    "prompt_tokens": {
+     "count": 16,
+     "sum": 45836.0,
+     "mean": 2864.75,
+     "median": 2297.0,
+     "max": 12260.0
+    },
+    "uncached_tokens": {
+     "count": 16,
+     "sum": 27916.0,
+     "mean": 1744.75,
+     "median": 1056.0,
+     "max": 10980.0
+    },
+    "output_tokens": {
+     "count": 16,
+     "sum": 4981.0,
+     "mean": 311.3125,
+     "median": 209.0,
+     "max": 2086.0
+    },
+    "elapsed_seconds": {
+     "count": 16,
+     "sum": 113.09700556199823,
+     "mean": 7.068562847624889,
+     "median": 4.255777684500117,
+     "max": 42.43798681199951
+    },
+    "largest_prompt_plus_output": 14346,
+    "largest_request": {
+     "prompt_tokens": 12260,
+     "output_tokens": 2086,
+     "attempt": 1
+    },
+    "requests_at_or_above_6000": 1,
+    "route_comments": {
+     "exclude": 4,
+     "mechanism_evidence": 8,
+     "opinion_only": 3,
+     "review": 4,
+     "system_evidence": 1
+    },
+    "pending_and_coverage": {
+     "quality_completed": 16,
+     "relevance_pending_or_failed": 2,
+     "relevance_rejected": 1
+    }
+   },
+   "reference": {
+    "run": "u2l1-quality-synthetic-shadow",
+    "wall_seconds": 112.157487,
+    "quality_comments": 16,
+    "quality_requests": 19,
+    "quality_elapsed_seconds": 102.66327723100017,
+    "t4_seconds_per_comment": 6.41645482693751,
+    "first_attempt_valid": {
+     "numerator": 13,
+     "denominator": 16,
+     "value": 0.8125,
+     "wilson95": [
+      0.5699111903802586,
+      0.9340840092857187
+     ]
+    },
+    "final_valid": {
+     "numerator": 13,
+     "denominator": 16,
+     "value": 0.8125,
+     "wilson95": [
+      0.5699111903802586,
+      0.9340840092857187
+     ]
+    },
+    "status": {
+     "completed": 13,
+     "failed": 3
+    },
+    "attempts": {
+     "total": 19,
+     "per_comment": {
+      "1": 13,
+      "2": 3
+     }
+    },
+    "attempt_errors": {
+     "Quote/offset mismatch: S1": 4,
+     "Quote/offset mismatch: S2": 4,
+     "Uncovered non-whitespace original content": 4,
+     "Overlapping or out-of-order spans": 2,
+     "Quote/offset mismatch: S3": 2,
+     "Quote/offset mismatch: S4": 2,
+     "Quote/offset mismatch: seg1": 2,
+     "Quote/offset mismatch: seg2": 2
+    },
+    "attempt_error_classes": {
+     "Quote/offset mismatch": 16,
+     "Uncovered non-whitespace original content": 4,
+     "Overlapping or out-of-order spans": 2
+    },
+    "prompt_tokens": {
+     "count": 19,
+     "sum": 34181.0,
+     "mean": 1799.0,
+     "median": 1762.0,
+     "max": 2788.0
+    },
+    "uncached_tokens": {
+     "count": 19,
+     "sum": 23429.0,
+     "mean": 1233.1052631578948,
+     "median": 1001.0,
+     "max": 2020.0
+    },
+    "output_tokens": {
+     "count": 19,
+     "sum": 7948.0,
+     "mean": 418.3157894736842,
+     "median": 210.0,
+     "max": 3487.0
+    },
+    "elapsed_seconds": {
+     "count": 19,
+     "sum": 102.66327723100017,
+     "mean": 5.403330380578956,
+     "median": 3.1272073320001255,
+     "max": 39.09810451399994
+    },
+    "largest_prompt_plus_output": 6275,
+    "largest_request": {
+     "prompt_tokens": 2788,
+     "output_tokens": 3487,
+     "attempt": 1
+    },
+    "requests_at_or_above_6000": 1,
+    "route_comments": {
+     "exclude": 1,
+     "mechanism_evidence": 7,
+     "opinion_only": 4,
+     "review": 5
+    },
+    "pending_and_coverage": {
+     "quality_completed": 13,
+     "quality_failed": 3,
+     "relevance_pending_or_failed": 2,
+     "relevance_rejected": 1
+    }
+   },
+   "first_attempt_difference_points_ci95": [
+    -4.11189083954214,
+    43.008880961974135
+   ],
+   "final_difference_points_ci95": [
+    -4.11189083954214,
+    43.008880961974135
+   ],
+   "t4_ratio_to_reference": 1.1016305792335208,
+   "paired_first_attempt": {
+    "common": 16,
+    "only_new": [],
+    "only_reference": [],
+    "new": {
+     "numerator": 16,
+     "denominator": 16,
+     "value": 1.0,
+     "wilson95": [
+      0.8063923194655637,
+      1
+     ]
+    },
+    "reference": {
+     "numerator": 13,
+     "denominator": 16,
+     "value": 0.8125,
+     "wilson95": [
+      0.5699111903802586,
+      0.9340840092857187
+     ]
+    },
+    "both_valid": 13,
+    "only_new_valid": [
+     "synthetic:price_and_opinion:en",
+     "synthetic:quoted_voice:en",
+     "synthetic:system_and_cosmetic:zh"
+    ],
+    "only_reference_valid": [],
+    "neither": 0
+   },
+   "route_agreement": {
+    "u4l": {
+     "cases": 19,
+     "admitted": 16,
+     "reached_quality": 16,
+     "completed": 16,
+     "failed": 0,
+     "route_agreement": {
+      "numerator": 14,
+      "denominator": 16,
+      "value": 0.875,
+      "wilson95": [
+       0.639771727342413,
+       0.9650225122567595
+      ]
+     }
+    },
+    "reference": {
+     "cases": 19,
+     "admitted": 16,
+     "reached_quality": 16,
+     "completed": 13,
+     "failed": 3,
+     "route_agreement": {
+      "numerator": 11,
+      "denominator": 16,
+      "value": 0.6875,
+      "wilson95": [
+       0.44404355834740666,
+       0.8583535614521796
+      ]
+     }
+    },
+    "u4l_by_language": {
+     "en": {
+      "cases": 9,
+      "admitted": 7,
+      "reached_quality": 7,
+      "completed": 7,
+      "failed": 0,
+      "route_agreement": {
+       "numerator": 5,
+       "denominator": 7,
+       "value": 0.7142857142857143,
+       "wilson95": [
+        0.35893445183261935,
+        0.9177810759959433
+       ]
+      }
+     },
+     "zh": {
+      "cases": 10,
+      "admitted": 9,
+      "reached_quality": 9,
+      "completed": 9,
+      "failed": 0,
+      "route_agreement": {
+       "numerator": 9,
+       "denominator": 9,
+       "value": 1.0,
+       "wilson95": [
+        0.7008549515804559,
+        1
+       ]
+      }
+     }
+    },
+    "reference_by_language": {
+     "en": {
+      "cases": 9,
+      "admitted": 7,
+      "reached_quality": 7,
+      "completed": 5,
+      "failed": 2,
+      "route_agreement": {
+       "numerator": 5,
+       "denominator": 7,
+       "value": 0.7142857142857143,
+       "wilson95": [
+        0.35893445183261935,
+        0.9177810759959433
+       ]
+      }
+     },
+     "zh": {
+      "cases": 10,
+      "admitted": 9,
+      "reached_quality": 9,
+      "completed": 8,
+      "failed": 1,
+      "route_agreement": {
+       "numerator": 6,
+       "denominator": 9,
+       "value": 0.6666666666666666,
+       "wilson95": [
+        0.3542021355803963,
+        0.879416181613089
+       ]
+      }
+     }
+    },
+    "difference_points_ci95": [
+     -10.322887665033509,
+     44.70671236793308
+    ],
+    "changed_cases": [
+     [
+      [
+       "case_id",
+       "damage_comparison:en"
+      ],
+      [
+       "u4l",
+       false
+      ],
+      [
+       "reference",
+       true
+      ]
+     ],
+     [
+      [
+       "case_id",
+       "hostile_concrete:en"
+      ],
+      [
+       "u4l",
+       false
+      ],
+      [
+       "reference",
+       true
+      ]
+     ],
+     [
+      [
+       "case_id",
+       "opposing_mechanics:zh"
+      ],
+      [
+       "u4l",
+       true
+      ],
+      [
+       "reference",
+       false
+      ]
+     ],
+     [
+      [
+       "case_id",
+       "price_and_opinion:en"
+      ],
+      [
+       "u4l",
+       true
+      ],
+      [
+       "reference",
+       false
+      ]
+     ],
+     [
+      [
+       "case_id",
+       "quoted_voice:en"
+      ],
+      [
+       "u4l",
+       true
+      ],
+      [
+       "reference",
+       false
+      ]
+     ],
+     [
+      [
+       "case_id",
+       "system_and_cosmetic:zh"
+      ],
+      [
+       "u4l",
+       true
+      ],
+      [
+       "reference",
+       false
+      ]
+     ],
+     [
+      [
+       "case_id",
+       "unknown_identity:zh"
+      ],
+      [
+       "u4l",
+       true
+      ],
+      [
+       "reference",
+       false
+      ]
+     ]
+    ]
+   }
+  }
+ },
+ "spend_usd": {
+  "before": 0.148571,
+  "after": 0.166468,
+  "runs": 0.017896999999999996
+ }
+}

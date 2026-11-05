@@ -1,0 +1,104 @@
+{
+ "schema": "aimediator-report-manifest-v1",
+ "name": "20261105-upgrade-u4-evaluation",
+ "record": "docs/records/20261104-pipeline-upgrade.md",
+ "session": "U4-L",
+ "decisions": [
+  "UP-D10",
+  "UP-D17",
+  "UP-D18",
+  "UP-D19",
+  "UP-D20",
+  "D-10",
+  "D-11"
+ ],
+ "reason": "U4-L measurements of quality annotation v2 (T4 indicative under UP-D19, T5, validity, error classes, route agreement, the largest prompt plus output for U4.6) and the adoption rule; cited by the change record and ADR 0005",
+ "archive": {
+  "path": "~/Archives/AIMediator/reports/20261105-upgrade-u4-evaluation/",
+  "checksums": "SHA256SUMS",
+  "files": 721,
+  "bytes": 32688012,
+  "archived_on": "2026-11-05",
+  "contents": "runs/ (the two runs), measurements/, logs/ (run logs; the bridge log, counters and timings only), config/ (API configuration), inputs/ (the materialized benchmark and synthetic samples, source text, and the synthetic cases), provenance/"
+ },
+ "run_manifests": {
+  "u4-benchmark-shadow": "runs/u4-benchmark-shadow/manifest.json",
+  "u4-quality-synthetic-shadow": "runs/u4-quality-synthetic-shadow/manifest.json"
+ },
+ "datasets": {
+  "upgrade-samples-v1/latency-benchmark": "data/evaluation/upgrade-samples-v1/latency-benchmark, 30",
+  "upgrade-samples-v1/quality-synthetic": "data/evaluation/upgrade-samples-v1/quality-synthetic, 19",
+  "extraction-precision-v1": "data/evaluation/extraction-precision-v1, development split (scores)",
+  "inputs_sha256": {
+   "upgrade-sample-benchmark.jsonl": "ce7ee3df8efc73d36840b96dff00407e42cea9f29de2369ccb64aa4abac28f4a",
+   "upgrade-sample-quality-synthetic.jsonl": "0d7a8e8adf6650ee673145d93530abfd0a2c79785712b5bfc2fa58af1590a8e4"
+  }
+ },
+ "references": {
+  "benchmark-shadow": "u2l1-benchmark-shadow of reports/20261105-upgrade-u2-evaluation (U2-L1; U2.2 kept)",
+  "quality-synthetic-shadow": "u2l1-quality-synthetic-shadow of reports/20261105-upgrade-u2-evaluation"
+ },
+ "environment": {
+  "service": "API bridge runs/upgrade/tools/api_bridge.py, version openrouter-bridge-2, sha256 f42e0087ebcde0b193eaaa1d60cd2c735b7630fa7735ccda14acd7403e1137e9",
+  "configuration": "runs/upgrade/live-config-api.json, sha256 b44df0f2f8d7d0d6e295d7daa1314a729e2c285ec345596beff56a71fc1c4530; no options (max_parallel_requests 1, no cache_dir; D-10)"
+ },
+ "wall_seconds": {
+  "benchmark-shadow": 321.080812,
+  "quality-synthetic-shadow": 127.733745
+ },
+ "spend_usd": {
+  "before": 0.148571,
+  "after": 0.166468,
+  "runs": 0.017896999999999996
+ },
+ "code_version": {
+  "git_commit": "2614453",
+  "head_when_built": "2614453",
+  "note": "The runs ran at the U4.5 commit (2614453); the report is built before U4.6 and U4.7."
+ },
+ "summary": [
+  "summary/u4-benchmark-shadow-metrics.json",
+  "summary/u4-benchmark-shadow-scores.json",
+  "summary/u4-quality-synthetic-shadow-metrics.json",
+  "summary/u4-quality-synthetic-shadow-routes.json",
+  "summary/u4l-analysis.json",
+  "summary/u4l-doctor.json",
+  "summary/u4l-identity.json",
+  "summary/u4l-spend-before.json",
+  "summary/u4l-spend-after.json"
+ ],
+ "provenance": [
+  {
+   "path": "provenance/u4l_api_runs.sh",
+   "sha256": "cc76c1bc6b55a053fe9cfb001f2d124089190ae23b64224d13e52a67829f7b3c"
+  },
+  {
+   "path": "provenance/u4l_measure.sh",
+   "sha256": "38a44137e575fe337fc69b3b6b1287b26090fb2917a2a56d5365731db849772c"
+  },
+  {
+   "path": "provenance/u4l_analyze.py",
+   "sha256": "2d81ca32d69e48c752cbaf82c5c56ca37427c68a8781bda78323cd31e5bbade8"
+  },
+  {
+   "path": "provenance/build_u4l_report.py",
+   "sha256": "ef81c66b2e7b5af34fbcdc3f062455c4724ad8a624e767abc269f11341db753b"
+  },
+  {
+   "path": "provenance/check_api_identity.py",
+   "sha256": "8ecaca4a3265e0047a9397221bcfc2b0b3abc53d0ac88bf3747d895dfc126965"
+  },
+  {
+   "path": "provenance/score_u0_extra.py",
+   "sha256": "fc9e044fe4915b60a6a347d8703ebd72d9c2c3b96ecfb316923d2aa97557bb71"
+  },
+  {
+   "path": "provenance/api_bridge.py",
+   "sha256": "f42e0087ebcde0b193eaaa1d60cd2c735b7630fa7735ccda14acd7403e1137e9"
+  },
+  {
+   "path": "provenance/api_bridge_start.sh",
+   "sha256": "02cbce21e8ed78f79099a526ebd70c55c95c236a1db53e101ab7da97141ac1fc"
+  }
+ ]
+}
