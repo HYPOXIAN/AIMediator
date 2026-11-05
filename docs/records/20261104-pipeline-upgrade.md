@@ -1317,6 +1317,7 @@ and tools are in the archive with `SHA256SUMS`.
 | `runs/upgrade/` (the four U0.8 sample runs, their measurements and the comparison, the materialized samples and derived inputs, logs, live configuration, doctor output and environment check, one-off scripts; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-baseline-samples/` | `SHA256SUMS` at the archive root, 2,693 files, 74,493,575 bytes | full runs of the U0.8 sample reference (P2); the curated report keeps the manifest and summary | U0.8 |
 | `runs/upgrade/` (the five U2-L0 runs, their measurements, identity check, environment record and comparison with the local rows, the materialized inputs, run logs and the bridge log, the API configuration and doctor output, the bridge and one-off scripts; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-api-reference/` | `SHA256SUMS` at the archive root, 2,446 files, 118,026,987 bytes | full runs of the U2-L0 API reference (P2); the curated report keeps the manifest, summary and provenance | U2-L0 |
 | `runs/upgrade/` (the five U2-L1 runs, their measurements, identity check and comparison, the materialized inputs, run logs and the bridge log, the API configuration and doctor output, the bridge and one-off scripts; the local runs `u2l1-local-benchmark-off`, `u2l1-local-benchmark-shadow` and `u2l1-local-extraction-development-off-interrupted` with their measurements and logs under `local/`; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-u2-evaluation/` | `SHA256SUMS` at the archive root, 3,244 files, 156,077,243 bytes | full runs of the U2-L1 evaluation (P2); the curated report keeps the manifest, summary and provenance | U2-L1 |
+| `runs/upgrade/` (the four U3-L runs, their caches, measurements and analysis, inputs, logs, configuration and the bridge and one-off scripts; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-u3-evaluation/` | `SHA256SUMS` at the archive root, 2,257 files, 81,254,355 bytes (row added by U2-V to U6-V, which found the archive without a row) | full runs of the U3-L evaluation (P2); the curated report keeps the manifest and summary | U3-L |
 | `runs/upgrade/` (the two U4-L runs, their measurements, route scores, identity check and comparison, the materialized benchmark and synthetic samples with the synthetic cases, run logs and the bridge log, the API configuration and doctor output, the spend before and after, the bridge and one-off scripts; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-u4-evaluation/` | `SHA256SUMS` at the archive root, 721 files, 32,688,012 bytes | full runs of the U4-L evaluation (P2); the curated report keeps the manifest, summary and provenance | U4-L |
 | `runs/upgrade/` (the two U4-L2 runs, their measurements, route scores, identity check and comparison with U2-L1 and U4-L, run logs and the bridge log, the API configuration and doctor output, the spend before and after, the bridge and one-off scripts, a manifest; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-u4-fixup-evaluation/` | `SHA256SUMS` at the archive root, 726 files, 32,827,363 bytes | full runs of the U4-L2 rerun (P2); no curated `reports/` directory (D-12) | U4-L2 |
 | `tests/test_quality_readers.py` (tracked; added by U4.5, removed by its revert) | `~/Archives/AIMediator/scripts/20261105-upgrade-u4-reverts/tests/test_quality_readers.py` | `SHA256SUMS` in that directory: `c6c232925c767c1c4f0e9014211328b7a79fed2bf75374267c7301be86f34b79` | U4.F3 reverts U4.5 (E-4, fallback (a)); git history keeps the file at `2614453`; outside this record nothing refers to it | U4.F3 |
@@ -2043,6 +2044,47 @@ reverted as fix-up steps.
 Fix-up steps: none. Under plan 10.5 and UP-D18, U2-V sets `upgrade-u2`
 on this commit, after `upgrade-u2-review`. The owner may still decide
 against the rule (plan 5.4) and revert a kept step in a later session.
+
+### 2026-11-05 U3-V
+
+- Range: `c6452d8..d9b2de9`; 7 commits: U3.1 `335a5e2`; U3.2 `335b4bc`;
+  U3.3 `aaf93ae`; U3.4 `1a5d520`; U3-L `ce09d19`; U3.5 `f7185bc`; session
+  log `d9b2de9`. Under UP-D20, U3 started without the U2 tag, so the
+  last U2 commit, `c6452d8`, stands in for `upgrade-u2`. The checklist
+  was shortened as in the U2-V note.
+- Checks:
+  1. Boundary and commit hygiene (plan 8.8): pass. The boundary check
+     prints nothing and so does the hygiene check. Every subject uses a
+     P5 type.
+  2. Lock fixture: pass. U3.1 (`Lock: unchanged`) and U3.5 do not touch
+     it. U3.2 (UP-D08), U3.3 and U3.4 (UP-D09) name their decisions and
+     list their paths.
+  3. Request digests: pass. The lock diff from `c6452d8` to `d9b2de9`
+     (468 to 771 keys, 407 changed) touches no `requests/` entry. The
+     changes are the ones the three commit bodies list:
+     `L1:<off|shadow|enforce>/manifest.json` and `resolved-config.json`,
+     `L1:example-report/report.json` and `L3:reviewed-report/report.json`
+     (configuration and run identity, U3.2 and U3.3); the three
+     existence-only keys `L2:<mode>/code-snapshot/cache.py` (U3.3); and
+     396 `embeddings/` keys (the layout of U3.4).
+  4. Concurrency and cache: pass. The suite holds the U3 tests and
+     passes. In the U3-L warm-cache run no chat request and no retrieval
+     embedding request reached the bridge; the one request was the
+     availability probe. Its 259 JSON files are byte-identical to the cold
+     run apart from times.
+  5. Gates, foreign directory and wheel at HEAD: pass (U6-V note). ADR
+     0004 (`docs/decisions/0004-bounded-concurrency-and-shared-cache.md`,
+     Active) and its index row exist.
+- Behavior changes: U3 changes no asset. The table rows U3.2 to U3.4 name
+  only configuration, identity and layout, which agrees with item 3.
+- Live readings: T8 reached 1.25 times against the target of 1.4, so it
+  is not met; it is indicative under UP-D19. U3 changes no
+  model-visible content, so no adoption rule applies. The values of D-10
+  stand.
+- Finding, fixed in this commit: "Archive and deletions" had no row for
+  the U3-L archive. The archive exists with `SHA256SUMS` (2,257 files),
+  and a row now records it.
+- Result: accepted, tag `upgrade-u3`.
 
 ## Session log
 
