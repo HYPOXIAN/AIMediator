@@ -26,7 +26,34 @@ def proportion(numerator, denominator):
             'wilson95': [max(0,center-half),min(1,center+half)]}
 
 
-def prepare_dataset(rows, source_stage, out, limit=300, inspected_ids=()):
+def merge_near_duplicates(clusters, rows, near_duplicates):
+    """Merge exact-duplicate clusters that share a near-duplicate cluster (plan 4.9, U6.5), so they get one split.
+
+    near_duplicates is the `clusters` list of a run's near-duplicates.json; the merged cluster keeps the
+    smallest digest of its parts as its ID. Without near-duplicates the clusters are returned unchanged.
+    """
+    if not near_duplicates:
+        return clusters
+    of_row = {row['record_id']: key for key, group in clusters.items() for row in group}
+    parent = {key: key for key in clusters}
+
+    def root(key):
+        while parent[key] != key:
+            key = parent[key]
+        return key
+    for cluster in near_duplicates:
+        keys = sorted({of_row[i] for i in cluster['comment_ids'] if i in of_row})
+        for key in keys[1:]:
+            a, b = sorted((root(keys[0]), root(key)))
+            parent[b] = a
+    merged = defaultdict(list)
+    for key in sorted(clusters):
+        merged[root(key)].extend(clusters[key])
+    order = {row['record_id']: n for n, row in enumerate(rows)}
+    return {key: sorted(group, key=lambda r: order[r['record_id']]) for key, group in merged.items()}
+
+
+def prepare_dataset(rows, source_stage, out, limit=300, inspected_ids=(), near_duplicates=None):
     if out.exists():
         raise ValueError('Annotation output must be a new directory')
     if len({r['record_id'] for r in rows}) != len(rows):
@@ -37,6 +64,7 @@ def prepare_dataset(rows, source_stage, out, limit=300, inspected_ids=()):
         normalized=re.sub(r'\W+','',row['text_original'].casefold())
         # This groups exact normalized duplicates, not semantic paraphrases.
         clusters[digest(normalized.encode())].append(row)
+    clusters=merge_near_duplicates(clusters, rows, near_duplicates)
     ordered=sorted(clusters, key=lambda c:digest(('quality-v1:'+c).encode()))
     selected=[]
     for cluster in ordered:
@@ -60,7 +88,7 @@ def prepare_dataset(rows, source_stage, out, limit=300, inspected_ids=()):
         'input_comments':len(rows),'source_stage':source_stage,
         'input_sha256':digest(json.dumps(rows,sort_keys=True,ensure_ascii=False).encode()),
         'independent_human_gold':False,'inspected_ids':sorted(inspected),
-        'split_rule':'Normalized duplicate clusters; inspected sources forced development. Manually merge semantic variants before freezing.',
+        'split_rule':'Normalized duplicate clusters'+(', merged by near-duplicate clusters' if near_duplicates else '')+'; inspected sources forced development. Manually merge semantic variants before freezing.',
         'source_sampling':'Deterministic cluster sample, not population-representative; supply raw_pre_screen input for end-to-end evaluation.'})
     return selected
 
@@ -220,6 +248,7 @@ def main():
     a.add_argument('--source-stage',choices=['raw_pre_screen','screened','fixed_admission'],required=True)
     a.add_argument('--inspected-labels',type=Path)
     a.add_argument('--limit',type=int,default=300)
+    a.add_argument('--near-duplicates',type=Path,help='near-duplicates.json of a run over the same comments')
     a.add_argument('--out',type=Path,required=True)
     e=sub.add_parser('score')
     e.add_argument('--labels',type=Path,required=True)
@@ -229,7 +258,8 @@ def main():
     if args.command=='prepare':
         rows=[strict_json(line) for line in args.dataset.read_text(encoding='utf-8').splitlines() if line.strip()]
         inspected=[strict_json(line)['comment_id'] for line in args.inspected_labels.read_text(encoding='utf-8').splitlines() if line.strip()] if args.inspected_labels else []
-        prepare_dataset(rows,args.source_stage,args.out,args.limit,inspected)
+        near=strict_json(args.near_duplicates.read_text(encoding='utf-8'))['clusters'] if args.near_duplicates else None
+        prepare_dataset(rows,args.source_stage,args.out,args.limit,inspected,near)
     else:
         labels=strict_json(args.labels.read_text(encoding='utf-8'))
         records=strict_json((args.run/'evidence-quality.json').read_text(encoding='utf-8'))

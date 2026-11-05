@@ -1,6 +1,7 @@
 {
-  "version": "balance-review-policy-v2",
+  "version": "balance-review-policy-v3",
   "retrieval_borderline_margin": 0.08,
+  "near_duplicate_cosine": 0.9,
   "blocked_identity_only_aliases": [
     "阿三",
     "印度人",

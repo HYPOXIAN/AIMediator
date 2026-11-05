@@ -700,6 +700,25 @@ every path keeps the exception type it raises.
   endpoint, text, model_digest)` (the run identity's embedding digest)
   before the service is asked and keeps new ones. Scoring is unchanged.
   `log` receives `'Embedding <n>/<missing>'` after each batch.
+  After `retrieval.json`, `retrieve` writes `near-duplicates.json`
+  (pipeline upgrade step U6.5, plan 4.9, UP-D14): `schema_version`
+  `near-duplicates-v1`, the review policy's `version` and
+  `near_duplicate_cosine` (0.90 in `balance-review-policy-v3`, chosen on
+  the development comments of the extraction-development sample; the
+  change record lists the sampled pairs), `linkage` `single`, the comment
+  count, a note, and `clusters` from `near_duplicate_clusters(ids, vectors,
+  threshold)`: the single-linkage clusters of comments whose unit vectors
+  have a cosine at or above the threshold, each with `cluster_id` (`D<n>`,
+  ordered by first comment ID), sorted `comment_ids`, `max_cosine`,
+  `members` (each member's highest cosine to another member) and the
+  linking `pairs`, cosines rounded to 6 places. It annotates only:
+  admission, claims and report counts do not change. Report export
+  (`aimediator-report-v2`) copies the clusters into
+  `near_duplicate_clusters` with that note (null for runs without the
+  file), and `quality_scoring.prepare_dataset(..., near_duplicates=None)`
+  (`prepare --near-duplicates <near-duplicates.json>`) merges the exact
+  duplicate clusters that share a near-duplicate cluster, so they get one
+  split.
 - `pipeline`: `VERSION` (`'balance-evidence-v2'`), `relevance_agrees`,
   `quality_request(runner, row, units, language, contract, attempts) ->
   (data, request_context)` (the context of the next quality attempt after

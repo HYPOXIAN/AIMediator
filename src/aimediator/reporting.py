@@ -115,6 +115,8 @@ def export_report(run, out, review=None):
                        for c in d['recommendations'])
     literal_groups = {(g['character'], normalized(literal)) for g in groups for d in g['directions'].values()
                       for c in d['recommendations'] for literal in [c['target']]}
+    near_path = data['folder'] / 'near-duplicates.json'
+    near = read(near_path) if near_path.exists() else None
     report = {'schema_version': 'aimediator-report-v2', 'view': view, 'reviewer_provenance': reviewer,
         'run_fingerprints': data['fingerprints'], 'run_identity': data['run_identity'],
         'execution_provenance': data['provenance'], 'legacy_adapter': data['legacy'],
@@ -133,6 +135,10 @@ def export_report(run, out, review=None):
             'literal_groups': sum(g['grouping'] == 'literal' for g in groups),
             'groups_by_literal_only': len(literal_groups)},
         'topics': groups, 'unresolved_identity_or_target_claims': unresolved,
+        'near_duplicate_clusters': None if near is None else {
+            'near_duplicate_cosine': near['near_duplicate_cosine'], 'policy_version': near['policy_version'],
+            'clusters': near['clusters'],
+            'note': 'Annotation only: comments in one cluster are counted as before; no count changes.'},
         'source_review_appendix': appendix, 'source_review_queue': review_queue,
         'coverage': ledger, 'processing_summary': data['raw'].get('summary', {}),
         'processing_failures': [r for r in ledger if 'failed' in r.get('status','') or 'pending' in r.get('status','')],

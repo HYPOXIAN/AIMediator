@@ -9,7 +9,7 @@ import numpy as np
 from . import glossary_vectors
 from .common import sha as digest, write as write_json
 from .inference import api
-from .resources import anchors
+from .resources import anchors, asset_path
 
 BATCH = 32
 
@@ -24,6 +24,53 @@ def embedding_key(model: str, endpoint: str | None, text: str, model_digest: str
     """Return the shared-cache key of one embedded text: model, endpoint, text and model digest."""
     return digest(json.dumps({'model': model, 'endpoint': endpoint, 'text': text, 'model_digest': model_digest},
                              sort_keys=True, ensure_ascii=False).encode())
+
+
+def near_duplicate_clusters(ids: list[str], vectors: Any, threshold: float, block: int = 512) -> list[dict[str, Any]]:
+    """Return the single-linkage clusters of comments whose unit vectors have a cosine at or above threshold.
+
+    Each cluster (at least two comments) holds its sorted `comment_ids`, the linking `pairs` (the two IDs
+    and the cosine, rounded to 6 places) and `members` with each member's highest cosine to another member;
+    clusters are ordered by their first comment ID (plan 4.9, U6.5, UP-D14).
+    """
+    parent = list(range(len(ids)))
+
+    def root(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+    pairs = []
+    for start in range(0, len(ids), block):
+        scores = vectors[start:start + block] @ vectors.T
+        for offset, row in enumerate(scores):
+            i = start + offset
+            for j in np.nonzero(row >= threshold)[0]:
+                j = int(j)
+                if j > i:
+                    pairs.append((i, j, round(float(row[j]), 6)))
+                    parent[root(j)] = root(i)
+    groups = {}
+    for i in range(len(ids)):
+        groups.setdefault(root(i), []).append(i)
+    best = {}
+    for i, j, cosine in pairs:
+        best[i] = max(best.get(i, cosine), cosine)
+        best[j] = max(best.get(j, cosine), cosine)
+    clusters = []
+    for members in groups.values():
+        if len(members) < 2:
+            continue
+        inside = set(members)
+        clusters.append({'comment_ids': sorted(ids[i] for i in members),
+            'max_cosine': max(c for i, j, c in pairs if i in inside),
+            'members': [{'comment_id': ids[i], 'max_cosine': best[i]} for i in sorted(members, key=lambda k: ids[k])],
+            'pairs': [{'comment_ids': sorted((ids[i], ids[j])), 'cosine': c}
+                      for i, j, c in sorted(pairs, key=lambda p: sorted((ids[p[0]], ids[p[1]]))) if i in inside]})
+    clusters.sort(key=lambda c: c['comment_ids'][0])
+    for number, cluster in enumerate(clusters, 1):
+        cluster['cluster_id'] = 'D' + str(number)
+    return [{'cluster_id': c.pop('cluster_id'), **c} for c in clusters]
 
 
 def retrieve(rows: list[dict[str, Any]], base: str, folder: Path, model: str,
@@ -99,4 +146,10 @@ def retrieve(rows: list[dict[str, Any]], base: str, folder: Path, model: str,
                             'text': topics[int(i)], 'cosine': float(scores[i]),
                             'class': 'related' if i < 10 else 'unrelated'} for i in order[:4]]})
     write_json(folder / 'retrieval.json', decisions)
+    policy = json.loads(asset_path('configs/balance-review-policy.json').read_text(encoding='utf-8'))
+    threshold = policy['near_duplicate_cosine']
+    write_json(folder / 'near-duplicates.json', {'schema_version': 'near-duplicates-v1',
+        'policy_version': policy['version'], 'near_duplicate_cosine': threshold, 'linkage': 'single',
+        'comments': len(rows), 'note': 'Annotation only: no admission, claim or report count changes.',
+        'clusters': near_duplicate_clusters([r['record_id'] for r in rows], vectors[20:], threshold)})
     return decisions

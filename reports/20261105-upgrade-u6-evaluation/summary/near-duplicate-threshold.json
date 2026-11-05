@@ -1,0 +1,259 @@
+{
+ "step": "U6.5",
+ "decision": "UP-D14",
+ "source": "embedding records of runs/upgrade/u5l3-extraction-development-off (qwen3-embedding:8b through bridge openrouter-bridge-2; no new request)",
+ "comments": 114,
+ "set": "upgrade-samples-v1/extraction-development (114 comments, all in the development split of extraction-precision-v1); no test or holdout comment read",
+ "pairs_total": 6441,
+ "pairs_at_or_above": {
+  "0.95": 1,
+  "0.93": 2,
+  "0.90": 5,
+  "0.85": 14,
+  "0.80": 49
+ },
+ "chosen_near_duplicate_cosine": 0.9,
+ "rule": "every pair at or above the threshold states the same request, position or complaint; the highest pair with opposite directions is 0.8724, so 0.90 keeps a margin of about 0.03 above it",
+ "labels": "agent review of the source texts (session U6): same_request, same_position, same_complaint, different, opposite",
+ "above_threshold": [
+  {
+   "comment_ids": [
+    "steam:233342104",
+    "steam:235013670"
+   ],
+   "cosine": 0.959,
+   "label": "same_request",
+   "note": "buff Jamie, both"
+  },
+  {
+   "comment_ids": [
+    "steam:217921519",
+    "steam:237542068"
+   ],
+   "cosine": 0.9361,
+   "label": "same_request",
+   "note": "buff JP, English and Chinese"
+  },
+  {
+   "comment_ids": [
+    "steam:232046316",
+    "steam:235013670"
+   ],
+   "cosine": 0.9298,
+   "label": "same_position",
+   "note": "Jamie too weak, buff; buff Jamie"
+  },
+  {
+   "comment_ids": [
+    "steam:233342104",
+    "steam:232046316"
+   ],
+   "cosine": 0.9071,
+   "label": "same_position",
+   "note": "buff Jamie; Jamie too weak, buff"
+  },
+  {
+   "comment_ids": [
+    "steam:231977697",
+    "steam:234081804"
+   ],
+   "cosine": 0.906,
+   "label": "same_complaint",
+   "note": "general balance complaints without a fighter"
+  }
+ ],
+ "just_below_threshold": [
+  {
+   "comment_ids": [
+    "steam:233253539",
+    "steam:236216495"
+   ],
+   "cosine": 0.8887,
+   "label": "same_position",
+   "note": "buff Aki, both"
+  },
+  {
+   "comment_ids": [
+    "steam:232257681",
+    "steam:231967273"
+   ],
+   "cosine": 0.886,
+   "label": "same_position",
+   "note": "Jamie keeps being buffed, both"
+  },
+  {
+   "comment_ids": [
+    "steam:233026064",
+    "steam:232046316"
+   ],
+   "cosine": 0.8724,
+   "label": "opposite",
+   "note": "Jamie hard to fight after the buff; Jamie too weak, buff"
+  },
+  {
+   "comment_ids": [
+    "steam:233026064",
+    "steam:235013670"
+   ],
+   "cosine": 0.8662,
+   "label": "opposite",
+   "note": "Jamie hard to fight; buff Jamie"
+  },
+  {
+   "comment_ids": [
+    "steam:232813956",
+    "steam:235013670"
+   ],
+   "cosine": 0.8582,
+   "label": "different",
+   "note": "asks whether Jamie is balanced; buff Jamie"
+  },
+  {
+   "comment_ids": [
+    "steam:234081804",
+    "steam:232207873"
+   ],
+   "cosine": 0.8563,
+   "label": "same_complaint",
+   "note": "general balance complaints"
+  },
+  {
+   "comment_ids": [
+    "steam:238019565",
+    "steam:238006642"
+   ],
+   "cosine": 0.8558,
+   "label": "same_position",
+   "note": "Arjun too strong, both"
+  },
+  {
+   "comment_ids": [
+    "steam:237630855",
+    "steam:237688561"
+   ],
+   "cosine": 0.8544,
+   "label": "same_complaint",
+   "note": "complaints about Arjun, both"
+  },
+  {
+   "comment_ids": [
+    "steam:233342104",
+    "steam:232813956"
+   ],
+   "cosine": 0.8535,
+   "label": "different",
+   "note": "buff Jamie; asks whether Jamie is balanced"
+  },
+  {
+   "comment_ids": [
+    "steam:232813956",
+    "steam:232257681"
+   ],
+   "cosine": 0.8492,
+   "label": "different",
+   "note": "asks whether Jamie is balanced; Jamie over-buffed"
+  },
+  {
+   "comment_ids": [
+    "steam:232257681",
+    "steam:232046316"
+   ],
+   "cosine": 0.8486,
+   "label": "opposite",
+   "note": "Jamie over-buffed; Jamie too weak"
+  },
+  {
+   "comment_ids": [
+    "steam:237678988",
+    "steam:238006642"
+   ],
+   "cosine": 0.8478,
+   "label": "same_position",
+   "note": "Arjun too strong, both"
+  },
+  {
+   "comment_ids": [
+    "steam:233342104",
+    "steam:233026064"
+   ],
+   "cosine": 0.8453,
+   "label": "opposite",
+   "note": "buff Jamie; Jamie hard to fight"
+  },
+  {
+   "comment_ids": [
+    "steam:231977697",
+    "steam:232133313"
+   ],
+   "cosine": 0.8436,
+   "label": "same_complaint",
+   "note": "general balance complaints"
+  },
+  {
+   "comment_ids": [
+    "steam:232813956",
+    "steam:233026064"
+   ],
+   "cosine": 0.8422,
+   "label": "different",
+   "note": "asks whether Jamie is balanced; Jamie hard to fight"
+  },
+  {
+   "comment_ids": [
+    "steam:232813956",
+    "steam:232046316"
+   ],
+   "cosine": 0.8399,
+   "label": "different",
+   "note": "asks whether Jamie is balanced; Jamie too weak"
+  },
+  {
+   "comment_ids": [
+    "steam:232257681",
+    "steam:235013670"
+   ],
+   "cosine": 0.8385,
+   "label": "opposite",
+   "note": "Jamie over-buffed; buff Jamie"
+  },
+  {
+   "comment_ids": [
+    "steam:231967273",
+    "steam:232046316"
+   ],
+   "cosine": 0.8362,
+   "label": "opposite",
+   "note": "Jamie over-buffed; Jamie too weak"
+  },
+  {
+   "comment_ids": [
+    "steam:237428820",
+    "steam:238076214"
+   ],
+   "cosine": 0.8332,
+   "label": "opposite",
+   "note": "Sagat not nerfed; buff Sagat"
+  },
+  {
+   "comment_ids": [
+    "steam:238006642",
+    "steam:237667872"
+   ],
+   "cosine": 0.833,
+   "label": "same_position",
+   "note": "Arjun too strong, both"
+  }
+ ],
+ "summary": {
+  "above": {
+   "pairs": 5,
+   "same": 5
+  },
+  "just_below": {
+   "pairs": 20,
+   "same": 8,
+   "opposite": 7
+  },
+  "note": "only 5 development pairs reach 0.90, so 5 pairs are recorded above it instead of 20"
+ }
+}

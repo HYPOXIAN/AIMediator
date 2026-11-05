@@ -1,0 +1,24 @@
+{
+ "schema": "aimediator-report-manifest-v1",
+ "name": "20261105-upgrade-u6-evaluation",
+ "record": "docs/records/20261104-pipeline-upgrade.md",
+ "session": "U6-1 to U6-L",
+ "decisions": [
+  "UP-D12",
+  "UP-D14",
+  "UP-D17",
+  "UP-D18",
+  "UP-D19",
+  "UP-D20"
+ ],
+ "reason": "U6 evidence cited by the change record: the near-duplicate threshold chosen on development comments (U6.5); the U6-L measurements follow in the same directory",
+ "datasets": {
+  "upgrade-samples-v1/extraction-development": "data/evaluation/upgrade-samples-v1/extraction-development, 114 development comments (threshold of U6.5)"
+ },
+ "code": {
+  "U6.5": "the commit with 'Step: U6.5'"
+ },
+ "files": {
+  "summary/near-duplicate-threshold.json": "U6.5: cosine distribution of the 6,441 development pairs, the 5 pairs at or above 0.90 and the 20 just below, each with the agent's label"
+ }
+}
