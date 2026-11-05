@@ -46,6 +46,7 @@ class SharedCacheTests(unittest.TestCase):
         run = self.root / name
         with contextlib.redirect_stderr(io.StringIO()):
             analyze(self.input, run, cfg, transport=transport, quiet=True)
+        self.embedding_calls = [c for c in transport.calls if c[0] == 'embedding']
         return run, [c for c in transport.calls if c[0] == 'chat']
 
     def test_second_run_reuses_every_response(self):
@@ -53,8 +54,13 @@ class SharedCacheTests(unittest.TestCase):
         cold, cold_calls = self.run_with('enforce', 'cold', cache_dir)
         self.assertTrue(cold_calls)
         self.assertFalse(list(cold.rglob('reuse-provenance.json')))
+        self.assertTrue(self.embedding_calls)
         warm, warm_calls = self.run_with('enforce', 'warm', cache_dir)
         self.assertEqual(warm_calls, [])
+        # Step U3.4: retrieval embeds nothing; the one remaining call is the availability probe of
+        # operations.analyze (one text, before the run folder exists).
+        self.assertEqual(self.embedding_calls, [('embedding', 1)])
+        self.assertFalse((warm / 'requests' / 'embedding').exists())
         self.assertEqual(artifacts(warm), artifacts(cold))
         responses = list((warm / 'requests').glob('*/*/response.json'))
         reused = list(warm.rglob('reuse-provenance.json'))
@@ -141,6 +147,53 @@ class SharedCacheTests(unittest.TestCase):
         self.assertEqual(resolve(config, {'cache_dir': Path('elsewhere')})['cache_dir'], str(Path('elsewhere').resolve()))
         config.write_text(json.dumps({'evidence_quality': 'off'}), encoding='utf-8')
         self.assertIsNone(resolve(config)['cache_dir'])
+
+
+class EmbeddingCacheTests(unittest.TestCase):
+    """U3.4 (UP-D09): one embedding record per text, missing texts only, batches of 32 in input order."""
+
+    def test_records_batches_and_shared_cache(self):
+        from aimediator import retrieval
+        from aimediator.resources import anchors
+        rows = [{'record_id': 'r%d' % i, 'language': 'en', 'text_original': 'comment %d' % (i % 40)}
+                for i in range(50)]
+        calls = []
+
+        def api(base, endpoint, payload):
+            calls.append(list(payload['input']))
+            return {'embeddings': [[1.0, float(len(t) % 7) + 0.5] for t in payload['input']]}
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            shared = SharedCache(root / 'cache')
+            first = retrieval.retrieve(rows, 'http://fixture.invalid', root / 'a', 'm', api_transport=api,
+                                       shared_cache=shared, model_digest='sha256:1')
+            texts = list(dict.fromkeys(sum(anchors(), []) + [retrieval_text(r) for r in rows]))
+            self.assertEqual([len(c) for c in calls], [32, 28])  # 20 anchors and 40 distinct comments
+            self.assertEqual(sum(calls, []), texts)
+            files = sorted((root / 'a' / 'embeddings').glob('*.json'))
+            self.assertEqual(len(files), 60)
+            record = read(files[0])
+            self.assertEqual(set(record), {'model', 'text', 'vector'})
+            self.assertEqual(files[0].stem, retrieval.text_identity('m', 'http://fixture.invalid', record['text']))
+            self.assertEqual(len(list((root / 'cache' / 'embedding').glob('*/*.json'))), 60)
+            # The run's records come first; then the shared cache; a new run asks the service for nothing.
+            again = retrieval.retrieve(rows, 'http://fixture.invalid', root / 'a', 'm', api_transport=api)
+            warm = retrieval.retrieve(rows, 'http://fixture.invalid', root / 'b', 'm', api_transport=api,
+                                      shared_cache=shared, model_digest='sha256:1')
+            self.assertEqual(len(calls), 2)
+            self.assertEqual(again, first)
+            self.assertEqual(warm, first)
+            self.assertEqual(set(first[0]), {'comment_id', 'language', 'positive_score', 'negative_score', 'margin',
+                                             'retrieval_related', 'references'})
+            # Another model digest misses the shared cache.
+            retrieval.retrieve(rows[:1], 'http://fixture.invalid', root / 'c', 'm', api_transport=api,
+                               shared_cache=shared, model_digest='sha256:2')
+            self.assertEqual([len(c) for c in calls[2:]], [21])
+
+
+def retrieval_text(row):
+    return ('Instruct: Retrieve the description matching the topic and intent of this Street Fighter 6 player '
+            'comment.\nQuery: ' + row['text_original'])
 
 
 if __name__ == '__main__':

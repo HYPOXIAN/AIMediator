@@ -133,7 +133,8 @@ def analyze(input_path=None, out=None, cfg=None, resume=None, env_file=None, tra
             def retrieve(*values):
                 if not quiet:
                     print('retrieval: 0/%d comments' % len(values[0]), file=sys.stderr, flush=True)
-                result = retrieval.retrieve(*values, api_transport=transport.api, embed_transport=transport.embed)
+                result = retrieval.retrieve(*values, api_transport=transport.api, embed_transport=transport.embed,
+                                            shared_cache=shared, model_digest=ident['embedding']['digest'])
                 if not quiet:
                     print('retrieval: %d/%d comments' % (len(result),len(values[0])), file=sys.stderr, flush=True)
                 return result

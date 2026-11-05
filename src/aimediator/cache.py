@@ -22,12 +22,6 @@ def chat_key(payload: dict[str, Any], model_digest: str | None, service_version:
     return sha(json.dumps(material, sort_keys=True, ensure_ascii=False).encode())
 
 
-def embedding_key(model: str, endpoint: str | None, text: str, model_digest: str | None) -> str:
-    """Return the shared key of one embedded text: model, endpoint, text and model digest."""
-    return sha(json.dumps({'model': model, 'endpoint': endpoint, 'text': text, 'model_digest': model_digest},
-                          sort_keys=True, ensure_ascii=False).encode())
-
-
 def storable(response: dict[str, Any]) -> bool:
     """Return whether a journaled response may enter the cache: a finished generation without an error."""
     result = response.get('response') if isinstance(response, dict) else None
@@ -68,7 +62,7 @@ class SharedCache:
         return self.root / 'embedding' / key[:2] / (key + '.json')
 
     def lookup_embedding(self, key: str) -> dict[str, Any] | None:
-        """Return the stored embedding record of a key, or None."""
+        """Return the stored embedding record of a key (retrieval.embedding_key), or None."""
         try:
             return json.loads(self._embedding(key).read_text(encoding='utf-8'))
         except (OSError, ValueError):

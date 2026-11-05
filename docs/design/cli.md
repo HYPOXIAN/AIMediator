@@ -633,9 +633,17 @@ every path keeps the exception type it raises.
   when the stored request equals the request and the response is finished,
   and `store(key, request, response)` stores finished responses only.
 - `retrieval`: `retrieve(rows, base, folder, model, embedding_config=None,
-  api_transport=None, embed_transport=None, log=None)` writes
-  `embeddings/<sha256>.json` and `retrieval.json`; `log` receives the
-  `'Embedding <n>/<total>'` lines.
+  api_transport=None, embed_transport=None, log=None, shared_cache=None,
+  model_digest=None)` writes one record per text,
+  `embeddings/<text_identity(model, endpoint, text)>.json` (the SHA-256 of
+  model, endpoint and text; the endpoint is the configured embedding URL or
+  `base`) holding `model`, `text` and `vector`, then `retrieval.json` with
+  its schema unchanged (step U3.4, UP-D09). Only texts without a record are
+  embedded, each distinct text once, in batches of 32 (`BATCH`) in input
+  order; a shared cache supplies records under `embedding_key(model,
+  endpoint, text, model_digest)` (the run identity's embedding digest)
+  before the service is asked and keeps new ones. Scoring is unchanged.
+  `log` receives `'Embedding <n>/<missing>'` after each batch.
 - `pipeline`: `VERSION` (`'balance-evidence-v2'`), `relevance_agrees`,
   `quality_request(runner, row, units, language, contract, attempts) ->
   (data, request_context)` (the context of the next quality attempt after
@@ -931,6 +939,7 @@ without pretending legacy schemas were written by the new CLI.
   resource-snapshot/            # prompts, policies, glossary, anchors
   code-manifest.json            # relevant module bytes/digests, package version
   run-state.json                # atomic state and stage counters
+  embeddings/<sha256>.json      # one record per embedded text (model, text, vector)
   requests/<stage>/<identity>/  # request/response/validation, partial attempts,
                                 #   reuse-provenance.json for a shared-cache hit
   retrieval.json

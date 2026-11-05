@@ -81,7 +81,7 @@ class BalancedCollectionTests(unittest.TestCase):
             embed, api = Mock(side_effect=lambda c,t: (np.ones((len(t), 4)), {})), Mock()
             result = retrieval.retrieve(rows, '', folder, 'fixture', cfg, api_transport=api, embed_transport=embed)
             self.assertEqual(len(result), 1)
-            self.assertEqual(embed.call_count, 3)
+            self.assertEqual(embed.call_count, 1)  # 21 texts, one batch of 32 (step U3.4)
             api.assert_not_called()
             for f in folder.rglob('*.json'):
                 self.assertNotIn('SECRET', f.read_text(encoding='utf-8'))

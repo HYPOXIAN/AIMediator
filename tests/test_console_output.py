@@ -66,7 +66,8 @@ SUMMARY = '''{
 
 
 def expected_lines():
-    embedding = ['Embedding %d/58' % n for n in (8, 16, 24, 32, 40, 48, 56, 58)]
+    # Step U3.4: one record per text, the missing texts embedded in batches of 32.
+    embedding = ['Embedding %d/58' % n for n in (32, 58)]
     requests = ['%s: %s, %d items' % (stage, model, items)
                 for model in ('llama3.1:latest', 'qwen2.5:7b') for stage, items in REQUESTS]
     return embedding + requests + SUMMARY.split('\n')
