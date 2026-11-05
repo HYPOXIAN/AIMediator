@@ -2151,6 +2151,33 @@ against the rule (plan 5.4) and revert a kept step in a later session.
 - Result: accepted after the E-4 fix-ups, tag `upgrade-u4-review`; the
   review follows.
 
+### 2026-11-05 U4 review (recorded by U4-V)
+
+Recorded under the owner's standing instruction and the owner
+authorization of 2026-11-05 03:11. The owner did not give this review in
+person. Basis: the U4-V note above, the U4-L and U4-L2 verdicts and E-4
+with its outcome and fix-ups. Rule: the adoption rule of plan 5.4.
+
+| Step | Class | Verdict | Review outcome |
+| ---- | ----- | ------- | -------------- |
+| U4.1 to U4.3 | N | lock unchanged | kept; unused by the pipeline since U4.F4 |
+| U4.4 (UP-D10) | B | failed rules 2 and 3 in U4-L (E-4) | reverted by U4.F4 (`d8ee25d`) |
+| U4.5 (UP-D10) | B | measured with U4.4, failed (E-4) | reverted by U4.F3 (`e03122c`) |
+| U4.6 (UP-D10, conditional) | B | condition not met (largest prompt plus output 13,520 tokens) | skipped; no change |
+| U4.7 | N | — | kept with U4.F5's sentences; the ADR 0005 status is passed to U7.3 (U4-V finding) |
+| U4.F1 (E-4 option (c)) | B | failed rules 2 and 3 in U4-L2 | reverted by U4.F2 (`a834abe`) |
+| U4.F5 | N | — | kept |
+
+E-4's adopted action (option (c) with fallback (a)) is complete. The
+session that ran it is U6 rather than this one, as its prompt directed,
+and this session verified it (U4-V note). Nothing is `bypassed` and no
+fix-up step is left. The reasons the owner could still keep v2 against
+the rule are recorded in E-4: synthetic validity and route gains, T4 at
+about 60 %, and no offset errors. A later owner decision could restore
+it with `git revert` of the three reverts. `upgrade-u4` is set on this
+commit, after `upgrade-u4-review`. The quality stage at HEAD is the U2.2
+request, the state U2-L1 accepted.
+
 ## Session log
 
 ### 2026-11-04 U0-1 (implementation)
