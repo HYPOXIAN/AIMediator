@@ -1,0 +1,139 @@
+{
+  "set": "balance-silver-v1",
+  "labels_sha256": "1113d14062fb16464df2a0429e3b025e0c4071b0097782a7a59d098cd3cdfe89",
+  "split": "development",
+  "run": "u2l0-silver-development-relevance",
+  "rule": "relevance_metrics of evaluate_balance_review.py; label related expects agreement true; uncertain excluded",
+  "overall": {
+    "true_positive": 60,
+    "false_positive": 3,
+    "false_negative": 3,
+    "true_negative": 3,
+    "excluded_uncertain": 1,
+    "missing_predictions": 0,
+    "precision": 0.9523809523809523,
+    "recall": 0.9523809523809523,
+    "specificity": 0.5,
+    "evaluated": 69,
+    "errors": [
+      {
+        "comment_id": "steam:232594571",
+        "expected": true,
+        "actual": false
+      },
+      {
+        "comment_id": "steam:232316125",
+        "expected": true,
+        "actual": false
+      },
+      {
+        "comment_id": "steam:236985001",
+        "expected": false,
+        "actual": true
+      },
+      {
+        "comment_id": "steam:236766836",
+        "expected": true,
+        "actual": false
+      },
+      {
+        "comment_id": "steam:234299803",
+        "expected": false,
+        "actual": true
+      },
+      {
+        "comment_id": "youtube:UgzJYtb-vEd9Z3T9GQh4AaABAg",
+        "expected": false,
+        "actual": true
+      }
+    ],
+    "agreeing": 63,
+    "agreement": {
+      "numerator": 63,
+      "denominator": 69,
+      "value": 0.9130434782608695,
+      "wilson95": [
+        0.8229850166105782,
+        0.959536378798466
+      ]
+    }
+  },
+  "en": {
+    "true_positive": 31,
+    "false_positive": 0,
+    "false_negative": 2,
+    "true_negative": 2,
+    "excluded_uncertain": 0,
+    "missing_predictions": 0,
+    "precision": 1.0,
+    "recall": 0.9393939393939394,
+    "specificity": 1.0,
+    "evaluated": 35,
+    "errors": [
+      {
+        "comment_id": "steam:232594571",
+        "expected": true,
+        "actual": false
+      },
+      {
+        "comment_id": "steam:232316125",
+        "expected": true,
+        "actual": false
+      }
+    ],
+    "agreeing": 33,
+    "agreement": {
+      "numerator": 33,
+      "denominator": 35,
+      "value": 0.9428571428571428,
+      "wilson95": [
+        0.8139294257983507,
+        0.9841868381428913
+      ]
+    }
+  },
+  "zh": {
+    "true_positive": 29,
+    "false_positive": 3,
+    "false_negative": 1,
+    "true_negative": 1,
+    "excluded_uncertain": 1,
+    "missing_predictions": 0,
+    "precision": 0.90625,
+    "recall": 0.9666666666666667,
+    "specificity": 0.25,
+    "evaluated": 34,
+    "errors": [
+      {
+        "comment_id": "steam:236985001",
+        "expected": false,
+        "actual": true
+      },
+      {
+        "comment_id": "steam:236766836",
+        "expected": true,
+        "actual": false
+      },
+      {
+        "comment_id": "steam:234299803",
+        "expected": false,
+        "actual": true
+      },
+      {
+        "comment_id": "youtube:UgzJYtb-vEd9Z3T9GQh4AaABAg",
+        "expected": false,
+        "actual": true
+      }
+    ],
+    "agreeing": 30,
+    "agreement": {
+      "numerator": 30,
+      "denominator": 34,
+      "value": 0.8823529411764706,
+      "wilson95": [
+        0.7337915722962817,
+        0.9532855333511766
+      ]
+    }
+  }
+}

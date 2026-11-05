@@ -71,6 +71,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | U2.2 | B | done | 277 | updated by UP-D04 | LAT-01, PRM-05, plan 4.1. The quality view (`stages.view`) holds `comments` (`comment_id`, `units` with `evidence_id`, `text`, `start`, `end`), `language` and `character_normalization_reference` with only the entries whose canonical name `evidence.character_candidates` finds in the source text; `source`, `quality_contract` and `attempt` stay in the context. New `pipeline.quality_request(runner, row, units, language, contract, attempts)` builds the context of the next attempt and the `request_context` `{'attempt': n}`; after a failed attempt the context holds `previous_attempt` (`errors`, `transport_failure`) and the view adds `previous_attempt_errors`: the attempt's validation errors, at most 20, each cut to 300 characters, or the single entry `transport failure` when the new `Runner.transport_failed(stage, request_id)` finds the journaled response unreadable, malformed or carrying an `error` (transport, service, cache), so no remote text reaches the model. `assess_quality`, `scripts/experiments/diagnose_evidence_quality_live.py` and `run_quality_screening_experiment.py` call it; without the request context those scripts would have replayed attempt 1 as attempt 2. Prompt pair `evidence-quality.{en,zh}`: one closing paragraph on `previous_attempt_errors` (repair; never copy the error text; the meaning of `transport failure`); no other prompt change. `FixtureTransport` reads no removed key: unchanged. `MODEL_VISIBLE['quality']` follows. Tests (+4, `tests/test_request_views.py`): the view and its reference filter; the 20 by 300 cut and the transport entry; `transport_failed` on five journaled responses; a fixture run in `shadow` whose first attempt fails validation for one comment and in transport (`OSError` with remote text) for another: attempt 2 carries the trace errors or `['transport failure']`, the remote text appears in no request, no quality request holds `source`, `quality_contract` or `attempt`. The context guard and evidence-quality tests detect attempt 2 by `previous_attempt_errors`. Lock regenerated: exactly the 25 keys under "Behavior changes" (prompt assets and snapshots, manifests and the two reports through the prompt hashes, quality request digests); no extract, verify or relevance request changed. design/cli.md section 5 (`stages`, `runner`, `pipeline`); evidence-quality.md section 3.2 (the retry holds through `previous_attempt_errors`) |
 | U2.3 | B | done | 278 | updated by UP-D05 | LAT-02, plan 4.1. The extraction view (`stages.view`) holds the units with `evidence_id` and `text` (no offsets); `allowed_quality_points` (enforce) with `point_id`, `evidence_ids` (the selected segments' E-IDs, first occurrence order), `quotes` (the selected segments' quotes), `scope`, `detail_level`, `stance`, `direction`, `character_literal` and `mechanic_literal` instead of the whole routing entry (`comment_id`, `route`, `reason`, `point` with `segment_ids`, `segments` with offsets and labels); and `character_normalization_reference` with the entries that `evidence.character_candidates` finds in a comment of the batch, on the comment's joined unit texts as `schema_for` finds the allowed characters, so every allowed character keeps its entry. `schema_for`, `ground_claim` and `bind_claim` read the full context, and the batches are still sized on it: `format`, `response_schema`, batching and gates unchanged. `diagnostics.extract` follows the view through the runner (docstring only). `FixtureTransport` reads `point_id` only: unchanged. Tests (+1): `tests/test_request_views.py` checks the view of a three-comment batch with quality points against the context, the reference filter and the schema's allowed characters; `tests/test_diagnostics.py` expects the view of real allowed points; `tests/test_stages.py` follows. Lock regenerated: exactly the 12 extraction request keys under "Behavior changes"; no artifact, prompt or other request changed. design/cli.md section 5 (`stages`, `diagnostics`) |
 | U2.4 | B | done | 280 | updated by UP-D07 | LAT-03, plan 4.4. The relevance and retrieval-review prompt pairs gain a last paragraph, one line that introduces the topic list (P topics balance-related, N topics unrelated, cited by `topic_id` with their cosine), and `resources.prompts` appends `P1: <text>` to `P10: <text>` and `N1: <text>` to `N10: <text>`, one line each ending with a newline, in the order of `retrieval-anchors.json`, to those two stages only; the anchors keep one source (G2). The relevance and retrieval-review views keep `comment_id` and `text`, and each `retrieved_topics` item keeps `topic_id` and `cosine` rounded to 4 decimals (no `text`, no `class`, whose meaning the ID prefix and the prompt line carry). `retrieval.json`, `relevance.json` and the review queue keep the full references. `prompt-snapshot.json` and the identities' prompt hashes change. `scripts/experiments/replay_balance_admission.py` now takes the two prompts from `resources.prompts('off')`, as runs send them, instead of the asset files: it refuses every run made before this step (`Relevance prompt changed`, by design, plan 2.3), and without the change it would also have refused every run made after it. Checked by hand (scratch, not committed): a relevance-only legacy fixture run at this step replays with `verified_requests` 6, 38 admission decisions unchanged and no inference; the script without the change stops with `Relevance prompt changed`. Tests (+2, `tests/test_request_views.py`): the topic list ends exactly the relevance and retrieval-review prompts in all three modes and no other; every topic of every demo relevance request is cited by ID with the rounded cosine and found with its text in the system prompt; `tests/test_stages.py` checks the view. Lock regenerated: exactly the 38 keys under "Behavior changes" (prompt assets, snapshots, manifests and the two reports through the prompt hashes, relevance request digests); no other request or artifact changed. design/cli.md section 5 (`resources`, `stages`) |
+| U2-L0 | L | done | 280 | green | UP-D19, UP-D20. The five reference runs (the four U0.8 sample runs and the U0.6 silver run, with their commands) through the API bridge `openrouter-bridge-1` at `0abfe02`, run by the orchestrating session from a copy of that commit's `src/` first on `sys.path`, in parallel with the U2-L1 runs; identity of every run checked (30 module and 21 resource hashes equal to `0abfe02`, digests equal to `doctor`, inputs equal to U0.8 and U0.6, every response from `deepseek/deepseek-v4-flash` on DeepInfra through version 1); API environment recorded, see "API environment (U2-L0, UP-D19)"; measured and scored with the committed tools and the one-off scorers; rows and API baselines in "Live evaluations"; compared with the local U0.8 and U0.6 rows as findings only; curated report `reports/20261105-upgrade-api-reference/`; full runs archived with `SHA256SUMS` (2,446 files). Spend of the ten runs 0.1082 USD |
 
 ## Baseline measurements (U0.4)
 
@@ -258,6 +259,71 @@ synthetic quality run reads
 `data/evaluation/evidence-quality-synthetic-v1/records.jsonl` as is (38
 rows, `8a41f808074bce16f5badcc3a645c0f34eec7f78ece77196fd22c5725dc8a216`).
 
+### API environment (U2-L0, UP-D19)
+
+Recorded on 2026-11-05 by session U2-L0 from `runs/upgrade/logs/api-bridge.out`,
+the bridge log (counters only), the doctor outputs and the run manifests
+(`summary/u2l0-environment.json` and `summary/u2l0-identity.json` of
+[`reports/20261105-upgrade-api-reference/`](../../reports/20261105-upgrade-api-reference/manifest.json)).
+For every API session it replaces the local items of the record above
+(plan 5.4, "Hosted API").
+
+- Bridge version 1: `runs/upgrade/tools/api_bridge.py` on
+  `127.0.0.1:11435`, started with `api_bridge_start.sh` in its own process
+  session at 02:59; `/api/version` answers `openrouter-bridge-1`; SHA-256
+  `32c5fc6ae82811d433f6932f632fe9ed8208deb425ca828ddabc0acf60fc2706`. It
+  served all ten runs of U2-L0 and U2-L1 (03:01:38 to 03:20:46). Digests
+  of `/api/tags`, reported by both `doctor` runs and recorded in every run
+  manifest (embedding digest verified): `llama3.1:latest`
+  `8d574ae973c939145534723ccb69d0ef74d725c7613b53b7dc92abc26235823e`,
+  `qwen2.5:7b`
+  `597b9a66239b131ee6abc2e0ed574bb6cbbafc5cfa8c350515668560889fab54`,
+  `qwen3-embedding:8b`
+  `0256197832255f898de62f2d76fcf769a29b520685c84113bd60850af1374439`.
+  An earlier version-1 build (SHA-256
+  `ba86da155967d1c9c3c722d96feec158f0d5928c45e345d8b59cbab34e82495e`)
+  answered 8 probe requests before 02:59, one refused by the provider
+  (`stream error 400`); no run used it.
+- Bridge version 2 (`openrouter-bridge-2`, the UP-D20 spend guard;
+  requests and answers unchanged), SHA-256
+  `f42e0087ebcde0b193eaaa1d60cd2c735b7630fa7735ccda14acd7403e1137e9`,
+  replaced version 1 at 03:20:59, after both run chains ended. Digests:
+  `llama3.1:latest`
+  `5d41ee66bd5e06ce8ab073183af15eef121e9672fb55dacf331d6d466a1d76e3`,
+  `qwen2.5:7b`
+  `1a7f84d0ce55a0f32267af827657ae645670fd8245df828a55c2489e8c338c66`,
+  `qwen3-embedding:8b`
+  `cd11cb615c74ae997aa0bbe3f1ad22e1f00f1fb4a27736bd9ca1cf6f1726539b`.
+  Later API sessions check version 2 against these values (plan 5.4 names
+  version 1; the replacement belongs to UP-D20). Each digest of the three
+  starts recomputes from the version, the SHA-256 and the mapping below as
+  the bridge computes it, so the mapping is the same in all three.
+- The source of version 1 is not kept: version 2 overwrote
+  `api_bridge.py` at 03:08, while version 1 was running from the file it
+  had read at its start. The archive and `provenance/` hold version 2;
+  version 1 is identified by its SHA-256 and digests above.
+- Mapping: `llama3.1:latest` and `qwen2.5:7b` to
+  `deepseek/deepseek-v4-flash`, `qwen3-embedding:8b` to
+  `qwen/qwen3-embedding-8b`; providers pinned to DeepInfra without
+  fallbacks.
+- Remote model and provider: every chat response of the ten runs (339 in
+  U2-L0, 342 in U2-L1; `response.json` and each transport attempt) carries
+  a `remote` object with `deepseek/deepseek-v4-flash`, `DeepInfra` and
+  `openrouter-bridge-1`. The bridge log of the run window holds 681 chat
+  requests and 108 embedding requests (`qwen/qwen3-embedding-8b`,
+  DeepInfra), all `ok`.
+- Configuration: `runs/upgrade/live-config-api.json`, SHA-256
+  `b44df0f2f8d7d0d6e295d7daa1314a729e2c285ec345596beff56a71fc1c4530`,
+  equal to `live-config.json` except `base_url` `http://127.0.0.1:11435`;
+  unchanged after the runs; no `--env-file`. Runtime Python 3.14.8,
+  NumPy 2.4.6, package 0.1.0.
+- Spend: the ten runs cost 0.1082 USD by the bridge log (chat and
+  embedding, 03:01:38 to 03:20:59); the `remote` objects of the chat
+  responses give 0.0587 USD for U2-L0 and 0.0484 USD for U2-L1. At its
+  start version 2 restored 0.1198 USD from the whole log (0.1098 USD) plus
+  its 0.01 USD allowance for unlogged probes; 2.86 USD remain below the
+  refusal point of 2.98 USD.
+
 ## Live evaluations
 
 | Session | Commit | Set | Mode | Wall time | Prompt tokens by stage | Output tokens by stage | Failures | Claims generated / accepted | Precision / recall (dev) | Quality validity | Verdict |
@@ -271,6 +337,11 @@ rows, `8a41f808074bce16f5badcc3a645c0f34eec7f78ece77196fd22c5725dc8a216`).
 | U0-L2 (`u0s-benchmark-shadow`) | `0abfe02` | `upgrade-samples-v1/latency-benchmark` (30) | `shadow` | 1,565.4 s | relevance 1,619 (1,466); retrieval_review 1,329 (1,185); quality 3,338 (2,093); extract 3,880 (3,382); verify 856 (213) | relevance 20; retrieval_review 21; quality 633; extract 354; verify 7 | 13 quality requests with validation errors, 0 transport; 6 quality-failed comments; 1 pending | 30 / 19 (0 quarantined; 11 of 30 rejected) | 2/17 (11.8 %) / 2/10 (20.0 %), same 11 comments | first attempt 21/28 (75.0 %, Wilson 56.6–87.3 %); 35 attempts | sample reference |
 | U0-L2 (`u0s-extraction-development-off`) | `0abfe02` | `upgrade-samples-v1/extraction-development` (114) | `off` | 1,372.4 s | relevance 2,861 (2,682); retrieval_review 1,773 (1,584); extract 3,955 (3,261), 44 of 48 requests with counters; verify 1,129 (394) | relevance 23; retrieval_review 19; extract 398; verify 7 | 4 extract requests with validation errors (`duplicate_claim_loop`), 0 transport; 1 generation-failed comment; 3 pending | 178 / 70 (23 quarantined; 85 of 155 rejected, 54.8 %) | accepted 45/66 (68.2 %, Wilson 56.2–78.2 %) / 40/123 (32.5 %, Wilson 24.9–41.2 %); generated 81/169 (47.9 %); recall over admitted 40/121 (33.1 %) | — | sample reference |
 | U0-L2 (`u0s-quality-synthetic-shadow`) | `0abfe02` | `upgrade-samples-v1/quality-synthetic` (19) | `shadow`, `--stop-after quality` | 475.8 s | relevance 1,677 (1,576); retrieval_review 654 (582); quality 2,777 (1,636) | relevance 22; retrieval_review 16; quality 521 | 10 quality requests with validation errors, 0 transport; 5 quality-failed comments; 1 pending | — | — | first attempt 13/18 (72.2 %, Wilson 49.1–87.5 %); 23 attempts; route agreement 8/18 (44.4 %, Wilson 24.6–66.3 %), English 5/8, Chinese 3/10; 1 case does not reach quality (pending) | sample reference |
+| U2-L0 (`u2l0-benchmark-off`) | `0abfe02` | `upgrade-samples-v1/latency-benchmark` (30) | `off` | 104.1 s | relevance 1,571 (1,539); retrieval_review 1,314 (1,314); extract 4,064 (3,771); verify 755 (499) | relevance 16; retrieval_review 15; extract 231; verify 7 | 0 requests with errors; 0 transport; 0 generation-failed comments; 1 pending | 14 / 8 (0 quarantined; 6 of 14 audited rejected, 42.9 %) | 4/6 (66.7 %) / 4/10 (40.0 %), the 11 scored sample comments of the development split | — | API reference |
+| U2-L0 (`u2l0-benchmark-shadow`) | `0abfe02` | `upgrade-samples-v1/latency-benchmark` (30) | `shadow` | 538.1 s | relevance 1,571 (1,379); retrieval_review 1,314 (418); quality 3,469 (2,692); extract 4,064 (2,016); verify 760 (405) | relevance 16; retrieval_review 14; quality 782; extract 215; verify 7 | 6 quality requests with validation errors; 0 transport; 3 quality-failed comments; 0 generation-failed comments; 1 pending | 13 / 8 (0 quarantined; 5 of 13 audited rejected, 38.5 %) | 4/6 (66.7 %) / 4/10 (40.0 %), the 11 scored sample comments of the development split | first attempt 23/26 (88.5 %, Wilson 71.0–96.0 %); 29 attempts | API reference |
+| U2-L0 (`u2l0-extraction-development-off`) | `0abfe02` | `upgrade-samples-v1/extraction-development` (114) | `off` | 340.7 s | relevance 2,979 (2,979); retrieval_review 3,496 (3,035); extract 4,437 (3,955); verify 968 (396) | relevance 19; retrieval_review 22; extract 373; verify 7 | 0 requests with errors; 0 transport; 0 generation-failed comments; 2 pending | 137 / 82 (3 quarantined; 52 of 134 audited rejected, 38.8 %) | accepted 61/80 (76.2 %, Wilson 65.9–84.2 %) / 60/123 (48.8 %, Wilson 40.1–57.5 %); generated 85/131 (64.9 %); recall over admitted 60/123 (48.8 %) | — | API reference |
+| U2-L0 (`u2l0-silver-development-relevance`) | `0abfe02` | `balance-silver-v1` development (70) | `off`, `--stop-after relevance` | 41.1 s | relevance 2,063 (2,063); retrieval_review 1,882 (1,882) | relevance 16; retrieval_review 18 | 0 requests with errors; 0 transport; 0 generation-failed comments; 1 pending | — | relevance agreement 63/69 (91.3 %, Wilson 82.3–96.0 %): 60 TP, 3 TN, 3 FN, 3 FP; 1 uncertain excluded | — | API reference |
+| U2-L0 (`u2l0-quality-synthetic-shadow`) | `0abfe02` | `upgrade-samples-v1/quality-synthetic` (19) | `shadow`, `--stop-after quality` | 120.1 s | relevance 1,476 (1,476); retrieval_review 610 (610); quality 2,845 (1,875) | relevance 16; retrieval_review 11; quality 429 | 6 quality requests with validation errors; 0 transport; 3 quality-failed comments; 0 generation-failed comments; 2 pending | — | — | first attempt 13/16 (81.2 %, Wilson 57.0–93.4 %); 19 attempts; route agreement 11/16 (68.8 %, Wilson 44.4–85.8 %), English 5/7, Chinese 6/9; 16 of 19 cases reach quality | API reference |
 
 Rows of U0.6 (2026-11-04, session U0-L): the five reference runs of plan
 7 U0.6, environment and configuration as in the section above. Token
@@ -481,6 +552,79 @@ Findings of U0.8:
   3,601.6 s (60.0 minutes), against 6,848.0 s for the four U0.6 runs
   (53 %). Quality takes 1,312.7 s of the benchmark `shadow` run (84 %).
 
+Rows of U2-L0 (UP-D19; runs from 2026-11-05 03:01 to 03:21, started by
+the orchestrating session as one chain beside the chain of the U2-L1
+runs; session U2-L0): the four U0.8 sample runs and the U0.6 silver run
+of plan 7 U2-L0, with their commands, through bridge version 1 at
+`0abfe02`, run from `runs/upgrade/code-0abfe02/src` (`git archive` of
+that commit) first on `sys.path`. Identity of each run
+(`check_api_identity.py`): the 30 module and 21 resource hashes of its
+manifest equal the files at `0abfe02`; model and embedding digests equal
+the doctor output; input and source hashes equal those of the U0.8 run
+(U0.6 for the silver split); the code of `0abfe02` records no service
+version (U1.4 came later), so the version comes from the `remote`
+objects. Token figures, Failures and wall time as in the U0.8 rows;
+tokens are counted by the provider's tokenizer, and "uncached" is the
+provider's prompt cache (findings below). Every run ended `partial`
+(exit 5) because of pending units. These rows are the reference of U2-L1
+and later API sessions; the local rows stay history and are not compared
+with API runs (plan 5.4). Measurements, scores, the identity check, the
+environment record and the comparison with the local rows are in
+[`reports/20261105-upgrade-api-reference/`](../../reports/20261105-upgrade-api-reference/manifest.json);
+full runs in the archive (see "Archive and deletions").
+
+Baselines of plan 5.5 through the API (from U2-L0 on, a baseline named
+U0.6 or U0.8 is its U2-L0 run; T1 and T2 keep the ratio of their targets
+to the U0.6 baselines, plan 5.4; T8 comes from the U3 L run):
+
+| ID | U2-L0 API baseline | Run | Target |
+| -- | ------------------ | --- | ------ |
+| T1 | extraction 3,771 uncached prompt tokens per request (4,064 in total; shadow 2,016 uncached) | `u2l0-benchmark-off` | at most 1,882 (49.9 %) |
+| T2 | quality 2,692 uncached prompt tokens per request (3,469 in total) | `u2l0-benchmark-shadow` | at most 1,933 (71.8 %) |
+| T3 | relevance 1,539 uncached prompt tokens per request (1,571 in total; shadow 1,379) | `u2l0-benchmark-off` | at most 1,000 (65 %) |
+| T4 | quality 18.3 s per comment (476.6 s for 26 comments) | `u2l0-benchmark-shadow` | at most 9.2 s (indicative, plan 5.4) |
+| T5 | quality first-attempt validity 88.5 % (23/26, Wilson 71.0–96.0 %) | `u2l0-benchmark-shadow` | at least 95 % |
+| T6 | 38.8 % of audited claims rejected (52/134, Wilson 31.0–47.3 %) | `u2l0-extraction-development-off` | at most 35 % |
+| T7 | precision of accepted claims 76.2 % (61/80, Wilson 65.9–84.2 %), recall 48.8 % (60/123, Wilson 40.1–57.5 %) | `u2l0-extraction-development-off` | precision at least 86.2 %, recall at least 45.8 % |
+
+Findings of U2-L0, from the comparison with the local U0.8 and U0.6 rows
+(`summary/u2l0-local-comparison.json`; findings only, they decide
+nothing):
+
+- **The hosted model is faster and scores higher.** Wall time 104.1,
+  538.1, 340.7, 41.1 and 120.1 s (19.1 minutes) against 188.0, 1,565.4,
+  1,372.4, 186.8 and 475.8 s (63.1 minutes); quality 18.3 s per comment
+  against 46.9 s. Extraction sample: precision of accepted claims 76.2 %
+  against 68.2 % (+8.1 points, Newcombe −6.3 to +22.5), recall 48.8 %
+  against 32.5 % (+16.3, +4.0 to +27.9), audit rejection 38.8 % against
+  54.8 %. Relevance agreement 63/69 against 59/69. Quality first-attempt
+  validity 23/26 against 21/28 on the benchmark and 13/16 against 13/18
+  on the synthetic sample; route agreement 11/16 (68.8 %) against 8/18
+  (44.4 %). No generation-failed comment (local: 1 on the extraction
+  sample), 3 quality-failed comments in each quality run (local: 6 and
+  5), no transport failure, 1 or 2 pending units per run.
+- **One model for both languages.** Both chat names reach
+  `deepseek/deepseek-v4-flash`; the local rows had `llama3.1:latest` for
+  English and `qwen2.5:7b` for Chinese, so per-language findings of the
+  local rows do not carry over.
+- **Prompt tokens agree; uncached tokens follow the provider's cache.**
+  On the benchmark the provider's prompt token means are within 5 % of the
+  local ones (extraction 4,064 against 3,955, quality 3,469 against 3,338,
+  relevance 1,571 against 1,576). The cached share is the provider's
+  prompt cache, which requests share across runs and across the two
+  chains that ran the same prompt prefixes side by side: in
+  `u2l0-benchmark-shadow` retrieval review has 418 uncached tokens of
+  1,314 and extraction 2,016 of 4,064, against 1,314 and 3,771 in
+  `u2l0-benchmark-off`, which ran first. Uncached means depend on run
+  order and concurrency; T1 to T3 keep the plan's metric (D-8), and the
+  rows give the total prompt tokens beside it.
+- **Admission differs on a few comments.** Benchmark `off` admits 3
+  comments the U0.8 run did not and misses 3 (26 each); the silver split
+  admits 64 against 58; the synthetic sample 16 against 18
+  (`injection:en` and `venting:zh` rejected at relevance).
+- **Elapsed times measure the provider and the network** (plan 5.4):
+  1 to 16 s per request on average by stage; T4 is indicative.
+
 ## Behavior changes (P7)
 
 | Step | Decision | Asset or request part | Old SHA-256 | New SHA-256 | Lock paths |
@@ -574,6 +718,7 @@ Findings of U0.8:
 | ---- | ---------------- | ---------------- | ------ | ---- |
 | `runs/upgrade/` (the five U0.6 runs, `u0-benchmark-shadow-interrupted`, measurements, materialized inputs, logs, live configuration, one-off scripts; ignored, not tracked) | `~/Archives/AIMediator/reports/20261104-upgrade-baseline/` | `SHA256SUMS` at the archive root, 5,323 files, 156,944,888 bytes | full runs of the U0.6 reference (P2); the curated report keeps the manifest and summary | U0.6 |
 | `runs/upgrade/` (the four U0.8 sample runs, their measurements and the comparison, the materialized samples and derived inputs, logs, live configuration, doctor output and environment check, one-off scripts; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-baseline-samples/` | `SHA256SUMS` at the archive root, 2,693 files, 74,493,575 bytes | full runs of the U0.8 sample reference (P2); the curated report keeps the manifest and summary | U0.8 |
+| `runs/upgrade/` (the five U2-L0 runs, their measurements, identity check, environment record and comparison with the local rows, the materialized inputs, run logs and the bridge log, the API configuration and doctor output, the bridge and one-off scripts; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-api-reference/` | `SHA256SUMS` at the archive root, 2,446 files, 118,026,987 bytes | full runs of the U2-L0 API reference (P2); the curated report keeps the manifest, summary and provenance | U2-L0 |
 
 ## Decisions found during execution
 
@@ -1114,6 +1259,25 @@ Findings of U0.8:
   code of `b7d1cc5` (the U2.4 commit; the commits after it change only
   this record), against the U0.8 sample rows and the U0.6 silver row;
   then U2-2 (implementation, U2.5 and U2.6); blockers: none.
+
+### 2026-11-05 U2-L0 (live)
+
+- Steps: U2-L0 done; none started and stashed.
+- State: HEAD is this entry's commit (parent `79cfbb5`); tests 280; lock
+  green; rule check 0. The five runs ran at `0abfe02` through bridge
+  version 1; this session started no run.
+- Findings: the runs were launched by the orchestrating session
+  (`u2l0_api_runs.sh`) and had finished before this session measured
+  them; identity checks passed for all five, nothing rerun. Bridge
+  version 2 replaced version 1 after the runs (UP-D20); both are recorded
+  under "API environment (U2-L0, UP-D19)". The source of version 1 is not
+  kept (overwritten by version 2 while version 1 ran). Uncached token
+  counts follow the provider's shared prompt cache, so they depend on run
+  order and on the parallel chains. The hosted model is faster and scores
+  higher than the local models on every measured metric. No escalation;
+  nothing adopted or bypassed under the owner's standing instruction.
+  Spend 0.1082 USD for the ten runs of U2-L0 and U2-L1.
+- Next: U2-L1 (live), in this agent; blockers: none.
 
 ## Deferred
 

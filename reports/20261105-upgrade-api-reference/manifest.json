@@ -1,0 +1,166 @@
+{
+  "schema": "aimediator-report-manifest-v1",
+  "name": "20261105-upgrade-api-reference",
+  "archive": {
+    "path": "~/Archives/AIMediator/reports/20261105-upgrade-api-reference/",
+    "checksums": "SHA256SUMS",
+    "files": 2446,
+    "bytes": 118026987,
+    "archived_on": "2026-11-05",
+    "contents": "runs/ (the five runs), measurements/, inputs/ (the materialized samples and the silver development split, source text; the filtered synthetic cases), logs/ (run logs; the bridge log, counters and timings only), config/ (API configuration, doctor output), provenance/"
+  },
+  "run_manifests": {
+    "u2l0-benchmark-off": "runs/u2l0-benchmark-off/manifest.json",
+    "u2l0-benchmark-shadow": "runs/u2l0-benchmark-shadow/manifest.json",
+    "u2l0-extraction-development-off": "runs/u2l0-extraction-development-off/manifest.json",
+    "u2l0-silver-development-relevance": "runs/u2l0-silver-development-relevance/manifest.json",
+    "u2l0-quality-synthetic-shadow": "runs/u2l0-quality-synthetic-shadow/manifest.json"
+  },
+  "record": "docs/records/20261104-pipeline-upgrade.md",
+  "session": "U2-L0",
+  "decisions": [
+    "UP-D17",
+    "UP-D19",
+    "UP-D20"
+  ],
+  "datasets": {
+    "upgrade-samples-v1/latency-benchmark": "data/evaluation/upgrade-samples-v1/latency-benchmark, 30 (runs u2l0-benchmark-off, u2l0-benchmark-shadow)",
+    "upgrade-samples-v1/extraction-development": "data/evaluation/upgrade-samples-v1/extraction-development, 114 (run u2l0-extraction-development-off)",
+    "upgrade-samples-v1/quality-synthetic": "data/evaluation/upgrade-samples-v1/quality-synthetic, 19 (run u2l0-quality-synthetic-shadow; route agreement over the 19 cases of evidence-quality-synthetic-v1/cases.json with these IDs)",
+    "balance-silver-v1": "data/evaluation/balance-silver-v1, development split, 70 (run u2l0-silver-development-relevance; relevance agreement)",
+    "extraction-precision-v1": "data/evaluation/extraction-precision-v1, development split (scores of the three runs on the benchmark and extraction samples)",
+    "raw_sources": [
+      "data/raw/feedback/20261027-balanced/screened/records.jsonl",
+      "data/raw/feedback/20261015-expanded/screened/records.jsonl",
+      "data/evaluation/evidence-quality-synthetic-v1/records.jsonl"
+    ],
+    "inputs_sha256": {
+      "upgrade-sample-benchmark.jsonl": "ce7ee3df8efc73d36840b96dff00407e42cea9f29de2369ccb64aa4abac28f4a",
+      "upgrade-sample-extraction-development.jsonl": "46e5bb22d38c7b76f8521b376eaac5635ac8988007b9d3c37510315273c6b311",
+      "upgrade-sample-quality-synthetic.jsonl": "0d7a8e8adf6650ee673145d93530abfd0a2c79785712b5bfc2fa58af1590a8e4",
+      "upgrade-sample-quality-synthetic-cases.json": "2fb776ec245f5e0d65965e74204878bc4b65f37acbf974b044f1c92a851fa81c",
+      "balance-silver-v1-development.jsonl": "c05a30342ae57e222b58105d1ae0d37698ff41aa77db6ddd6db96733131abce8"
+    }
+  },
+  "references": {
+    "local_samples": "reports/20261105-upgrade-baseline-samples (U0.8, local Ollama): compared as findings only (summary/u2l0-local-comparison.json)",
+    "local_silver": "reports/20261104-upgrade-baseline (U0.6, local Ollama): compared as findings only"
+  },
+  "environment": {
+    "service": "API bridge runs/upgrade/tools/api_bridge.py (plan 5.4, \"Hosted API\"), version openrouter-bridge-1 for every run; provenance/api_bridge.py is version 2 (the UP-D20 spend guard), see the change record",
+    "configuration": "runs/upgrade/live-config-api.json, sha256 b44df0f2f8d7d0d6e295d7daa1314a729e2c285ec345596beff56a71fc1c4530"
+  },
+  "wall_seconds": {
+    "u2l0-benchmark-off": 104.060229,
+    "u2l0-benchmark-shadow": 538.095437,
+    "u2l0-extraction-development-off": 340.676742,
+    "u2l0-silver-development-relevance": 41.139273,
+    "u2l0-quality-synthetic-shadow": 120.062934
+  },
+  "code_version": {
+    "git_commit": "0abfe02",
+    "head_when_built": "79cfbb5",
+    "note": "Every run module and resource hash equals the package file at 0abfe02 (the U0.8 code; src unchanged since 50becc2), run from runs/upgrade/code-0abfe02/src placed first on sys.path (git archive of that commit); checked by check_api_identity.py and again when the report was built.",
+    "module_set_sha256": {
+      "u2l0-benchmark-off": "e29c96c10b2882bd7570c1eb0c0ec963518c82bdb0d0a00dcdc6a7e2d55793fd",
+      "u2l0-benchmark-shadow": "e29c96c10b2882bd7570c1eb0c0ec963518c82bdb0d0a00dcdc6a7e2d55793fd",
+      "u2l0-extraction-development-off": "e29c96c10b2882bd7570c1eb0c0ec963518c82bdb0d0a00dcdc6a7e2d55793fd",
+      "u2l0-silver-development-relevance": "e29c96c10b2882bd7570c1eb0c0ec963518c82bdb0d0a00dcdc6a7e2d55793fd",
+      "u2l0-quality-synthetic-shadow": "e29c96c10b2882bd7570c1eb0c0ec963518c82bdb0d0a00dcdc6a7e2d55793fd"
+    }
+  },
+  "provenance": [
+    {
+      "path": "provenance/u2l0_api_runs.sh",
+      "sha256": "69b6a80511c79ffbbb4b72e4d0afcea241bb2eff70897fb76113a0c434ba6e8a"
+    },
+    {
+      "path": "provenance/u2l0_measure.sh",
+      "sha256": "f5913ce571910114194c8266360299570239cb7e9d2f836270ce715436591451"
+    },
+    {
+      "path": "provenance/api_bridge.py",
+      "sha256": "f42e0087ebcde0b193eaaa1d60cd2c735b7630fa7735ccda14acd7403e1137e9"
+    },
+    {
+      "path": "provenance/api_bridge_start.sh",
+      "sha256": "02cbce21e8ed78f79099a526ebd70c55c95c236a1db53e101ab7da97141ac1fc"
+    },
+    {
+      "path": "provenance/check_api_identity.py",
+      "sha256": "8ecaca4a3265e0047a9397221bcfc2b0b3abc53d0ac88bf3747d895dfc126965"
+    },
+    {
+      "path": "provenance/score_u0_extra.py",
+      "sha256": "fc9e044fe4915b60a6a347d8703ebd72d9c2c3b96ecfb316923d2aa97557bb71"
+    },
+    {
+      "path": "provenance/compare_u0s.py",
+      "sha256": "339d0b0c12406fe2705231af39fd8a7bddc75db7ef2bd442c4fc9522eac088ea"
+    },
+    {
+      "path": "provenance/compare_u2l1.py",
+      "sha256": "66db299a56ec009843b19fcbb74f9c74fd595f6ae7e168da10481265cf5750d9"
+    },
+    {
+      "path": "provenance/build_api_report.py",
+      "sha256": "31688669d8cd68e618d011732967f37b670e0d5abe28b4717a491b957fb8f7c9"
+    }
+  ],
+  "retention_reason": "API reference of batch U2 and later batches (session U2-L0, UP-D19): the four U0.8 sample runs and the U0.6 balance-silver-v1 development run, rerun through the API bridge at the U0.8 code (0abfe02); the plan 5.5 API baselines. Full runs stay in the archive.",
+  "summary": [
+    {
+      "path": "summary/u2l0-benchmark-off-metrics.json",
+      "sha256": "c79bf09fe30c2e89708635695b294f58c5f08c475aab45d19b331432c9d24707"
+    },
+    {
+      "path": "summary/u2l0-benchmark-off-scores.json",
+      "sha256": "e525ab3a6cf2546d9f0f0e6f0dee82a3c098b3db96222565a96210ffbc10fcff"
+    },
+    {
+      "path": "summary/u2l0-benchmark-shadow-metrics.json",
+      "sha256": "f3fa35512f2b8d5763c3df8affb540fd9dc002139a4d1e483cb3f06ae0aa4c6b"
+    },
+    {
+      "path": "summary/u2l0-benchmark-shadow-scores.json",
+      "sha256": "4efc5e8bc4b24ca6200d736d0c66c14e3cf5603f47bbdee1181519650c8eb497"
+    },
+    {
+      "path": "summary/u2l0-extraction-development-off-metrics.json",
+      "sha256": "508246a40e1574546a59ff115530b83b0a8b4e7363ae40ba7d9ab5eb00c6a56e"
+    },
+    {
+      "path": "summary/u2l0-extraction-development-off-scores.json",
+      "sha256": "608749a1de599168debd57e2eb02dc344ebedf9514d91eec0e087151de6b2a98"
+    },
+    {
+      "path": "summary/u2l0-silver-development-relevance-metrics.json",
+      "sha256": "caa8d69d6df5927dcab6306cd401443679567b9ee982cf42c6b3dba50dd9682c"
+    },
+    {
+      "path": "summary/u2l0-silver-development-relevance-agreement.json",
+      "sha256": "d0c0c2ef1dc9d89eb717187a7702bfc06e47209334c72ccb8e9ab860e6064501"
+    },
+    {
+      "path": "summary/u2l0-quality-synthetic-shadow-metrics.json",
+      "sha256": "5abf5b2878facada9f5e59a606f21574c4dadac93c7ca6b137c6bf3d7f022b76"
+    },
+    {
+      "path": "summary/u2l0-quality-synthetic-shadow-routes.json",
+      "sha256": "8215ba7b060def4d250f003aea4c937ba1f0b0340d11438015972e46640ba164"
+    },
+    {
+      "path": "summary/u2l0-identity.json",
+      "sha256": "4b7b88530a4882e5871c746b6af54582942b5c3e497cb36bf81a05e03886ca41"
+    },
+    {
+      "path": "summary/u2l0-environment.json",
+      "sha256": "5720ab1c974247aa146d27266cbd8ab3c2b7c39937fa677df49756fe713f1703"
+    },
+    {
+      "path": "summary/u2l0-local-comparison.json",
+      "sha256": "7de88a2645cfa76df212c2f0fecb3fcf4a78d4da673741dbc0c0a6f5abc5915a"
+    }
+  ],
+  "source_text": "none in summary/ (IDs, labels, routes, counts and metrics only)"
+}

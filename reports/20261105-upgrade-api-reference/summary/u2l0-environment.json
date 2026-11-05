@@ -1,0 +1,220 @@
+{
+  "bridge_log_before_runs": {
+    "cost_usd": 0.001601,
+    "errors": {
+      "stream error 400": 1
+    },
+    "requests": 8
+  },
+  "bridge_log_in_run_window": {
+    "chat": {
+      "deepseek/deepseek-v4-flash | DeepInfra | ok | None": 680
+    },
+    "cost_usd": 0.107222,
+    "cost_usd_u2l0_chat_remote_objects": 0.058701,
+    "cost_usd_u2l1_chat_remote_objects": 0.048412,
+    "embed": {
+      "qwen/qwen3-embedding-8b | DeepInfra | ok": 108
+    },
+    "requests": 788,
+    "window": [
+      "2026-11-05T03:01:38-08:00",
+      "2026-11-05T03:20:46-08:00"
+    ]
+  },
+  "bridge_log_total": {
+    "cost_usd": 0.109756,
+    "requests": 797
+  },
+  "bridge_starts": [
+    {
+      "digests": {
+        "llama3.1:latest": {
+          "digest": "feb789ffb1a7b1a409e395bf1283a6f64ce784b93471eca190f05683b39704f8",
+          "recomputed_equal": true,
+          "remote_model": "deepseek/deepseek-v4-flash"
+        },
+        "qwen2.5:7b": {
+          "digest": "2e280fa4e7794dd2b6fe339d98a51aea77d44e8be3d381dbf355d70948e5914e",
+          "recomputed_equal": true,
+          "remote_model": "deepseek/deepseek-v4-flash"
+        },
+        "qwen3-embedding:8b": {
+          "digest": "d312c99766ebdd9036ddc56f83c8b9bd661581fc0b69060165570ed3349319bd",
+          "recomputed_equal": true,
+          "remote_model": "qwen/qwen3-embedding-8b"
+        }
+      },
+      "listen": "127.0.0.1:11435",
+      "note": "",
+      "sha256": "ba86da155967d1c9c3c722d96feec158f0d5928c45e345d8b59cbab34e82495e",
+      "version": "openrouter-bridge-1"
+    },
+    {
+      "digests": {
+        "llama3.1:latest": {
+          "digest": "8d574ae973c939145534723ccb69d0ef74d725c7613b53b7dc92abc26235823e",
+          "recomputed_equal": true,
+          "remote_model": "deepseek/deepseek-v4-flash"
+        },
+        "qwen2.5:7b": {
+          "digest": "597b9a66239b131ee6abc2e0ed574bb6cbbafc5cfa8c350515668560889fab54",
+          "recomputed_equal": true,
+          "remote_model": "deepseek/deepseek-v4-flash"
+        },
+        "qwen3-embedding:8b": {
+          "digest": "0256197832255f898de62f2d76fcf769a29b520685c84113bd60850af1374439",
+          "recomputed_equal": true,
+          "remote_model": "qwen/qwen3-embedding-8b"
+        }
+      },
+      "listen": "127.0.0.1:11435",
+      "note": "",
+      "sha256": "32c5fc6ae82811d433f6932f632fe9ed8208deb425ca828ddabc0acf60fc2706",
+      "version": "openrouter-bridge-1"
+    },
+    {
+      "digests": {
+        "llama3.1:latest": {
+          "digest": "5d41ee66bd5e06ce8ab073183af15eef121e9672fb55dacf331d6d466a1d76e3",
+          "recomputed_equal": true,
+          "remote_model": "deepseek/deepseek-v4-flash"
+        },
+        "qwen2.5:7b": {
+          "digest": "1a7f84d0ce55a0f32267af827657ae645670fd8245df828a55c2489e8c338c66",
+          "recomputed_equal": true,
+          "remote_model": "deepseek/deepseek-v4-flash"
+        },
+        "qwen3-embedding:8b": {
+          "digest": "cd11cb615c74ae997aa0bbe3f1ad22e1f00f1fb4a27736bd9ca1cf6f1726539b",
+          "recomputed_equal": true,
+          "remote_model": "qwen/qwen3-embedding-8b"
+        }
+      },
+      "listen": "127.0.0.1:11435",
+      "note": "spend 0.1198 of 3.00 USD",
+      "sha256": "f42e0087ebcde0b193eaaa1d60cd2c735b7630fa7735ccda14acd7403e1137e9",
+      "version": "openrouter-bridge-2"
+    }
+  ],
+  "chat_responses_by_run": {
+    "u2l0": {
+      "u2l0-benchmark-off": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-1": 33
+      },
+      "u2l0-benchmark-shadow": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-1": 61
+      },
+      "u2l0-extraction-development-off": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-1": 193
+      },
+      "u2l0-quality-synthetic-shadow": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-1": 26
+      },
+      "u2l0-silver-development-relevance": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-1": 26
+      }
+    },
+    "u2l1": {
+      "u2l1-benchmark-off": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-1": 33
+      },
+      "u2l1-benchmark-shadow": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-1": 59
+      },
+      "u2l1-extraction-development-off": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-1": 196
+      },
+      "u2l1-quality-synthetic-shadow": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-1": 26
+      },
+      "u2l1-silver-development-relevance": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-1": 28
+      }
+    }
+  },
+  "configuration": {
+    "base_url": "http://127.0.0.1:11435",
+    "connection_timeout": 120,
+    "embedding_model": "qwen3-embedding:8b",
+    "embedding_provider": "ollama",
+    "inference_options": {
+      "num_ctx": 8192,
+      "seed": 42,
+      "temperature": 0
+    },
+    "keys_differing_from_live_config": [
+      "base_url"
+    ],
+    "live_config_api_sha256": "b44df0f2f8d7d0d6e295d7daa1314a729e2c285ec345596beff56a71fc1c4530",
+    "live_config_sha256": "03659ca91320224b2d8c772758654e30e9fa8c36ce4b81b34637a973ca781f7b",
+    "request_timeout": 1800
+  },
+  "doctor_digests": {
+    "u2l0": {
+      "llama3.1:latest": "8d574ae973c939145534723ccb69d0ef74d725c7613b53b7dc92abc26235823e",
+      "qwen2.5:7b": "597b9a66239b131ee6abc2e0ed574bb6cbbafc5cfa8c350515668560889fab54",
+      "qwen3-embedding:8b": "0256197832255f898de62f2d76fcf769a29b520685c84113bd60850af1374439"
+    },
+    "u2l1": {
+      "llama3.1:latest": "8d574ae973c939145534723ccb69d0ef74d725c7613b53b7dc92abc26235823e",
+      "qwen2.5:7b": "597b9a66239b131ee6abc2e0ed574bb6cbbafc5cfa8c350515668560889fab54",
+      "qwen3-embedding:8b": "0256197832255f898de62f2d76fcf769a29b520685c84113bd60850af1374439"
+    }
+  },
+  "doctor_digests_equal": true,
+  "mapping": {
+    "llama3.1:latest": {
+      "kind": "chat",
+      "provider": {
+        "allow_fallbacks": false,
+        "order": [
+          "deepinfra"
+        ],
+        "require_parameters": true
+      },
+      "remote_model": "deepseek/deepseek-v4-flash"
+    },
+    "qwen2.5:7b": {
+      "kind": "chat",
+      "provider": {
+        "allow_fallbacks": false,
+        "order": [
+          "deepinfra"
+        ],
+        "require_parameters": true
+      },
+      "remote_model": "deepseek/deepseek-v4-flash"
+    },
+    "qwen3-embedding:8b": {
+      "kind": "embedding",
+      "provider": {
+        "allow_fallbacks": false,
+        "order": [
+          "deepinfra"
+        ]
+      },
+      "remote_model": "qwen/qwen3-embedding-8b"
+    }
+  },
+  "run_windows_local": {
+    "u2l0": [
+      "2026-11-05T03:01:38-08:00",
+      "2026-11-05T03:20:46-08:00"
+    ],
+    "u2l1": [
+      "2026-11-05T03:01:38-08:00",
+      "2026-11-05T03:20:11-08:00"
+    ]
+  },
+  "schema": "aimediator-u2l0-api-environment-v1",
+  "served_the_runs": "openrouter-bridge-1, sha256 of the second version-1 start; every run manifest records its digests (doctor outputs and identity checks)",
+  "spend_file": {
+    "bridge": "openrouter-bridge-2",
+    "limit_usd": 3.0,
+    "refuses_from_usd": 2.98,
+    "requests": 797,
+    "spent_usd": 0.119756,
+    "updated_utc": "2026-11-05T11:20:58.995662+00:00"
+  }
+}
