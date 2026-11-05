@@ -1,0 +1,21 @@
+{
+  "version": "upgrade-samples-v1/quality-synthetic",
+  "purpose": "smaller sample of evidence-quality-synthetic-v1 for the live sessions of U1 to U7: one authored case per category",
+  "source_set": "data/evaluation/evidence-quality-synthetic-v1",
+  "reviewer_type": "none",
+  "source_dataset": "data/evaluation/evidence-quality-synthetic-v1/records.jsonl",
+  "source_dataset_sha256": "8a41f808074bce16f5badcc3a645c0f34eec7f78ece77196fd22c5725dc8a216",
+  "selection": "The 19 categories (the middle part of record_id \"synthetic:<category>:<language>\") in the order of their first appearance in records.jsonl; the 1st, 3rd, 5th ... category takes its zh case, the 2nd, 4th ... its en case (10 zh, 9 en). content_sha256 is the SHA-256 of text_original as UTF-8.",
+  "counts": {
+    "comments": 19,
+    "languages": {
+      "en": 9,
+      "zh": 10
+    }
+  },
+  "materialize": "python3 scripts/experiments/materialize_evaluation_input.py --set data/evaluation/upgrade-samples-v1/quality-synthetic --dataset data/evaluation/evidence-quality-synthetic-v1/records.jsonl --out runs/upgrade/inputs/upgrade-sample-quality-synthetic.jsonl",
+  "decision": "UP-D17 (docs/records/20261104-pipeline-upgrade.md)",
+  "set_status": "frozen",
+  "created": "2026-11-04 (pipeline upgrade step U0.7)",
+  "ids_sha256": "e4e936dbe7d93f62ea5e149ee79422b1130bbf9f0895ee41eea31fe3274aa58e"
+}

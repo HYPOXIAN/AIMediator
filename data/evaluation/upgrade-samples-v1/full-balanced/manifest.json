@@ -1,0 +1,32 @@
+{
+  "version": "upgrade-samples-v1/full-balanced",
+  "purpose": "sample of the 600-comment dataset for step U7.1 (instead of the full set, UP-D17)",
+  "reviewer_type": "none",
+  "source_dataset": "data/raw/feedback/20261027-balanced/screened/records.jsonl",
+  "source_dataset_sha256": "3eb87a7561b41ff31cef3e7035f0a25353adbe1999e023ff5e46b1bcf4852e3f",
+  "selection": "Over all rows of the source dataset: per language (en, zh), length terciles of len(text_original) in Unicode code points with the cut points of latency-benchmark-v1 (en 208 and 764, zh 31 and 99); within each language and tercile, rows ordered by the hexadecimal SHA-256 of the UTF-8 string \"upgrade-samples-v1:<record_id>\", ascending, and the first 20 taken. Listed by language, tercile, then that order.",
+  "counts": {
+    "comments": 120,
+    "languages": {
+      "en": 60,
+      "zh": 60
+    },
+    "by_language_and_tercile": {
+      "en": {
+        "1": 20,
+        "2": 20,
+        "3": 20
+      },
+      "zh": {
+        "1": 20,
+        "2": 20,
+        "3": 20
+      }
+    }
+  },
+  "materialize": "python3 scripts/experiments/materialize_evaluation_input.py --set data/evaluation/upgrade-samples-v1/full-balanced --dataset data/raw/feedback/20261027-balanced/screened/records.jsonl --out runs/upgrade/inputs/upgrade-sample-full-balanced.jsonl",
+  "decision": "UP-D17 (docs/records/20261104-pipeline-upgrade.md)",
+  "set_status": "frozen",
+  "created": "2026-11-04 (pipeline upgrade step U0.7)",
+  "ids_sha256": "98ae4aee683e2ea88b2a9f9d37b087757583860c958a8737b4e059abf298685d"
+}

@@ -56,6 +56,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | U0.4 | N | done | 250 | green | Plan 8.1, 8.2, 8.4 and 8.5 at `bca6490`, and plan 8.7 with the committed tool; see "Baseline measurements (U0.4)". Every archived figure of plan 0.2 agrees within rounding; no baseline of plan 5.5 changes |
 | U0.5 | D | done | 250 | green | UP-D02: `data/evaluation/extraction-precision-v1/` frozen (`labels.jsonl`, `manifest.json`); 301 comments labeled by session U0-A from the source text only, 227 development and 74 test; see "Evaluation sets". `materialize` reproduces 301, 227 and 74 rows with every hash matching; `score_positions` reads the labels |
 | U0.6 | L | done | 250 | green | Session U0-L on the owner's machine: environment and live configuration recorded (Ollama 0.34.2, local embeddings, `connection_timeout` 120 after E-1); the five reference runs at `50becc2` measured and scored, see "Live evaluations" and the plan 5.5 baselines there; curated report `reports/20261104-upgrade-baseline/`; full runs archived with `SHA256SUMS` (5,323 files). Decisions found during execution D-2 (Failures column), D-3 (interrupted run rerun clean), D-4 (relevance and route agreement outside the package); escalation E-1 resolved by the owner. UP-D10 row corrected to the owner's answer |
+| U0.7 | D | done | 250 | green | UP-D17 (owner's amendment of 2026-11-04 after U0.6): `data/evaluation/upgrade-samples-v1/` frozen, four samples with `ids.json` and `manifest.json` each and a top-level manifest; see "Evaluation sets". `materialize` reproduces 30, 114, 19 and 120 rows with every content hash matching |
 
 ## Baseline measurements (U0.4)
 
@@ -371,6 +372,31 @@ Findings of U0.6:
   times. Nationality-only references and sarcasm the text does not settle
   make a comment uncertain; a request with no textual cue of sarcasm is
   labeled literally.
+- **`upgrade-samples-v1`** (U0.7, UP-D17; frozen 2026-11-04). Purpose:
+  smaller inputs for the live runs from U0.8 on (plan 5.3); no labels
+  (`reviewer_type` `none`), IDs and content hashes only. Four
+  subdirectories, each a set that `materialize` reads (`ids.json` with
+  `record_id`, `language`, `content_sha256`, and `length_tercile` where
+  stratified; its own `manifest.json` with the rule, the source dataset
+  and its SHA-256, and the `materialize` command):
+  `latency-benchmark` (30: the first 5 per language and tercile of
+  `latency-benchmark-v1` in its own hash order; `ids_sha256`
+  `f5c5cff429f2a07781ef088f355bfe85baeff0d03527f0f01d75b05593f51cae`);
+  `extraction-development` (114: per language the first half of the
+  development split by SHA-256 of `upgrade-samples-v1:<comment_id>`, 45
+  English and 69 Chinese; 9 uncertain, 123 scored positions;
+  `3f02f0ddc72f1531b9137323b4ffe93f206dfdab8d4a4c6340538851c02913da`);
+  `quality-synthetic` (19: one case per category of
+  `evidence-quality-synthetic-v1`, Chinese and English alternating in
+  category order, 10 Chinese and 9 English;
+  `e4e936dbe7d93f62ea5e149ee79422b1130bbf9f0895ee41eea31fe3274aa58e`);
+  `full-balanced` (120 of the 600-comment dataset for U7.1: 20 per
+  language and tercile with the cut points of `latency-benchmark-v1`, by
+  SHA-256 of `upgrade-samples-v1:<record_id>`;
+  `98ae4aee683e2ea88b2a9f9d37b087757583860c958a8737b4e059abf298685d`).
+  Twelve of the 114 extraction comments are benchmark IDs. Built by the
+  orchestrating agent on the owner's instruction; the manifests state
+  every rule, so U0-V can rerun them.
 
 ## Archive and deletions
 

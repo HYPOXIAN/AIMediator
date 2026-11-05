@@ -1,0 +1,21 @@
+{
+  "version": "upgrade-samples-v1/extraction-development",
+  "purpose": "smaller sample of the extraction-precision-v1 development split for the live sessions of U1 to U7; scored with the labels of extraction-precision-v1 (score_positions skips labeled comments absent from a run)",
+  "source_set": "data/evaluation/extraction-precision-v1 (split development)",
+  "reviewer_type": "none",
+  "source_dataset": "data/raw/feedback/20261027-balanced/screened/records.jsonl",
+  "source_dataset_sha256": "3eb87a7561b41ff31cef3e7035f0a25353adbe1999e023ff5e46b1bcf4852e3f",
+  "selection": "From data/evaluation/extraction-precision-v1/labels.jsonl, rows with split \"development\": per language (en, zh), ordered by the hexadecimal SHA-256 of the UTF-8 string \"upgrade-samples-v1:<comment_id>\", ascending, and the first ceil(n/2) taken (en 45 of 89, zh 69 of 138). Listed by language, then that order. record_id is the label comment_id; content_sha256 is copied from the label. No test-split row is read for the selection beyond its split field.",
+  "counts": {
+    "comments": 114,
+    "languages": {
+      "en": 45,
+      "zh": 69
+    }
+  },
+  "materialize": "python3 scripts/experiments/materialize_evaluation_input.py --set data/evaluation/upgrade-samples-v1/extraction-development --dataset data/raw/feedback/20261027-balanced/screened/records.jsonl --out runs/upgrade/inputs/upgrade-sample-extraction-development.jsonl",
+  "decision": "UP-D17 (docs/records/20261104-pipeline-upgrade.md)",
+  "set_status": "frozen",
+  "created": "2026-11-04 (pipeline upgrade step U0.7)",
+  "ids_sha256": "3f02f0ddc72f1531b9137323b4ffe93f206dfdab8d4a4c6340538851c02913da"
+}

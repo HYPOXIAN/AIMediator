@@ -1,0 +1,33 @@
+{
+  "version": "upgrade-samples-v1/latency-benchmark",
+  "purpose": "smaller sample of latency-benchmark-v1 for the live sessions of U1 to U7; latency and outcome counts; not an accuracy set",
+  "source_set": "data/evaluation/latency-benchmark-v1",
+  "reviewer_type": "none",
+  "source_dataset": "data/raw/feedback/20261027-balanced/screened/records.jsonl",
+  "source_dataset_sha256": "3eb87a7561b41ff31cef3e7035f0a25353adbe1999e023ff5e46b1bcf4852e3f",
+  "selection": "From data/evaluation/latency-benchmark-v1/ids.json: within each language (en, zh) and length_tercile (1 to 3), the rows ordered by the hexadecimal SHA-256 of the UTF-8 string \"latency-benchmark-v1:<record_id>\", ascending (the order the source set was selected in), and the first 5 taken. Rows are copied unchanged and listed by language, tercile, then that order. Every ID is also in latency-benchmark-v1.",
+  "counts": {
+    "comments": 30,
+    "languages": {
+      "en": 15,
+      "zh": 15
+    },
+    "by_language_and_tercile": {
+      "en": {
+        "1": 5,
+        "2": 5,
+        "3": 5
+      },
+      "zh": {
+        "1": 5,
+        "2": 5,
+        "3": 5
+      }
+    }
+  },
+  "materialize": "python3 scripts/experiments/materialize_evaluation_input.py --set data/evaluation/upgrade-samples-v1/latency-benchmark --dataset data/raw/feedback/20261027-balanced/screened/records.jsonl --out runs/upgrade/inputs/upgrade-sample-benchmark.jsonl",
+  "decision": "UP-D17 (docs/records/20261104-pipeline-upgrade.md)",
+  "set_status": "frozen",
+  "created": "2026-11-04 (pipeline upgrade step U0.7)",
+  "ids_sha256": "f5c5cff429f2a07781ef088f355bfe85baeff0d03527f0f01d75b05593f51cae"
+}

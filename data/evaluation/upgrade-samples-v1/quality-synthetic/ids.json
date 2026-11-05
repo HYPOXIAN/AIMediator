@@ -1,0 +1,97 @@
+[
+  {
+    "record_id": "synthetic:venting:zh",
+    "language": "zh",
+    "content_sha256": "97d508d6621ab5a7fa639a7e618e70938a83e0983b83457379e13017d481366b"
+  },
+  {
+    "record_id": "synthetic:general:en",
+    "language": "en",
+    "content_sha256": "bbdd1142bf00a342945ba0e8265092cdecaee5dec47fbe3ae2411a3cdcb5fc81"
+  },
+  {
+    "record_id": "synthetic:missing_character:zh",
+    "language": "zh",
+    "content_sha256": "fcf986b52da3b193ec0b465c71af1ade5ebd3375e2c11ca09e91fc5a4ad5c17b"
+  },
+  {
+    "record_id": "synthetic:price_and_opinion:en",
+    "language": "en",
+    "content_sha256": "ee17ce880943dcc3985ae5ec1b93c303c3432c1d2f501978c685ea3950389ac6"
+  },
+  {
+    "record_id": "synthetic:system_and_cosmetic:zh",
+    "language": "zh",
+    "content_sha256": "06a53b230dd7278b3b4b6c7cb0c724b273ec75e928e56a0074601596ef484ea6"
+  },
+  {
+    "record_id": "synthetic:hostile_concrete:en",
+    "language": "en",
+    "content_sha256": "a0ec7a19951983756a6f369eaec5d866afa6e194311d2177a8e5f9da87a0cacf"
+  },
+  {
+    "record_id": "synthetic:negation:zh",
+    "language": "zh",
+    "content_sha256": "480b129db62dd5f46c4c56b963b38feb0ebb22fe8026e453ea6f8ab292430f87"
+  },
+  {
+    "record_id": "synthetic:quoted_voice:en",
+    "language": "en",
+    "content_sha256": "c9cffbc2e9b58ea347d06f0116897c6647d55ac8a7c5a59ba3f532d184e6bd9c"
+  },
+  {
+    "record_id": "synthetic:sarcasm:zh",
+    "language": "zh",
+    "content_sha256": "7fdd3ae867d1d6319f0e40d936951e8695cf1c81ca3327bd20da1ecfbf03b6ce"
+  },
+  {
+    "record_id": "synthetic:me_too:en",
+    "language": "en",
+    "content_sha256": "762c20b866b7b2635d6a80b622b0bea2826ce4a81897140c250f0fb2bbbd2ee7"
+  },
+  {
+    "record_id": "synthetic:opposing_mechanics:zh",
+    "language": "zh",
+    "content_sha256": "7ac2cfb13fe5ca3a0464507e2d1e9c0087ce4e9a7d1584254903a99ac8135f82"
+  },
+  {
+    "record_id": "synthetic:damage_comparison:en",
+    "language": "en",
+    "content_sha256": "3f1ece6914900466340a59624fec4c464c4abd4c10402f7fa14e783d84732ad6"
+  },
+  {
+    "record_id": "synthetic:past_patch:zh",
+    "language": "zh",
+    "content_sha256": "c549b84daeb119bbce2cca664b90702758a388e153982eb2d71f4c119c7a0bd6"
+  },
+  {
+    "record_id": "synthetic:numeric_request:en",
+    "language": "en",
+    "content_sha256": "8c5dba70a57ee144e911ee1ebf13c4f4bd78c7f0469f27fa85c3aad35905e7f3"
+  },
+  {
+    "record_id": "synthetic:positive_concrete:zh",
+    "language": "zh",
+    "content_sha256": "7bfeada87f1ca8373b9653b84131e8678891cdd2723274fafca19f344f0af36e"
+  },
+  {
+    "record_id": "synthetic:injection:en",
+    "language": "en",
+    "content_sha256": "8eba35b4568584d01b8beba3ca09a59b5018af6a54f98e3e971d2ec66c9a7ff6"
+  },
+  {
+    "record_id": "synthetic:unknown_identity:zh",
+    "language": "zh",
+    "content_sha256": "e20b995af82850bf72216256da6b11be7d6d3938b431d2f13d2a4e4aadfc5ae7"
+  },
+  {
+    "record_id": "synthetic:neutral_equivalent:en",
+    "language": "en",
+    "content_sha256": "21a6b653616c873c744590ce601d529b7c78ef3b48cdb6073f914c0ea645ed43"
+  },
+  {
+    "record_id": "synthetic:high_emotion:zh",
+    "language": "zh",
+    "content_sha256": "2d45cb188ec1d1d5cff4595af619f30ba5bdbd652b05444039a63204d1012a96"
+  }
+]

@@ -1,0 +1,182 @@
+[
+  {
+    "record_id": "steam:223477777",
+    "language": "en",
+    "content_sha256": "5c9b7062dd36a5a535061c098f9ee2553ded01632f11360d97aeb43fab3423a7",
+    "length_tercile": 1
+  },
+  {
+    "record_id": "steam:223226427",
+    "language": "en",
+    "content_sha256": "b40ffa4bfc6c9970ff861ae58cde45a2f726dea9f4e6ada8c5f1b1793881d1d2",
+    "length_tercile": 1
+  },
+  {
+    "record_id": "steam:228907116",
+    "language": "en",
+    "content_sha256": "33f4c2aed1ac6e7c61ba8d904f4f0d71d2c0ff189eb8050253c6d3b0efb7a865",
+    "length_tercile": 1
+  },
+  {
+    "record_id": "steam:238427985",
+    "language": "en",
+    "content_sha256": "3e480a9b64de3f986a1c86fc9905b37e786cb58548d3219d1e957b4199fc7f92",
+    "length_tercile": 1
+  },
+  {
+    "record_id": "steam:234010465",
+    "language": "en",
+    "content_sha256": "55968d9f05e60a33e1c80273ec48130b0e325a99bcc0244d09e553941f878cc4",
+    "length_tercile": 1
+  },
+  {
+    "record_id": "steam:233452817",
+    "language": "en",
+    "content_sha256": "43c6c59982b50c1354b4b16c6a6d63cb4773f95ec900e4d698f00f046dd6619f",
+    "length_tercile": 2
+  },
+  {
+    "record_id": "steam:229390012",
+    "language": "en",
+    "content_sha256": "7114767534a345e9cc7064467ae30e3bf20db3feab04e5a63c553ffbc0b441b9",
+    "length_tercile": 2
+  },
+  {
+    "record_id": "steam:237735508",
+    "language": "en",
+    "content_sha256": "c9a02aa511f8734a0c2d5629906dab1bc01e9b488994ab33ebbbb934801d107b",
+    "length_tercile": 2
+  },
+  {
+    "record_id": "steam:235458828",
+    "language": "en",
+    "content_sha256": "8c8d823233f1e7b80d937956c883d7f20c2a274a3382a2ab1c78b0783f56edf6",
+    "length_tercile": 2
+  },
+  {
+    "record_id": "steam:232702842",
+    "language": "en",
+    "content_sha256": "3397ae5cb8576bbcff8bb328e91f2793202b01faa5dca474de91238cfe092411",
+    "length_tercile": 2
+  },
+  {
+    "record_id": "steam:221768502",
+    "language": "en",
+    "content_sha256": "71313810f7fc1492a2da290236055bf8bdf7f44fa4e71366eaadda32ea49ed6d",
+    "length_tercile": 3
+  },
+  {
+    "record_id": "steam:217837645",
+    "language": "en",
+    "content_sha256": "98a1ad63b09907b9ac4a16728635899462ebdf41fecc9037e76088da63ae82f0",
+    "length_tercile": 3
+  },
+  {
+    "record_id": "steam:230206787",
+    "language": "en",
+    "content_sha256": "c13017d912fda035d889f76a34ccb3307c417aba1f929b08816561d00b013497",
+    "length_tercile": 3
+  },
+  {
+    "record_id": "steam:227560160",
+    "language": "en",
+    "content_sha256": "90d00a2164663b2a60b196d2f26e157ab1b22d57f5469284701497d015050547",
+    "length_tercile": 3
+  },
+  {
+    "record_id": "steam:238486430",
+    "language": "en",
+    "content_sha256": "a7ff47fd9b5cbb750bde750fdaae86f9f1b955e83c49e5cf8bf7e7215ca0a2d8",
+    "length_tercile": 3
+  },
+  {
+    "record_id": "steam:237791399",
+    "language": "zh",
+    "content_sha256": "1be261f501ea354b876a0c9258dbefff9d09e65d5f214e4337fd2d871b291428",
+    "length_tercile": 1
+  },
+  {
+    "record_id": "steam:232134159",
+    "language": "zh",
+    "content_sha256": "867cc831a63441c82775ac0513303a5ff69a0e4b9b810505a00c3abe92e17358",
+    "length_tercile": 1
+  },
+  {
+    "record_id": "steam:233697597",
+    "language": "zh",
+    "content_sha256": "c33acba49c7408a3b57b7aafb294ee387cca443f0cd52ef131ff95bff2087d58",
+    "length_tercile": 1
+  },
+  {
+    "record_id": "steam:232159732",
+    "language": "zh",
+    "content_sha256": "4840b3b054a0aa11c442146877ecf69921cf5cf0e47a5fe1b2dd2ff46fdaf6e5",
+    "length_tercile": 1
+  },
+  {
+    "record_id": "steam:232196897",
+    "language": "zh",
+    "content_sha256": "b6d908eef2987be6c01f549b298d5df676b0fda3d07a6cba2642cd78d59b88ea",
+    "length_tercile": 1
+  },
+  {
+    "record_id": "steam:231957078",
+    "language": "zh",
+    "content_sha256": "70c2642ad6167e91dfd8a439428448c2cab2d0e0064641b39b5bb9521263124f",
+    "length_tercile": 2
+  },
+  {
+    "record_id": "steam:237780586",
+    "language": "zh",
+    "content_sha256": "9a9a1db184fc9d9d3115ee03a7c6dc2fc9c3b46b0bb927f2274109da84d437f5",
+    "length_tercile": 2
+  },
+  {
+    "record_id": "steam:231977697",
+    "language": "zh",
+    "content_sha256": "dab16f2b0af6f15e3317fc3116b45e0c0a5b8137d8dc5ceb8a374b18ce8d02b7",
+    "length_tercile": 2
+  },
+  {
+    "record_id": "steam:237706669",
+    "language": "zh",
+    "content_sha256": "03351bb17e5ceaae5a12185428068caeb538c168e173cadef3348ec5e830c55e",
+    "length_tercile": 2
+  },
+  {
+    "record_id": "steam:237778840",
+    "language": "zh",
+    "content_sha256": "1a3da532a151b408fcf4f04568e357d901eede843dd0f35527e027d085921b25",
+    "length_tercile": 2
+  },
+  {
+    "record_id": "steam:232121391",
+    "language": "zh",
+    "content_sha256": "0415909ff5c33041242061d265787c4aef6b4b54f773d064a6b6610bb139ab79",
+    "length_tercile": 3
+  },
+  {
+    "record_id": "steam:238162977",
+    "language": "zh",
+    "content_sha256": "cc0ec1a7bd3e659ac32b2bc9a342cdefd48252dca146b3a018057ed5ac58c77c",
+    "length_tercile": 3
+  },
+  {
+    "record_id": "steam:234299803",
+    "language": "zh",
+    "content_sha256": "0ee21d1c607a9461a55263c0ee8d204eaf7aec3544346c25754437751e5f58f6",
+    "length_tercile": 3
+  },
+  {
+    "record_id": "steam:237677410",
+    "language": "zh",
+    "content_sha256": "4955eb83799b982df733bda3dba7e4af6ec6c5ed08dfd04eb503323d0a48e781",
+    "length_tercile": 3
+  },
+  {
+    "record_id": "steam:237688561",
+    "language": "zh",
+    "content_sha256": "480d9e0b59ffffb5cbd3d90ebc1aabeaf854e9c5e520daaac5a7bdbb09158743",
+    "length_tercile": 3
+  }
+]
