@@ -829,6 +829,23 @@ every path keeps the exception type it raises.
   `balanced` and `expansion`. `sources`, `balanced`, `expansion` and
   `screening` each expose `main(argv=None)` for the matching script in
   `scripts/collect/`. The state directory is `workspace_root() / 'runs/state'`.
+  `screening` is version `coarse-v2` since pipeline upgrade step U6.4
+  (LNK-03, UP-D13; `VERSION`): the Chinese character pattern
+  (`_char_zh`) and the mechanic pattern (`_mech`) are built on first use,
+  as `_char_en` is, from the glossary and the collection configuration
+  `configs/feedback-screening-terms.json` (`TERMS_PATH`). Characters: the
+  Chinese labels and every Chinese alias of `character` entries plus
+  `char_zh`, the coarse-v1 names the glossary lacks. Mechanics: the
+  canonical names, Chinese labels and unflagged aliases of `system` and
+  `mechanic` entries (Latin terms whole-word and case-free, spaces and
+  hyphens free), without `excluded_glossary_entries` (the control types,
+  which `CONTROL` handles) and `excluded_glossary_terms` (`PC`, `启动`,
+  `发生`), plus `mechanic`, the coarse-v1 patterns the glossary does not
+  cover; every entry of the file carries a reason. Decisions and the
+  summary carry `coarse-v2`, the summary also `terms_sha256`. Datasets
+  screened with `coarse-v1` keep their recorded decisions; nothing is
+  screened again. `balanced` and `expansion` still write the literal
+  `coarse-v1` (D-14 of the change record).
 - `config`, `balance_policy`, `evidence_quality`, `glossary_vectors`,
   `review`, `legacy_review`, `reporting`, `evaluation`, `quality_scoring`,
   `demo`, `cli` and `presentation` keep the responsibilities and behavior

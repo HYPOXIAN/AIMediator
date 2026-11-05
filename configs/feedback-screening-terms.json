@@ -1,0 +1,565 @@
+{
+  "version": "feedback-screening-terms-v1",
+  "screening": "coarse-v2",
+  "description": "Collection configuration (RULES.md P7): the terms of the coarse-v1 patterns CHAR_ZH and MECH that the glossary lacks. coarse-v2 builds the Chinese character pattern from the glossary Chinese labels and Chinese aliases of character entries plus char_zh, and the mechanic pattern from the canonical names, Chinese labels and unflagged aliases of system and mechanic entries plus mechanic, without the entries of excluded_glossary_entries and the terms of excluded_glossary_terms (reviewed in the coarse-v1 and coarse-v2 comparison of U6.4). A mechanic pattern of kind latin_word matches as a whole word (\\b on both sides), case-insensitive; kind cjk matches anywhere.",
+  "char_zh": [
+    {
+      "term": "傑米",
+      "reason": "traditional-script spelling of a glossary Chinese name; the glossary lists simplified forms only"
+    },
+    {
+      "term": "春麗",
+      "reason": "traditional-script spelling of a glossary Chinese name; the glossary lists simplified forms only"
+    },
+    {
+      "term": "蓋爾",
+      "reason": "traditional-script spelling of a glossary Chinese name; the glossary lists simplified forms only"
+    },
+    {
+      "term": "布蘭卡",
+      "reason": "traditional-script spelling of a glossary Chinese name; the glossary lists simplified forms only"
+    },
+    {
+      "term": "達爾錫",
+      "reason": "traditional-script spelling of a glossary Chinese name; the glossary lists simplified forms only"
+    },
+    {
+      "term": "迪傑",
+      "reason": "traditional-script spelling of a glossary Chinese name; the glossary lists simplified forms only"
+    },
+    {
+      "term": "曼儂",
+      "reason": "traditional-script spelling of a glossary Chinese name; the glossary lists simplified forms only"
+    },
+    {
+      "term": "瑪麗莎",
+      "reason": "traditional-script spelling of a glossary Chinese name; the glossary lists simplified forms only"
+    },
+    {
+      "term": "桑吉",
+      "reason": "community or variant Chinese name of a fighter that the glossary does not list"
+    },
+    {
+      "term": "嘉蜜",
+      "reason": "community or variant Chinese name of a fighter that the glossary does not list"
+    },
+    {
+      "term": "維加",
+      "reason": "traditional-script spelling of a glossary Chinese name; the glossary lists simplified forms only"
+    },
+    {
+      "term": "雅思敏",
+      "reason": "community or variant Chinese name of a fighter that the glossary does not list"
+    },
+    {
+      "term": "阿俊",
+      "reason": "community or variant Chinese name of a fighter that the glossary does not list"
+    },
+    {
+      "term": "阿军",
+      "reason": "community or variant Chinese name of a fighter that the glossary does not list"
+    },
+    {
+      "term": "將軍",
+      "reason": "traditional-script spelling of a glossary Chinese name; the glossary lists simplified forms only"
+    },
+    {
+      "term": "獅子",
+      "reason": "traditional-script spelling of a glossary Chinese name; the glossary lists simplified forms only"
+    },
+    {
+      "term": "阿光",
+      "reason": "community or variant Chinese name of a fighter that the glossary does not list"
+    },
+    {
+      "term": "阿杜",
+      "reason": "community or variant Chinese name of a fighter that the glossary does not list"
+    }
+  ],
+  "mechanic": [
+    {
+      "pattern": "drive[ -]?(?:rush|impact|reversal|gauge)",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "burn[ -]?out",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "perfect[ -]?parr\\w*",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "parr(?:y|ies|ying)",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "chip[ -]?damage",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "hit[ -]?box",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "hurt[ -]?box",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "frame[ -]?(?:data|advantage|trap|[+−-])",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "plus[ -]?(?:on[ -]?)?block",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "minus[ -]?(?:on[ -]?)?block",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "block[ -]?string",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "mix[ -]?ups?",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "match[ -]?ups?",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "zoning",
+      "kind": "latin_word",
+      "reason": "English competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "projectiles?",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "fire[ -]?balls?",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "invincib\\w*",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "armou?r",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "command[ -]?grabs?",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "throw[ -]?(?:loops?|tech)",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "drive[ -]?system",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "strike[ -]?throw",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "corner[ -]?carry",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "neutral",
+      "kind": "latin_word",
+      "reason": "English competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "damage[ -]?(?:scaling|penalty|output)",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "input[ -]?delay",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "input[ -]?reading",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "auto[ -]?combos?",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "one[ -]?(?:buttons?|inputs?)",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "reaction[ -]?(?:time|super)",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "anti[ -]?airs?",
+      "kind": "latin_word",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "鬥氣",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "斗氣",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "斗技",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "綠衝",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "绿防",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "綠防",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "红冲",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "紅衝",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "红防",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "紅防",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "猛冲",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "猛衝",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "气槽",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "氣槽",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "白血",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "削血",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "霸体",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "霸體",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "确反",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "確反",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "拆投",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "投循环",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "投循環",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "(?:二|两|兩|三|四|混|打|猜|起身)[择擇]",
+      "kind": "cjk",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "压起身",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "壓起身",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "压制",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "壓制",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "打投",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "投技",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "指令投",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "判定",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "帧数",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "幀數",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "加幀",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "負幀",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "无敌",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "無敵",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "中段",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "下段",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "差合",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "波升",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "飞道",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "飛道",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "一键",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "一鍵",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "自动连",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "自動連",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "輔助連",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "辅助连",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "现代.{0,10}(?:伤害|反应|反應|对空|對空)",
+      "kind": "cjk",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "現代.{0,10}(?:傷害|反應|對空)",
+      "kind": "cjk",
+      "reason": "pattern from coarse-v1: spelling, separator or inflection variants that exact glossary aliases do not cover"
+    },
+    {
+      "pattern": "伤害",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "傷害",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "搓招",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "昇龍",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "升龙",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "升龍",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "防空",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "防禦",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    },
+    {
+      "pattern": "防御",
+      "kind": "cjk",
+      "reason": "Chinese competitive term of coarse-v1 that no unflagged system or mechanic alias covers"
+    }
+  ],
+  "excluded_glossary_entries": [
+    {
+      "id": "system.modern",
+      "reason": "control type, which the CONTROL pattern already handles; as a mechanic term it moves accessibility praise and the adjective \"modern\" into review (U6.4 comparison)"
+    },
+    {
+      "id": "system.classic",
+      "reason": "control type, which the CONTROL pattern already handles; as a mechanic term it moves the adjective \"classic\" into review (U6.4 comparison)"
+    }
+  ],
+  "excluded_glossary_terms": [
+    {
+      "term": "PC",
+      "reason": "alias of Punish Counter that collides with the platform name in reviews (U6.4 comparison)"
+    },
+    {
+      "term": "启动",
+      "reason": "alias of Start-up that also means starting the game (U6.4 comparison)"
+    },
+    {
+      "term": "发生",
+      "reason": "Chinese label of Start-up that is the common verb \"happen\""
+    }
+  ]
+}

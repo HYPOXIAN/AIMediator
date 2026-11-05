@@ -87,5 +87,38 @@ class ScreeningTests(unittest.TestCase):
                 screening.load_sources(p)
 
 
+
+class CoarseV2PatternTests(unittest.TestCase):
+    """Screening coarse-v2 (pipeline upgrade U6.4, LNK-03, UP-D13): patterns generated from the glossary."""
+
+    def test_version_and_terms_file(self):
+        self.assertEqual(screening.VERSION, 'coarse-v2')
+        terms = json.loads(screening.TERMS_PATH.read_text(encoding='utf-8'))
+        for key in ('char_zh', 'mechanic', 'excluded_glossary_entries', 'excluded_glossary_terms'):
+            self.assertTrue(terms[key], key)
+            self.assertTrue(all(isinstance(t.get('reason'), str) and t['reason'] for t in terms[key]), key)
+        self.assertTrue(all(t['kind'] in ('latin_word', 'cjk') for t in terms['mechanic']))
+
+    def test_character_pattern_reads_the_glossary(self):
+        from aimediator.resources import glossary
+        entries = [e for e in glossary()['entries'] if e['category'] == 'character']
+        for entry in entries:
+            if not any('a' <= c.lower() <= 'z' for c in entry['chinese_label']):  # JP's label is Latin: _char_en
+                self.assertTrue(screening._char_zh().search(entry['chinese_label']), entry['id'])
+        # A supplemental traditional-script name still matches.
+        self.assertTrue(screening._char_zh().search('傑米太強了'))
+
+    def test_mechanic_pattern_reads_the_glossary_with_reviewed_exclusions(self):
+        mech = screening._mech()
+        for text in ('Drive Parry', 'drive-parry', 'perfect parry', '完美招架', 'Punish Counter', 'damage scaling',
+                     'perfect parries', '白血'):
+            self.assertTrue(mech.search(text), text)
+        for text in ('I play on PC', 'Modern controls', 'classic', '启动游戏', '发生了什么', 'Drive Impactful'):
+            self.assertFalse(mech.search(text), text)
+
+    def test_glossary_mechanic_with_a_claim_is_kept(self):
+        self.assertEqual(screening.classify(row('Drive Parry is too strong and unfair.'))[0], 'keep')
+        self.assertEqual(screening.classify(row('Drive Parry'))[0], 'review')
+
 if __name__=='__main__':
     unittest.main()

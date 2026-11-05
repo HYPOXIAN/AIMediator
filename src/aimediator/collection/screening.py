@@ -6,6 +6,8 @@ import re
 
 from ..resources import glossary, workspace_root
 ROOT=workspace_root()
+VERSION='coarse-v2'
+TERMS_PATH=ROOT/'configs/feedback-screening-terms.json'
 
 
 @functools.lru_cache(maxsize=1)
@@ -15,11 +17,65 @@ def _char_en():
     return re.compile(r'\b(?:'+ '|'.join(re.escape(x) for x in names)+r')\b',re.I)
 
 
-CHAR_ZH=re.compile('隆|卢克|傑米|杰米|春丽|春麗|古烈|盖尔|蓋爾|朱莉|蛛俐|肯|布兰卡|布蘭卡|达尔西姆|達爾錫|本田|迪杰|迪傑|曼侬|曼儂|玛丽莎|瑪麗莎|桑吉|莉莉|嘉米|嘉蜜|阿鬼|豪鬼|维加|維加|特瑞|不知火舞|艾琳娜|沙加特|沙盖特|毒蛇|阿里克斯|英格丽德|雅思敏|阿俊|阿军|印度人|阿三|老桑|将军|將軍|警察|狮子|獅子|阿光|阿杜')
+def _terms():
+    """Return the supplemental screening terms (configs/feedback-screening-terms.json; collection configuration, P7)."""
+    return json.loads(TERMS_PATH.read_text(encoding='utf-8'))
+
+
+def _flagged(alias):
+    return bool(alias.get('candidate_only') or alias.get('requires_context'))
+
+
+def _latin_term(term):
+    """Return the whole-word, case-free pattern of a glossary term with a Latin letter; spaces and hyphens may vary."""
+    return r'(?<![A-Za-z])'+r'[ -]?'.join(re.escape(part) for part in re.split(r'[ -]+',term.strip()))+r'(?![A-Za-z])'
+
+
+@functools.lru_cache(maxsize=1)
+def _char_zh():
+    """Return the Chinese character-name pattern (coarse-v2, LNK-03, UP-D13), built on first use.
+
+    Glossary Chinese labels and Chinese aliases of character entries (flagged community names included,
+    as screening is coarse) plus the supplemental char_zh terms; longer terms first.
+    """
+    terms={t['term'] for t in _terms()['char_zh']}
+    for entry in glossary()['entries']:
+        if entry['category']!='character':
+            continue
+        terms.add(entry['chinese_label'])
+        terms.update(a['text'] for a in entry['aliases'] if a['language']=='zh')
+    terms={t for t in terms if t and not re.search('[A-Za-z]',t)}
+    return re.compile('|'.join(re.escape(t) for t in sorted(terms,key=lambda t:(-len(t),t))))
+
+
+@functools.lru_cache(maxsize=1)
+def _mech():
+    """Return the mechanic pattern (coarse-v2, LNK-03, UP-D13), built on first use.
+
+    Canonical names, Chinese labels and unflagged aliases of system and mechanic entries (Latin terms
+    whole-word, case-free, with free spaces and hyphens), without the reviewed exclusions of the terms
+    file, plus its supplemental mechanic patterns.
+    """
+    config=_terms()
+    skipped_entries={e['id'] for e in config['excluded_glossary_entries']}
+    skipped_terms={t['term'].casefold() for t in config['excluded_glossary_terms']}
+    terms=set()
+    for entry in glossary()['entries']:
+        if entry['category'] not in ('system','mechanic') or entry['id'] in skipped_entries:
+            continue
+        terms.update((entry['canonical_name'],entry['chinese_label']))
+        terms.update(a['text'] for a in entry['aliases'] if not _flagged(a))
+    terms={t for t in terms if t.casefold() not in skipped_terms}
+    pieces=[_latin_term(t) if re.search('[A-Za-z]',t) else re.escape(t) for t in sorted({t for t in terms if t and t.strip()},key=lambda t:(-len(t),t))]
+    supplement=config['mechanic']
+    words=[t['pattern'] for t in supplement if t['kind']=='latin_word']
+    pieces+=([r'\b(?:'+'|'.join(words)+r')\b'] if words else [])+[t['pattern'] for t in supplement if t['kind']=='cjk']
+    return re.compile('|'.join(pieces),re.I)
+
+
 GAME=re.compile(r'\bsf\s*6\b|street\s*fighter|街霸|街头霸王|街頭霸王|快打旋風|ストリートファイター',re.I)
 OTHER=re.compile(r'\b(?:tekken|mortal kombat|mk1|mk11|guilty gear|dragon ball|league of legends|elden ring|cyberpunk|gta|yakuza|batman|zelda|granblue)\b|铁拳|鐵拳|真人快打|英雄联盟|英雄聯盟|蠻王|蛮王|黑客.{0,20}义体|银手|魔强统一战',re.I)
 EXPLICIT=re.compile(r'\b(?:balanc(?:e|ed|ing)|unbalanced|imbalanced|overpowered|underpowered|overtuned|undertuned|nerf(?:ed|s|ing)?|buff(?:ed|s|ing)?|pay[ -]?to[ -]?win|p2w|power[ -]?creep|top[ -]?tier|low[ -]?tier|bottom[ -]?tier|tier[ -]?list|win[ -]?rate|desbalancead\w*|balanceamento)\b|平衡|超模|超標|超标|强度|強度|削弱|加强|加強|下水道|毒瘤|粪角|糞角|三体人|三體人|轮椅|輪椅|数值怪|數值怪|付费.{0,3}(?:赢|赢)|付費.{0,3}贏|版本之子|人权卡|人權卡|(?:还|還|不|该|該|要|紧急|緊急|被|先|得|需要).{0,2}[削砍]|赢麻|贏麻',re.I)
-MECH=re.compile(r'\b(?:drive[ -]?(?:rush|impact|reversal|gauge)|burn[ -]?out|perfect[ -]?parr\w*|parr(?:y|ies|ying)|chip[ -]?damage|hit[ -]?box|hurt[ -]?box|frame[ -]?(?:data|advantage|trap|[+−-])|plus[ -]?(?:on[ -]?)?block|minus[ -]?(?:on[ -]?)?block|block[ -]?string|mix[ -]?ups?|match[ -]?ups?|zoning|projectiles?|fire[ -]?balls?|invincib\w*|armou?r|command[ -]?grabs?|throw[ -]?(?:loops?|tech)|drive[ -]?system|strike[ -]?throw|corner[ -]?carry|neutral|damage[ -]?(?:scaling|penalty|output)|input[ -]?delay|input[ -]?reading|auto[ -]?combos?|one[ -]?(?:buttons?|inputs?)|reaction[ -]?(?:time|super)|anti[ -]?airs?)\b|斗气|鬥氣|斗氣|斗技|綠衝|绿冲|绿冲|绿防|綠防|红冲|紅衝|红防|紅防|迸放|猛冲|猛衝|气槽|氣槽|白血|削血|霸体|霸體|确反|確反|拆投|投循环|投循環|(?:二|两|兩|三|四|混|打|猜|起身)[择擇]|压起身|壓起身|压制|壓制|打投|投技|指令投|判定|帧数|幀數|加帧|加幀|负帧|負幀|无敌|無敵|中段|下段|差合|波升|飞道|飛道|一键|一鍵|自动连|自動連|輔助連|辅助连|现代.{0,10}(?:伤害|反应|反應|对空|對空)|現代.{0,10}(?:傷害|反應|對空)|伤害|傷害|搓招|昇龍|升龙|升龍|防空|防禦|防御',re.I)
 QUAL=re.compile(r'\b(?:too|unfair|advantage|disadvantage|strong\w*|weak\w*|broken|busted|cheap|abuse|abusing|spam\w*|punish\w*|reward\w*|risk|safe|unsafe|react\w*|counter\w*|defen[cs]\w*|offen[cs]\w*|domin\w*|oppressive|frustrat\w*|annoy\w*|brain[ -]?dead|unblockable|unavoidable|unbeatable|over.?tuned|skill[ -]?gap|without[ -]?skill|no[ -]?skill|100[ -]?percent|infinite|damage|health|fair)\b|太|过强|過強|过弱|過弱|无脑|無腦|赖|賴|逆天|摸奖|摸獎|摸一下|暴打|吊打|碾压|碾壓|爆杀|爆殺|垃圾|恶心|噁心|恶臭|壓力|压力|不合理|合理|不公平|公平|高手|劣势|劣勢|优势|優勢|崩|没法|沒法|不能|无解|無解|反应|反應|猜拳|罚|罰|提款|半血|三分之一|伤害|傷害|回报|回報|风险|風險|乱杀|亂殺|简单|簡單',re.I)
 STRENGTH=re.compile(r'\b(?:too[ -]?(?:strong|weak)|stronger|weaker|overpowered|underpowered|over[ -]?tuned|under[ -]?tuned|broken|busted|cheap|unfair|brain[ -]?dead|oppressive|dominat\w*|overrated|underrated|carry|carries|carried)\b|太强|太強|太弱|过强|過強|过弱|過弱|无脑|無腦|逆天|暴打|吊打|碾压|碾壓|爆杀|爆殺|数值|數值|(?:角色|招式|技能).{0,12}(?:强|強|弱)|不公平|不合理|性能',re.I)
 SOLO=re.compile(r'world[ -]?tour|single[ -]?player|story[ -]?mode|arcade[ -]?mode|\bNPCs?\b|boss[ -]?fight|世界巡游|世界巡遊|环球|環球|单人|單人|剧情|劇情|剧情|RPG|開放世界|开放世界',re.I)
@@ -36,10 +92,10 @@ SPECIFIC=re.compile(r'\b(?:hit[ -]?box|hurt[ -]?box|frame[ -]?(?:data|advantage|
 
 def classify_rules(row):
     text=row['text_original']
-    char=bool(_char_en().search(text) or CHAR_ZH.search(text))
+    char=bool(_char_en().search(text) or _char_zh().search(text))
     game=bool(GAME.search(text))
     explicit=EXPLICIT.search(text)
-    mech=MECH.search(text)
+    mech=_mech().search(text)
     qual=QUAL.search(text)
     if re.search(r'top[ -]?tier.{0,16}(?:editing|thumbnail|reviewing|video production)',text,re.I) and not COMBAT_MECH.search(text) and not char:
         return 'exclude','creator_video_or_review_meta_discussion',[]
@@ -145,7 +201,7 @@ def main(argv=None):
     decisions=[]
     for identity,row in union.items():
         decision,reason,signals,method=classify(row,overrides)
-        result={'version':'coarse-v1','decision':decision,'reason':reason,'signals':signals,'method':method,'text_sha256':hashlib.sha256(row['text_original'].encode()).hexdigest(),'human_review':'pending'}
+        result={'version':VERSION,'decision':decision,'reason':reason,'signals':signals,'method':method,'text_sha256':hashlib.sha256(row['text_original'].encode()).hexdigest(),'human_review':'pending'}
         correction=language_corrections.get(identity)
         language=row['language']
         if correction:
@@ -178,7 +234,7 @@ def main(argv=None):
     assert all(hashlib.sha256((args.input/name).read_bytes()).hexdigest()==digest for name,digest in hashes.items())
     for r in tagged.values():
         assert r['text_original']==union[r['record_id']]['text_original']
-    summary={'screened_at_utc':dt.datetime.now(dt.timezone.utc).isoformat(),'version':'coarse-v1','method':'Deterministic rules with record-specific agent boundary corrections; no LLM or network requests. Not a human-validated benchmark.','unique_records':len(union),'counts':{'keep':len(kept),'review':len(review),'exclude':len(excluded)},'kept_by_language':dict(collections.Counter(r['language'] for r in kept)),'kept_by_platform':dict(collections.Counter(r['platform'] for r in kept)),'counts_by_platform':{p:dict(collections.Counter(r['coarse_screening']['decision'] for r in tagged.values() if r['platform']==p)) for p in sorted({r['platform'] for r in tagged.values()})},'reason_counts':dict(collections.Counter(r['reason'] for r in decisions)),'input_files':file_stats,'source_sha256':hashes,'script_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'override_sha256':hashlib.sha256(args.overrides.read_bytes()).hexdigest() if args.overrides.exists() else None,'agent_boundary_overrides_applied':sum(r['method']=='agent_boundary_review' for r in decisions),'source_files_unchanged':True,'original_text_unchanged':True,'patch_filtering':False,'language_filtering':False,'human_review_fields_blank':True}
+    summary={'screened_at_utc':dt.datetime.now(dt.timezone.utc).isoformat(),'version':VERSION,'terms_sha256':hashlib.sha256(TERMS_PATH.read_bytes()).hexdigest(),'method':'Deterministic rules with record-specific agent boundary corrections; no LLM or network requests. Not a human-validated benchmark.','unique_records':len(union),'counts':{'keep':len(kept),'review':len(review),'exclude':len(excluded)},'kept_by_language':dict(collections.Counter(r['language'] for r in kept)),'kept_by_platform':dict(collections.Counter(r['platform'] for r in kept)),'counts_by_platform':{p:dict(collections.Counter(r['coarse_screening']['decision'] for r in tagged.values() if r['platform']==p)) for p in sorted({r['platform'] for r in tagged.values()})},'reason_counts':dict(collections.Counter(r['reason'] for r in decisions)),'input_files':file_stats,'source_sha256':hashes,'script_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'override_sha256':hashlib.sha256(args.overrides.read_bytes()).hexdigest() if args.overrides.exists() else None,'agent_boundary_overrides_applied':sum(r['method']=='agent_boundary_review' for r in decisions),'source_files_unchanged':True,'original_text_unchanged':True,'patch_filtering':False,'language_filtering':False,'human_review_fields_blank':True}
     summary['language_corrections_applied']=len(set(language_corrections)&set(union))
     summary['language_corrections_sha256']=hashlib.sha256(args.language_corrections.read_bytes()).hexdigest() if args.language_corrections else None
     summary['original_fields_unchanged_except_explicit_language_corrections']=True
