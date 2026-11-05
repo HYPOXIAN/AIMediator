@@ -2693,6 +2693,46 @@ against the rule with `git revert` of the fix-up commits.
   2,596 requests).
 - Result: accepted, tag `upgrade-u7-review`.
 
+### 2026-11-05 U7 final review (recorded by U7-V)
+
+Recorded under the owner's standing instruction, the owner authorization
+of 2026-11-05 03:11 and UP-D18, by which the verification session
+records the final review and executes U7.6 when no fix-up step is left
+undone. The owner did not give this review in person. Basis: the U7-V
+note above, the U7-L section, E-7, E-8, "Batch results" and the
+[validation record](20261105-pipeline-upgrade-validation.md).
+
+| Item | Review outcome |
+| ---- | -------------- |
+| U7.1 and U7.2 (L) | accepted; E-7 and E-8 keep their adopted option (a) and stay under "Deferred" |
+| U7.3 (N) | accepted; V-1 is added to the validation record's limitations by fix-up step U7.F1 |
+| U7.4 (N, UP-D16) | accepted; the `RULES.md` v1.5 wording stays as adopted |
+| U7.5 (N) | accepted; the rows of the five reverted steps take the status of plan section 11 by fix-up step U7.F2 (V-2) |
+| The upgrade as a whole | accepted as measured, with the targets not met (T1, T3, T4, T5, T7, T8, T9) reported and passed to a later plan; no further step is reverted |
+
+Fix-up steps (N, `docs`; each adopted under the authorization, no
+recommendation existing for them):
+
+- **U7.F1** (V-1): the validation record gains a limitation on the
+  comments that its holdout and test split share with the other set's
+  development split, with the readings without them, and "Deferred"
+  names the overlap for a later plan. The validation record was written
+  in U7.3 and no step has declared it final; it becomes final with this
+  record in U7.6. Adding the limitation before closure is the smallest
+  change that puts it where the measurements are read. The alternative,
+  an erratum record after closure, would leave the record without it.
+- **U7.F2** (V-2): the Status cells of U4.4, U4.5, U4.F1, U5.2 and U5.3
+  in the progress table read `reverted (see Live evaluations)`, the
+  status of plan section 11; their notes stay. The sentence of "Batch
+  results" that says the rows keep `done` follows.
+
+Not fix-up steps: the targets not met, E-7, E-8, `enforce` on short
+comments, the U2.4 recall question, the D-4 scorers and D-14 need
+package code, prompts or new labeled data, which U7 may not change (work
+order section 3). They stay under "Deferred" for the owner and a later
+plan. Both fix-up steps fit this session's time box, so U7.6 follows
+here.
+
 ## Session log
 
 ### 2026-11-04 U0-1 (implementation)
