@@ -1556,6 +1556,38 @@ to p1 in brackets):
   which carries E-3 to the review of batch U2; then U3 (work order U3);
   blockers: none.
 
+### 2026-11-05 U3-1 and U3-L (implementation and live)
+
+- Steps: U3.1, U3.2, U3.3, U3.4, U3-L and U3.5 done; none started and
+  stashed.
+- State: HEAD is this entry's commit (parent `f7185bc`); tests 296; lock
+  updated by UP-D08 (U3.2, 8 keys) and UP-D09 (U3.3, 11 keys; U3.4,
+  `embeddings/` keys only, 771 keys), green after each step; U3.1 and U3.5
+  left it unchanged; rule check 0. Foreign working directory: 296 pass.
+  Installed-wheel acceptance at `1a5d520`: `"passed": true`, 18 commands.
+- Findings: entry without the tag `upgrade-u2` (UP-D20): the U2-L1 verdicts
+  and U2.6 are recorded; the U2 step that failed the adoption rule is U2.3
+  (E-3, rule 4, recall −4.9 points), kept until the review. Resume
+  procedure: clean tree, no `WIP Step` stash, gates passed. The owner
+  authorization of 2026-11-05 03:11 is added after the standing
+  instruction. D-9 (the request context in the shared key; `operations`
+  imports `cache`) and D-10 (later live runs keep `max_parallel_requests` 1
+  and no `cache_dir`) adopted under that authorization. U3-L: bridge
+  `openrouter-bridge-2`, digests and configuration equal to the record,
+  `doctor` passed; T8 1.25 times, not met (indicative; per-request latency
+  rises with N on the API); the warm run made no fresh chat or retrieval
+  embedding request and reproduced run 1 exactly; batch 8 against 32 changed
+  no retrieval decision (largest score difference 0.0035), while two fresh
+  runs at batch 32 differed in one decision; no escalation trigger of work
+  order section 6 raised. Spend of this session 0.0288 USD (bridge total
+  0.1486 USD). Boundary check of plan 8.8 from `c6452d8` and the commit
+  hygiene check print nothing; no request digest of the lock changed. With
+  the ordered executor, an interruption lets the running request finish
+  before the run stops (work order U3.1), also at N 1, where the serial
+  code stopped inside the request. Nothing bypassed.
+- Next: U4 (work order U4, sessions U4-1 and U4-L in one agent, UP-D20);
+  U3-V runs in the verification session after U6; blockers: none.
+
 ## Deferred
 
 - **Relevance and route agreement in `measurement`** (D-4, from U0.6). Add
