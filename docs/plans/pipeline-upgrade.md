@@ -692,8 +692,8 @@ batch on `latency-benchmark-v1` unless stated otherwise.
 | ID | Metric | Baseline | Target | Batch |
 | -- | ------ | -------- | ------ | ----- |
 | T1 | Extraction: mean uncached prompt tokens per request | U0.6 (archive: 3,421) | at most 1,700 | U2 |
-| T2 | Quality: mean prompt tokens per request | U0.6 (archive, legacy runner: 3,336 to 3,820) | at most 1,500 | U2 |
-| T3 | Relevance: mean prompt tokens per request | U0.6 | at most 65 % of baseline | U2 |
+| T2 | Quality: mean uncached prompt tokens per request | U0.6 (archive, legacy runner: 633 to 3,646 uncached; 3,336 to 3,820 in total) | at most 1,500 | U2 |
+| T3 | Relevance: mean uncached prompt tokens per request | U0.6 | at most 65 % of baseline | U2 |
 | T4 | Quality: mean elapsed per comment | U0.6 | at most 50 % of baseline | U4 |
 | T5 | Quality: first-attempt validity | U0.6 | at least 95 % | U4 |
 | T6 | Extraction: share of audited claims rejected, development | U0.6 (archive, 600 comments: 52 %) | at most 35 % | U5 |

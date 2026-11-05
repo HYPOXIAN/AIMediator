@@ -172,9 +172,10 @@ Runs:
 - **U2-L1** at the U2.4 commit: `u2l1-benchmark-off`, `u2l1-benchmark-shadow`,
   `u2l1-extraction-development-off`, `u2l1-silver-development-relevance`,
   `u2l1-quality-synthetic-shadow`. Verdicts: U2.2 on quality validity,
-  route agreement and quality tokens (T2); U2.3 on extraction precision and
-  recall and extraction tokens (T1); U2.4 on relevance agreement and
-  relevance tokens (T3). A curated report summarizes both sessions; U2-L1
+  route agreement and uncached quality tokens (T2); U2.3 on extraction
+  precision and recall and uncached extraction tokens (T1); U2.4 on
+  relevance agreement and uncached relevance tokens (T3). A curated report
+  summarizes both sessions; U2-L1
   creates it, U2-L2 adds its summary file in its own commit.
 - **U2-L2** at the U2.5 commit: `u2l2-benchmark-off`,
   `u2l2-extraction-development-off`; reference U2-L1. Verdict on U2.5.
