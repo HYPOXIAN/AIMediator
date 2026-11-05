@@ -21,7 +21,7 @@ the progress table in its own commit. Frozen when the plan is finished (D3).
 | UP-D07 | adopt | 2026-11-04 | plan section 9 |
 | UP-D08 | adopt | 2026-11-04 | plan section 9 |
 | UP-D09 | adopt | 2026-11-04 | plan section 9 |
-| UP-D10 | pending | — | plan section 9: answered after U0.6 measures the failure classes (ALG-01) |
+| UP-D10 | adopt | 2026-11-04 | plan section 9; adopted without waiting for the U0.6 measurement of the failure classes (ALG-01), which U0.6 still takes. Corrected in U0.6 from `pending`: the owner's answer predates the U0.1 commit (session log, U0-L) |
 | UP-D11 | adopt, each step under the adoption rule | 2026-11-04 | plan section 9 |
 | UP-D12 | adopt | 2026-11-04 | plan section 9 |
 | UP-D13 | adopt after the offline comparison | 2026-11-04 | plan section 9 |
@@ -146,6 +146,87 @@ blocking:
 
 ## Live environment and configuration (U0.6)
 
+Recorded on 2026-11-04 by session U0-L at `50becc2` (U0.5 done). Every L
+session checks these values at its start (plan 5.4); a difference
+invalidates comparisons with the U0.6 rows and is escalated.
+
+| Item | U0.6 value | Source |
+| ---- | ---------- | ------ |
+| Service | Ollama 0.34.2 at `http://127.0.0.1:11434` | `/api/version` |
+| `OLLAMA_NUM_PARALLEL` | 1 | stated by the owner on 2026-11-04; equal to the service's startup log |
+| `OLLAMA_FLASH_ATTENTION` | false | as above |
+| `OLLAMA_KV_CACHE_TYPE` | unset (f16) | as above |
+| Other server settings | `OLLAMA_CONTEXT_LENGTH` 0, `OLLAMA_MAX_LOADED_MODELS` 0, `OLLAMA_SCHED_SPREAD` false, `OLLAMA_GPU_OVERHEAD` 0 | startup log |
+| GPU | AMD Radeon RX 6700S (Navi 23), 8 GiB (8,176 MiB), Vulkan backend (RADV); about 6,640 MiB free when a model loads. The integrated Radeon 680M is not used | startup log, `lspci` |
+| Host memory | 22 GiB | `free` |
+| Chat models | `llama3.1:latest` `46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e`; `qwen2.5:7b` `845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e` | `aimediator doctor` |
+| Embedding | provider `ollama`, `qwen3-embedding:8b` `64b933495768fbd3b87c20583d379728a07471e0c66733a9df87cd1901b3c44b`, digest verified (`remote_digest_verified` true); chosen by the owner on 2026-11-04 | `aimediator doctor`, live configuration |
+| Runtime | Python 3.14.8, NumPy 2.4.6, `aimediator` 0.1.0 installed editable into `.venv` (system site packages, no network: `pip install --no-deps --no-index --no-build-isolation -e .`) | `aimediator doctor` |
+
+- The embedding provider differs from the archived 600-comment run and the
+  2026-10-28 CLI diagnostic, which used the configured provider
+  (`qwen/qwen3-embedding-8b` on a remote endpoint, no weight digest).
+  Retrieval scores of the U0.6 runs are therefore not comparable with the
+  archived run; later L sessions compare with U0.6.
+- `qwen3-embedding:8b` does not fit the GPU whole: 27 to 29 of 37 layers
+  are offloaded, depending on free memory at load time. It and the chat
+  models replace one another in GPU memory during a run.
+- `doctor` passed only after escalation E-1 (`connection_timeout` 120).
+
+Live configuration `runs/upgrade/live-config.json`: the output of
+`aimediator init` on 2026-11-04 with one change, `connection_timeout` 120
+instead of 10 (owner, E-1). The embedding endpoint is `null`, no
+credential is read, and no L session passes `--env-file`.
+
+```json
+{
+  "schema_version": "aimediator-config-v1",
+  "base_url": "http://127.0.0.1:11434",
+  "routing": {
+    "models": {
+      "llama3.1:latest": {
+        "language": "en",
+        "prompt": "prompts/summarize-balance.en.txt"
+      },
+      "qwen2.5:7b": {
+        "language": "zh",
+        "prompt": "prompts/summarize-balance.zh.txt"
+      }
+    },
+    "policy": "Route English comments and English instructions only to Llama, Chinese comments and Chinese instructions only to Qwen. Unsupported languages are recorded and not sent. Admit comments to extraction only when vector retrieval and relevance review agree; audit every generated claim against original evidence before aggregation."
+  },
+  "inference_options": {
+    "temperature": 0,
+    "seed": 42,
+    "num_ctx": 8192
+  },
+  "connection_timeout": 120,
+  "request_timeout": 1800,
+  "embedding": {
+    "provider": "ollama",
+    "model": "qwen3-embedding:8b",
+    "endpoint": null,
+    "credential_env": "EMBEDDING_API_KEY"
+  },
+  "evidence_quality": "off",
+  "stop_after": "full",
+  "num_gpu": null,
+  "report_scope": "collection_sample"
+}
+```
+
+Inputs (plan 8.6), materialized with the committed tool, every content hash
+checked: `runs/upgrade/inputs/latency-benchmark-v1.jsonl` (60 rows, SHA-256
+`24a452ceabe140fe531d72dc4b7a385182c7291cf2df21f63d525ffee9403519`),
+`extraction-precision-v1-development.jsonl` (227 rows,
+`0d6c9d3f3df0e444a6204611d8de0856ff881de06d0efc0ebdc76c0cb2424d2d`) and
+`balance-silver-v1-development.jsonl` (70 rows, from
+`data/raw/feedback/20261015-expanded/screened/records.jsonl`,
+`c05a30342ae57e222b58105d1ae0d37698ff41aa77db6ddd6db96733131abce8`). The
+synthetic quality run reads
+`data/evaluation/evidence-quality-synthetic-v1/records.jsonl` as is (38
+rows, `8a41f808074bce16f5badcc3a645c0f34eec7f78ece77196fd22c5725dc8a216`).
+
 ## Live evaluations
 
 | Session | Commit | Set | Mode | Wall time | Prompt tokens by stage | Output tokens by stage | Failures | Claims generated / accepted | Precision / recall (dev) | Quality validity | Verdict |
@@ -220,8 +301,80 @@ blocking:
   (`analyze` cannot read it). Recommendation and action: (a). N-class, undone
   by a revert, no `RULES.md` change, nothing deleted. The two other scripts
   use `common.write`.
+- **D-2 (U0.6) What the "Failures" column counts.** Plan 5.4 rule 2
+  compares "technical-failure units on the benchmark" without defining the
+  unit. `u0-benchmark-off` ended `partial` (exit 5, "requested processing
+  has unresolved technical failures") with 0 failed requests and 0
+  generation-failed comments. The two units behind the exit code are
+  comments with a borderline retrieval margin (review queue) that the
+  retrieval review rejected: they never become relevance candidates, keep
+  `model_related` `null`, and `pipeline.coverage` reports them as
+  `relevance_pending_or_failed` (coverage `relevance_state`
+  `technical_failure_or_pending`). Options: (a) record two counts apart:
+  technical failures (failed requests, `generation_failed` and
+  `quality_failed` comments) and pending units
+  (`relevance_pending_or_failed`); (b) count both as technical failures;
+  (c) count failed requests only. Recommendation and action: (a), so either
+  reading of rule 2 can be applied to the U0.6 rows; the recommended
+  reading for U2 compares technical failures, with pending units compared
+  apart. N-class (record only). Finding: the CLI's `partial` message calls
+  review-queue units technical failures.
+- **D-3 (U0.6) Interrupted live run discarded instead of resumed.** The
+  agent session ended at about 21:04 while `u0-benchmark-shadow` was in its
+  quality stage, and the run process ended with it (state `running`, last
+  update 2026-11-05T05:03:58Z). Plan 10.4 resumes an interrupted live run
+  with `--resume`. For a reference run that would (1) add the downtime to
+  the wall time, which the tool measures from manifest creation to the last
+  state update, and (2) return the in-flight quality request, whose only
+  transport attempt is reserved as `started`, as
+  `attempt_budget_exhausted`: a failure caused by the interruption. Both
+  would enter the U2 reference. Options: (a) resume as plan 10.4 says and
+  correct the numbers by hand; (b) keep the interrupted run as
+  `runs/upgrade/u0-benchmark-shadow-interrupted` (archived, not measured)
+  and run `u0-benchmark-shadow` again in a new directory. Recommendation and
+  action: (b). N-class (`runs/` and the archive only), nothing deleted. The
+  remaining runs ran in their own process session (`setsid`), so the end of
+  an agent session no longer stops them.
+- **D-4 (U0.6) Relevance and route agreement computed outside the
+  package.** Rule 4 of plan 5.4 and step U0.6 need relevance agreement with
+  the `balance-silver-v1` development labels and route agreement on
+  `evidence-quality-synthetic-v1`. `aimediator.measurement` computes
+  neither; `aimediator evaluate quality` scores point-level labels with
+  adjudicated matches, which the synthetic set does not hold; and
+  `evaluate_balance_review.py` requires the holdout sources in the run. The
+  U0 boundary gives U0-L no package or script change. Options: (a) a
+  one-off scorer under `runs/upgrade/tools/` that applies `relevance_metrics`
+  of `scripts/experiments/evaluate_balance_review.py` (label `related`
+  expects `relevance.json` `agreement` true; `uncertain` excluded) and the
+  route check of `tests/test_evidence_quality.py` (over the cases that
+  reach the quality stage: status `completed`, no errors, and sorted
+  `routes_present` equal to sorted `expected_routes`), with its code
+  archived under `provenance/` and its output in the curated summary; (b)
+  add both functions to `measurement` (outside the U0-L boundary).
+  Recommendation and action: (a); both functions move into `measurement`
+  with tests before U2-L1 (see "Deferred").
 
 ## Escalations
+
+- **E-1 (U0.6) `aimediator doctor` fails with the local embedding
+  provider.** Raised and resolved on 2026-11-04. The first
+  `doctor --config runs/upgrade/live-config.json` (the `init` defaults,
+  `connection_timeout` 10) exited 3, `service_unavailable`, "Service/model
+  probe unavailable (TimeoutError)". The probe's `/api/embed` call runs
+  under `connection_timeout` (`inference.probe` through `Transport.api`
+  without a run folder) and includes loading `qwen3-embedding:8b`; the
+  service log shows the load aborted when the client closed the connection
+  after 10.08 s (HTTP 499). One cold load from the page cache took 7.0 s
+  (measured with `keep_alive` 0); the load from disk took longer than 10 s.
+  `analyze` runs the same probe at the start of every run, and the chat
+  models evict the embedding model, so run starts would pass or fail with
+  the page cache. Options: (a) `connection_timeout` 120 in the live
+  configuration; (b) keep 10 s and retry failed starts; (c) the configured
+  remote provider; (d) end U0-L without runs. Owner decision on
+  2026-11-04: (a). No request byte changes; the key also bounds
+  `/api/tags`. `doctor` then passed every check. Blocked: nothing after
+  the decision. Finding for U1 (service identity, plan 4.7): the probe
+  applies the connection timeout to a call that loads a model.
 
 ## Verification notes
 
@@ -258,3 +411,11 @@ blocking:
   configuration.
 
 ## Deferred
+
+- **Relevance and route agreement in `measurement`** (D-4, from U0.6). Add
+  the relevance agreement of `balance-silver-v1` and the route agreement of
+  `evidence-quality-synthetic-v1`, with tests, to `aimediator.measurement`
+  before U2-L1, so the L sessions of U2 compute them with committed code
+  and the rule of D-4. The U2 boundary does not list `measurement.py`; the
+  owner decides whether the U2 work order adds it or U2-L reuses the
+  archived one-off scorer.
