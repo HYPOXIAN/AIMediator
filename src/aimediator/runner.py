@@ -7,6 +7,7 @@ import threading
 import time
 from typing import Any, Callable
 
+from .cache import SharedCache, chat_key
 from .common import sha as digest, strict_json, write as write_json
 from .evidence_quality import schema_errors
 from .inference import streamed_chat
@@ -21,7 +22,9 @@ class Runner:
                  chat_transport: Callable[..., dict[str, Any]] | None = None,
                  progress: Callable[[str, list[str], bool | None], None] | None = None,
                  log: Callable[[str], None] | None = None,
-                 journal: Callable[[Path, bool], None] | None = None) -> None:
+                 journal: Callable[[Path, bool], None] | None = None,
+                 shared_cache: SharedCache | None = None, model_digests: dict[str, str] | None = None,
+                 service_version: str | None = None) -> None:
         self.base, self.folder, self.prompts = base, folder, prompts
         self.quality_identity = quality_identity
         self.quality_policy = quality_policy
@@ -30,6 +33,10 @@ class Runner:
         self.log = log
         self.chat_transport = chat_transport
         self.journal = journal
+        # The shared cache keys requests by payload, model digest and service version (plan 4.6, UP-D09).
+        self.shared_cache = shared_cache
+        self.model_digests = model_digests or {}
+        self.service_version = service_version
         self._locks, self._locks_guard = {}, threading.Lock()
 
     def _identity_lock(self, identity: str) -> threading.Lock:
@@ -99,13 +106,14 @@ class Runner:
         identity = digest(json.dumps(cache_payload, sort_keys=True, ensure_ascii=False).encode())
         folder = self.folder / 'requests' / stage / identity
         with self._identity_lock(identity):
-            return self._validate(model, stage, ids, data, visible, schema, payload, identity, folder)
+            return self._validate(model, stage, ids, data, visible, schema, payload, identity, folder,
+                                  request_context)
 
     def _validate(self, model: str, stage: str, ids: list[str], data: dict[str, Any], visible: dict[str, Any],
-                  schema: dict[str, Any], payload: dict[str, Any], identity: str,
-                  folder: Path) -> tuple[dict[str, Any] | None, dict[str, Any]]:
+                  schema: dict[str, Any], payload: dict[str, Any], identity: str, folder: Path,
+                  request_context: dict[str, Any] | None = None) -> tuple[dict[str, Any] | None, dict[str, Any]]:
         """Return the parsed result and metadata of one request, writing validation.json and calling the journal."""
-        response = self._response(model, stage, ids, folder, payload)
+        response = self._response(model, stage, ids, folder, payload, request_context)
         if stage == 'quality' and (not isinstance(response, dict) or
                 not isinstance(response.get('response'), dict)):
             response = {'elapsed_seconds': 0, 'response': {'done': False,
@@ -138,8 +146,12 @@ class Runner:
             'elapsed_seconds': response.get('elapsed_seconds', 0)}
 
     def _response(self, model: str, stage: str, ids: list[str], folder: Path,
-                  payload: dict[str, Any]) -> dict[str, Any]:
-        """Return the journaled response of a request, calling the transport only when none is saved."""
+                  payload: dict[str, Any], request_context: dict[str, Any] | None = None) -> dict[str, Any]:
+        """Return the journaled response of a request; else the shared cache's; else call the transport.
+
+        A shared-cache hit writes the run's response.json with elapsed_seconds 0 and a reuse-provenance.json;
+        a fresh finished response is stored in the shared cache after the run's response.json.
+        """
         request_path = folder / 'request.json'
         response_path = folder / 'response.json'
         if response_path.exists():
@@ -153,6 +165,16 @@ class Runner:
                     'error': 'Unreadable cached response: ' + str(exc)}}
         else:
             write_json(request_path, payload)
+            key = None
+            if self.shared_cache is not None:
+                key = chat_key(payload, self.model_digests.get(model), self.service_version, request_context)
+                cached = self.shared_cache.lookup(key, payload)
+                if cached is not None:
+                    write_json(folder / 'reuse-provenance.json', {'source': 'shared_cache', 'key': key,
+                               'original_elapsed_seconds': cached.get('elapsed_seconds')})
+                    response = {'elapsed_seconds': 0, 'response': cached['response']}
+                    write_json(response_path, response)
+                    return response
             if self.log is not None:
                 self.log(f'{stage}: {model}, {len(ids)} items')
             start = time.monotonic()
@@ -172,4 +194,6 @@ class Runner:
                           'message': {'content': ''}, 'error': type(exc).__name__ + ': ' + str(exc)}
             response = {'elapsed_seconds': time.monotonic() - start, 'response': result}
             write_json(response_path, response)
+            if key is not None:
+                self.shared_cache.store(key, payload, response)
         return response

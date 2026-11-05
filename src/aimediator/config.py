@@ -17,7 +17,7 @@ def defaults():
             'embedding': {'provider': 'ollama', 'model': 'qwen3-embedding:8b',
                           'endpoint': None, 'credential_env': 'EMBEDDING_API_KEY'},
             'evidence_quality': 'off', 'stop_after': 'full', 'num_gpu': None,
-            'max_parallel_requests': 1,
+            'max_parallel_requests': 1, 'cache_dir': None,
             'report_scope': 'collection_sample'}
 
 
@@ -94,6 +94,8 @@ def validate(cfg):
         raise Failure(2, 'num_gpu must be a nonnegative integer or null')
     if type(cfg['max_parallel_requests']) is not int or not 1 <= cfg['max_parallel_requests'] <= 8:
         raise Failure(2, 'max_parallel_requests must be an integer from 1 to 8')
+    if cfg['cache_dir'] is not None and (not isinstance(cfg['cache_dir'], str) or not cfg['cache_dir'].strip()):
+        raise Failure(2, 'cache_dir must be a nonempty path or null')
     if cfg['report_scope'] != 'collection_sample':
         raise Failure(2, 'Only collection_sample report scope is supported')
     if cfg['evidence_quality'] not in ('off', 'shadow', 'enforce') or cfg['stop_after'] not in ('relevance', 'quality', 'full'):
@@ -112,6 +114,9 @@ def resolve(path=None, overrides=None, env_file=None):
         if not isinstance(supplied, dict) or set(supplied) - set(cfg):
             raise Failure(2, 'Unknown configuration keys')
         cfg.update(supplied)
+        # A relative cache directory in a configuration file resolves against that file.
+        if isinstance(cfg['cache_dir'], str) and cfg['cache_dir'].strip():
+            cfg['cache_dir'] = str((Path(path).resolve().parent / cfg['cache_dir']).resolve())
     # A supplied env file may configure an explicit configured provider; it is never discovered.
     overrides = overrides or {}
     for key, value in overrides.items():
@@ -119,6 +124,9 @@ def resolve(path=None, overrides=None, env_file=None):
             continue
         if key.startswith('embedding_'):
             cfg['embedding'][key[len('embedding_'):]] = value
+        elif key == 'cache_dir':
+            # A CLI path resolves from the invocation directory.
+            cfg[key] = str(Path(value).resolve())
         else:
             cfg[key] = value
     if cfg['embedding']['provider'] == 'configured':

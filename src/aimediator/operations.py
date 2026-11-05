@@ -3,7 +3,7 @@ from pathlib import Path
 import sys
 import threading
 from types import SimpleNamespace
-from . import balance_policy, evidence_quality, pipeline, resources, retrieval, runner
+from . import balance_policy, cache, evidence_quality, pipeline, resources, retrieval, runner
 from .common import Failure, canonical, input_rows, new_path, read, sha, write
 from .config import credential, resolve, validate
 from .inference import Transport, probe, service_version
@@ -122,8 +122,13 @@ def analyze(input_path=None, out=None, cfg=None, resume=None, env_file=None, tra
                 with serial:
                     store.record_request(folder, relative, completed)
 
+            ident = manifest['identity']
+            shared = cache.SharedCache(cfg['cache_dir']) if cfg['cache_dir'] else None
+
             def runner_factory(*values):
-                return runner.Runner(*values, chat_transport=transport.chat, progress=progress, journal=journal)
+                return runner.Runner(*values, chat_transport=transport.chat, progress=progress, journal=journal,
+                                     shared_cache=shared, model_digests=ident['models'],
+                                     service_version=(ident.get('service') or {}).get('ollama_version'))
 
             def retrieve(*values):
                 if not quiet:

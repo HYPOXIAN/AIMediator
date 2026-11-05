@@ -451,6 +451,7 @@ src/aimediator/
   pipeline.py              # analysis stages over one RunState
   # infrastructure
   inference.py             # Ollama HTTP calls and the production Transport
+  cache.py                 # shared response and embedding cache across runs
   runner.py                # content-addressed journal of model requests
   retrieval.py             # embedding retrieval against the topic anchors
   run_store.py             # identity, snapshots, locking, lifecycle state
@@ -610,6 +611,27 @@ every path keeps the exception type it raises.
   errors and unreadable cache files; `quality` turns them into failed
   attempts with `done_reason` `transport_error`, `invalid_cache` or
   `invalid_response`.
+  `Runner(..., shared_cache=None, model_digests=None, service_version=None)`
+  (step U3.3, UP-D09): with a `cache.SharedCache`, a request without a
+  journaled response looks up the shared key (`cache.chat_key`) before the
+  transport. A hit writes the run's `request.json`, a
+  `reuse-provenance.json` (`source` `shared_cache`, `key`,
+  `original_elapsed_seconds`) and `response.json` with `elapsed_seconds` 0;
+  a miss calls the transport and, after the run's `response.json`, stores
+  the response when it is finished (`done` true, `done_reason` `stop`, no
+  `error`). `operations.analyze` passes the model digests and the service
+  version of the run identity. Requests with the same identity run one at
+  a time (step U3.2).
+- `cache` (infrastructure; imports `common` only; pipeline upgrade decision
+  UP-D01, step U3.3): `chat_key(payload, model_digest, service_version,
+  request_context=None)` is the SHA-256 of the payload with `stream` false,
+  the model digest, the service version and the request context when given
+  (the quality attempt: two attempts may send the same bytes); the run
+  identity is not part of it. `SharedCache(root)` keeps
+  `chat/<key[:2]>/<key>/request.json` and `response.json`, written with
+  `common.write`; `lookup(key, request)` returns the stored response only
+  when the stored request equals the request and the response is finished,
+  and `store(key, request, response)` stores finished responses only.
 - `retrieval`: `retrieve(rows, base, folder, model, embedding_config=None,
   api_transport=None, embed_transport=None, log=None)` writes
   `embeddings/<sha256>.json` and `retrieval.json`; `log` receives the
@@ -859,6 +881,12 @@ The generated config uses a versioned schema, rejects unknown keys, and contains
   fresh inference is not bitwise reproducible (the service batches parallel
   requests), while replay from the run journal stays exact. A configuration
   file without the key stays valid: resolution starts from the defaults.
+- `cache_dir`, a path or `null` (default), with the option
+  `analyze --cache-dir` (step U3.3, UP-D09): the shared cache of section 7.
+  A relative path in a configuration file resolves against that file's
+  directory, a CLI path against the invocation directory; the resolved
+  absolute path is saved in `resolved-config.json` and enters the run
+  identity.
 
 Keep secrets out of JSON configuration, snapshots, request identities, and logs.
 Configured embedding credentials come from named environment variables or an
@@ -903,7 +931,8 @@ without pretending legacy schemas were written by the new CLI.
   resource-snapshot/            # prompts, policies, glossary, anchors
   code-manifest.json            # relevant module bytes/digests, package version
   run-state.json                # atomic state and stage counters
-  requests/<stage>/<identity>/  # request/response/validation, partial attempts
+  requests/<stage>/<identity>/  # request/response/validation, partial attempts,
+                                #   reuse-provenance.json for a shared-cache hit
   retrieval.json
   relevance.json
   full-pipeline-coverage.json
@@ -932,8 +961,13 @@ metadata, not inference-cache keys.
 Use canonical serialized request content for request identity, including
 model/digest, messages, schema, inference options, and attempt identity. Preserve
 raw responses and rerun validation before using cached results. Same comment
-ID or same model tag alone is insufficient. V1 has no automatic cross-run cache
-import. Historical exact-request replay remains a separate research operation.
+ID or same model tag alone is insufficient. Cross-run reuse goes only through
+the shared cache of `cache_dir` (section 6; pipeline upgrade step U3.3,
+UP-D09), off by default: its key is the payload with `stream` false, the model
+digest, the service version and the request context, never the run identity;
+each reused response is marked by `requests/<stage>/<identity>/reuse-provenance.json`
+and has `elapsed_seconds` 0. Historical exact-request replay remains a separate
+research operation.
 
 Lifecycle states: `created -> running -> completed|partial|interrupted|failed`.
 Store current stage, requested stop stage, timestamps, failure reasons, and

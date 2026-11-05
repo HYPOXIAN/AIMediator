@@ -68,8 +68,9 @@ There is no implicit configuration or `.env` discovery. `init` writes a versione
 JSON template and refuses replacement. Unknown fields, credential-bearing URLs,
 nonfinite timeouts, unsupported inference tuning and changed model routing are
 rejected. Paths supplied on the CLI resolve from the invocation directory.
-The V1 configuration has no file-valued resource fields; resources resolve from
-the installed package, so it has no hidden relative resource paths.
+Resources resolve from the installed package, so the configuration has no
+hidden relative resource paths. Its only path is the optional `cache_dir`
+(below), which resolves against the configuration file when relative.
 
 The template retains English `llama3.1:latest`, Chinese `qwen2.5:7b`, local
 `qwen3-embedding:8b`, temperature 0, seed 42, existing stage-specific output/context
@@ -105,6 +106,17 @@ must serve that many requests at once (for Ollama, `OLLAMA_NUM_PARALLEL` of
 at least the value, and memory for each slot). With a value above 1, fresh
 answers are not bitwise reproducible, because the service batches parallel
 requests; a resumed or replayed run reuses its journaled answers exactly.
+
+`cache_dir` (default `null`, off; `--cache-dir`) names a cache shared across
+runs, for example `runs/cache`. A request that the run has not journaled yet
+is answered from the cache when an earlier run sent the same request bytes to
+the same model digest and service version; otherwise the service answers and
+the cache keeps finished answers. Each reused answer is marked by a
+`reuse-provenance.json` beside its `response.json` (source, cache key and the
+original elapsed time) and has an elapsed time of 0, so measurements count
+fresh and reused requests apart. A run whose requests all come from the cache
+reproduces the earlier run's answers exactly. Delete the directory to start
+cold; it holds no credentials.
 
 To use a configured embedding service, explicitly set `embedding.provider` to
 `configured`, `embedding.endpoint` to your HTTP(S) embedding endpoint,
