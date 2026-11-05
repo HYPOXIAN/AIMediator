@@ -1,0 +1,93 @@
+{
+  "schema": "aimediator-upgrade-environment-v1",
+  "recorded_on": "2026-11-04",
+  "session": "U0-L",
+  "step": "U0.6",
+  "git_commit": "50becc2",
+  "service": {
+    "name": "ollama",
+    "version": "0.34.2",
+    "base_url": "http://127.0.0.1:11434",
+    "source": "/api/version"
+  },
+  "server_settings": {
+    "OLLAMA_NUM_PARALLEL": "1",
+    "OLLAMA_FLASH_ATTENTION": "false",
+    "OLLAMA_KV_CACHE_TYPE": null,
+    "source": "stated by the owner on 2026-11-04; equal to the service startup log",
+    "other_from_startup_log": {
+      "OLLAMA_CONTEXT_LENGTH": "0",
+      "OLLAMA_MAX_LOADED_MODELS": "0",
+      "OLLAMA_SCHED_SPREAD": "false",
+      "OLLAMA_GPU_OVERHEAD": "0"
+    },
+    "note": "OLLAMA_KV_CACHE_TYPE unset means the f16 default"
+  },
+  "gpu": {
+    "model": "AMD Radeon RX 6700S (Navi 23)",
+    "memory_mib": 8176,
+    "backend": "Vulkan (RADV)",
+    "free_mib_at_model_load": 6640,
+    "unused_integrated_gpu": "AMD Radeon 680M",
+    "embedding_model_offload": "27 to 29 of 37 layers, depending on free memory"
+  },
+  "host_memory_gib": 22,
+  "doctor": {
+    "checks": {
+      "dependencies": "passed",
+      "resources": "passed",
+      "configuration": "passed",
+      "input": "not_provided",
+      "output": "not_provided",
+      "service_models": "passed",
+      "embedding_probe": "passed"
+    },
+    "installed_models": {
+      "qwen3-embedding:8b": "64b933495768fbd3b87c20583d379728a07471e0c66733a9df87cd1901b3c44b",
+      "qwen2.5:7b": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+      "llama3.1:latest": "46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e"
+    },
+    "input_comments": null,
+    "remote_digest_verified": true,
+    "runtime": {
+      "package_version": "0.1.0",
+      "python": "3.14.8",
+      "numpy": "2.4.6"
+    }
+  },
+  "live_config": {
+    "schema_version": "aimediator-config-v1",
+    "base_url": "http://127.0.0.1:11434",
+    "routing": {
+      "models": {
+        "llama3.1:latest": {
+          "language": "en",
+          "prompt": "prompts/summarize-balance.en.txt"
+        },
+        "qwen2.5:7b": {
+          "language": "zh",
+          "prompt": "prompts/summarize-balance.zh.txt"
+        }
+      },
+      "policy": "Route English comments and English instructions only to Llama, Chinese comments and Chinese instructions only to Qwen. Unsupported languages are recorded and not sent. Admit comments to extraction only when vector retrieval and relevance review agree; audit every generated claim against original evidence before aggregation."
+    },
+    "inference_options": {
+      "temperature": 0,
+      "seed": 42,
+      "num_ctx": 8192
+    },
+    "connection_timeout": 120,
+    "request_timeout": 1800,
+    "embedding": {
+      "provider": "ollama",
+      "model": "qwen3-embedding:8b",
+      "endpoint": null,
+      "credential_env": "EMBEDDING_API_KEY"
+    },
+    "evidence_quality": "off",
+    "stop_after": "full",
+    "num_gpu": null,
+    "report_scope": "collection_sample"
+  },
+  "live_config_note": "aimediator init output with connection_timeout 120 instead of 10 (owner, escalation E-1); embedding endpoint null, no credential read"
+}

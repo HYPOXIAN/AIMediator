@@ -1,0 +1,684 @@
+{
+  "set": "evidence-quality-synthetic-v1",
+  "run": "u0-quality-synthetic-shadow",
+  "rule": "over cases that reach the quality stage: completed, no errors, sorted routes_present == sorted expected_routes",
+  "overall": {
+    "cases": 38,
+    "admitted": 34,
+    "reached_quality": 34,
+    "completed": 28,
+    "failed": 6,
+    "route_agreement": {
+      "numerator": 16,
+      "denominator": 34,
+      "value": 0.47058823529411764,
+      "wilson95": [
+        0.3145150447508847,
+        0.6326328701993107
+      ]
+    }
+  },
+  "by_language": {
+    "en": {
+      "cases": 19,
+      "admitted": 16,
+      "reached_quality": 16,
+      "completed": 16,
+      "failed": 0,
+      "route_agreement": {
+        "numerator": 10,
+        "denominator": 16,
+        "value": 0.625,
+        "wilson95": [
+          0.38641040545502714,
+          0.8151876744113636
+        ]
+      }
+    },
+    "zh": {
+      "cases": 19,
+      "admitted": 18,
+      "reached_quality": 18,
+      "completed": 12,
+      "failed": 6,
+      "route_agreement": {
+        "numerator": 6,
+        "denominator": 18,
+        "value": 0.3333333333333333,
+        "wilson95": [
+          0.1627877475083369,
+          0.5625053270405489
+        ]
+      }
+    }
+  },
+  "disagreements_by_category": {
+    "damage_comparison": 1,
+    "high_emotion": 2,
+    "injection": 2,
+    "me_too": 1,
+    "missing_character": 1,
+    "numeric_request": 1,
+    "opposing_mechanics": 2,
+    "past_patch": 1,
+    "price_and_opinion": 1,
+    "quoted_voice": 2,
+    "sarcasm": 1,
+    "system_and_cosmetic": 2,
+    "unknown_identity": 1
+  },
+  "not_reaching_quality_by_category": {
+    "me_too": 1,
+    "price_and_opinion": 1,
+    "venting": 2
+  },
+  "cases": [
+    {
+      "case_id": "venting:zh",
+      "comment_id": "synthetic:venting:zh",
+      "language": "zh",
+      "category": "venting",
+      "admitted": false,
+      "reached_quality": false,
+      "status": null,
+      "expected_routes": [
+        "exclude"
+      ],
+      "routes_present": null,
+      "agrees": false
+    },
+    {
+      "case_id": "venting:en",
+      "comment_id": "synthetic:venting:en",
+      "language": "en",
+      "category": "venting",
+      "admitted": false,
+      "reached_quality": false,
+      "status": null,
+      "expected_routes": [
+        "exclude"
+      ],
+      "routes_present": null,
+      "agrees": false
+    },
+    {
+      "case_id": "general:zh",
+      "comment_id": "synthetic:general:zh",
+      "language": "zh",
+      "category": "general",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "opinion_only"
+      ],
+      "routes_present": [
+        "opinion_only"
+      ],
+      "agrees": true
+    },
+    {
+      "case_id": "general:en",
+      "comment_id": "synthetic:general:en",
+      "language": "en",
+      "category": "general",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "opinion_only"
+      ],
+      "routes_present": [
+        "opinion_only"
+      ],
+      "agrees": true
+    },
+    {
+      "case_id": "missing_character:zh",
+      "comment_id": "synthetic:missing_character:zh",
+      "language": "zh",
+      "category": "missing_character",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "failed",
+      "expected_routes": [
+        "review"
+      ],
+      "routes_present": [
+        "review"
+      ],
+      "agrees": false
+    },
+    {
+      "case_id": "missing_character:en",
+      "comment_id": "synthetic:missing_character:en",
+      "language": "en",
+      "category": "missing_character",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "review"
+      ],
+      "routes_present": [
+        "review"
+      ],
+      "agrees": true
+    },
+    {
+      "case_id": "price_and_opinion:zh",
+      "comment_id": "synthetic:price_and_opinion:zh",
+      "language": "zh",
+      "category": "price_and_opinion",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "exclude",
+        "opinion_only"
+      ],
+      "routes_present": [
+        "opinion_only"
+      ],
+      "agrees": false
+    },
+    {
+      "case_id": "price_and_opinion:en",
+      "comment_id": "synthetic:price_and_opinion:en",
+      "language": "en",
+      "category": "price_and_opinion",
+      "admitted": false,
+      "reached_quality": false,
+      "status": null,
+      "expected_routes": [
+        "exclude",
+        "opinion_only"
+      ],
+      "routes_present": null,
+      "agrees": false
+    },
+    {
+      "case_id": "system_and_cosmetic:zh",
+      "comment_id": "synthetic:system_and_cosmetic:zh",
+      "language": "zh",
+      "category": "system_and_cosmetic",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "failed",
+      "expected_routes": [
+        "exclude",
+        "system_evidence"
+      ],
+      "routes_present": [
+        "review"
+      ],
+      "agrees": false
+    },
+    {
+      "case_id": "system_and_cosmetic:en",
+      "comment_id": "synthetic:system_and_cosmetic:en",
+      "language": "en",
+      "category": "system_and_cosmetic",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "exclude",
+        "system_evidence"
+      ],
+      "routes_present": [
+        "system_evidence"
+      ],
+      "agrees": false
+    },
+    {
+      "case_id": "hostile_concrete:zh",
+      "comment_id": "synthetic:hostile_concrete:zh",
+      "language": "zh",
+      "category": "hostile_concrete",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "mechanism_evidence"
+      ],
+      "routes_present": [
+        "mechanism_evidence"
+      ],
+      "agrees": true
+    },
+    {
+      "case_id": "hostile_concrete:en",
+      "comment_id": "synthetic:hostile_concrete:en",
+      "language": "en",
+      "category": "hostile_concrete",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "mechanism_evidence"
+      ],
+      "routes_present": [
+        "mechanism_evidence"
+      ],
+      "agrees": true
+    },
+    {
+      "case_id": "negation:zh",
+      "comment_id": "synthetic:negation:zh",
+      "language": "zh",
+      "category": "negation",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "opinion_only"
+      ],
+      "routes_present": [
+        "opinion_only"
+      ],
+      "agrees": true
+    },
+    {
+      "case_id": "negation:en",
+      "comment_id": "synthetic:negation:en",
+      "language": "en",
+      "category": "negation",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "opinion_only"
+      ],
+      "routes_present": [
+        "opinion_only"
+      ],
+      "agrees": true
+    },
+    {
+      "case_id": "quoted_voice:zh",
+      "comment_id": "synthetic:quoted_voice:zh",
+      "language": "zh",
+      "category": "quoted_voice",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "failed",
+      "expected_routes": [
+        "review"
+      ],
+      "routes_present": [
+        "review"
+      ],
+      "agrees": false
+    },
+    {
+      "case_id": "quoted_voice:en",
+      "comment_id": "synthetic:quoted_voice:en",
+      "language": "en",
+      "category": "quoted_voice",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "review"
+      ],
+      "routes_present": [
+        "opinion_only"
+      ],
+      "agrees": false
+    },
+    {
+      "case_id": "sarcasm:zh",
+      "comment_id": "synthetic:sarcasm:zh",
+      "language": "zh",
+      "category": "sarcasm",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "review"
+      ],
+      "routes_present": [
+        "review"
+      ],
+      "agrees": true
+    },
+    {
+      "case_id": "sarcasm:en",
+      "comment_id": "synthetic:sarcasm:en",
+      "language": "en",
+      "category": "sarcasm",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "review"
+      ],
+      "routes_present": [
+        "opinion_only"
+      ],
+      "agrees": false
+    },
+    {
+      "case_id": "me_too:zh",
+      "comment_id": "synthetic:me_too:zh",
+      "language": "zh",
+      "category": "me_too",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "failed",
+      "expected_routes": [
+        "review"
+      ],
+      "routes_present": [
+        "review"
+      ],
+      "agrees": false
+    },
+    {
+      "case_id": "me_too:en",
+      "comment_id": "synthetic:me_too:en",
+      "language": "en",
+      "category": "me_too",
+      "admitted": false,
+      "reached_quality": false,
+      "status": null,
+      "expected_routes": [
+        "review"
+      ],
+      "routes_present": null,
+      "agrees": false
+    },
+    {
+      "case_id": "opposing_mechanics:zh",
+      "comment_id": "synthetic:opposing_mechanics:zh",
+      "language": "zh",
+      "category": "opposing_mechanics",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "failed",
+      "expected_routes": [
+        "mechanism_evidence"
+      ],
+      "routes_present": [
+        "review"
+      ],
+      "agrees": false
+    },
+    {
+      "case_id": "opposing_mechanics:en",
+      "comment_id": "synthetic:opposing_mechanics:en",
+      "language": "en",
+      "category": "opposing_mechanics",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "mechanism_evidence"
+      ],
+      "routes_present": [
+        "opinion_only"
+      ],
+      "agrees": false
+    },
+    {
+      "case_id": "damage_comparison:zh",
+      "comment_id": "synthetic:damage_comparison:zh",
+      "language": "zh",
+      "category": "damage_comparison",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "mechanism_evidence"
+      ],
+      "routes_present": [
+        "opinion_only"
+      ],
+      "agrees": false
+    },
+    {
+      "case_id": "damage_comparison:en",
+      "comment_id": "synthetic:damage_comparison:en",
+      "language": "en",
+      "category": "damage_comparison",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "mechanism_evidence"
+      ],
+      "routes_present": [
+        "mechanism_evidence"
+      ],
+      "agrees": true
+    },
+    {
+      "case_id": "past_patch:zh",
+      "comment_id": "synthetic:past_patch:zh",
+      "language": "zh",
+      "category": "past_patch",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "mechanism_evidence"
+      ],
+      "routes_present": [
+        "opinion_only"
+      ],
+      "agrees": false
+    },
+    {
+      "case_id": "past_patch:en",
+      "comment_id": "synthetic:past_patch:en",
+      "language": "en",
+      "category": "past_patch",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "mechanism_evidence"
+      ],
+      "routes_present": [
+        "mechanism_evidence"
+      ],
+      "agrees": true
+    },
+    {
+      "case_id": "numeric_request:zh",
+      "comment_id": "synthetic:numeric_request:zh",
+      "language": "zh",
+      "category": "numeric_request",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "mechanism_evidence"
+      ],
+      "routes_present": [
+        "opinion_only"
+      ],
+      "agrees": false
+    },
+    {
+      "case_id": "numeric_request:en",
+      "comment_id": "synthetic:numeric_request:en",
+      "language": "en",
+      "category": "numeric_request",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "mechanism_evidence"
+      ],
+      "routes_present": [
+        "mechanism_evidence"
+      ],
+      "agrees": true
+    },
+    {
+      "case_id": "positive_concrete:zh",
+      "comment_id": "synthetic:positive_concrete:zh",
+      "language": "zh",
+      "category": "positive_concrete",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "mechanism_evidence"
+      ],
+      "routes_present": [
+        "mechanism_evidence"
+      ],
+      "agrees": true
+    },
+    {
+      "case_id": "positive_concrete:en",
+      "comment_id": "synthetic:positive_concrete:en",
+      "language": "en",
+      "category": "positive_concrete",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "mechanism_evidence"
+      ],
+      "routes_present": [
+        "mechanism_evidence"
+      ],
+      "agrees": true
+    },
+    {
+      "case_id": "injection:zh",
+      "comment_id": "synthetic:injection:zh",
+      "language": "zh",
+      "category": "injection",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "failed",
+      "expected_routes": [
+        "exclude"
+      ],
+      "routes_present": [
+        "review"
+      ],
+      "agrees": false
+    },
+    {
+      "case_id": "injection:en",
+      "comment_id": "synthetic:injection:en",
+      "language": "en",
+      "category": "injection",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "exclude"
+      ],
+      "routes_present": [
+        "review"
+      ],
+      "agrees": false
+    },
+    {
+      "case_id": "unknown_identity:zh",
+      "comment_id": "synthetic:unknown_identity:zh",
+      "language": "zh",
+      "category": "unknown_identity",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "mechanism_evidence"
+      ],
+      "routes_present": [
+        "opinion_only"
+      ],
+      "agrees": false
+    },
+    {
+      "case_id": "unknown_identity:en",
+      "comment_id": "synthetic:unknown_identity:en",
+      "language": "en",
+      "category": "unknown_identity",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "mechanism_evidence"
+      ],
+      "routes_present": [
+        "mechanism_evidence"
+      ],
+      "agrees": true
+    },
+    {
+      "case_id": "neutral_equivalent:zh",
+      "comment_id": "synthetic:neutral_equivalent:zh",
+      "language": "zh",
+      "category": "neutral_equivalent",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "mechanism_evidence"
+      ],
+      "routes_present": [
+        "mechanism_evidence"
+      ],
+      "agrees": true
+    },
+    {
+      "case_id": "neutral_equivalent:en",
+      "comment_id": "synthetic:neutral_equivalent:en",
+      "language": "en",
+      "category": "neutral_equivalent",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "mechanism_evidence"
+      ],
+      "routes_present": [
+        "mechanism_evidence"
+      ],
+      "agrees": true
+    },
+    {
+      "case_id": "high_emotion:zh",
+      "comment_id": "synthetic:high_emotion:zh",
+      "language": "zh",
+      "category": "high_emotion",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "exclude",
+        "mechanism_evidence"
+      ],
+      "routes_present": [
+        "mechanism_evidence",
+        "review"
+      ],
+      "agrees": false
+    },
+    {
+      "case_id": "high_emotion:en",
+      "comment_id": "synthetic:high_emotion:en",
+      "language": "en",
+      "category": "high_emotion",
+      "admitted": true,
+      "reached_quality": true,
+      "status": "completed",
+      "expected_routes": [
+        "exclude",
+        "mechanism_evidence"
+      ],
+      "routes_present": [
+        "review"
+      ],
+      "agrees": false
+    }
+  ]
+}
