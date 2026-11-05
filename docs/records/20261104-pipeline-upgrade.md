@@ -2984,6 +2984,37 @@ against the rule with `git revert` of the fix-up commits.
   quality requests, U5.1, U6.1, U6.2, U6.4, U6.5 and U6.7. Blockers:
   none.
 
+### 2026-11-05 U7-L and U7-1, first part (live and implementation; chain session `s7-u7`, stopped)
+
+- Steps: U7.1 (`853b0b3`, `dc94ecb`) and U7.2 (`1d22200`, `4f5966a`)
+  done; U7.3 started and interrupted. The subscription usage limit
+  stopped the session at 07:06 while it was writing the U7.3 documents,
+  before it wrote this entry. The next session (the rest of U7-1) wrote
+  this entry from the commits, this record and the session's transcript
+  `runs/upgrade/logs/chain/s7-u7.jsonl`, and stashed the uncommitted U7.3
+  work as `WIP Step U7.3: session s7-u7 stopped by the usage limit`
+  (plan 10.4): ADR index rows (0005 superseded, 0006 added),
+  ADR 0005's status, design/cli.md, evidence-quality.md,
+  emotion-quantification-and-evidence-isolation.md, the new ADR
+  `docs/decisions/0006-revert-of-quality-annotation-v2.md` and the new
+  validation record `docs/records/20261105-pipeline-upgrade-validation.md`.
+- State: HEAD `4f5966a`; tests 333; lock green; rule check 0.
+- Findings:
+  - U7.1 and U7.2: see "U7-L (U7.1 and U7.2; API, UP-D19)"; D-16 (the
+    U7.1 configuration, adopted), E-7 (pending relevance units and
+    quality failures) and E-8 (the test split much worse than
+    development, recorded and not tuned), both with option (a) adopted
+    under the owner authorization of 2026-11-05 03:11.
+  - API spend 0.0296 USD for the four runs (0.338001 to 0.367605 USD).
+  - After the U7.2 commits the session measured T9 and T10 again without
+    a competing live run (its first reading overlapped the test-split
+    run): T9 7.7 % (`run_store.state` 1.397 s of 18.2 s profiled, 1,239
+    calls; not met), T10 0.98 s and 0.99 s, `character_reference` 7.5 %
+    and 7.6 % (met). These readings are in the stashed validation
+    record.
+- Next: the rest of U7-1 (U7.3 from the stash, U7.4, U7.5), the next
+  chain session; blockers: none.
+
 ## Deferred
 
 - **Relevance and route agreement in `measurement`** (D-4, from U0.6). Add
