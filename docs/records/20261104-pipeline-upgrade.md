@@ -1962,6 +1962,66 @@ and tools are in the archive with `SHA256SUMS`.
 - Result: accepted, tag `upgrade-u1`. Nothing was adopted or bypassed
   under the owner's standing instruction; no escalation.
 
+### 2026-11-05 U2-V
+
+- Range: `upgrade-u1..c6452d8`; 14 commits: U2.1 `93536cd`; U2.2
+  `faee371`; U2.3 `39a1efd`; U2.4 `b7d1cc5`; U2-1 session log `6926262`;
+  U2-L1 `5f6d2f6` (E-2), `5566ac1` (D-8) and `b55d48c`; the owner
+  amendments `9f113cc` (UP-D19) and `79cfbb5` (UP-D20); U2-L0 `e6c7917`;
+  U2.6 `cd3fd48`, `fb49f79` and `c6452d8`. U2.5 and U2-L2 are skipped
+  (UP-D20). The U2 review also covers `e34e08d` (U2-R, E-3), committed by
+  the U5 session. Verification session U2-V to U6-V (UP-D20, chain
+  session 6), which implemented none of U2 to U6. The checklist follows
+  UP-D20's shorter form: the gates, the foreign directory and the
+  installed-wheel acceptance ran once, at `6a77e5b` (HEAD at session
+  start; results in the U6-V note); each batch was checked for boundary
+  and commit hygiene, lock-fixture changes, behavior-change hashes and
+  recorded live verdicts. Python 3.14.8, NumPy 2.4.6. Scratch output went
+  to the ignored `runs/upgrade/verify/` and to temporary directories. No
+  live run, no network use, nothing written to `reports/`, `data/` or the
+  archive.
+- Checks:
+  1. Boundary and commit hygiene (plan 8.8): pass, with the exceptions
+     recorded in the U2-2 session log. Outside the work-order pattern:
+     `docs/plans/pipeline-upgrade.md` and the six handoffs (the owner
+     amendments UP-D19 and UP-D20), `reports/20261105-upgrade-api-reference/`
+     (the U2-L0 report named by the work order's UP-D19 note) and
+     `scripts/maintenance/check_rules.py` (E-2). The hygiene command
+     prints nothing. Every subject uses a P5 type. The one test-only
+     commit, `cd3fd48`, is `chore`. No commit message or added line holds
+     attribution or a `/home/` path.
+  2. Lock fixture: pass. Only `faee371` (U2.2, UP-D04), `39a1efd` (U2.3,
+     UP-D05) and `b7d1cc5` (U2.4, UP-D07) change
+     `tests/fixtures/behavior-lock.json`, and each lists its decision and
+     its `Lock:` paths. U2.1 (`Lock: unchanged`) and U2.6 leave the
+     fixture unchanged.
+  3. Behavior changes: pass. The table lists the six prompt assets that U2
+     changes: `evidence-quality.{en,zh}` (U2.2) and `relevance.{en,zh}`
+     and `retrieval-review.{en,zh}` (U2.4). Every old and new SHA-256,
+     recomputed from `git show <commit>^:<path>` and
+     `git show <commit>:<path>`, equals the table. No other asset changes
+     in the range.
+  4. Payload test and demo request: pass. `tests/test_request_payload.py`
+     (5 tests) passes. The 76 quality requests of a HEAD demo hold only
+     the user keys `comments`, `language`,
+     `character_normalization_reference` and `response_schema`, and none
+     of `source`, `quality_contract` or `attempt`. Since U4.F4, HEAD sends
+     the U2.2 quality view again.
+  5. Live verdicts: pass. U2-L1 records a verdict for each B step (read
+     as D-8): U2.2 and U2.4 kept; U2.3 fails rule 4 (recall −4.9 points)
+     and is escalated as E-3. The U5 session settled E-3 before U5.1:
+     measured alone (U2-R), U2.3 is −0.3 points of precision and −0.8 of
+     recall, so it is kept. U2.5 is skipped (UP-D20) and needs no
+     verdict.
+  6. Gates, foreign directory and wheel at HEAD: pass (U6-V note). ADR
+     0003 (`docs/decisions/0003-model-visible-request-views.md`, Active)
+     and its index row exist.
+- Targets (U2-L1, not gates): T1 66.2 % of the U2-L0 baseline, not met;
+  T2 48.0 %, met; T3 75.0 %, not met.
+- Findings: the U2-R finding on U2.4 is carried to the review below.
+- Measurements: tests 341 in 33.7 s at HEAD; demo 0.97 s; lock green.
+- Result: accepted, tag `upgrade-u2-review`; the review follows.
+
 ## Session log
 
 ### 2026-11-04 U0-1 (implementation)
