@@ -1,0 +1,153 @@
+{
+  "commit": "b7d1cc5",
+  "live_config_api_sha256": "b44df0f2f8d7d0d6e295d7daa1314a729e2c285ec345596beff56a71fc1c4530",
+  "passed": true,
+  "prefix": "u2l1",
+  "runs": {
+    "u2l1-benchmark-off": {
+      "chat_responses": 33,
+      "chat_responses_without_remote": 0,
+      "embedding_digest_equal_doctor": true,
+      "embedding_endpoint": "http://127.0.0.1:11435",
+      "input_equal_reference": true,
+      "input_sha256": "ce7ee3df8efc73d36840b96dff00407e42cea9f29de2369ccb64aa4abac28f4a",
+      "models_equal_doctor": true,
+      "modules_checked": 30,
+      "modules_mismatched": [],
+      "passed": true,
+      "present": true,
+      "reference": "u0s-benchmark-off",
+      "remote_cost_usd": 0.004023,
+      "remote_model_provider_bridge": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-1": 33
+      },
+      "resources_checked": 21,
+      "resources_mismatched": [],
+      "run_state": null,
+      "service": {
+        "ollama_version": "openrouter-bridge-1"
+      },
+      "sources_equal_reference": true,
+      "tracked_modules_missing_from_manifest": [],
+      "transport_attempts_remote_model_provider_bridge": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-1": 33
+      }
+    },
+    "u2l1-benchmark-shadow": {
+      "chat_responses": 59,
+      "chat_responses_without_remote": 0,
+      "embedding_digest_equal_doctor": true,
+      "embedding_endpoint": "http://127.0.0.1:11435",
+      "input_equal_reference": true,
+      "input_sha256": "ce7ee3df8efc73d36840b96dff00407e42cea9f29de2369ccb64aa4abac28f4a",
+      "models_equal_doctor": true,
+      "modules_checked": 30,
+      "modules_mismatched": [],
+      "passed": true,
+      "present": true,
+      "reference": "u0s-benchmark-shadow",
+      "remote_cost_usd": 0.010746,
+      "remote_model_provider_bridge": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-1": 59
+      },
+      "resources_checked": 21,
+      "resources_mismatched": [],
+      "run_state": null,
+      "service": {
+        "ollama_version": "openrouter-bridge-1"
+      },
+      "sources_equal_reference": true,
+      "tracked_modules_missing_from_manifest": [],
+      "transport_attempts_remote_model_provider_bridge": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-1": 59
+      }
+    },
+    "u2l1-extraction-development-off": {
+      "chat_responses": 196,
+      "chat_responses_without_remote": 0,
+      "embedding_digest_equal_doctor": true,
+      "embedding_endpoint": "http://127.0.0.1:11435",
+      "input_equal_reference": true,
+      "input_sha256": "46e5bb22d38c7b76f8521b376eaac5635ac8988007b9d3c37510315273c6b311",
+      "models_equal_doctor": true,
+      "modules_checked": 30,
+      "modules_mismatched": [],
+      "passed": true,
+      "present": true,
+      "reference": "u0s-extraction-development-off",
+      "remote_cost_usd": 0.025358,
+      "remote_model_provider_bridge": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-1": 196
+      },
+      "resources_checked": 21,
+      "resources_mismatched": [],
+      "run_state": null,
+      "service": {
+        "ollama_version": "openrouter-bridge-1"
+      },
+      "sources_equal_reference": true,
+      "tracked_modules_missing_from_manifest": [],
+      "transport_attempts_remote_model_provider_bridge": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-1": 196
+      }
+    },
+    "u2l1-quality-synthetic-shadow": {
+      "chat_responses": 26,
+      "chat_responses_without_remote": 0,
+      "embedding_digest_equal_doctor": true,
+      "embedding_endpoint": "http://127.0.0.1:11435",
+      "input_equal_reference": true,
+      "input_sha256": "0d7a8e8adf6650ee673145d93530abfd0a2c79785712b5bfc2fa58af1590a8e4",
+      "models_equal_doctor": true,
+      "modules_checked": 30,
+      "modules_mismatched": [],
+      "passed": true,
+      "present": true,
+      "reference": "u0s-quality-synthetic-shadow",
+      "remote_cost_usd": 0.004371,
+      "remote_model_provider_bridge": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-1": 26
+      },
+      "resources_checked": 21,
+      "resources_mismatched": [],
+      "run_state": null,
+      "service": {
+        "ollama_version": "openrouter-bridge-1"
+      },
+      "sources_equal_reference": true,
+      "tracked_modules_missing_from_manifest": [],
+      "transport_attempts_remote_model_provider_bridge": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-1": 26
+      }
+    },
+    "u2l1-silver-development-relevance": {
+      "chat_responses": 28,
+      "chat_responses_without_remote": 0,
+      "embedding_digest_equal_doctor": true,
+      "embedding_endpoint": "http://127.0.0.1:11435",
+      "input_equal_reference": true,
+      "input_sha256": "c05a30342ae57e222b58105d1ae0d37698ff41aa77db6ddd6db96733131abce8",
+      "models_equal_doctor": true,
+      "modules_checked": 30,
+      "modules_mismatched": [],
+      "passed": true,
+      "present": true,
+      "reference": "u0-silver-development-relevance",
+      "remote_cost_usd": 0.003914,
+      "remote_model_provider_bridge": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-1": 28
+      },
+      "resources_checked": 21,
+      "resources_mismatched": [],
+      "run_state": null,
+      "service": {
+        "ollama_version": "openrouter-bridge-1"
+      },
+      "sources_equal_reference": true,
+      "tracked_modules_missing_from_manifest": [],
+      "transport_attempts_remote_model_provider_bridge": {
+        "deepseek/deepseek-v4-flash | DeepInfra | openrouter-bridge-1": 28
+      }
+    }
+  }
+}

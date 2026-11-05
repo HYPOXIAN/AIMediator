@@ -1,0 +1,174 @@
+{
+  "schema": "aimediator-report-manifest-v1",
+  "name": "20261105-upgrade-u2-evaluation",
+  "archive": {
+    "path": "~/Archives/AIMediator/reports/20261105-upgrade-u2-evaluation/",
+    "checksums": "SHA256SUMS",
+    "files": 3244,
+    "bytes": 156077243,
+    "archived_on": "2026-11-05",
+    "contents": "runs/ (the five runs, and the local runs u2l1-local-* made before the shutdown), measurements/, inputs/ (the materialized samples and the silver development split, source text; the filtered synthetic cases), logs/ (run logs; the bridge log, counters and timings only), config/ (API configuration, doctor output), provenance/, local/ (measurements and logs of the local runs)"
+  },
+  "run_manifests": {
+    "u2l1-benchmark-off": "runs/u2l1-benchmark-off/manifest.json",
+    "u2l1-benchmark-shadow": "runs/u2l1-benchmark-shadow/manifest.json",
+    "u2l1-extraction-development-off": "runs/u2l1-extraction-development-off/manifest.json",
+    "u2l1-silver-development-relevance": "runs/u2l1-silver-development-relevance/manifest.json",
+    "u2l1-quality-synthetic-shadow": "runs/u2l1-quality-synthetic-shadow/manifest.json"
+  },
+  "record": "docs/records/20261104-pipeline-upgrade.md",
+  "session": "U2-L1",
+  "decisions": [
+    "UP-D17",
+    "UP-D19",
+    "UP-D20",
+    "UP-D04",
+    "UP-D05",
+    "UP-D07",
+    "D-8"
+  ],
+  "datasets": {
+    "upgrade-samples-v1/latency-benchmark": "data/evaluation/upgrade-samples-v1/latency-benchmark, 30 (runs u2l1-benchmark-off, u2l1-benchmark-shadow)",
+    "upgrade-samples-v1/extraction-development": "data/evaluation/upgrade-samples-v1/extraction-development, 114 (run u2l1-extraction-development-off)",
+    "upgrade-samples-v1/quality-synthetic": "data/evaluation/upgrade-samples-v1/quality-synthetic, 19 (run u2l1-quality-synthetic-shadow; route agreement over the 19 cases of evidence-quality-synthetic-v1/cases.json with these IDs)",
+    "balance-silver-v1": "data/evaluation/balance-silver-v1, development split, 70 (run u2l1-silver-development-relevance; relevance agreement)",
+    "extraction-precision-v1": "data/evaluation/extraction-precision-v1, development split (scores of the three runs on the benchmark and extraction samples)",
+    "raw_sources": [
+      "data/raw/feedback/20261027-balanced/screened/records.jsonl",
+      "data/raw/feedback/20261015-expanded/screened/records.jsonl",
+      "data/evaluation/evidence-quality-synthetic-v1/records.jsonl"
+    ],
+    "inputs_sha256": {
+      "upgrade-sample-benchmark.jsonl": "ce7ee3df8efc73d36840b96dff00407e42cea9f29de2369ccb64aa4abac28f4a",
+      "upgrade-sample-extraction-development.jsonl": "46e5bb22d38c7b76f8521b376eaac5635ac8988007b9d3c37510315273c6b311",
+      "upgrade-sample-quality-synthetic.jsonl": "0d7a8e8adf6650ee673145d93530abfd0a2c79785712b5bfc2fa58af1590a8e4",
+      "upgrade-sample-quality-synthetic-cases.json": "2fb776ec245f5e0d65965e74204878bc4b65f37acbf974b044f1c92a851fa81c",
+      "balance-silver-v1-development.jsonl": "c05a30342ae57e222b58105d1ae0d37698ff41aa77db6ddd6db96733131abce8"
+    }
+  },
+  "references": {
+    "api": "reports/20261105-upgrade-api-reference (U2-L0): u2l0-benchmark-off, u2l0-benchmark-shadow, u2l0-extraction-development-off, u2l0-silver-development-relevance, u2l0-quality-synthetic-shadow",
+    "local_history": "reports/20261105-upgrade-baseline-samples (U0.8) and reports/20261104-upgrade-baseline (U0.6) stay history; not compared with API runs (plan 5.4)"
+  },
+  "environment": {
+    "service": "API bridge runs/upgrade/tools/api_bridge.py (plan 5.4, \"Hosted API\"), version openrouter-bridge-1 for every run; provenance/api_bridge.py is version 2 (the UP-D20 spend guard), see the change record",
+    "configuration": "runs/upgrade/live-config-api.json, sha256 b44df0f2f8d7d0d6e295d7daa1314a729e2c285ec345596beff56a71fc1c4530"
+  },
+  "wall_seconds": {
+    "u2l1-benchmark-off": 102.986829,
+    "u2l1-benchmark-shadow": 510.205752,
+    "u2l1-extraction-development-off": 347.515904,
+    "u2l1-silver-development-relevance": 35.723627,
+    "u2l1-quality-synthetic-shadow": 112.157487
+  },
+  "code_version": {
+    "git_commit": "b7d1cc5",
+    "head_when_built": "e6c7917",
+    "note": "Every run module hash equals the package file at the U2.4 commit and at HEAD (checked when the report was built); the commits after b7d1cc5 change no file under src/.",
+    "module_set_sha256": {
+      "u2l1-benchmark-off": "32120b32180cf4aaa73435a243ca04a4ee3d6fa8bcd6eb366ed891460cf136e2",
+      "u2l1-benchmark-shadow": "32120b32180cf4aaa73435a243ca04a4ee3d6fa8bcd6eb366ed891460cf136e2",
+      "u2l1-extraction-development-off": "32120b32180cf4aaa73435a243ca04a4ee3d6fa8bcd6eb366ed891460cf136e2",
+      "u2l1-silver-development-relevance": "32120b32180cf4aaa73435a243ca04a4ee3d6fa8bcd6eb366ed891460cf136e2",
+      "u2l1-quality-synthetic-shadow": "32120b32180cf4aaa73435a243ca04a4ee3d6fa8bcd6eb366ed891460cf136e2"
+    }
+  },
+  "provenance": [
+    {
+      "path": "provenance/u2l1_api_runs.sh",
+      "sha256": "6c8714b6f4ff7b7da810bb2401fa673b5d0b0d5a5b53fd6dd79d5b27e9a36647"
+    },
+    {
+      "path": "provenance/u2l1_measure.sh",
+      "sha256": "f31e696300a22894506892c0d912c7638957194f8757fb1efa04e07099d00006"
+    },
+    {
+      "path": "provenance/u2l1_live_runs.sh",
+      "sha256": "cba005724a17d2f0a1e70c55cc8b5fddb692683215c4c39ebc9768db9ca995a0"
+    },
+    {
+      "path": "provenance/build_u2l1_report.py",
+      "sha256": "b470062e857864a5b020be1728f40ab1439e5638269cb6e79b3888551254a476"
+    },
+    {
+      "path": "provenance/api_bridge.py",
+      "sha256": "f42e0087ebcde0b193eaaa1d60cd2c735b7630fa7735ccda14acd7403e1137e9"
+    },
+    {
+      "path": "provenance/api_bridge_start.sh",
+      "sha256": "02cbce21e8ed78f79099a526ebd70c55c95c236a1db53e101ab7da97141ac1fc"
+    },
+    {
+      "path": "provenance/check_api_identity.py",
+      "sha256": "8ecaca4a3265e0047a9397221bcfc2b0b3abc53d0ac88bf3747d895dfc126965"
+    },
+    {
+      "path": "provenance/score_u0_extra.py",
+      "sha256": "fc9e044fe4915b60a6a347d8703ebd72d9c2c3b96ecfb316923d2aa97557bb71"
+    },
+    {
+      "path": "provenance/compare_u0s.py",
+      "sha256": "339d0b0c12406fe2705231af39fd8a7bddc75db7ef2bd442c4fc9522eac088ea"
+    },
+    {
+      "path": "provenance/compare_u2l1.py",
+      "sha256": "66db299a56ec009843b19fcbb74f9c74fd595f6ae7e168da10481265cf5750d9"
+    },
+    {
+      "path": "provenance/build_api_report.py",
+      "sha256": "55bf51767ff8f40ba4469e038f18e2e4683724b182e06df7c809d957e63ea196"
+    }
+  ],
+  "retention_reason": "Live evaluation of batch U2 (session U2-L1; steps U2.2, U2.3 and U2.4 under the adoption rule, plan 5.4, read as decision D-8; T1 to T3; the U2.6 budgets), through the API bridge (UP-D19) against the U2-L0 API reference. Full runs stay in the archive, with the local runs u2l1-local-* made before the shutdown, which decide nothing. U2-L2 is skipped (UP-D20).",
+  "summary": [
+    {
+      "path": "summary/u2l1-benchmark-off-metrics.json",
+      "sha256": "b89ddbfa37df62805bd50fd67b3fab7ea62dd00eb27cfa835813fa33b3bcc6b2"
+    },
+    {
+      "path": "summary/u2l1-benchmark-off-scores.json",
+      "sha256": "d6b82d0669b3db43fa05abf2e909ee0c718cadb36949c4cb0af63f4e1871c783"
+    },
+    {
+      "path": "summary/u2l1-benchmark-shadow-metrics.json",
+      "sha256": "7c02df14346c04d47708ee6b48fca63ca40bf1c032d5cb6f8d57ddb3772c5b50"
+    },
+    {
+      "path": "summary/u2l1-benchmark-shadow-scores.json",
+      "sha256": "ec5cc657aa87c788f484707926737a7b1536ffea5779e83e314021ba1169da3a"
+    },
+    {
+      "path": "summary/u2l1-extraction-development-off-metrics.json",
+      "sha256": "71fc308bd9ec9939b7c3c6ce84fca3d382f6f23e82cd737d4b5bf85259e12b42"
+    },
+    {
+      "path": "summary/u2l1-extraction-development-off-scores.json",
+      "sha256": "0d1409b2300cbba04273b227b8bf832890e574800d4723da4e0cdb9c594b0cdb"
+    },
+    {
+      "path": "summary/u2l1-silver-development-relevance-metrics.json",
+      "sha256": "d4158142367b49ba69f078c3d0a5fbafbd56a643ea74beb03d1fb48c2030b491"
+    },
+    {
+      "path": "summary/u2l1-silver-development-relevance-agreement.json",
+      "sha256": "840152f2db7d6e31dd2860835d06ee6bfeabdb2848499b5bed652b399da08a45"
+    },
+    {
+      "path": "summary/u2l1-quality-synthetic-shadow-metrics.json",
+      "sha256": "b9ecd13d11bf587ca8272eb553550444096a41ec7e112e9ebb244dd46d96dd23"
+    },
+    {
+      "path": "summary/u2l1-quality-synthetic-shadow-routes.json",
+      "sha256": "92192cd38f04dbe92a5c0b71cd4ea1277a145289ece8814580d0bde54dc1bfb3"
+    },
+    {
+      "path": "summary/u2l1-identity.json",
+      "sha256": "a00558c79ef0a3075addb95554c3e61b497bd8dc5bf2c18609b8f098a20344e3"
+    },
+    {
+      "path": "summary/u2l1-comparison.json",
+      "sha256": "5279c63b41dd269b51358ccc10d3e1f251f6460b8dafad856213aa3fad6daf53"
+    }
+  ],
+  "source_text": "none in summary/ (IDs, labels, routes, counts and metrics only)"
+}

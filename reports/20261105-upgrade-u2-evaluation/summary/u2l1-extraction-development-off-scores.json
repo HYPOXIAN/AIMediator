@@ -1,0 +1,145 @@
+{
+  "schema_version": "aimediator-position-scores-v1",
+  "run": "u2l1-extraction-development-off",
+  "labels": "extraction-precision-v1",
+  "split": "development",
+  "labeled_comments": 227,
+  "absent_from_run": 113,
+  "overall": {
+    "comments": 105,
+    "admitted_comments": 100,
+    "precision_accepted": {
+      "numerator": 55,
+      "denominator": 74,
+      "value": 0.7432432432432432,
+      "wilson95": [
+        0.6334555586947143,
+        0.8290229270043411
+      ]
+    },
+    "precision_generated": {
+      "numerator": 74,
+      "denominator": 120,
+      "value": 0.6166666666666667,
+      "wilson95": [
+        0.5273408053842049,
+        0.6987547224514311
+      ]
+    },
+    "recall": {
+      "numerator": 54,
+      "denominator": 123,
+      "value": 0.43902439024390244,
+      "wilson95": [
+        0.3544871197523637,
+        0.5272550161434058
+      ]
+    },
+    "recall_admitted": {
+      "numerator": 54,
+      "denominator": 121,
+      "value": 0.4462809917355372,
+      "wilson95": [
+        0.3607180768411506,
+        0.5351498493846116
+      ]
+    },
+    "uncertain": {
+      "comments": 9,
+      "accepted_claims": 2,
+      "generated_claims": 10
+    }
+  },
+  "by_language": {
+    "en": {
+      "comments": 44,
+      "admitted_comments": 41,
+      "precision_accepted": {
+        "numerator": 29,
+        "denominator": 31,
+        "value": 0.9354838709677419,
+        "wilson95": [
+          0.7928136326370188,
+          0.9821252164780854
+        ]
+      },
+      "precision_generated": {
+        "numerator": 36,
+        "denominator": 53,
+        "value": 0.6792452830188679,
+        "wilson95": [
+          0.545185201490326,
+          0.7890778592086491
+        ]
+      },
+      "recall": {
+        "numerator": 29,
+        "denominator": 46,
+        "value": 0.6304347826086957,
+        "wilson95": [
+          0.48600096423389705,
+          0.7547624540916037
+        ]
+      },
+      "recall_admitted": {
+        "numerator": 29,
+        "denominator": 45,
+        "value": 0.6444444444444445,
+        "wilson95": [
+          0.4983581419637687,
+          0.7678091739578413
+        ]
+      },
+      "uncertain": {
+        "comments": 1,
+        "accepted_claims": 0,
+        "generated_claims": 1
+      }
+    },
+    "zh": {
+      "comments": 61,
+      "admitted_comments": 59,
+      "precision_accepted": {
+        "numerator": 26,
+        "denominator": 43,
+        "value": 0.6046511627906976,
+        "wilson95": [
+          0.45579063062873904,
+          0.7363468524170255
+        ]
+      },
+      "precision_generated": {
+        "numerator": 38,
+        "denominator": 67,
+        "value": 0.5671641791044776,
+        "wilson95": [
+          0.44808736490792916,
+          0.6789568850245825
+        ]
+      },
+      "recall": {
+        "numerator": 25,
+        "denominator": 77,
+        "value": 0.3246753246753247,
+        "wilson95": [
+          0.23059379328779073,
+          0.4354191610320238
+        ]
+      },
+      "recall_admitted": {
+        "numerator": 25,
+        "denominator": 76,
+        "value": 0.32894736842105265,
+        "wilson95": [
+          0.23379273635816047,
+          0.44056191116412347
+        ]
+      },
+      "uncertain": {
+        "comments": 8,
+        "accepted_claims": 2,
+        "generated_claims": 9
+      }
+    }
+  }
+}

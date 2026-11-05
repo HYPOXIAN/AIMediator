@@ -72,6 +72,9 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | U2.3 | B | done | 278 | updated by UP-D05 | LAT-02, plan 4.1. The extraction view (`stages.view`) holds the units with `evidence_id` and `text` (no offsets); `allowed_quality_points` (enforce) with `point_id`, `evidence_ids` (the selected segments' E-IDs, first occurrence order), `quotes` (the selected segments' quotes), `scope`, `detail_level`, `stance`, `direction`, `character_literal` and `mechanic_literal` instead of the whole routing entry (`comment_id`, `route`, `reason`, `point` with `segment_ids`, `segments` with offsets and labels); and `character_normalization_reference` with the entries that `evidence.character_candidates` finds in a comment of the batch, on the comment's joined unit texts as `schema_for` finds the allowed characters, so every allowed character keeps its entry. `schema_for`, `ground_claim` and `bind_claim` read the full context, and the batches are still sized on it: `format`, `response_schema`, batching and gates unchanged. `diagnostics.extract` follows the view through the runner (docstring only). `FixtureTransport` reads `point_id` only: unchanged. Tests (+1): `tests/test_request_views.py` checks the view of a three-comment batch with quality points against the context, the reference filter and the schema's allowed characters; `tests/test_diagnostics.py` expects the view of real allowed points; `tests/test_stages.py` follows. Lock regenerated: exactly the 12 extraction request keys under "Behavior changes"; no artifact, prompt or other request changed. design/cli.md section 5 (`stages`, `diagnostics`) |
 | U2.4 | B | done | 280 | updated by UP-D07 | LAT-03, plan 4.4. The relevance and retrieval-review prompt pairs gain a last paragraph, one line that introduces the topic list (P topics balance-related, N topics unrelated, cited by `topic_id` with their cosine), and `resources.prompts` appends `P1: <text>` to `P10: <text>` and `N1: <text>` to `N10: <text>`, one line each ending with a newline, in the order of `retrieval-anchors.json`, to those two stages only; the anchors keep one source (G2). The relevance and retrieval-review views keep `comment_id` and `text`, and each `retrieved_topics` item keeps `topic_id` and `cosine` rounded to 4 decimals (no `text`, no `class`, whose meaning the ID prefix and the prompt line carry). `retrieval.json`, `relevance.json` and the review queue keep the full references. `prompt-snapshot.json` and the identities' prompt hashes change. `scripts/experiments/replay_balance_admission.py` now takes the two prompts from `resources.prompts('off')`, as runs send them, instead of the asset files: it refuses every run made before this step (`Relevance prompt changed`, by design, plan 2.3), and without the change it would also have refused every run made after it. Checked by hand (scratch, not committed): a relevance-only legacy fixture run at this step replays with `verified_requests` 6, 38 admission decisions unchanged and no inference; the script without the change stops with `Relevance prompt changed`. Tests (+2, `tests/test_request_views.py`): the topic list ends exactly the relevance and retrieval-review prompts in all three modes and no other; every topic of every demo relevance request is cited by ID with the rounded cosine and found with its text in the system prompt; `tests/test_stages.py` checks the view. Lock regenerated: exactly the 38 keys under "Behavior changes" (prompt assets, snapshots, manifests and the two reports through the prompt hashes, relevance request digests); no other request or artifact changed. design/cli.md section 5 (`resources`, `stages`) |
 | U2-L0 | L | done | 280 | green | UP-D19, UP-D20. The five reference runs (the four U0.8 sample runs and the U0.6 silver run, with their commands) through the API bridge `openrouter-bridge-1` at `0abfe02`, run by the orchestrating session from a copy of that commit's `src/` first on `sys.path`, in parallel with the U2-L1 runs; identity of every run checked (30 module and 21 resource hashes equal to `0abfe02`, digests equal to `doctor`, inputs equal to U0.8 and U0.6, every response from `deepseek/deepseek-v4-flash` on DeepInfra through version 1); API environment recorded, see "API environment (U2-L0, UP-D19)"; measured and scored with the committed tools and the one-off scorers; rows and API baselines in "Live evaluations"; compared with the local U0.8 and U0.6 rows as findings only; curated report `reports/20261105-upgrade-api-reference/`; full runs archived with `SHA256SUMS` (2,446 files). Spend of the ten runs 0.1082 USD |
+| U2-L1 | L | done | 280 | green | UP-D19, UP-D20, D-8. The five U2-L1 runs at the code of `b7d1cc5` (the U2.4 commit) through bridge version 1, run by the orchestrating session in parallel with the U2-L0 runs; identity checked (30 module hashes equal to `b7d1cc5` and HEAD, service `openrouter-bridge-1`, digests equal to `doctor` and to U2-L0, inputs equal to the references, every response from `deepseek/deepseek-v4-flash` on DeepInfra); measured and scored; compared with the U2-L0 rows (`compare_u2l1.py` pointed at the `u2l0-*` runs) and the adoption rule applied per step as D-8 reads it: U2.2 holds, U2.3 fails rule 4 (recall 43.9 % against 48.8 %, −4.9 points), U2.4 holds; nothing reverted, U2.3 recorded for the owner's review (E-3). T2 met (48.0 % of the U2-L0 baseline, target 71.8 %); T1 (66.2 %, target 49.9 %) and T3 (75.0 %, target 65 %) not met. Budgets of U2.6 measured. Curated report `reports/20261105-upgrade-u2-evaluation/`; full runs archived with `SHA256SUMS` (3,244 files, with the local runs `u2l1-local-*`, which decide nothing) |
+| U2.5 | B | skipped (UP-D20) | — | — | Response template trial (UP-D06) skipped by the owner's decision UP-D20 |
+| U2-L2 | L | skipped (UP-D20) | — | — | Skipped with U2.5 (UP-D20); U2-L2 adds no summary file to the U2 report |
 
 ## Baseline measurements (U0.4)
 
@@ -342,6 +345,11 @@ For every API session it replaces the local items of the record above
 | U2-L0 (`u2l0-extraction-development-off`) | `0abfe02` | `upgrade-samples-v1/extraction-development` (114) | `off` | 340.7 s | relevance 2,979 (2,979); retrieval_review 3,496 (3,035); extract 4,437 (3,955); verify 968 (396) | relevance 19; retrieval_review 22; extract 373; verify 7 | 0 requests with errors; 0 transport; 0 generation-failed comments; 2 pending | 137 / 82 (3 quarantined; 52 of 134 audited rejected, 38.8 %) | accepted 61/80 (76.2 %, Wilson 65.9–84.2 %) / 60/123 (48.8 %, Wilson 40.1–57.5 %); generated 85/131 (64.9 %); recall over admitted 60/123 (48.8 %) | — | API reference |
 | U2-L0 (`u2l0-silver-development-relevance`) | `0abfe02` | `balance-silver-v1` development (70) | `off`, `--stop-after relevance` | 41.1 s | relevance 2,063 (2,063); retrieval_review 1,882 (1,882) | relevance 16; retrieval_review 18 | 0 requests with errors; 0 transport; 0 generation-failed comments; 1 pending | — | relevance agreement 63/69 (91.3 %, Wilson 82.3–96.0 %): 60 TP, 3 TN, 3 FN, 3 FP; 1 uncertain excluded | — | API reference |
 | U2-L0 (`u2l0-quality-synthetic-shadow`) | `0abfe02` | `upgrade-samples-v1/quality-synthetic` (19) | `shadow`, `--stop-after quality` | 120.1 s | relevance 1,476 (1,476); retrieval_review 610 (610); quality 2,845 (1,875) | relevance 16; retrieval_review 11; quality 429 | 6 quality requests with validation errors; 0 transport; 3 quality-failed comments; 0 generation-failed comments; 2 pending | — | — | first attempt 13/16 (81.2 %, Wilson 57.0–93.4 %); 19 attempts; route agreement 11/16 (68.8 %, Wilson 44.4–85.8 %), English 5/7, Chinese 6/9; 16 of 19 cases reach quality | API reference |
+| U2-L1 (`u2l1-benchmark-off`) | `b7d1cc5` | `upgrade-samples-v1/latency-benchmark` (30) | `off` | 103.0 s | relevance 1,439 (1,154); retrieval_review 1,353 (1,251); extract 2,788 (2,495); verify 741 (464) | relevance 15; retrieval_review 14; extract 198; verify 7 | 0 requests with errors; 0 transport; 0 generation-failed comments; 2 pending | 12 / 8 (0 quarantined; 4 of 12 audited rejected, 33.3 %) | 4/6 (66.7 %) / 4/10 (40.0 %), the 11 scored sample comments of the development split | — | rules 2 and 3: T1 and T3 move down; see the verdicts |
+| U2-L1 (`u2l1-benchmark-shadow`) | `b7d1cc5` | `upgrade-samples-v1/latency-benchmark` (30) | `shadow` | 510.2 s | relevance 1,539 (698); retrieval_review 1,353 (790); quality 1,957 (1,293); extract 2,874 (2,435); verify 757 (501) | relevance 16; retrieval_review 14; quality 775; extract 219; verify 7 | 5 quality requests with validation errors; 0 transport; 2 quality-failed comments; 0 generation-failed comments; 3 pending | 13 / 8 (0 quarantined; 5 of 13 audited rejected, 38.5 %) | 4/6 (66.7 %) / 4/10 (40.0 %), the 11 scored sample comments of the development split | first attempt 21/24 (87.5 %, Wilson 69.0–95.7 %); 27 attempts | rules 2 and 3: T2 moves down; see the verdicts |
+| U2-L1 (`u2l1-extraction-development-off`) | `b7d1cc5` | `upgrade-samples-v1/extraction-development` (114) | `off` | 347.5 s | relevance 2,256 (1,826); retrieval_review 2,795 (2,027); extract 3,353 (2,841); verify 975 (604) | relevance 17; retrieval_review 20; extract 362; verify 7 | 0 requests with errors; 0 transport; 0 generation-failed comments; 2 pending | 130 / 76 (1 quarantined; 53 of 129 audited rejected, 41.1 %) | accepted 55/74 (74.3 %, Wilson 63.3–82.9 %) / 54/123 (43.9 %, Wilson 35.4–52.7 %); generated 74/120 (61.7 %); recall over admitted 54/121 (44.6 %) | — | U2.3 rule 4 fails: recall 4.9 points below the reference |
+| U2-L1 (`u2l1-silver-development-relevance`) | `b7d1cc5` | `balance-silver-v1` development (70) | `off`, `--stop-after relevance` | 35.7 s | relevance 2,082 (1,634); retrieval_review 1,645 (1,154) | relevance 16; retrieval_review 15 | 0 requests with errors; 0 transport; 0 generation-failed comments; 6 pending | — | relevance agreement 64/69 (92.8 %, Wilson 84.1–96.9 %): 58 TP, 6 TN, 5 FN, 0 FP; 1 uncertain excluded | — | U2.4 rule 4 holds: one agreeing comment more |
+| U2-L1 (`u2l1-quality-synthetic-shadow`) | `b7d1cc5` | `upgrade-samples-v1/quality-synthetic` (19) | `shadow`, `--stop-after quality` | 112.2 s | relevance 1,313 (1,185); retrieval_review 958 (617); quality 1,799 (1,233) | relevance 16; retrieval_review 11; quality 418 | 6 quality requests with validation errors; 0 transport; 3 quality-failed comments; 0 generation-failed comments; 2 pending | — | — | first attempt 13/16 (81.2 %, Wilson 57.0–93.4 %); 19 attempts; route agreement 11/16 (68.8 %, Wilson 44.4–85.8 %), English 5/7, Chinese 6/9; 16 of 19 cases reach quality | U2.2 rule 4 holds: validity and route agreement equal |
 
 Rows of U0.6 (2026-11-04, session U0-L): the five reference runs of plan
 7 U0.6, environment and configuration as in the section above. Token
@@ -625,6 +633,80 @@ nothing):
 - **Elapsed times measure the provider and the network** (plan 5.4):
   1 to 16 s per request on average by stage; T4 is indicative.
 
+Rows of U2-L1 (UP-D19; runs from 2026-11-05 03:01 to 03:20, started by
+the orchestrating session as one chain beside the chain of the U2-L0
+runs; session U2-L1): the five runs of the work order at HEAD, the code
+of `b7d1cc5` (the U2.4 commit; no later commit changes `src/`), through
+bridge version 1, with the API configuration. Identity of each run: the
+30 module hashes of its manifest equal the files at `b7d1cc5` and at
+HEAD; service `{"ollama_version": "openrouter-bridge-1"}`; model and
+embedding digests equal the doctor output and the U2-L0 runs; input and
+source hashes equal the reference runs'; every chat response from
+`deepseek/deepseek-v4-flash` on DeepInfra (see "API environment (U2-L0,
+UP-D19)"). Values as in the U2-L0 rows. The gates at HEAD (`79cfbb5`,
+code of `b7d1cc5`) before the measurement: 280 tests, rule check 0, lock
+green (468 keys). The reference of each run is its U2-L0 run, and every
+reading of D-8 holds with the U2-L0 runs in place of the U0.8 and U0.6
+runs (UP-D19). The local runs `runs/upgrade/u2l1-local-*` made before the
+shutdown are archived with these runs and decide nothing. Measurements,
+scores, the identity check and the comparison (`summary/u2l1-comparison.json`,
+with Wilson intervals, Newcombe intervals of the differences and the
+paired quality attempts) are in
+[`reports/20261105-upgrade-u2-evaluation/`](../../reports/20261105-upgrade-u2-evaluation/manifest.json);
+full runs in the archive.
+
+Verdicts of U2-L1 (adoption rule of plan 5.4, read as D-8):
+
+| Step | Rule 1 gates | Rule 2 failure units and coverage | Rule 3 target metric | Rule 4 no inferiority | Verdict |
+| ---- | ------------ | --------------------------------- | -------------------- | --------------------- | ------- |
+| U2.2 (UP-D04) | pass | quality-failed comments 0 and 2 against 0 and 3 (benchmark `off`, `shadow`); 0 transport; coverage complete | T2: quality 1,293 uncached prompt tokens per request against 2,692 (−52.0 %, difference interval −1,668 to −1,129); 1,957 against 3,469 in total; paired attempt 1 of 24 comments −1,402 (−51.5 %) | synthetic first-attempt validity 13/16 against 13/16; route agreement 11/16 against 11/16, no case changed | kept |
+| U2.3 (UP-D05) | pass | generation-failed comments 0 and 0 against 0 and 0; 0 transport; coverage complete | T1: extraction 2,495 uncached prompt tokens per request against 3,771 (−33.8 %, −2,161 to −391); 2,788 against 4,064 in total | precision of accepted claims 55/74 (74.3 %) against 61/80 (76.2 %), −1.9 points (Newcombe −15.5 to +11.5), within 3; recall 54/123 (43.9 %) against 60/123 (48.8 %), −4.9 points (−17.0 to +7.5), beyond 3 | **fails rule 4** (recall); recorded for the owner's review (E-3), not reverted |
+| U2.4 (UP-D07) | pass | 0 transport; coverage complete; pending units 2 and 3 against 1 and 1 (compared apart, D-8) | T3: relevance 1,154 uncached prompt tokens per request against 1,539 (−25.0 %, −1,297 to +528); 1,439 against 1,571 in total | relevance agreement 64/69 (92.8 %) against 63/69 (91.3 %), +1 comment, the same 69 evaluated | kept |
+
+Targets of plan 5.5 through the API (plan 5.4 ratios): T1 2,495, 66.2 %
+of the U2-L0 baseline, not met (at most 49.9 %, 1,882); T2 1,293, 48.0 %,
+met (at most 71.8 %, 1,933; also below the plan's 1,500); T3 1,154,
+75.0 %, not met (at most 65 %, 1,000).
+
+Findings of U2-L1:
+
+- **The extraction recall loss is Chinese and partly admission.** Recall
+  English 29/46 against 30/46, Chinese 25/77 against 30/77; precision
+  English 29/31 against 30/32, Chinese 26/43 against 31/48. The
+  extraction sample admits 109 comments against 111 (3 no longer
+  admitted, 1 newly admitted), a change of the relevance stage (U2.4)
+  that recall over all labeled positions counts; recall over admitted
+  comments is 54/121 (44.6 %) against 60/123 (48.8 %), −4.2 points, still
+  beyond 3. The three steps were measured together, so the share of U2.3
+  and of U2.4 in the loss cannot be separated, and both intervals of the
+  difference include 0.
+- **Uncached tokens follow the provider's cache.** The shadow benchmark
+  gives relevance 698 uncached tokens (50.6 % of 1,379) and extraction
+  2,435 (120.8 % of 2,016), against 75.0 % and 66.2 % in `off`; the
+  totals fall in both modes (extraction 2,874 against 4,064 in `shadow`).
+  Per comment sent, extraction falls from 1,015 to 759 uncached tokens
+  and relevance from 385 to 325 in `off`. D-8 reads the uncached means;
+  the totals agree in direction for every step.
+- **Relevance holds more units pending.** Pending units: benchmark 2 and
+  3 against 1 and 1, silver split 6 against 1, extraction sample 2
+  against 2. The silver split admits 59 against 64, with 2 newly wrong
+  and 3 newly right comments; the benchmark admits 23 and 24 against 26.
+- **Quality.** First-attempt validity on the benchmark 21/24 (87.5 %)
+  against 23/26 (88.5 %); of the 24 common comments 20 valid in both, 1
+  valid only in U2-L1 and 1 only in U2-L0. Quality output and elapsed
+  time per comment are unchanged (775 against 782 tokens, 18.5 s against
+  18.3 s). Attempt 2 now carries `previous_attempt_errors`; 2 of 3
+  benchmark retries succeeded (U2-L0: 0 of 3; synthetic: 0 of 3 in both).
+- **Budgets for U2.6** (`budgets_u2_6` of the comparison): the largest
+  non-comment characters of a user message over the 342 requests of the
+  five runs, by stage: relevance 2,093, retrieval review 2,018, quality
+  4,740, extraction 10,060, verify 1,980. Comment texts are
+  `comments[].text`, `comments[].units[].text` and verify
+  `original_evidence`; the tool counted `original_comment` only before this
+  session, a key no view has, so the session added `original_evidence`
+  before the budgets were computed. The other readings of D-8 are
+  unchanged.
+
 ## Behavior changes (P7)
 
 | Step | Decision | Asset or request part | Old SHA-256 | New SHA-256 | Lock paths |
@@ -719,6 +801,7 @@ nothing):
 | `runs/upgrade/` (the five U0.6 runs, `u0-benchmark-shadow-interrupted`, measurements, materialized inputs, logs, live configuration, one-off scripts; ignored, not tracked) | `~/Archives/AIMediator/reports/20261104-upgrade-baseline/` | `SHA256SUMS` at the archive root, 5,323 files, 156,944,888 bytes | full runs of the U0.6 reference (P2); the curated report keeps the manifest and summary | U0.6 |
 | `runs/upgrade/` (the four U0.8 sample runs, their measurements and the comparison, the materialized samples and derived inputs, logs, live configuration, doctor output and environment check, one-off scripts; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-baseline-samples/` | `SHA256SUMS` at the archive root, 2,693 files, 74,493,575 bytes | full runs of the U0.8 sample reference (P2); the curated report keeps the manifest and summary | U0.8 |
 | `runs/upgrade/` (the five U2-L0 runs, their measurements, identity check, environment record and comparison with the local rows, the materialized inputs, run logs and the bridge log, the API configuration and doctor output, the bridge and one-off scripts; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-api-reference/` | `SHA256SUMS` at the archive root, 2,446 files, 118,026,987 bytes | full runs of the U2-L0 API reference (P2); the curated report keeps the manifest, summary and provenance | U2-L0 |
+| `runs/upgrade/` (the five U2-L1 runs, their measurements, identity check and comparison, the materialized inputs, run logs and the bridge log, the API configuration and doctor output, the bridge and one-off scripts; the local runs `u2l1-local-benchmark-off`, `u2l1-local-benchmark-shadow` and `u2l1-local-extraction-development-off-interrupted` with their measurements and logs under `local/`; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-u2-evaluation/` | `SHA256SUMS` at the archive root, 3,244 files, 156,077,243 bytes | full runs of the U2-L1 evaluation (P2); the curated report keeps the manifest, summary and provenance | U2-L1 |
 
 ## Decisions found during execution
 
@@ -897,6 +980,23 @@ nothing):
   instruction, in its own `chore` commit; `RULES.md` does not change and
   the D7 test already covers a listed file. Blocked: nothing after the
   commit.
+
+- **E-3 (U2-L1) U2.3 fails adoption rule 4.** Raised on 2026-11-05 by
+  session U2-L1. Recall of (character, direction) positions on the
+  extraction sample is 43.9 % against 48.8 % for the U2-L0 reference,
+  −4.9 points (Newcombe −17.0 to +7.5), beyond the 3-point margin; the
+  other rules hold (see the U2-L1 verdicts under "Live evaluations").
+  Options: (a) revert U2.3 as a fix-up step of the U2 review (plan 1.7,
+  5.4), then remeasure, and rederive the extraction budget of the U2.6
+  payload test, which the U2.3 view sets; (b) keep U2.3 against the rule,
+  with the reason recorded (the loss is within the sampling error, mostly
+  Chinese, and partly the admission change of U2.4); (c) measure U2.3
+  alone (U2.4 reverted in a scratch run) before deciding. Recommendation:
+  (a), the plan's rule; U5 builds on U2.3 (plan 6), so a revert reaches U5
+  too. Not adopted by this session: the work order assigns the decision to
+  the owner's review and forbids a revert in the live session; it is
+  recorded for U2-V and the review recorded under the owner's standing
+  instruction. Blocked: nothing in this session; U2.6 proceeds on HEAD.
 
 ## Verification notes
 
@@ -1278,6 +1378,25 @@ nothing):
   nothing adopted or bypassed under the owner's standing instruction.
   Spend 0.1082 USD for the ten runs of U2-L0 and U2-L1.
 - Next: U2-L1 (live), in this agent; blockers: none.
+
+### 2026-11-05 U2-L1 (live)
+
+- Steps: U2-L1 done; U2.5 and U2-L2 skipped (UP-D20); none started and
+  stashed.
+- State: HEAD is this entry's commit (parent `e6c7917`); tests 280; lock
+  green; rule check 0. The five runs ran at the code of `b7d1cc5` through
+  bridge version 1; this session started no run.
+- Findings: identity checks passed for all five runs, nothing rerun.
+  Verdicts under the adoption rule (D-8, U2-L0 reference): U2.2 kept,
+  U2.3 fails rule 4 on recall (−4.9 points), U2.4 kept; escalation E-3
+  records U2.3 for the owner's review, nothing reverted. T2 met; T1 and
+  T3 not met. `compare_u2l1.py` now takes the reference runs as an option
+  (U2-L0 by default) and counts verify `original_evidence` as comment
+  text in the budgets. The local runs `u2l1-local-*` are archived and
+  decide nothing. No API spend in this session beyond the ten runs
+  recorded under U2-L0.
+- Next: U2.6 (step of session U2-2), in this agent; then U2-V
+  (verification); blockers: none.
 
 ## Deferred
 
