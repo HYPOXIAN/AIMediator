@@ -186,8 +186,8 @@ repeats them with the committed measurement tool.
      (D9).
    - **L** (live): a live evaluation (section 5.4). It writes only under
      `runs/`, into the batch's new curated directory under `reports/`, and
-     into the change record. A live step of section 7 (U0.6, U5.5, U7.1,
-     U7.2) commits with `Step:`; a live session attached to a batch
+     into the change record. A live step of section 7 (U0.6, U7.1, U7.2)
+     commits with `Step:`; a live session attached to a batch
      (`U2-L1`, `U3-L` and so on) commits with `Session:`.
    - **D** (data): creates a new evaluation set under `data/evaluation/`,
      frozen once committed (P1). Corrections go into a separate errata file.
@@ -221,7 +221,7 @@ repeats them with the committed measurement tool.
 10. **Documents**: every new or moved document gets the D2 header and an
     index entry in `docs/README.md` in the same commit (D4).
 11. **Test and holdout splits**: no session tunes against a test or holdout
-    split. The only runs on them are U5.5 and U7.2, each once.
+    split. The only runs on them are in U7.2, each once.
 
 Commit message example (item 2):
 
@@ -646,8 +646,8 @@ It reads CLI runs, legacy runs and the archived run, and writes JSON only.
 | `evidence-quality-synthetic-v1` (existing) | — | quality route agreement on authored cases | development |
 | quality development sources (existing, archived) | — | quality spot checks | `quality-live-sources.jsonl` in the archived run, development |
 
-The test split of `extraction-precision-v1` runs once in U5.5 and once in
-U7.2. The holdout of `balance-silver-v1` runs once in U7.2.
+The test split of `extraction-precision-v1` and the holdout of
+`balance-silver-v1` run once each, in U7.2.
 
 ### 5.4 Live evaluation protocol
 
@@ -713,7 +713,7 @@ batch on `latency-benchmark-v1` unless stated otherwise.
 | U2 | Request views | N, B, L | UP-D04 to UP-D07 | U2-L1, U2-L2 | owner | `upgrade-u2` |
 | U3 | Concurrency and caching | N, B, L | UP-D08, UP-D09 | U3-L | none | `upgrade-u3` |
 | U4 | Quality annotation v2 | N, B, L | UP-D10 | U4-L | owner | `upgrade-u4` |
-| U5 | Extraction precision | B, L | UP-D11 | U5-L1 to U5-L4 | owner | `upgrade-u5` |
+| U5 | Extraction precision | B, L | UP-D11 | U5-L1 to U5-L3 | owner | `upgrade-u5` |
 | U6 | Module linkage | N, B, L | UP-D12 to UP-D15 | U6-L | none | `upgrade-u6` |
 | U7 | Acceptance and documents | L, N | UP-D16 | U7-L | final | `upgrade-done` |
 
@@ -863,8 +863,6 @@ and the benchmark in `off`.
   conditional threat, a system complaint next to a fighter's name and a
   Chinese comment whose direction is unclear. Then U5-L3.
 - **U5.4** N `docs`: balance-analysis.md and design/cli.md.
-- **U5.5** L: the `extraction-precision-v1` test split, once (U5-L4). T6
-  and T7.
 
 ### U6 Module linkage
 
@@ -1261,7 +1259,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | Risk | Mitigation |
 | ---- | ---------- |
 | A payload change lowers quality unnoticed | Adoption rule (5.4) on labels that do not come from the models; one change per step; revert path |
-| Prompt tuning overfits the evaluation sets | Development splits only; test and holdout runs limited to U5.5 and U7.2 (rule 1.11); examples are synthetic |
+| Prompt tuning overfits the evaluation sets | Development splits only; test and holdout runs limited to U7.2 (rule 1.11); examples are synthetic |
 | The same-model audit hides extraction errors | `extraction-precision-v1` labels; audit prompts fixed during U5; optional second audit (U6.6) |
 | A frozen fixture or evaluation set changes through the v2 work | Invariant 2.1.6; U4.2 mapping check before U4.4; escalation instead of edits |
 | Readers of earlier runs break on new schema versions | Invariant 2.1.9; U4.5 and U6.2 keep v1 readers; review and report tests on demo runs of both versions |

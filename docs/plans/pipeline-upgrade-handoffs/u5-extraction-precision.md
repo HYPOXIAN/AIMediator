@@ -9,8 +9,8 @@ Work order for batch U5. The steps are defined in plan section 7 (U5) and
 the target in plan 4.3. Three independent changes to the extraction request
 and prompts, each followed by its own live session and kept only under the
 adoption rule. The verify prompts do not change in this batch, so the audit
-stays a fixed yardstick. The batch ends with the single test-split run and
-an owner review.
+stays a fixed yardstick. The batch ends with an owner review; the test
+split of `extraction-precision-v1` runs only in U7.2.
 
 ## 1. Mission
 
@@ -19,8 +19,8 @@ an owner review.
 - Make the model declare the subjects of a comment before its claims, with
   a program gate (PRM-03).
 - Add authored examples to the extraction prompts (PRM-04, PRM-01).
-- Measure precision and recall on `extraction-precision-v1` (T6, T7); run
-  the test split once.
+- Measure precision and recall on the `extraction-precision-v1`
+  development split (T6, T7).
 
 ## 2. Entry conditions
 
@@ -45,16 +45,14 @@ Allowed paths:
 - **Not allowed**: the verify prompts and the verify request; the
   relevance, quality and retrieval-review stages; the source-binding,
   identity and numeric checks (the `subjects` gate is added, nothing is
-  removed or relaxed); evaluation sets; any test-split run other than U5.5.
+  removed or relaxed); evaluation sets; any test-split run.
 - **Decisions in force**: UP-D11 (U5.1 to U5.3).
-- **Owner actions**: run or authorize U5-L1 to U5-L3 and U5.5; review the
-  batch.
+- **Owner actions**: run or authorize U5-L1 to U5-L3; review the batch.
 
 ## 4. Sessions
 
 Implementation and live sessions alternate: U5-1 (U5.1), U5-L1, U5-2
-(U5.2), U5-L2, U5-3 (U5.3), U5-L3, U5-4 (U5.4), U5-L4 (step U5.5, the
-test split).
+(U5.2), U5-L2, U5-3 (U5.3), U5-L3, U5-4 (U5.4).
 A step that fails its live session is reverted by the next implementation
 session as a fix-up step before it starts its own step, unless the owner
 says otherwise; the change record states which.
@@ -158,11 +156,6 @@ of generated claims, recall over all and over admitted positions, by
 language; the share of audited claims rejected (T6); claims per comment for
 comments over 400 characters; extraction prompt and output tokens; failures.
 
-**U5.5** (live, test split, once): the same runs on the
-`extraction-precision-v1` test split, at the HEAD after U5.4, committed with
-`Step: U5.5`. The result is recorded and reported; nothing is tuned after
-it.
-
 ### U5-V (verification)
 
 ```text
@@ -184,7 +177,8 @@ Checklist:
    prints nothing.
 3. Every B step has a live verdict; every failed step is reverted or kept
    by a recorded owner decision.
-4. The test split was run exactly once (one U5.5 entry, one run directory).
+4. No run directory or change-record entry of U5 uses the
+   `extraction-precision-v1` test split.
 5. No prompt example matches a comment of `extraction-precision-v1` (search
    the prompt text for each labeled comment's first 30 characters).
 6. Gates, foreign directory and wheel acceptance pass.
@@ -203,4 +197,4 @@ Checklist:
   in more than a handful of cases: the definition in the prompt is likely
   wrong.
 - An example would need real corpus text.
-- The test split is needed a second time before U7.2.
+- The test split would be needed before U7.2.

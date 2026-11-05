@@ -76,7 +76,8 @@ Runs:
   per comment. Every input row must have one coverage record.
 - **U7.2**: the `balance-silver-v1` holdout (relevance and character
   expectations) and the `extraction-precision-v1` test split, once each,
-  in `off`. Compare the test split with U5.5.
+  in `off`. Compare the test split with the last accepted development
+  results in the change record.
 
 ### U7-1 (implementation): steps U7.3 to U7.5
 
@@ -147,8 +148,8 @@ Checklist:
 2. Gates, foreign directory and wheel acceptance pass; the test count is at
    least the new P4 floor.
 3. The U7.1 coverage accounts for all 600 inputs in each mode.
-4. The holdout and the test split appear exactly once each in U7.2 (and the
-   test split once in U5.5).
+4. The holdout and the test split appear exactly once each, both in U7.2,
+   and in no earlier run directory or change-record entry.
 5. Every completion criterion of plan section 13 except item 9 is met or
    explained in "Deferred".
 6. Spot-check the design documents against the code: every module of the
