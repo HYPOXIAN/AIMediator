@@ -124,6 +124,8 @@ AIMediator/
 The [documentation index](docs/README.md) lists every document. Core
 documents:
 
+- [Project report](docs/records/20261105-project-report.pdf) (PDF): goals,
+  design, experiments and conclusions of the project
 - [CLI installation and operations](docs/guides/cli-usage.md)
 - [CLI design and contracts](docs/design/cli.md) and
   [implementation status](docs/plans/cli-implementation-status.md)
