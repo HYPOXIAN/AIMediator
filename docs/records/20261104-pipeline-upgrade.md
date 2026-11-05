@@ -37,6 +37,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | ---- | ----- | ------ | ----- | ---- | ----- |
 | U0.1 | N | done | 241 | green | Change record opened from plan section 11; owner decisions copied (UP-D10 pending by its own terms); index row added |
 | U0.2 | N | done | 250 | updated by UP-D01 | New module `aimediator.measurement` (`request_metrics`, `claim_outcomes`, `materialize`, `score_positions`; standard library, `common` and `quality_scoring.proportion` only) and the scripts `measure_run_requests.py` (writes both metrics and outcomes), `materialize_evaluation_input.py` and `score_extraction.py`. New `tests/test_measurement.py` (+9): synthetic runs with and without counters and both reuse formats, wall time, the three demo runs end to end (counters `None`), the three label formats, missing rows, hash mismatches, hand-computed precision and recall, the scripts. Layering row `measurement` → `common`, `quality_scoring`; design/cli.md section 5 layout and contract. Lock regenerated for exactly `L2:enforce/code-snapshot/measurement.py`, `L2:off/…` and `L2:shadow/…` (existence only); no other key differed. Beyond plan 5.2: fresh and reused statistics kept apart (reused archived responses keep their original counters with near-zero elapsed time); counts and sums beside the means; audit rejection share; extraction dispositions; quality attempt errors (IDs and key names only, no source text); `materialize` also checks `ids_sha256` or `labels_sha256` and `source_dataset_sha256` when the set's manifest records them. Nested text parts are counted without JSON quotes, which matches plan 0.2 (unit text 15.3 %, raw; 15.75 % with quotes). Decision found during execution D-1 |
+| U0.3 | D | done | 250 | green | UP-D02: `data/evaluation/latency-benchmark-v1/` frozen (`ids.json`, `manifest.json`); 60 IDs, 10 per language and length tercile; see "Evaluation sets". `materialize` reproduces the 60 rows in set order with every content hash matching |
 
 ## Baseline measurements (U0.4)
 
@@ -53,6 +54,23 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | ---- | -------- | --------------------- | ----------- | ----------- | ---------- |
 
 ## Evaluation sets
+
+- **`latency-benchmark-v1`** (U0.3, UP-D02; frozen 2026-11-04). Purpose:
+  latency and outcome counts; not an accuracy set; no labels
+  (`reviewer_type` `none`). Source
+  `data/raw/feedback/20261027-balanced/screened/records.jsonl` (SHA-256
+  `3eb87a7561b41ff31cef3e7035f0a25353adbe1999e023ff5e46b1bcf4852e3f`, 300
+  English and 300 Chinese rows). Terciles of `len(text_original)` per
+  language; cut points (largest length of terciles 1 and 2): English 208
+  and 764, Chinese 31 and 99; ties put 101, 101 and 98 English and 100, 102
+  and 98 Chinese source rows into the terciles. The first 10 rows per
+  language and tercile in the order of SHA-256 of
+  `latency-benchmark-v1:<record_id>`: 60 IDs, 30 per language. Selected
+  lengths: English 15–154, 239–734 and 905–2,719; Chinese 4–31, 34–91 and
+  117–611 characters. `ids.json` holds `record_id`, `language`,
+  `content_sha256` and `length_tercile` only; `ids_sha256`
+  `8f0931b032fd215b1666559de9e91385b81d844b0c0b7b09ddcf961cc1a8514a`. The
+  manifest states the selection rule in full, so U0-V can rerun it.
 
 ## Archive and deletions
 

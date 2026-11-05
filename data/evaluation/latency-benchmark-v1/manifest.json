@@ -1,0 +1,63 @@
+{
+  "version": "latency-benchmark-v1",
+  "purpose": "latency and outcome counts; not an accuracy set",
+  "reviewer_type": "none",
+  "labels": "none; the set holds IDs and content hashes only, no source text and no URL",
+  "source_dataset": "data/raw/feedback/20261027-balanced/screened/records.jsonl",
+  "source_dataset_sha256": "3eb87a7561b41ff31cef3e7035f0a25353adbe1999e023ff5e46b1bcf4852e3f",
+  "selection": "Per language (en, zh), over all rows of the source dataset: lengths are len(text_original) in Unicode code points; with n rows of the language sorted by length, cut point 1 is the ceil(n/3)-th and cut point 2 the ceil(2n/3)-th smallest length. Tercile 1: length <= cut point 1; tercile 2: cut point 1 < length <= cut point 2; tercile 3: length > cut point 2. Within each language and tercile, rows are ordered by the hexadecimal SHA-256 of the UTF-8 string \"latency-benchmark-v1:<record_id>\", ascending, and the first 10 are taken. ids.json lists the rows by language (en, zh), tercile (1 to 3), then that order.",
+  "cut_points": {
+    "en": {
+      "rows": 300,
+      "tercile_1_max_length": 208,
+      "tercile_2_max_length": 764
+    },
+    "zh": {
+      "rows": 300,
+      "tercile_1_max_length": 31,
+      "tercile_2_max_length": 99
+    }
+  },
+  "tercile_sizes_in_source": {
+    "en": {
+      "1": 101,
+      "2": 101,
+      "3": 98
+    },
+    "zh": {
+      "1": 100,
+      "2": 102,
+      "3": 98
+    }
+  },
+  "counts": {
+    "comments": 60,
+    "languages": {
+      "en": 30,
+      "zh": 30
+    },
+    "by_language_and_tercile": {
+      "en": {
+        "1": 10,
+        "2": 10,
+        "3": 10
+      },
+      "zh": {
+        "1": 10,
+        "2": 10,
+        "3": 10
+      }
+    }
+  },
+  "fields": {
+    "record_id": "record_id of the source row",
+    "language": "language of the source row",
+    "content_sha256": "SHA-256 of text_original as UTF-8",
+    "length_tercile": "tercile of len(text_original) within its language, 1 (shortest) to 3"
+  },
+  "ids_sha256": "8f0931b032fd215b1666559de9e91385b81d844b0c0b7b09ddcf961cc1a8514a",
+  "materialize": "python3 scripts/experiments/materialize_evaluation_input.py --set data/evaluation/latency-benchmark-v1 --dataset data/raw/feedback/20261027-balanced/screened/records.jsonl --out runs/upgrade/inputs/latency-benchmark-v1.jsonl",
+  "decision": "UP-D02 (docs/records/20261104-pipeline-upgrade.md)",
+  "set_status": "frozen",
+  "created": "2026-11-04 (pipeline upgrade step U0.3)"
+}
