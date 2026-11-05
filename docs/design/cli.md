@@ -535,7 +535,10 @@ every path keeps the exception type it raises.
   `tests/test_schema.py` pins each. Also `arr(items)`, `enum(values)`, the
   constants `STRING`, `NULLABLE_STRING`, `NULLABLE_NONEMPTY_STRING` and
   `BOOL`, and the validator `schema_errors(value, schema, path='$')`.
-- `evidence`: `evidence_units`, `numeric_tokens`, `PARAMETER`, `CLAIM`,
+- `evidence`: `evidence_units`, `numeric_tokens`, `PARAMETER`, `CLAIM`
+  (properties in the evidence-first order `evidence_ids`, `character`,
+  `target`, `direction`, `recommendation`, `specificity`, `parameters`,
+  `uncertain`; pipeline upgrade step U5.1, UP-D11),
   `character_reference(text='')` (new objects on every call, built from
   `resources.glossary()` and memoized by `text`; each call returns a new
   copy of the cached value, pipeline upgrade step U1.2), `character_terms(entry)` (canonical name, Chinese
@@ -574,6 +577,13 @@ every path keeps the exception type it raises.
   `extract` and 256 otherwise; `quality` takes `num_predict` and `num_ctx`
   from the policy) and `normalize(stage, parsed, ids, data) -> (parsed or
   None, errors)`, which `Runner` calls only after the schema check passed.
+  For `extract`, `schema_for` keeps the claim order of `CLAIM` when it
+  narrows properties and appends `quality_point_ids` last (step U5.1);
+  each comment's schema is `{subjects, claims}`, `subjects` a unique array
+  of the comment's allowed characters with `maxItems` their number (0 when
+  none is allowed), and `normalize` keeps `subjects` in each assessment;
+  `pipeline.extract_claims` adds the source-binding error `Claim character
+  not declared as subject` (step U5.2, UP-D11).
   For `quality` (step U4.4) `schema_for` builds
   `evidence_quality.annotation_schema_v2` from the context's `segments` and
   `character_literals`, and `normalize` applies `validate_annotation_v2`;
@@ -586,7 +596,12 @@ every path keeps the exception type it raises.
 - `inference`: `api`, `streamed_chat` (its loop guards scan only the output
   added since their last match and decide as `re.findall` and
   `repeated_claim` over the whole output would; pipeline upgrade step
-  U1.3), `repeated_claim`, the production
+  U1.3; the duplicate-claim guard finds claim objects by
+  `claim_key(assessment_schema)`, the first property of the claim items
+  under `properties[<comment ID>].properties.claims.items.properties` of
+  the request's `format`, so it follows the claim order without importing
+  `evidence`, step U5.1), `claim_key`, `claim_pattern`,
+  `repeated_claim(output, allowed_ids, first_key)`, the production
   `Transport(cfg, key=None, folder=None)` with `tags`, `version`, `api`,
   `embed` and `chat`, `probe(cfg, transport, require_embedding=True)`,
   which checks availability only, and `service_version(transport)`.

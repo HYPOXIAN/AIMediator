@@ -16,6 +16,17 @@ direction experiment.
 
 - `src/aimediator/assets/prompts/summarize-balance.zh.txt`: Chinese instructions for `qwen2.5:7b`.
 - `src/aimediator/assets/prompts/summarize-balance.en.txt`: equivalent English instructions for `llama3.1:latest`.
+  Both define `subjects` in two sentences (pipeline upgrade step U5.2) and
+  end with authored synthetic examples, labeled as not real comments, each
+  with its input units and the expected entry of `assessments` (step U5.3,
+  UP-D11): in both languages a long review that only mentions fighters
+  (empty `subjects` and `claims`), a conditional threat (`nerf`) and a
+  system complaint next to a fighter's name (no claim for that fighter);
+  in Chinese also an ironic remark whose direction is `unclear` with
+  `uncertain` true, and a general complaint that gives a qualitative
+  claim. Each example stays under 400 characters, and none is drawn from
+  an evaluation set; `tests/test_prompt_examples.py` checks that every
+  expected entry is valid under the schema built for its own text.
 - `src/aimediator/assets/prompts/relevance.{zh,en}.txt` and `retrieval-review.{zh,en}.txt`: topic-agreement review before extraction. Each ends with a line that introduces the topic list; `resources.prompts` appends the twenty anchors of `retrieval-anchors.json` after it, `P1: <text>` to `N10: <text>`, so the anchors keep one source (pipeline upgrade step U2.4, UP-D07).
 - `src/aimediator/assets/prompts/verify-balance.{zh,en}.txt`: claim entailment audit after extraction.
 - `src/aimediator/assets/configs/local-language-routing.json`: model, language, and prompt assignments.
@@ -104,13 +115,29 @@ three-claim limit. The runner checks strict JSON, rejects duplicate keys and
 nonfinite values, validates required keys/types/enums, requires complete item-ID
 coverage, and quarantines incomplete generation.
 
-Each extracted claim contains `character`, `target`, `direction`,
-`recommendation`, `specificity`, `parameters`, `evidence_ids`, and `uncertain`.
+Each extracted claim contains, in this order, `evidence_ids`, `character`,
+`target`, `direction`, `recommendation`, `specificity`, `parameters` and
+`uncertain`: the model selects the supporting units before it names the
+subject (evidence-first order, pipeline upgrade step U5.1, UP-D11). The
+order reaches the model through the response schema; the duplicate-claim
+loop guard recognizes claims by the first claim property of the request's
+schema. Readers key claims by name, so stored claims of either order stay
+readable, and review fingerprints sort keys.
 Each numerical parameter contains `metric`, `current`, `proposed`, `delta`,
 `unit`, and its own `evidence_id`. Unknown quantities are JSON null. All non-null
 value strings retain exact source spelling, including number words.
 At the model boundary, `assessments` is an object whose unique required keys are
-the exact input comment IDs; each value contains only a claims array. The runner
+the exact input comment IDs; each value is `{subjects, claims}` (step U5.2,
+UP-D11). `subjects` comes first: a unique array of the comment's allowed
+characters, the fighters whose balance the author takes a position on (a
+mention, comparison, victim or cosmetic remark does not make a subject),
+bounded by the number of allowed characters and empty when none is
+allowed. A claim whose character is not among its comment's subjects is
+quarantined at source binding with `Claim character not declared as
+subject`; the gate adds a check and relaxes none. Its live evaluation
+(U5-L2) found no precision gain and no claim gated, so the review of
+batch U5 decides whether it stays (escalation E-5 of the
+[change record](../records/20261104-pipeline-upgrade.md)). The runner
 derives coverage status and normalizes the output into coverage records.
 This schema prevents repeated comment IDs from replacing other input records.
 
