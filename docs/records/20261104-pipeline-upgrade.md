@@ -40,6 +40,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | U0.3 | D | done | 250 | green | UP-D02: `data/evaluation/latency-benchmark-v1/` frozen (`ids.json`, `manifest.json`); 60 IDs, 10 per language and length tercile; see "Evaluation sets". `materialize` reproduces the 60 rows in set order with every content hash matching |
 | U0.4 | N | done | 250 | green | Plan 8.1, 8.2, 8.4 and 8.5 at `bca6490`, and plan 8.7 with the committed tool; see "Baseline measurements (U0.4)". Every archived figure of plan 0.2 agrees within rounding; no baseline of plan 5.5 changes |
 | U0.5 | D | done | 250 | green | UP-D02: `data/evaluation/extraction-precision-v1/` frozen (`labels.jsonl`, `manifest.json`); 301 comments labeled by session U0-A from the source text only, 227 development and 74 test; see "Evaluation sets". `materialize` reproduces 301, 227 and 74 rows with every hash matching; `score_positions` reads the labels |
+| U0.6 | L | done | 250 | green | Session U0-L on the owner's machine: environment and live configuration recorded (Ollama 0.34.2, local embeddings, `connection_timeout` 120 after E-1); the five reference runs at `50becc2` measured and scored, see "Live evaluations" and the plan 5.5 baselines there; curated report `reports/20261104-upgrade-baseline/`; full runs archived with `SHA256SUMS` (5,323 files). Decisions found during execution D-2 (Failures column), D-3 (interrupted run rerun clean), D-4 (relevance and route agreement outside the package); escalation E-1 resolved by the owner. UP-D10 row corrected to the owner's answer |
 
 ## Baseline measurements (U0.4)
 
@@ -231,6 +232,78 @@ rows, `8a41f808074bce16f5badcc3a645c0f34eec7f78ece77196fd22c5725dc8a216`).
 
 | Session | Commit | Set | Mode | Wall time | Prompt tokens by stage | Output tokens by stage | Failures | Claims generated / accepted | Precision / recall (dev) | Quality validity | Verdict |
 | ------- | ------ | --- | ---- | --------- | ---------------------- | ---------------------- | -------- | --------------------------- | ------------------------ | ---------------- | ------- |
+| U0-L (`u0-benchmark-off`) | `50becc2` | `latency-benchmark-v1` (60) | `off` | 431.9 s | relevance 1,456 (1,278 uncached); retrieval_review 1,202 (962); extract 3,982 (3,404); verify 846 (254) | relevance 19; retrieval_review 20; extract 306; verify 7 | 0 requests with errors; 0 failed comments; 2 pending (review queue) | 43 / 17 (5 quarantined; 21 of 38 audited rejected) | 5/14 (35.7 %) / 5/20 (25.0 %), the 22 scored benchmark comments of the development split | — | reference |
+| U0-L (`u0-benchmark-shadow`) | `50becc2` | `latency-benchmark-v1` (60) | `shadow` | 3,130.2 s | relevance 1,418 (1,240); retrieval_review 1,263 (1,056); quality 3,353 (2,089); extract 3,976 (3,399); verify 813 (305) | relevance 18; retrieval_review 21; quality 643; extract 252; verify 6 | 26 quality requests with validation errors, 0 transport; 13 quality-failed comments; 3 pending | 32 / 11 (4 quarantined; 17 of 28 rejected) | 3/8 (37.5 %) / 3/20 (15.0 %), same 22 comments | first attempt 41/54 (75.9 %, Wilson 63.1–85.4 %); 67 attempts | reference |
+| U0-L (`u0-extraction-development-off`) | `50becc2` | `extraction-precision-v1` development (227) | `off` | 2,434.7 s | relevance 2,439 (2,250); retrieval_review 1,836 (1,621); extract 4,429 (3,782); verify 1,019 (345) | relevance 21; retrieval_review 21; extract 491; verify 7 | 0 requests with errors; 0 failed comments; 5 pending | 327 / 137 (26 quarantined; 164 of 301 rejected, 54.5 %) | accepted 65/117 (55.6 %, Wilson 46.5–64.2 %) / 64/222 (28.8 %, Wilson 23.3–35.1 %); generated 108/291 (37.1 %); recall over admitted 64/220 (29.1 %) | — | reference |
+| U0-L (`u0-silver-development-relevance`) | `50becc2` | `balance-silver-v1` development (70) | `off`, `--stop-after relevance` | 186.8 s | relevance 2,033 (1,857); retrieval_review 1,520 (1,301) | relevance 20; retrieval_review 22 | 0 requests with errors; 3 pending | — | relevance agreement 59/69 (85.5 %, Wilson 75.3–91.9 %): 55 TP, 4 TN, 8 FN, 2 FP; 1 uncertain excluded | — | reference |
+| U0-L (`u0-quality-synthetic-shadow`) | `50becc2` | `evidence-quality-synthetic-v1` (38) | `shadow`, `--stop-after quality` | 851.2 s | relevance 1,255 (1,089); retrieval_review 772 (664); quality 2,725 (1,681) | relevance 19; retrieval_review 18; quality 383 | 12 quality requests with validation errors, 0 transport; 6 quality-failed comments; 1 pending | — | — | first attempt 28/34 (82.4 %, Wilson 66.5–91.7 %); 40 attempts; route agreement 16/34 (47.1 %, Wilson 31.5–63.3 %), English 10/16, Chinese 6/18; 4 cases do not reach quality (3 rejected, 1 pending) | reference |
+
+Rows of U0.6 (2026-11-04, session U0-L): the five reference runs of plan
+7 U0.6, environment and configuration as in the section above. Token
+figures are means over fresh requests (every U0.6 request is fresh and
+carries counters), uncached in parentheses. "Failures" follows D-2.
+Wall time is the measurement tool's (manifest creation to last state
+update); every run ended `partial` (exit 5) because of its pending
+review-queue units. Measurements, scores and agreements are in
+[`reports/20261104-upgrade-baseline/`](../../reports/20261104-upgrade-baseline/manifest.json);
+full runs in the archive (see "Archive and deletions").
+
+Baselines of plan 5.5 from U0.6:
+
+| ID | U0.6 baseline | Run | Target (plan 5.5) |
+| -- | ------------- | --- | ----------------- |
+| T1 | extraction 3,404 uncached prompt tokens per request (shadow 3,399; archive 3,421) | `u0-benchmark-off` | at most 1,700 |
+| T2 | quality 2,089 uncached prompt tokens per request (3,353 in total) | `u0-benchmark-shadow` | at most 1,500 |
+| T3 | relevance 1,278 uncached prompt tokens per request (shadow 1,240) | `u0-benchmark-off` | at most 831 (65 %) |
+| T4 | quality 50.0 s per comment (2,701.7 s for 54 comments) | `u0-benchmark-shadow` | at most 25.0 s |
+| T5 | quality first-attempt validity 75.9 % (41/54) | `u0-benchmark-shadow` | at least 95 % |
+| T6 | 54.5 % of audited claims rejected (164/301) | `u0-extraction-development-off` | at most 35 % |
+| T7 | precision of accepted claims 55.6 %, recall 28.8 % | `u0-extraction-development-off` | precision at least 65.6 %, recall at least 25.8 % |
+
+Findings of U0.6:
+
+- **Run-to-run variation at the same commit.** The two benchmark runs
+  send byte-identical embedding requests (the same 10 request IDs), but
+  the returned vectors differ: topic scores by up to 0.0075 and margins by
+  up to 0.004. One English comment sits on the triage boundary (margin
+  0.000 in `off`, −0.001 in `shadow`) and changed from candidate to review
+  queue; the changed candidate set changed the relevance batches, and four
+  other English decisions changed with it. Admitted comments 55 and 54,
+  pending units 2 and 3. A probable cause is the partial GPU offload of
+  the embedding model, whose layer split varies with free memory (not
+  confirmed). Differences of this size between U0.6 and later L runs are
+  noise, comparable to the one-unit tolerance of adoption rule 2.
+- **Quality is slower than the archive suggested.** Benchmark quality
+  requests take 40.3 s on average (2,701.7 s in total, 86 % of the shadow
+  run's wall time) against 18.2 s in the archived legacy run. The cost is
+  in decoding: `llama3.1:latest` writes 904 output tokens per quality
+  request (75.5 s on average; the longest 283 s with 3,177 tokens),
+  `qwen2.5:7b` 457 (15.0 s). Prompt sizes match the archive (3,353
+  tokens).
+- **Failure classes of quality attempts (ALG-01, for UP-D10).** Error
+  counts over the attempts that failed validation (an attempt can carry
+  several errors). Benchmark (26 attempts): `Literal absent from selected
+  spans: character_literal` 22, `mechanic_literal` 4, uncovered
+  non-whitespace original content 4, point/segment detail conflict 8,
+  quote/offset mismatch 2. Synthetic (12 attempts): `character_literal` 6,
+  uncovered content 4, quote/offset mismatch 8, detail conflict 2. No
+  attempt failed in transport.
+- **Route agreement under the D-4 rule.** Of the 18 disagreements, 6 are
+  Chinese comments that failed validation; three of them
+  (`missing_character`, `quoted_voice`, `me_too`) expect `review` and
+  carry it as their fallback route, so comparing routes only would give
+  19/34. Of the 12 completed disagreements: `mechanism_evidence` expected
+  and `opinion_only` produced 5; an expected `exclude` part missing 4 (the
+  two `high_emotion` cases also produce `review`); `review` expected and
+  `opinion_only` produced 2 (`quoted_voice` and `sarcasm`, English);
+  `exclude` expected and `review` produced 1 (`injection`, English).
+- **Extraction by language.** English: precision 39/65 (60.0 %), recall
+  38/73 (52.1 %). Chinese: precision 26/52 (50.0 %), recall 26/149
+  (17.4 %). Labels keep the literal `阿俊` apart from `Arjun` (see
+  "Evaluation sets"), which lowers both by string comparison.
+- **Extraction tokens** agree with the archive: 3,404 and 3,782 uncached
+  tokens per request against 3,421; extraction requests take 16.9 s on
+  the benchmark and 23.5 s on the development split against 19.7 s.
 
 ## Behavior changes (P7)
 
@@ -288,6 +361,7 @@ rows, `8a41f808074bce16f5badcc3a645c0f34eec7f78ece77196fd22c5725dc8a216`).
 
 | Path | Archive location | SHA256SUMS entry | Reason | Step |
 | ---- | ---------------- | ---------------- | ------ | ---- |
+| `runs/upgrade/` (the five U0.6 runs, `u0-benchmark-shadow-interrupted`, measurements, materialized inputs, logs, live configuration, one-off scripts; ignored, not tracked) | `~/Archives/AIMediator/reports/20261104-upgrade-baseline/` | `SHA256SUMS` at the archive root, 5,323 files, 156,944,888 bytes | full runs of the U0.6 reference (P2); the curated report keeps the manifest and summary | U0.6 |
 
 ## Decisions found during execution
 
@@ -310,14 +384,17 @@ rows, `8a41f808074bce16f5badcc3a645c0f34eec7f78ece77196fd22c5725dc8a216`).
   retrieval review rejected: they never become relevance candidates, keep
   `model_related` `null`, and `pipeline.coverage` reports them as
   `relevance_pending_or_failed` (coverage `relevance_state`
-  `technical_failure_or_pending`). Options: (a) record two counts apart:
-  technical failures (failed requests, `generation_failed` and
-  `quality_failed` comments) and pending units
-  (`relevance_pending_or_failed`); (b) count both as technical failures;
-  (c) count failed requests only. Recommendation and action: (a), so either
-  reading of rule 2 can be applied to the U0.6 rows; the recommended
-  reading for U2 compares technical failures, with pending units compared
-  apart. N-class (record only). Finding: the CLI's `partial` message calls
+  `technical_failure_or_pending`). The run summary's `failed_requests`
+  counts every request whose trace has errors, so in `shadow` runs it
+  also counts quality outputs that fail validation. Options: (a) record
+  the counts apart: requests with errors (validation and transport named
+  apart), failed comments (`generation_failed`, `quality_failed`) and
+  pending units (`relevance_pending_or_failed`); (b) count all of them as
+  technical failures; (c) count failed requests only. Recommendation and
+  action: (a), so any reading of rule 2 can be applied to the U0.6 rows;
+  the recommended reading for U2 counts failed comments and transport
+  failures as technical-failure units, with pending units compared apart.
+  N-class (record only). Finding: the CLI's `partial` message calls
   review-queue units technical failures.
 - **D-3 (U0.6) Interrupted live run discarded instead of resumed.** The
   agent session ended at about 21:04 while `u0-benchmark-shadow` was in its
@@ -409,6 +486,28 @@ rows, `8a41f808074bce16f5badcc3a645c0f34eec7f78ece77196fd22c5725dc8a216`).
 - Next: U0.6 in session U0-L on the owner's machine; then U0-V; blockers:
   U0.6 needs the live environment and the embedding keys of the live
   configuration.
+
+### 2026-11-04 U0-L (live)
+
+- Steps: U0.6 done; none started and stashed.
+- State: HEAD is this entry's commit (parent `2fb1532`); tests 250; lock
+  green; rule check 0. The five reference runs ran at
+  `50becc2`; the commits since change only the change record and the
+  curated report.
+- Findings: escalation E-1 (`doctor` failed on the embedding probe's 10 s
+  connection timeout; the owner set `connection_timeout` 120); decisions
+  found during execution D-2 (Failures column), D-3 (the agent session
+  ended during `u0-benchmark-shadow`; the run was kept aside and rerun
+  clean instead of resumed) and D-4 (relevance and route agreement from a
+  one-off scorer, the package functions deferred); the UP-D10 row now
+  carries the owner's answer (adopt), which the owner gave before U0.1 in
+  `runs/20261104-up-owner-decisions.md`; the owner chose local
+  embeddings, which differ from the archived run; two benchmark runs at
+  the same commit differ by one admitted comment through embedding drift;
+  quality takes 40 s per request, twice the archive, because of long
+  `llama3.1:latest` outputs.
+- Next: U0-V (verification, fresh session); then U1 (work order U1);
+  blockers: none.
 
 ## Deferred
 
