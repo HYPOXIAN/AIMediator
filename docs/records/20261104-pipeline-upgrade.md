@@ -108,6 +108,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | U4-L2 | L | done | 316 | green | E-4 option (c), UP-D19, UP-D20, D-12. The two U4-L runs repeated at the U4.F1 commit `385f744` (`u4f1-benchmark-shadow`, `u4f1-quality-synthetic-shadow`) through bridge version 2, environment and identity equal to the record. Verdict: rule 2 still fails (benchmark quality-failed comments 5 against 2), T5 78.3 % unchanged, T4 11.0 s per comment (59.5 %), rule 4 holds (synthetic 15/16, routes 14/16 against 13/16 and 11/16); the fallback (a) of E-4 applies and passes to U4-V (revert U4.F1, U4.5, U4.4). See "U4-L2" under "Live evaluations". No `reports/` directory (D-12); full runs, measurements and comparison archived with `SHA256SUMS` (726 files). Spend 0.0186 USD (0.1665 to 0.1851 USD) |
 | U2-R | L | done | 316 | green | E-3 option (c), UP-D19, UP-D20, D-8; run by session U5 (UP-D20, chain session 4) before U5.1. `u2r-extraction-development-off`: the extraction-development sample in `off` at the code of `39a1efd` (the U2.3 commit; U2.2 sends no request in `off`, U2.4 not applied), extracted with `git archive` into `runs/upgrade/code-39a1efd/src` and first on `sys.path`, through bridge `openrouter-bridge-2` (SHA-256, digests and `live-config-api.json` equal to the record; `doctor` passed; 30 module hashes equal to `39a1efd`; input equal to the reference; all 176 chat attempts from `deepseek/deepseek-v4-flash` on DeepInfra). Against `u2l0-extraction-development-off` as D-8 reads rule 4 for U2.3: precision of accepted claims 60/79 (75.9 %) against 61/80 (76.2 %), −0.3 points (Newcombe −13.5 to +12.9); recall 59/123 (48.0 %) against 60/123 (48.8 %), −0.8 points (−13.1 to +11.5); rule 2 0 against 0 technical failures, coverage complete. U2.3 alone holds rule 4; E-3 decided as (b) on the evidence of (c): U2.3 kept, adopted under the owner authorization of 2026-11-05 03:11. See "U2-R" under "Live evaluations". Spend 0.0255 USD (0.1851 to 0.2105 USD) |
 | U5.1 | B | done | 318 | updated by UP-D11 | PRM-02, plan 4.3. `evidence.CLAIM` in the evidence-first order `evidence_ids`, `character`, `target`, `direction`, `recommendation`, `specificity`, `parameters`, `uncertain`; `stages.schema_for('extract', ...)` keeps it when it narrows properties (reassigned keys keep their place) and appends `quality_point_ids` last. `inference.claim_key(assessment_schema)` returns the first property of the claim items under `properties[<comment ID>].properties.claims.items.properties` of the request's `format` (None without claim items), and the loop guard of `streamed_chat` and `repeated_claim(output, allowed_ids, first_key)` find claim objects by that key instead of the literal `"character"`; `inference` does not import `evidence`. `proposal_hash` sorts keys: review export and import of the demo runs pass (`test_quality_readers`, `test_cli_product`). Tests (+2, `tests/test_stream_guards.py`): the U1.3 equivalence streams carry a schema whose claims start with `character` and still equal the copies of `a1c034e`; `claim_key` on the U5.1 schema, the old order, comments without claim items and array schemas; evidence-first streams (normal, a duplicate claim, late and early loops of 8 claims, the same claim under two comments) at chunk sizes 1, 4, 9 and whole: the new guard stops every claim loop (`duplicate_claim_loop`, on a prefix of the same output) where the old copy, keyed on `character`, does not. Lock regenerated (771 keys): exactly the 18 extraction request keys under "Behavior changes"; no artifact changed (fixture claims keep their own key order). Design documents follow in U5.4 (work order) |
+| U5-L1 | L | done | 318 | green | UP-D11, UP-D18, UP-D19, UP-D20, D-13. `u5l1-extraction-development-off`: the extraction-development sample in `off` at the U5.1 commit `e64701d` (a `git archive` copy first on `sys.path`) through bridge `openrouter-bridge-2` (identity check passed: 30 module hashes, digests, bridge and configuration hashes equal to the record, `doctor` passed, all 182 chat attempts from `deepseek/deepseek-v4-flash` on DeepInfra). Reference `u2l1-extraction-development-off` (E-3 kept U2.3). Verdict (D-13): U5.1 passes and is kept: 0 technical failures against 0, coverage complete; precision of accepted claims 58/77 (75.3 %) against 55/74 (74.3 %), +1.0 points (Newcombe −12.7 to +14.7); recall 58/123 (47.2 %) against 54/123 (43.9 %), +3.3 points; T6 40/119 (33.6 %) against 53/129 (41.1 %). The entry rerun `u5r-extraction-development-off` (code of `e34e08d`, decides nothing) gives 55/73 and 54/123: against it U5.1 adds 0.0 points of precision and +3.3 of recall. See "U5-L1" under "Live evaluations". Spend of both runs 0.0482 USD (0.2105 to 0.2587 USD); the report follows with U5-L3 (D-13) |
 
 ## Baseline measurements (U0.4)
 
@@ -973,6 +974,52 @@ includes 0. Finding for U2-V and the U2 review: U2.4 was judged on
 relevance agreement (D-8) and kept; its effect on extraction recall
 (through admission) is not a D-8 metric of U2.4 and is recorded here only.
 
+### U5-L1 (UP-D11; API, UP-D19)
+
+Runs of 2026-11-05 from 05:09 to 05:26, started by the U5 session in
+their own process sessions, side by side, with
+`runs/upgrade/tools/u5_api_run.sh` from `git archive` copies of their
+commits first on `sys.path` (so later edits of the checkout could not
+reach a running process): `u5l1-extraction-development-off` at the U5.1
+commit `e64701d`, and `u5r-extraction-development-off` at `e34e08d`, the
+U5 entry state (code of the U4 session), as an estimate of run-to-run
+variation that decides nothing. Both identity checks
+(`runs/upgrade/tools/u5_identity.py`) passed: module hashes equal to their
+commits, service `openrouter-bridge-2` with the recorded SHA-256 and
+digests, `live-config-api.json` unchanged, `doctor` passed, input equal to
+the reference, every chat attempt from `deepseek/deepseek-v4-flash` on
+DeepInfra. Reference: `u2l1-extraction-development-off` (E-3). Compared
+with `runs/upgrade/tools/u5_compare.py` as D-13 reads the rule.
+
+| Run | Precision accepted | Precision generated | Recall | Recall admitted | T6 rejected | Claims per long comment (generated, accepted) | Extraction prompt (uncached) | Output | Failures |
+| --- | ------------------ | ------------------- | ------ | --------------- | ----------- | --------------------------------------------- | ---------------------------- | ------ | -------- |
+| `u2l1-extraction-development-off` (reference) | 55/74 (74.3 %) | 74/120 (61.7 %) | 54/123 (43.9 %) | 54/121 | 53/129 (41.1 %) | 1.24, 0.39 (33 comments) | 3,353 (2,841) | 362 | 0 |
+| `u5r-extraction-development-off` (entry rerun) | 55/73 (75.3 %) | 72/112 (64.3 %) | 54/123 (43.9 %) | 54/121 | 44/118 (37.3 %) | 0.94, 0.39 (31) | 3,432 (2,952) | 369 | 0 |
+| `u5l1-extraction-development-off` (U5.1) | 58/77 (75.3 %) | 74/113 (65.5 %) | 58/123 (47.2 %) | 58/121 | 40/119 (33.6 %) | 0.97, 0.52 (31) | 3,389 (2,939) | 369 | 0 |
+
+By language (U5.1 against the reference): English precision of accepted
+claims 30/33 against 29/31, recall 30/46 against 29/46; Chinese 28/44
+against 26/43 and 28/77 against 25/77. Long comments are admitted
+comments over 400 characters (35 in the sample) whose extraction
+completed. Failures: transport failures plus generation-failed comments;
+every run has 2 relevance units pending (exit 5, as every extraction run
+since U0.6).
+
+Verdict of U5-L1 (D-13):
+
+| Step | Rule 1 gates | Rule 2 failures and coverage | Rule 3 T7 precision of accepted claims | Rule 4 no inferiority | Verdict |
+| ---- | ------------ | ---------------------------- | -------------------------------------- | --------------------- | ------- |
+| U5.1 (UP-D11) | pass (318 tests, rule check 0, lock 771 keys) | 0 against 0; coverage complete | 75.3 % against 74.3 %, +1.0 points (Newcombe −12.7 to +14.7) | precision +1.0, recall +3.3 points (−9.1 to +15.4) | kept |
+
+Findings of U5-L1: the entry rerun moves by +1.0 points of precision and
+0.0 of recall against the reference with the same code, so differences of
+a few points are within run-to-run variation; against the rerun U5.1
+gains 0.0 points of precision and 3.3 of recall. T6 falls in both new
+runs (37.3 % and 33.6 % against 41.1 %), and U5.1 generates fewer claims
+on long comments (0.97 against 1.24 per comment) with more of them
+accepted (0.52 against 0.39). T6 target (at most 35 %) met by the U5.1
+run; T7 target (+10 points) not met.
+
 ## Behavior changes (P7)
 
 | Step | Decision | Asset or request part | Old SHA-256 | New SHA-256 | Lock paths |
@@ -1302,6 +1349,33 @@ relevance agreement (D-8) and kept; its effect on extraction recall
   changes no frozen content and no boundary, and a revert removes only
   record text. A later session whose boundary allows it may curate the
   archived measurements into a report directory.
+
+- **D-13 (U5-L1) How the adoption rule reads for the U5 steps, and where
+  the U5 report goes.** The U5 steps are measured one at a time on the
+  extraction-development sample only (UP-D18), and the work order names
+  T6 and T7 without saying which one rule 3 reads; D-8 covers only U2.
+  The work order also asks every L session to add its summary to one
+  curated report, while an existing `reports/` directory is frozen (plan
+  2.1.6). Options: (a) rule 1 the gates at the step's commit; rule 2
+  transport failures plus generation-failed comments of the extraction
+  run at most one above the reference, and every input comment with a
+  coverage status; rule 3 T7, the precision of accepted claims, above the
+  reference, for each of U5.1 to U5.3 (all three aim at precision, plan
+  4.3); rule 4 precision of accepted claims and recall over all labeled
+  positions not more than 3 points below the reference; the reference is
+  the latest run whose step passed (U5-L1: `u2l1-extraction-development-off`
+  after E-3), whole-run values decide, intervals, languages, T6 and the
+  other values are reported beside them; a rerun of the entry state
+  (`u5r`) is reported and decides nothing; the report
+  `reports/20261105-upgrade-u5-evaluation/` is written once, by the last
+  L session of this agent, with the summaries of every U5 run and one
+  archive, and the earlier L commits record their values here; (b) rule
+  3 on T6; (c) a report directory per L session. Recommendation and
+  action: (a), adopted under the owner authorization of 2026-11-05 03:11,
+  fixed before the U5-L1 verdict was recorded (`u5_compare.py --target
+  precision`); T6 falls with precision in every U5 run so far, so (b)
+  would not change the U5-L1 verdict; (c) multiplies reports for one
+  batch. N-class (record and run output only).
 
 ## Escalations
 
