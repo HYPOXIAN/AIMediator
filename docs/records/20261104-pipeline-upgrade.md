@@ -661,6 +661,86 @@ Findings of U0.8:
 
 ## Verification notes
 
+### 2026-11-05 U0-V
+
+- Range: `upgrade-plan..c587115`; 14 commits. Steps U0.1 to U0.8: U0-1
+  `43a0c23`, `be3875d`, `bca6490`, `cdf6e33`; U0-A `50becc2`; U0-L
+  `0976760`, `2fb1532`, `09ca80c`; U0.7 `0abfe02`, committed by the
+  orchestrating session on the owner's amendment; U0-L2 `8255249`,
+  `5967ab6`. Three commits are not batch steps: `6a68245` (the standing
+  instruction), `84d03a9` (UP-D17) and `c587115` (UP-D18). All checks
+  ran on `c587115` with Python 3.14.8 and NumPy 2.4.6. Temporary output
+  went outside the checkout; `runs/` and the archive were not written.
+- Checks:
+  1. Boundary and commit hygiene (plan 8.8): pass. The boundary check
+     prints 8 paths, all under `docs/plans/` (the plan and seven work
+     orders). Only `84d03a9` (UP-D17) and `c587115` (UP-D18) change them,
+     the owner amendments that work order section 3 exempts. Those two
+     commits and `6a68245` change nothing else except the decision rows
+     and the standing instruction in this record: no code, test, data,
+     report or lock. No step commit leaves the pattern. `src/` changes
+     only by `measurement.py`, `data/` only by the three new sets and
+     `reports/` only by the two new directories. No existing file under
+     `data/` or `reports/` is modified or removed. The hygiene check
+     prints nothing: every commit has a `Step:` or `Session:` line. The
+     steps name their decisions (U0.2 UP-D01; U0.3 and U0.5 UP-D02; U0.7
+     and U0.8 UP-D17), subjects use P5 types, each set has its own `data`
+     commit, and each step's last commit carries its progress row. No
+     commit message or changed file holds attribution.
+  2. Lock fixture: pass. Only `be3875d` (U0.2) changes
+     `tests/fixtures/behavior-lock.json`. It adds three lines,
+     `L2:<enforce|off|shadow>/code-snapshot/measurement.py`, each
+     `<exempt: existence only>`. No other key changed.
+  3. Gates, foreign directory and wheel: pass. 250 tests pass (floor 241),
+     and again from a foreign working directory; rule check `Total: 0`;
+     lock green. Installed-wheel acceptance: `"passed": true`,
+     `"commands": 18` (as in U0.4); the wheel holds
+     `aimediator/measurement.py`.
+  4. Evaluation sets: pass. Every SHA-256 in the manifest of the raw
+     dataset `20261027-balanced` matches its file (19 files). The
+     recomputed `ids_sha256` of `latency-benchmark-v1` (`8f0931b0…`) and
+     `labels_sha256` of `extraction-precision-v1` (`de7d7e32…`) equal
+     their manifests and this record. Rerunning the U0.3 rule from the
+     manifest gives the cut points (English 208 and 764, Chinese 31 and
+     99), the tercile sizes and the 60 rows of `ids.json` exactly: IDs,
+     order, languages, content hashes and terciles. The split rule holds
+     for all 301 labels: 227 development and 74 test, with 27 benchmark
+     IDs, 8 of them forced into development. The labels are in hash
+     order, and every content hash and language matches the dataset.
+     Beyond the item, the U0.5 selection was rerun from
+     `extraction-coverage.json`, using IDs and counts only (its SHA-256
+     equals the manifest's). It gives the same 301 IDs: 251 with claims
+     and 50 of 272 eligible. The four `ids_sha256` of `upgrade-samples-v1`
+     (`f5c5cff4…`, `3f02f0dd…`, `e4e936db…`, `98ae4aee…`) equal the sample
+     manifests, the top-level manifest and this record. Each rule, rerun
+     from its manifest, gives its `ids.json` exactly: 30; 114 (45 English,
+     69 Chinese); 19 (10 Chinese, 9 English); 120. Each source dataset
+     hash matches. `materialize` reproduces every set and split, and the
+     materialized inputs hash to the values recorded for U0.6 and U0.8.
+  5. Plan 8.7 rerun: pass. Both outputs are byte-identical to the U0.4
+     outputs in `runs/upgrade/`, and every figure of the U0.4 entry
+     agrees. For example: extract, both models, 157 (122) requests,
+     19.7 s, 4,080 prompt, 659 cached and 3,421 uncached tokens; 404
+     claims generated, 187 accepted, audit rejection 51.7 %; quality 5
+     requests, 18.2 s, 3,594 prompt tokens. The archive listing (paths,
+     sizes, modification times) is the same before and after the run.
+  6. Reports and table: pass. Both report manifests name their archive
+     path (`~/Archives/AIMediator/reports/20261104-upgrade-baseline/` and
+     `…/20261105-upgrade-baseline-samples/`) and `SHA256SUMS`, as well as
+     the record, datasets, code version and retention reason. Both
+     `SHA256SUMS` files exist. They list 5,323 and 2,693 files, the
+     archives' file counts, and `sha256sum -c` passes on both. Every
+     module hash in the nine archived run manifests equals the package
+     file at HEAD (`src/` is unchanged since `50becc2`). "Live
+     evaluations" holds the five U0-L reference rows and the four U0-L2
+     sample rows. Their wall times, claim counts, scores and quality
+     validity agree with the report summaries, which hold no source text.
+- Measurements: tests 250 in 9.1 s (wall 9.4 s); demo 1.06 s plain, 1.9 s
+  under cProfile (`evidence.character_reference` 688 calls, 0.66 s); lock
+  green.
+- Result: accepted, tag `upgrade-u0`. Nothing was adopted or bypassed
+  under the owner's standing instruction; no escalation.
+
 ## Session log
 
 ### 2026-11-04 U0-1 (implementation)
@@ -739,6 +819,17 @@ Findings of U0.8:
   composition. The sample runs took 60 minutes against 114 for the U0.6
   equivalents.
 - Next: U0-V (verification, fresh session); then U1 (work order U1);
+  blockers: none.
+
+### 2026-11-05 U0-V (verification)
+
+- Steps: none (verification); none started and stashed.
+- State: HEAD is this entry's commit (parent `c587115`), tagged
+  `upgrade-u0`; tests 250; lock green; rule check 0.
+- Findings: every checklist item passes (see "Verification notes"); no
+  decision found during execution; nothing adopted or bypassed under the
+  owner's standing instruction; no escalation.
+- Next: U1-1 (implementation, work order U1, steps U1.1 to U1.6);
   blockers: none.
 
 ## Deferred
