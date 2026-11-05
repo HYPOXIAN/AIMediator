@@ -129,6 +129,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | U5.F1 | B | done | 339 | updated by UP-D11 | Fix-up step of the U5 review (E-6 option (a)), adopted under the owner's standing instruction and the owner authorization of 2026-11-05 03:11 and executed by the verification session U2-V to U6-V. `git revert` of U5.3 (`476d502`): the authored synthetic examples leave the prompt pair `summarize-balance.{en,zh}`, which returns to its U5.2 text. `tests/test_prompt_examples.py` (+2 in U5.3) is removed with the step, so the count falls from 341 to 339 (above the P4 floor of 241); the file is archived (see "Archive and deletions"). Conflicts only in this record (HEAD's version kept) and the lock fixture (regenerated). The lock changes in exactly the 32 keys of U5.3 (780 keys). Rule check 0. The design text of U5.3 is removed by U5.F3 |
 | U5.F2 | B | done | 333 | updated by UP-D11 | Fix-up step of the U5 review (E-5 option (a)), adopted under the owner's standing instruction and the owner authorization of 2026-11-05 03:11 and executed by the verification session U2-V to U6-V after U5.F1. `git revert` of U5.2 (`30d41be`): each comment's extraction schema is `{claims}` again (no `subjects`), `FixtureTransport` no longer fills `subjects`, the source-binding error `Claim character not declared as subject` is gone, and the prompt pair `summarize-balance.{en,zh}` returns to its U5.1 text. Conflict in `pipeline.extract_claims`: U6.1's `target_reference` lines sit next to the U5.2 gate. The resolution keeps U6.1's lines and removes only the gate and its `subjects` set. This record kept HEAD's version, and the lock was regenerated. `tests/test_subjects.py` (+6 in U5.2) is removed with the step, and the five test files that U5.2 edited return to their earlier assertions, so the count falls from 339 to 333 (above the P4 floor of 241); the file is archived. The lock changes in exactly the 50 keys of U5.2 (780 keys); the 26 `off` request keys now equal those of U5.1 (`e64701d`). Rule check 0 |
 | U5.F3 | N | done | 333 | green | Documentation fix-up of the U5 review (E-6) after U5.F1 and U5.F2, executed by the verification session U2-V to U6-V. The U5.4 text on U5.2 and U5.3 is replaced. In balance-analysis.md the prompt entry now says that the `subjects` definition and the authored examples were reverted, which also removes the last reference to the archived `tests/test_prompt_examples.py`, and the model-boundary paragraph says again that each value holds only a claims array, with one sentence on the revert. In design/cli.md section 5, `stages` gives each comment's schema as `{claims}`, with one sentence on the revert. The U5.1 text (evidence-first order, `claim_key`) stays. Lock unchanged |
+| U7.1 | L | done | 333 | green | UP-D18, UP-D19, UP-D20, D-16. Session U7-L: `u7-benchmark-off` and `u7-benchmark-enforce` on the `latency-benchmark` sample (30) at `b73f0e9` (tag `upgrade-u6`) through bridge `openrouter-bridge-2` with `max_parallel_requests` 2 and a new empty cache per run (D-16, adopted); identity check passed; coverage complete (30 of 30, both runs); off against U2-L0: accepted positions equal on all 30 comments, extraction −31.4 % prompt tokens, 0 against 0 technical failure units; enforce against U2-L0 `shadow`: 2 against 3 quality-failed comments, quality −44.5 % prompt tokens, first-attempt validity 21/24 against 23/26, no formal claim (only 1 comment routed to mechanism evidence); E-7 (failures and pending units) adopted (a). See "U7-L"; report `reports/20261105-upgrade-acceptance/`; spend 0.0114 USD for the two runs |
 
 ## Baseline measurements (U0.4)
 
@@ -381,6 +382,23 @@ For every API session it replaces the local items of the record above
   its 0.01 USD allowance for unlogged probes; 2.86 USD remain below the
   refusal point of 2.98 USD.
 
+### U7.1 configuration (U7-L, D-16)
+
+The work order asks the owner to fix the U7.1 configuration; no owner
+value is recorded, so U7-L adopted its own recommendation (D-16) under
+the owner authorization of 2026-11-05 03:11. It applies to the four U7-L
+runs (U7.1 and U7.2):
+
+| Key | Value | Source |
+| --- | ----- | ------ |
+| Configuration file | `runs/upgrade/live-config-api.json`, SHA-256 `b44df0f2f8d7d0d6e295d7daa1314a729e2c285ec345596beff56a71fc1c4530`, unchanged | plan 5.4 ("Hosted API") |
+| `max_parallel_requests` | 2, as `analyze --max-parallel-requests 2` | U3-L: the fastest whole run (1.31 times the serial run) and the best quality-stage throughput (1.25 times); 4 was no faster |
+| `cache_dir` | a new empty directory per run, `runs/upgrade/cache-<run>`, as `analyze --cache-dir`; 0 reused requests in every run | work order section 2: every request fresh; one directory per run, because the `off` and `enforce` runs share their relevance and retrieval requests |
+| `second_audit` | not applicable: the key does not exist (U6.6 skipped by UP-D20) | plan 4.10, UP-D15 |
+| Evidence quality | `off` (U7.1 `u7-benchmark-off`, U7.2), `enforce` (U7.1 `u7-benchmark-enforce`) | plan 7 U7.1, U7.2; UP-D18 |
+| Code | `b73f0e9` (tag `upgrade-u6`; HEAD at the start of U7), a `git archive` copy first on `sys.path`; U7 changes no package file | plan 7 U7.1 |
+| Bridge | `openrouter-bridge-2`, `api_bridge.py` SHA-256 `f42e0087ebcde0b193eaaa1d60cd2c735b7630fa7735ccda14acd7403e1137e9`, running before the session (not restarted) | plan 5.4 |
+
 ## Live evaluations
 
 | Session | Commit | Set | Mode | Wall time | Prompt tokens by stage | Output tokens by stage | Failures | Claims generated / accepted | Precision / recall (dev) | Quality validity | Verdict |
@@ -408,6 +426,8 @@ For every API session it replaces the local items of the record above
 | U4-L (`u4-quality-synthetic-shadow`) | `2614453` | `upgrade-samples-v1/quality-synthetic` (19) | `shadow`, `--stop-after quality` | 127.7 s | relevance 1,312 (928); retrieval_review 958 (446); quality 2,865 (1,745) | relevance 16; retrieval_review 11; quality 311 | 0 quality requests with validation errors; 0 transport; 0 quality-failed comments; 2 pending | — | — | first attempt 16/16 (100 %, Wilson 80.6–100 %); 16 attempts; route agreement 14/16 (87.5 %, Wilson 64.0–96.5 %), English 5/7, Chinese 9/9; 16 of 19 cases reach quality | rule 4 holds: validity and route agreement up |
 | U4-L2 (`u4f1-benchmark-shadow`) | `385f744` | `upgrade-samples-v1/latency-benchmark` (30) | `shadow` | 313.3 s | relevance 1,474 (1,090); retrieval_review 1,353 (1,148); quality 3,951 (2,589); extract 2,788 (2,422); verify 742 (508) | relevance 15; retrieval_review 14; quality 530; extract 201; verify 7 | 10 quality requests with validation errors (5 comments, both attempts); 0 transport; 5 quality-failed comments; 0 generation-failed comments; 3 pending | 12 / 10 (0 quarantined; 2 of 12 audited rejected, 16.7 %) | 4/8 (50.0 %) / 4/10 (40.0 %), the 11 scored sample comments of the development split | first attempt 18/23 (78.3 %, Wilson 58.1–90.3 %); 28 attempts; final 18/23 | U4.F1: rule 2 still fails; see the verdicts |
 | U4-L2 (`u4f1-quality-synthetic-shadow`) | `385f744` | `upgrade-samples-v1/quality-synthetic` (19) | `shadow`, `--stop-after quality` | 108.7 s | quality 2,971 (1,978) | quality 307 | 2 quality requests with validation errors; 0 transport; 1 quality-failed comment; 2 pending | — | — | first attempt 15/16 (93.8 %, Wilson 71.7–98.9 %); 17 attempts; route agreement 14/16 (87.5 %), English 7/7, Chinese 7/9 | rule 4 holds against U2-L1 |
+| U7-L (`u7-benchmark-off`) | `b73f0e9` | `upgrade-samples-v1/latency-benchmark` (30) | `off`, N 2, fresh cache | 43.9 s | relevance 1,474 (1,154); retrieval_review 1,353 (1,046); extract 2,788 (2,642); verify 750 (517) | relevance 15; retrieval_review 14; extract 189; verify 7 | 0 requests with errors; 0 transport; 0 generation-failed comments; 3 pending | 11 / 8 (0 quarantined; 3 of 11 audited rejected, 27.3 %) | 4/6 (66.7 %) / 4/10 (40.0 %), the 11 scored sample comments of the development split | — | acceptance (U7.1) |
+| U7-L (`u7-benchmark-enforce`) | `b73f0e9` | `upgrade-samples-v1/latency-benchmark` (30) | `enforce`, N 2, fresh cache | 155.9 s | relevance 1,539 (149); retrieval_review 1,353 (687); quality 1,926 (1,263); extract 1,589 (1,077), 1 request | relevance 16; retrieval_review 14; quality 667; extract 29 | 5 quality requests with validation errors; 0 transport; 2 quality-failed comments; 0 generation-failed comments; 3 pending | 0 / 0 (one comment reaches extraction, `no_supported_character_claim`) | — / 0/10 (0.0 %), same 11 comments | first attempt 21/24 (87.5 %, Wilson 69.0–95.7 %); 27 attempts | acceptance (U7.1) |
 
 Rows of U0.6 (2026-11-04, session U0-L): the five reference runs of plan
 7 U0.6, environment and configuration as in the section above. Token
@@ -1202,6 +1222,99 @@ linkage readings and spend of both runs, the U6.4 and U6.5 evidence, and
 the tools under `provenance/`; the full runs, logs, configuration, inputs
 and tools are in the archive with `SHA256SUMS`.
 
+### U7-L (U7.1 and U7.2; API, UP-D19)
+
+Runs of 2026-11-05 from 06:51 to 06:58, started by session U7-L in its
+own process session with `runs/upgrade/tools/u7_api_runs.sh`, one after
+another, with the configuration of "U7.1 configuration (U7-L, D-16)":
+`u7-benchmark-off` and `u7-benchmark-enforce` (U7.1), then
+`u7-silver-holdout-off` and `u7-extraction-test-off` (U7.2). Identity
+check passed for all four (`u5_identity.py`: the 32 module hashes equal
+`b73f0e9`; bridge `openrouter-bridge-2` with the recorded SHA-256 and
+digests; `live-config-api.json` unchanged; `doctor` passed; all 31, 40,
+35 and 114 chat attempts from `deepseek/deepseek-v4-flash` on
+DeepInfra). The benchmark input equals the U2-L0 runs' (SHA-256
+`ce7ee3df...`). No request was reused (0 `reuse-provenance.json`).
+Spend 0.0296 USD for the four runs with their doctor calls (0.338001 to
+0.367605 USD; 0.0039, 0.0075, 0.0044 and 0.0138 USD; 2.61 USD remain
+below the refusal point). Measurements and comparisons are in
+[`reports/20261105-upgrade-acceptance/`](../../reports/20261105-upgrade-acceptance/manifest.json);
+full runs in the archive. The results with their intervals are also in
+the validation record of U7.3.
+
+**U7.1** (UP-D18). Coverage: every one of the 30 inputs has exactly one
+coverage record in both runs. Both runs end `partial` (exit 5) because
+of relevance-pending comments, as every reference run does.
+`u7-benchmark-off` against the API reference `u2l0-benchmark-off` and the
+latest accepted run `u6-benchmark-off` (token figures are means per
+fresh request, uncached in parentheses):
+
+| Measure | `u7-benchmark-off` | `u2l0-benchmark-off` | `u6-benchmark-off` |
+| ------- | ------------------ | -------------------- | ------------------ |
+| Technical failure units; pending units | 0; 3 | 0; 1 | 0; 3 |
+| Admitted comments | 23 | 26 | 23 |
+| Claims generated / accepted; audit rejected | 11 / 8; 3/11 (27.3 %) | 14 / 8; 6/14 (42.9 %) | 14 / 8; 6/14 (42.9 %) |
+| Precision accepted / recall (11 scored comments) | 4/6 / 4/10 | 4/6 / 4/10 | 4/6 / 4/10 |
+| Extraction prompt tokens; output tokens | 2,788 (2,642); 189 | 4,064 (3,771); 231 | 3,281 (2,622); 245 |
+| Relevance prompt tokens | 1,474 (1,154) | 1,571 (1,539) | 1,474 (1,090) |
+| Retrieval-review prompt tokens | 1,353 (1,046) | 1,314 (1,314) | 1,353 (1,046) |
+| Verify prompt tokens | 750 (517) | 755 (499) | 753 (479) |
+| Wall time | 43.9 s | 104.1 s | 55.6 s |
+
+- **Per request** against U2-L0: extraction −1,276 prompt tokens per
+  request (−31.4 %, outside the reference's 95 % interval), −1,130
+  uncached (−30.0 %), −43 output tokens (−18.4 %); relevance −97 (−6.1
+  %), uncached −385 (−25.0 %); retrieval review +39 (+2.9 %, the U2.4
+  topic line), uncached −269; verify within 1 %. Mean elapsed per
+  request falls by 26 to 53 % by stage (indicative, plan 5.4; N 2
+  against N 1). Against U6-L the extraction request is 493 tokens
+  shorter (−15.0 %), the examples of U5.3 that U5.F1 reverted.
+- **Per comment** (paired, 30 comments): against U2-L0 the accepted
+  (character, direction) positions are equal on all 30 comments (8
+  accepted claims each); admission is equal on 27, and 3 comments are
+  admitted only in the reference (`steam:229390012`, `steam:234299803`,
+  `steam:237735508`; none only in U7), so the coverage status is equal
+  on 26; 11 against 14 generated claims. Against U6-L admission,
+  coverage status and accepted positions are equal on all 30 comments.
+- **Local rows beside** (a different model, UP-D19; they decide
+  nothing): against the U0.8 row (`u0s-benchmark-off`) admission is equal
+  on 25 comments and accepted positions on 25 (8 against 8 accepted);
+  against the U0.6 row on the same 30 comments on 25 and 24 (8 against
+  14); against the archived 600-comment `off` run on 27 and 24 (8
+  against 10). The hosted model is faster per request (extraction 3.6 s
+  against 13.5 s in U0.8).
+
+`u7-benchmark-enforce` against the API reference `u2l0-benchmark-shadow`
+(UP-D18; no `enforce` reference exists):
+
+| Measure | `u7-benchmark-enforce` | `u2l0-benchmark-shadow` |
+| ------- | ---------------------- | ----------------------- |
+| Technical failure units; pending units | 2 quality-failed; 3 | 3 quality-failed; 1 |
+| Quality comments; first-attempt validity; attempts | 24; 21/24 (87.5 %, Wilson 69.0–95.7 %); 27 | 26; 23/26 (88.5 %, Wilson 71.0–96.0 %); 29 |
+| Quality prompt tokens; output tokens | 1,926 (1,263); 667 | 3,469 (2,692); 782 |
+| Quality elapsed per comment (sum of request times) | 9.7 s | 18.3 s |
+| Comments reaching extraction; claims generated / accepted | 1; 0 / 0 | 26; 13 / 8 |
+| Recall (11 scored comments) | 0/10 | 4/10 |
+| Wall time | 155.9 s | 538.1 s |
+
+- Quality prompt −1,543 tokens per request (−44.5 %), uncached −1,429
+  (−53.1 %), the U2.2 view; output −115 tokens (−14.7 %). First-attempt
+  validity 21/24 against 23/26 (−1.0 point).
+- `enforce` sends to extraction only comments with a
+  `mechanism_evidence` route (design/cli.md section 8). On this sample
+  quality routes 9 comments only to `opinion_only`, 4 only to `review`
+  (2 of them failed quality), 10 to mixed routes with `exclude`,
+  `system_evidence` or both, and 1 to `exclude` and
+  `mechanism_evidence`; that one comment yields no supported claim, so
+  the formal claims view is empty. Of the 10 labeled positions of the 11
+  scored comments, 9 sit in 8 comments routed only to `opinion_only` and
+  1 in a comment that failed quality; the `enforce` report shows them as
+  general opinions or processing failures, not as formal claims. This is
+  the designed contract, not a technical failure; it bounds what
+  `enforce` reports on short comments (see "Deferred").
+- E-7 records the technical failures and pending units that the runs
+  leave (work order section 6, first trigger).
+
 ## Behavior changes (P7)
 
 | Step | Decision | Asset or request part | Old SHA-256 | New SHA-256 | Lock paths |
@@ -1332,6 +1445,7 @@ and tools are in the archive with `SHA256SUMS`.
 | `runs/upgrade/` (the two U6-L runs, their measurements, identity checks, comparisons, linkage readings and report exports, run logs and the bridge log, the API configuration and doctor outputs, the spend before and after, the materialized inputs, the run script, tools and the U6.4 and U6.5 helper scripts with the coarse-v1 module copy; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-u6-evaluation/` | `SHA256SUMS` at the archive root, 1,606 files, 61,177,205 bytes | U6-L full runs (P2); the curated summary is `reports/20261105-upgrade-u6-evaluation/` | U6-L |
 | `tests/test_prompt_examples.py` (tracked; added by U5.3, removed by its revert) | `~/Archives/AIMediator/scripts/20261105-upgrade-u5-reverts/tests/test_prompt_examples.py` | `SHA256SUMS` in that directory: `ad1c6cb12b78ed49b3b617af4f77e7cf2f3306d4935dd3e976e4cbcb5c582a85` | U5.F1 reverts U5.3 (E-6 option (a)); git history keeps the file at `476d502`; outside the records only `docs/design/balance-analysis.md` names it, and U5.F3 removes that sentence | U5.F1 |
 | `tests/test_subjects.py` (tracked; added by U5.2, removed by its revert) | `~/Archives/AIMediator/scripts/20261105-upgrade-u5-reverts/tests/test_subjects.py` | `SHA256SUMS` in that directory: `127828877d23451d700c03b450393bb816050b0ac420f784fb7a995f8ed48a0e` | U5.F2 reverts U5.2 (E-5 option (a)); git history keeps the file at `30d41be`; outside the records nothing refers to it | U5.F2 |
+| `runs/upgrade/` (the four U7-L runs `u7-benchmark-off`, `u7-benchmark-enforce`, `u7-silver-holdout-off` and `u7-extraction-test-off`, their measurements, scores, agreement, identity checks, doctor outputs, spend and analysis, run logs, the timeline and the bridge log of the U7 window, the API configuration, the three materialized inputs, the run, analysis and archive scripts with the tools they import and the bridge; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-acceptance/` | `SHA256SUMS` at the archive root, 1,819 files, 78,424,818 bytes, verified with `sha256sum -c` | Plan 5.4 (full runs archived); the curated summary is `reports/20261105-upgrade-acceptance/` | U7.1, U7.2 |
 
 ## Decisions found during execution
 
@@ -1613,6 +1727,24 @@ and tools are in the archive with `SHA256SUMS`.
   by a revert of U6.4. Both passes are in
   `reports/20261105-upgrade-u6-evaluation/summary/screening-comparison.json`.
 
+- **D-16 (U7-L) The U7.1 configuration.** The U7 work order (section 2)
+  has the owner fix `max_parallel_requests`, `cache_dir` and
+  `second_audit` for U7.1; no owner value is recorded. Options for
+  `max_parallel_requests`: 1 (the serial bytes and the setting of every
+  earlier live run), 2 or 4 (U3-L: whole run 1.31 and 1.22 times faster,
+  quality stage 1.25 and 1.17 times). For `cache_dir`: one new empty
+  directory for both runs, or one per run. Recommendation: 2, the
+  fastest measured setting, because U7.1 accepts the configuration a user
+  would run and the outputs do not depend on it beyond the run-to-run
+  variation of fresh inference (plan 2.3); one new empty directory per
+  run, because a shared one would let `enforce` reuse the relevance and
+  retrieval requests of `off` and the work order asks for fresh requests;
+  `second_audit` does not exist (U6.6 skipped by UP-D20). The same
+  configuration for U7.2. Adopted under the owner authorization of
+  2026-11-05 03:11; the values are under "U7.1 configuration (U7-L,
+  D-16)". Undone by rerunning U7.1 with other options; nothing in the
+  repository depends on it.
+
 ## Escalations
 
 - **E-1 (U0.6) `aimediator doctor` fails with the local embedding
@@ -1772,6 +1904,21 @@ and tools are in the archive with `SHA256SUMS`.
   and updates the U5.4 text of balance-analysis.md and design/cli.md for
   the reverted parts (U5.F3); U5.1 stays. Blocked: nothing in this
   session.
+
+- **E-7 (U7.1) The U7 runs leave technical failures and pending units.**
+  Raised on 2026-11-05 by session U7-L (work order section 6, first
+  trigger). Every input is accounted for (coverage complete in all four
+  runs), but `u7-benchmark-enforce` has 2 quality-failed comments (the
+  U2-L0 `shadow` reference 3), and the runs keep 3, 3, 1 and 2 comments
+  relevance-pending (`technical_failure_or_pending`; U2-L0 1 and 1, U6-L
+  3), so each run ends `partial`. Options: (a) accept U7.1 and U7.2 with
+  these counts recorded as limitations, since they are within rule 2 of
+  plan 5.4 against the references (pending units compared apart, D-8),
+  and pass the pending units after U2.4 and the quality failures to a
+  later plan; (b) hold the acceptance until a code change removes them,
+  which U7 may not make (work order section 3). Recommendation: (a).
+  Adopted under the owner authorization of 2026-11-05 03:11; the items
+  are under "Deferred". Blocked: nothing.
 
 ## Verification notes
 
@@ -2831,3 +2978,15 @@ against the rule with `git revert` of the fix-up commits.
   variation, with every interval including 0. U7.1 and U7.2 measure the
   adopted configuration with U2.4 and can read this against the U2-L0
   reference.
+- **Pending relevance units and quality failures** (E-7, U7-L,
+  2026-11-05). Every U7 run keeps 1 to 3 comments relevance-pending
+  (`technical_failure_or_pending`) and ends `partial`; U2-L0 kept 1, the
+  runs after U2.4 keep 2 or 3. The `enforce` run has 2 quality-failed
+  comments. A later plan can look at the relevance retries after U2.4
+  and at the quality failure classes; U7 changes no code.
+- **`enforce` on short comments** (U7-L, 2026-11-05). On the
+  `latency-benchmark` sample, `enforce` routes 1 of 24 quality comments
+  to mechanism evidence and reports no formal claim, while `off` and
+  `shadow` report 8 accepted claims. The labeled positions sit in
+  comments routed `opinion_only`. Whether such comments should reach
+  extraction is a product question for the owner, not a defect.
