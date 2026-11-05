@@ -19,3 +19,11 @@ Each claim:
 Read each clause separately. Pure system feedback yields no character claim. In a mixed comment, preserve any separate supported character request; never attach a system complaint to a merely mentioned fighter. Legal disputes about frame-data websites do not request frame changes. Unknown character identity or no supported character position => claims=[]. Never borrow another comment's subject, action or number.
 
 A number inside an insult, exaggeration, price, playtime, ranking or joke is not a gameplay tuning metric or requested target. A generic buff request containing such a number stays qualitative_only with parameters=[].
+
+Synthetic examples, authored for this prompt (not real comments). Input units, then that comment's entry of assessments:
+1. E1 "Great netcode and a huge story mode." E2 "I main Ken and my friend plays Marisa." E3 "Ranked queues are slow and the battle pass costs too much." E4 "Still 8/10, worth buying."
+=> {"subjects":[],"claims":[]}
+2. E1 "If Capcom does not nerf Guile's Sonic Boom next patch, I quit ranked."
+=> {"subjects":["Guile"],"claims":[{"evidence_ids":["E1"],"character":"Guile","target":"Sonic Boom","direction":"nerf","recommendation":"Nerf Guile's Sonic Boom.","specificity":"qualitative_only","parameters":[],"uncertain":false}]}
+3. E1 "Lost three Luke mirrors in a row because the servers kept disconnecting." E2 "Fix the rollback already."
+=> {"subjects":[],"claims":[]}

@@ -19,3 +19,15 @@ subjects（在claims之前）：作者对其平衡表达了立场的所提供角
 逐分句理解：纯系统意见不生成角色claim。混合评论中另有独立、有据角色诉求时应保留，但不能把系统抱怨绑定到仅被提及的角色。帧数网站的法律争议不等于修改招式帧数。身份无法确定或没有有据角色意见时claims=[]。不得借用其他评论的主体、动作或数字。
 
 辱骂、夸张、价格、游玩时长、排名或玩笑中的数字，不是游戏调整指标或目标值。笼统加强诉求夹带这类数字，仍用qualitative_only与parameters=[]；不得把它们编成参数。
+
+合成示例（为本提示编写，并非真实评论）。先列输入单元，再给该评论在assessments中的条目：
+1. E1 "画面很棒，剧情模式也有诚意。" E2 "我主玩春丽，朋友玩JP。" E3 "排位匹配太慢，通行证也太贵。" E4 "总体八分，值得入手。"
+=> {"subjects":[],"claims":[]}
+2. E1 "古烈的音速手刀再不削，我就退游了。"
+=> {"subjects":["Guile"],"claims":[{"evidence_ids":["E1"],"character":"Guile","target":"音速手刀","direction":"nerf","recommendation":"削弱古烈的音速手刀。","specificity":"qualitative_only","parameters":[],"uncertain":false}]}
+3. E1 "用隆打排位，连着三把掉线。" E2 "服务器赶紧修吧。"
+=> {"subjects":[],"claims":[]}
+4. E1 "曼侬现在真是“平衡”呢，谁用谁知道。"
+=> {"subjects":["Manon"],"claims":[{"evidence_ids":["E1"],"character":"Manon","target":null,"direction":"unclear","recommendation":"曼侬的“平衡”可能是反讽，诉求不明。","specificity":"qualitative_only","parameters":[],"uncertain":true}]}
+5. E1 "卢克太强了，什么都能做。"
+=> {"subjects":["Luke"],"claims":[{"evidence_ids":["E1"],"character":"Luke","target":null,"direction":"nerf","recommendation":"削弱卢克。","specificity":"qualitative_only","parameters":[],"uncertain":false}]}
