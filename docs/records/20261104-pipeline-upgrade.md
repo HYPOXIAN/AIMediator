@@ -2726,6 +2726,57 @@ against the rule with `git revert` of the fix-up commits.
   batch tags); it checks U4.F2 to U4.F5 for U4-V and runs U6-V from
   `upgrade-u5`; blockers: none.
 
+### 2026-11-05 U2-V to U6-V (verification)
+
+- Steps: verification of U2 to U6 (UP-D20, chain session 6), with the
+  reviews of U2, U4 and U5 recorded under the owner's standing
+  instruction and the owner authorization of 2026-11-05 03:11. Fix-up
+  steps executed: U5.F1 (`b437949`, reverts U5.3 `476d502`), U5.F2
+  (`3ee4612`, reverts U5.2 `30d41be`) and U5.F3 (`5ab20d0`, documents).
+  No step was started and stashed. At the start `git status --short`
+  printed nothing and no `WIP Step` stash existed. No step was skipped
+  for time.
+- State: HEAD is this entry's commit (parent `f1a64a4`); tests 333;
+  lock updated by UP-D11 (U5.F1 and U5.F2, the keys of the reverted
+  steps); rule check 0. Tags set: `upgrade-u2-review` `f7703ef`,
+  `upgrade-u2` `78f8ca3`, `upgrade-u3` `ca3c731`, `upgrade-u4-review`
+  `a132000`, `upgrade-u4` `0036f0d`, `upgrade-u5-review` `0bfe4c7`,
+  `upgrade-u5` `5ab20d0`, `upgrade-u6` `f1a64a4`.
+- Findings:
+  - Every batch is accepted (see "Verification notes"). Gates, foreign
+    directory and wheel acceptance pass at `6a77e5b` (341 tests) and at
+    `5ab20d0` (333 tests, 18 acceptance commands both times). Boundary
+    and commit hygiene pass in every range; U2's paths outside its
+    pattern are the recorded UP-D19, UP-D20, U2-L0 report and E-2
+    changes. Every behavior-change SHA-256 recomputes.
+  - U2 review: no fix-up step. E-3 (U2.3) was taken as the U5 session
+    decided it (kept) and was not decided again.
+  - U4 review: the E-4 fix-ups U4.F2 to U4.F5, which session U6 made,
+    were verified. Each revert inverts its step, and none was
+    `bypassed`, so this session had none to execute.
+  - U5 review: adopted E-5 and E-6 option (a), weighing the U6-L
+    readings, because rule 3 fails in every measurement. U5.3 and then
+    U5.2 were reverted. The only conflict outside the record and the
+    lock was one adjacent block in `pipeline.extract_claims` with
+    U6.1's lines, kept. Two test files were archived to
+    `~/Archives/AIMediator/scripts/20261105-upgrade-u5-reverts/` with
+    `SHA256SUMS` (G6, plan 1.9).
+  - Record completed: "Archive and deletions" rows for the U3-L and U5
+    archives, which existed without rows.
+  - Passed to U7 under "Deferred": the ADR 0005 status after the E-4
+    reverts, and the U2.4 finding of U2-R.
+  - Nothing `bypassed`; no new escalation; no live run (API spend
+    unchanged at 0.338001 USD).
+  - Deviation: U5.F3 edits two design documents (balance-analysis.md,
+    design/cli.md). The session prompt allows only the record, the tags
+    and the fix-up reverts. E-6's adopted action assigns U5.F3 to the
+    verification session as part of those reverts, and D9 needs the
+    documents to match the code, so it was done.
+- Next: chain session 7, U7 (U7.1 to U7.5), on the adopted configuration
+  at this commit: U2.1 to U2.4 and U2.6, U3, U4.1 to U4.3 without v2
+  quality requests, U5.1, U6.1, U6.2, U6.4, U6.5 and U6.7. Blockers:
+  none.
+
 ## Deferred
 
 - **Relevance and route agreement in `measurement`** (D-4, from U0.6). Add
@@ -2764,3 +2815,19 @@ against the rule with `git revert` of the fix-up commits.
   already mark the change. No longer needed since U4.F4 (2026-11-05): the
   revert of U4.4 returns the legacy runner to v1 requests, which the
   recorded v1 schema hash describes.
+
+- **ADR 0005 after the E-4 reverts** (U4-V, 2026-11-05). ADR 0005 still
+  reads `Status: Active`, although its pipeline decisions (v2 quality
+  requests and the readers of both versions) were reverted by U4.F3 and
+  U4.F4. Its U4.1 to U4.3 code stays in the package, unused. D3 allows
+  only a status change, and D2 has no status for a decision reverted in
+  part. Recommendation for U7.3: a short ADR that records the revert and
+  supersedes 0005 in part, with 0005 set to `Superseded by` it and an
+  index update. U2-V to U6-V did not decide this, because its role
+  changes only this record.
+- **Extraction recall and U2.4** (U2-R and the U2 review, 2026-11-05).
+  U2.4 was kept on relevance agreement. U2-R found that most of the
+  recall loss of E-3 arises with U2.4 (through admission) and run-to-run
+  variation, with every interval including 0. U7.1 and U7.2 measure the
+  adopted configuration with U2.4 and can read this against the U2-L0
+  reference.
