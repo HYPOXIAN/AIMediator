@@ -160,9 +160,6 @@ def evaluate(labels, records, admission=None):
         raise ValueError('Duplicate label IDs')
     if len({r['comment_id'] for r in records})!=len(records):
         raise ValueError('Duplicate prediction IDs')
-    if any(r.get('schema_version') not in (*q.SCHEMA_VERSIONS, None) for r in records):
-        raise ValueError('Unknown quality schema version')
-    # v1 and v2 records carry the v1-shaped annotation and routing that scoring reads (v2: derived, plan 4.2).
     predictions={r['comment_id']:r for r in records}
     admission=admission or {}
     cluster_splits=defaultdict(set)

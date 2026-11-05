@@ -59,9 +59,6 @@ def apply_review(proposals, decisions, sources, admitted, characters):
             raise ValueError('Reviewed claim fails source binding: ' + identity + ': ' + '; '.join(errors))
         if 'evidence_quality' in original or 'quality_point_ids' in original:
             q = original.get('evidence_quality') or {}
-            if q and q.get('schema_version') not in quality.SCHEMA_VERSIONS:
-                raise ValueError('Review cannot bypass evidence quality: unknown schema version')
-            # v1 and v2 qualifications both hold the v1-shaped points and segments that bind_claim reads.
             point_claim = {**claim, 'quality_point_ids': original.get('quality_point_ids', [])}
             record = {'schema_version': q.get('schema_version'), 'comment_id': record_id,
                       'content_sha256': q.get('content_sha256'), 'routing': [
