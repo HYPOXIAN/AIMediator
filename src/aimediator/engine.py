@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 from functools import partial
 import json
 from pathlib import Path
+from urllib.error import HTTPError
 
 from . import evidence_quality as quality
 from . import glossary_vectors, resources
@@ -35,6 +36,13 @@ def run(args, *, api_transport=None, chat_transport=None, embed_transport=None, 
     models = [args.model] if args.model else list(routes)
     tags = (api_transport or api)(args.base_url, '/api/tags')['models']
     installed = {m['name']: m['digest'] for m in tags}
+    try:
+        service = (api_transport or api)(args.base_url, '/api/version')
+    except HTTPError as exc:
+        if exc.code != 404:
+            raise
+        service = None
+    service_version = service.get('version') if isinstance(service, dict) else None
     embedding_config = None
     if getattr(args, 'embedding_provider', 'ollama') == 'configured':
         embedding_config = glossary_vectors.config(args.env_file)
@@ -55,7 +63,8 @@ def run(args, *, api_transport=None, chat_transport=None, embed_transport=None, 
     positive_anchors, negative_anchors = resources.anchors()
     identity = {'version': VERSION, 'dataset_sha256': digest(source),
         'shared_code_sha256': {p.name: digest(p.read_bytes()) for p in sorted(module_path('engine.py').parent.glob('*.py'))},
-        'models': {m: installed[m] for m in models}, 'embedding_model': args.embedding_model,
+        'models': {m: installed[m] for m in models}, 'service_version': service_version,
+        'embedding_model': args.embedding_model,
         'embedding_digest': None if embedding_config else installed[args.embedding_model], 'routing': routing,
         'glossary_sha256': digest((asset_path('data/glossary.json')).read_bytes()),
         'script_sha256': digest(module_path('engine.py').read_bytes()),

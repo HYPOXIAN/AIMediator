@@ -2,7 +2,7 @@
 
 - Type: Design
 - Status: Active
-- Updated: 2026-11-04
+- Updated: 2026-11-05
 - Applies to: `aimediator` 0.1.0 CLI (V1); written 2026-10-28 as its implementation specification
 
 Design date: 2026-10-28, America/Los_Angeles.
@@ -547,9 +547,14 @@ every path keeps the exception type it raises.
   added since their last match and decide as `re.findall` and
   `repeated_claim` over the whole output would; pipeline upgrade step
   U1.3), `repeated_claim`, the production
-  `Transport(cfg, key=None, folder=None)` with `tags`, `api`, `embed` and
-  `chat`, and `probe(cfg, transport, require_embedding=True)`, which checks
-  availability only.
+  `Transport(cfg, key=None, folder=None)` with `tags`, `version`, `api`,
+  `embed` and `chat`, `probe(cfg, transport, require_embedding=True)`,
+  which checks availability only, and `service_version(transport)`.
+  `version()` reads `/api/version` under `connection_timeout` and returns
+  the answer, or `None` on HTTP 404; other failures raise `Failure(3)` as
+  `probe` does. `service_version` returns the answer's `version` string or
+  `None`, and raises `Failure(3)` for any other answer (step U1.4,
+  UP-D03).
 - `runner`: `Runner(base, folder, prompts, quality_identity=None,
   quality_policy=None, chat_transport=None, progress=None, log=None,
   journal=None)` with
@@ -581,7 +586,9 @@ every path keeps the exception type it raises.
   receives the summary JSON text. `KeyboardInterrupt` passes through
   `process`; `operations.analyze` handles it.
 - `run_store`: run identity (`code_manifest`, `resource_manifest`,
-  `identity`), `initialize`, the advisory `lock`, `state(folder, status,
+  `identity(raw, rows, cfg, installed, service_version)`),
+  `initialize(folder, raw, rows, cfg, installed, provenance,
+  service_version)`, the advisory `lock`, `state(folder, status,
   stage, reason=None)`, `record_request(folder, relative, completed)`,
   `load_resume`, `coverage`, `technical_failures` and
   `snapshot_artifacts`. `state` writes the completed request directories in
@@ -596,15 +603,19 @@ every path keeps the exception type it raises.
   call. A validation file written outside the journal is otherwise seen
   only at the next listing.
 - `fixture_transport`: `FixtureTransport(cfg, key=None, folder=None)`, with
-  provenance `agent_authored_synthetic_fixture_transports`; `demo` imports
-  it, so `demo.FixtureTransport` stays importable.
+  provenance `agent_authored_synthetic_fixture_transports`; its `version()`
+  returns `{'version': 'fixture-not-a-service'}`; `demo` imports it, so
+  `demo.FixtureTransport` stays importable.
 - `operations`: `preflight`, `doctor`, `analyze` and `status`; progress
   lines go to stderr.
 - `engine`: `ROOT` (`workspace_root()`), `run(args, *, api_transport=None,
   chat_transport=None, embed_transport=None, retrieval_service=None,
-  log=None)` and `main()`, which passes a printer as `log`. When `run` first
-  creates a run manifest, it also writes `code-snapshot/<module>.py` for
-  every top-level package module.
+  log=None)` and `main()`, which passes a printer as `log`. `run` reads
+  `/api/version` through `api_transport` (HTTP 404 gives `None`) and
+  records the answer's `version` as `service_version` in its identity,
+  after `models` (step U1.4). When `run` first creates a run manifest, it
+  also writes `code-snapshot/<module>.py` for every top-level package
+  module.
 - `design_briefs`: `validate_move_data`, `quality_design_errors` and
   `prepare_briefs(claims, move_data=None, target_patch=None,
   pending_adjudication_ids=(), quality_mode=None)`; it imports nothing from
@@ -831,8 +842,12 @@ include a product-schema version and the underlying engine/schema versions.
 
 Run identity covers original input bytes, parsed source hashes, all active
 prompts/resources/policies/schemas, topic anchors, relevant code, model digests,
-routing, inference options, quality mode, stop stage, and embedding provider
-identity. Store actual runtime/device options. Remote embedding model identity
+the model service version, routing, inference options, quality mode, stop
+stage, and embedding provider identity. The service version is the identity key
+`service`, `{"ollama_version": <the version string of /api/version>}`, after
+`models`; it is `null` when the service answers HTTP 404 (recorded as
+unavailable), and fixture runs record `fixture-not-a-service` (pipeline upgrade
+step U1.4, decision UP-D03). Store actual runtime/device options. Remote embedding model identity
 has an explicit unverifiable-digest limitation. Times and output locations are
 metadata, not inference-cache keys.
 
@@ -866,6 +881,9 @@ resume after exhaustion must make no new calls and still report exit 5. A new
 analysis directory is required for another bounded trial in V1.
 
 On code/resource/model identity mismatch, exit 4 without modifying the run.
+Resume reads `/api/version` after the model digests and refuses a different
+service version, `null` included, with exit 4, "Service version differs from
+saved run; start a new run", before any write.
 The user must start a new run. Do not add `--force` to bypass identity checks.
 Legacy runs are read-only inputs for supported report/review adapters; they
 cannot be resumed by `aimediator analyze` under the new identity contract.

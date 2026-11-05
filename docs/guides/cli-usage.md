@@ -2,7 +2,7 @@
 
 - Type: Guide
 - Status: Active
-- Updated: 2026-11-04
+- Updated: 2026-11-05
 - Applies to: `aimediator` 0.1.0 (Linux, Python 3.9+)
 
 V1 supports Linux and Python 3.9+. Install the wheel into a virtual environment;
@@ -133,8 +133,11 @@ The saved remote model and endpoint remain authoritative even if a replacement
 credential file contains other settings. The original credential file is never
 implicitly reopened. Missing required credentials return 3 before mutation.
 A completed compatible run returns its existing result without generation.
-Live resume still checks local installed model digests. Synthetic demo resume
-reconstructs fixture transports and stays offline.
+Live resume still checks local installed model digests and the model service
+version (`/api/version`, recorded in the run identity): after a service upgrade
+or downgrade, resume returns 4, "Service version differs from saved run; start a
+new run", and a new run directory is needed. Synthetic demo resume reconstructs
+fixture transports and stays offline.
 
 Each request records its exact input, raw response, validation and separate
 transport attempts. Attempts are reserved before I/O; an interruption/crash
@@ -211,7 +214,7 @@ with 0; status exposes these independently. A preflight failure creates no run.
 
 Inspect `run-state.json`, `full-pipeline-coverage.json`, `request-trace.json` and
 `requests/` for technical failures. Use `status` for offline progress. Start a new
-run when inputs/code/resources/runtime/model identity changes or budgets are
+run when inputs/code/resources/runtime/model/service identity changes or budgets are
 exhausted. Export partial reports with their visible partial label. Never edit
 historical snapshots or reports to make a check pass.
 

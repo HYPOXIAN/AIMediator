@@ -22,6 +22,9 @@ class FixtureTransport(Transport):
         return {'models': [{'name': name, 'digest': 'FIXTURE-NOT-REAL-WEIGHTS:' + name}
                            for name in list(self.cfg['routing']['models']) + [self.cfg['embedding']['model']]]}
 
+    def version(self):
+        return {'version': 'fixture-not-a-service'}
+
     def api(self, base, endpoint, payload=None):
         self.calls.append(('embedding', len(payload['input'])))
         # Exercise actual cosine retrieval with deterministic synthetic vectors.

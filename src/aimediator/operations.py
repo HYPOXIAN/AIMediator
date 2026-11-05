@@ -5,7 +5,7 @@ from types import SimpleNamespace
 from . import balance_policy, evidence_quality, pipeline, resources, retrieval, runner
 from .common import Failure, canonical, input_rows, new_path, read, sha, write
 from .config import credential, resolve, validate
-from .inference import Transport, probe
+from .inference import Transport, probe, service_version
 from .resources import asset_path
 from . import run_store as store
 
@@ -65,6 +65,8 @@ def analyze(input_path=None, out=None, cfg=None, resume=None, env_file=None, tra
         if any(installed.get(m) != d for m, d in old['models'].items()) or (
             cfg['embedding']['provider'] == 'ollama' and installed.get(cfg['embedding']['model']) != old['embedding']['digest']):
             raise Failure(4, 'Installed model identity differs from saved run; start a new run')
+        if old.get('service') != {'ollama_version': service_version(transport)}:
+            raise Failure(4, 'Service version differs from saved run; start a new run')
         if env_file and cfg['embedding']['provider'] == 'configured':
             warnings.append('Credential file supplies credentials only; saved endpoint/model/configuration remain authoritative')
         if completed:
@@ -80,8 +82,9 @@ def analyze(input_path=None, out=None, cfg=None, resume=None, env_file=None, tra
         key = credential(cfg, env_file)
         transport = transport or Transport(cfg, key)
         installed = probe(cfg, transport)
+        version = service_version(transport)
         try:
-            store.initialize(folder, raw, rows, cfg, installed, transport.provenance)
+            store.initialize(folder, raw, rows, cfg, installed, transport.provenance, version)
         except FileExistsError:
             raise Failure(4, 'Output appeared during preflight; choose a new path') from None
     transport.folder = folder

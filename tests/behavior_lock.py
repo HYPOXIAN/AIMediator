@@ -108,10 +108,13 @@ def produce_reviewed_report(work):
 
 
 def fixture_api(transport):
-    """``api_transport`` for ``engine.run``: ``/api/tags`` to ``transport.tags``, any other endpoint to ``transport.api``."""
+    """``api_transport`` for ``engine.run``: ``/api/tags`` and ``/api/version`` to ``transport.tags`` and
+    ``transport.version``, any other endpoint to ``transport.api``."""
     def api(base, endpoint, payload=None):
         if endpoint == '/api/tags':
             return transport.tags()
+        if endpoint == '/api/version':
+            return transport.version()
         return transport.api(base, endpoint, payload)
     return api
 

@@ -146,6 +146,17 @@ class Transport:
     def tags(self):
         return self._json(self.cfg['base_url'] + '/api/tags', timeout=self.cfg['connection_timeout'])
 
+    def version(self):
+        """Return the service's /api/version answer, or None when the service has no such endpoint (HTTP 404)."""
+        try:
+            return self._json(self.cfg['base_url'] + '/api/version', timeout=self.cfg['connection_timeout'])
+        except HTTPError as exc:
+            if exc.code == 404:
+                return None
+            raise Failure(3, 'Service/model probe unavailable (HTTP %d)' % exc.code) from None
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            raise Failure(3, 'Service/model probe unavailable (' + type(exc).__name__ + ')') from None
+
     def _durable(self, directory, request, call, attempts=1):
         """Reserve each attempt before I/O; a crash consumes its finite budget."""
         write(directory / 'request.json', request)
@@ -203,6 +214,16 @@ class Transport:
         except Failure:
             return {'done': False, 'done_reason': 'attempt_budget_exhausted',
                     'message': {'content': ''}, 'error': 'Persistent transport attempt budget exhausted'}
+
+
+def service_version(transport):
+    """Return the service version string of a transport, or None when the service does not report one."""
+    answer = transport.version()
+    if answer is None:
+        return None
+    if not isinstance(answer, dict) or not isinstance(answer.get('version'), str):
+        raise Failure(3, 'Service/model probe unavailable (ValueError)')
+    return answer['version']
 
 
 def probe(cfg, transport, require_embedding=True):

@@ -34,11 +34,13 @@ def resource_manifest() -> dict[str, str]:
     return {str(p.relative_to(root)): sha(p.read_bytes()) for p in sorted(root.rglob('*')) if p.is_file()}
 
 
-def identity(raw: bytes, rows: list[dict[str, Any]], cfg: dict[str, Any], installed: dict[str, str]) -> dict[str, Any]:
-    """Return the run identity: input, source, configuration, resource, code, model and embedding fingerprints."""
+def identity(raw: bytes, rows: list[dict[str, Any]], cfg: dict[str, Any], installed: dict[str, str],
+             service_version: str | None) -> dict[str, Any]:
+    """Return the run identity: input, source, configuration, resource, code, model, service and embedding fingerprints."""
     return {'input_sha256': sha(raw), 'sources_sha256': sha(canonical(rows)),
             'config_sha256': sha(canonical(cfg)), 'resources': resource_manifest(),
             'code': code_manifest(), 'models': {m: installed[m] for m in cfg['routing']['models']},
+            'service': {'ollama_version': service_version},
             'embedding': {'provider': cfg['embedding']['provider'], 'model': cfg['embedding']['model'],
                           'endpoint': cfg['embedding']['endpoint'] if cfg['embedding']['provider'] == 'configured' else cfg['base_url'],
                           'digest': None if cfg['embedding']['provider'] == 'configured' else installed[cfg['embedding']['model']],
@@ -61,10 +63,10 @@ def lock(folder: Path) -> Iterator[None]:
 
 
 def initialize(folder: Path, raw: bytes, rows: list[dict[str, Any]], cfg: dict[str, Any], installed: dict[str, str],
-               provenance: str) -> None:
+               provenance: str, service_version: str | None) -> None:
     """Create a run folder with its manifest and its configuration, input, source, code and resource snapshots."""
     folder.mkdir(parents=True, exist_ok=False)
-    ident = identity(raw, rows, cfg, installed)
+    ident = identity(raw, rows, cfg, installed, service_version)
     write(folder / 'manifest.json', {'schema_version': 'aimediator-run-v1', 'identity': ident,
           'run_id': sha(canonical(ident)), 'created_at_utc': now(), 'execution_provenance': provenance,
           'remote_identity_limitation': 'Configured remote weights cannot be locally verified' if cfg['embedding']['provider'] == 'configured' else None})
