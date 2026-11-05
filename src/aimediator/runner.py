@@ -92,6 +92,11 @@ class Runner:
             errors.append(result['error'])
         if result.get('done') is not True or result.get('done_reason') != 'stop':
             errors.append('Incomplete generation')
+        # Prompt and output that fill the context window may have been truncated by the service.
+        counters = [result.get('prompt_eval_count'), result.get('eval_count')]
+        if all(isinstance(c, int) and not isinstance(c, bool) for c in counters) and \
+                sum(counters) >= payload['options']['num_ctx']:
+            errors.append('Context window reached')
         write_json(folder / 'validation.json', {'errors': errors, 'schema': schema})
         if self.journal is not None:
             self.journal(folder.relative_to(self.folder), not errors)

@@ -567,7 +567,12 @@ every path keeps the exception type it raises.
   (`operations.analyze` passes `run_store.record_request`); `log` receives
   `'<stage>: <model>, <n> items'`. Each request is journaled under `requests/<stage>/<request_id>/`
   (`request.json`, `response.json`, `validation.json`,
-  `partial-output.txt`). Stages other than `quality` propagate transport
+  `partial-output.txt`). A response that carries both `prompt_eval_count`
+  and `eval_count` (integers) with a sum of at least the request's
+  `options.num_ctx` gets the validation error `Context window reached`
+  after the other errors, so the existing failure handling applies:
+  extraction batches split, quality attempts fail and retry, other stages
+  fail closed (step U1.5, UP-D03). Stages other than `quality` propagate transport
   errors and unreadable cache files; `quality` turns them into failed
   attempts with `done_reason` `transport_error`, `invalid_cache` or
   `invalid_response`.
