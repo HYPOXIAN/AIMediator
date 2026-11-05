@@ -9,7 +9,7 @@ from typing import Any, Callable
 from .common import sha as digest, strict_json, write as write_json
 from .evidence_quality import schema_errors
 from .inference import streamed_chat
-from .stages import normalize, options, prepare, schema_for
+from .stages import normalize, options, schema_for, view
 
 
 class Runner:
@@ -45,29 +45,35 @@ class Runner:
                 identities.add(comments[0]['comment_id'])
         return identities
 
-    def generate(self, model: str, language: str, stage: str, data: dict[str, Any],
-                 ids: list[str]) -> tuple[dict[str, Any] | None, dict[str, Any]]:
-        """Send or replay one stage request; return the parsed result or None, and its metadata."""
+    def generate(self, model: str, language: str, stage: str, data: dict[str, Any], ids: list[str],
+                 request_context: dict[str, Any] | None = None) -> tuple[dict[str, Any] | None, dict[str, Any]]:
+        """Send or replay one stage request; return the parsed result or None, and its metadata.
+
+        The model sees only stages.view(stage, data, ids); data is the context of the schema and the
+        normalization. request_context separates requests with the same view in the cache identity.
+        """
         if self.progress is not None:
             self.progress(stage, ids, None)
-        parsed, metadata = self._generate(model, language, stage, data, ids)
+        parsed, metadata = self._generate(model, language, stage, data, ids, request_context)
         if self.progress is not None:
             self.progress(stage, ids, bool(parsed))
         return parsed, metadata
 
-    def _generate(self, model: str, language: str, stage: str, data: dict[str, Any],
-                  ids: list[str]) -> tuple[dict[str, Any] | None, dict[str, Any]]:
-        data = prepare(stage, data, ids)
+    def _generate(self, model: str, language: str, stage: str, data: dict[str, Any], ids: list[str],
+                  request_context: dict[str, Any] | None = None) -> tuple[dict[str, Any] | None, dict[str, Any]]:
+        visible = view(stage, data, ids)
         schema = schema_for(stage, ids, data)
         payload = {'model': model, 'messages': [
             {'role': 'system', 'content': self.prompts[stage][language]},
-            {'role': 'user', 'content': json.dumps({**data, 'response_schema': schema}, ensure_ascii=False)}],
+            {'role': 'user', 'content': json.dumps({**visible, 'response_schema': schema}, ensure_ascii=False)}],
             'format': schema, 'stream': True, 'keep_alive': '10m',
             'options': options(stage, self.quality_policy)}
         payload['options'].update(self.runtime_options)
         cache_payload = {**payload, 'stream': False}
         if self.quality_identity is not None:
             cache_payload['pipeline_quality_identity'] = self.quality_identity
+        if request_context is not None:
+            cache_payload['request_context'] = request_context
         # Streaming is a transport choice; preserve existing semantic-request
         # cache identities from non-streaming runs.
         identity = digest(json.dumps(cache_payload, sort_keys=True, ensure_ascii=False).encode())
@@ -85,7 +91,8 @@ class Runner:
             parsed = strict_json(result['message']['content'])
             errors = schema_errors(parsed, schema)
             if not errors:
-                parsed, errors = normalize(stage, parsed, ids, data)
+                # The verify verdict's scope reads the view; the other stages validate against the context.
+                parsed, errors = normalize(stage, parsed, ids, visible if stage == 'verify' else data)
         except (ValueError, KeyError, TypeError) as exc:
             errors.append(str(exc))
         if result.get('error'):

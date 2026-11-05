@@ -11,6 +11,25 @@ from .balance_policy import attributed_candidates
 from .evidence import CLAIM, character_candidates, character_reference, numeric_tokens
 from .schema import arr, obj
 
+# Pipeline upgrade plan 4.1 (LNK-01): per stage, the keys a request view may
+# hold, at its top level and in each of its comments[] entries. Runner adds
+# response_schema to the user message; everything else in the request data
+# is program context that the model never sees.
+MODEL_VISIBLE = {
+    'relevance': {'top': frozenset({'comments'}),
+                  'comments': frozenset({'comment_id', 'text', 'retrieved_topics'})},
+    'retrieval_review': {'top': frozenset({'comments'}),
+                         'comments': frozenset({'comment_id', 'text', 'retrieved_topics'})},
+    'quality': {'top': frozenset({'comments', 'source', 'language', 'character_normalization_reference',
+                                  'quality_contract', 'attempt'}),
+                'comments': frozenset({'comment_id', 'units'})},
+    'extract': {'top': frozenset({'comments', 'character_normalization_reference'}),
+                'comments': frozenset({'comment_id', 'units', 'allowed_quality_points'})},
+    'verify': {'top': frozenset({'original_evidence', 'proposed_claim', 'naming_reference', 'claim_id',
+                                 'selected_source_segments', 'selected_source_points'}),
+               'comments': frozenset()},
+}
+
 
 def schema_for(stage: str, ids: list[str], data: dict[str, Any] | None = None) -> dict[str, Any]:
     """Return the response schema of a stage request; for extract, the request data narrows it per comment."""
@@ -72,8 +91,11 @@ def exact_coverage(rows: list[dict[str, Any]], key: str, expected: list[str]) ->
     return Counter(r[key] for r in rows) == Counter(expected)
 
 
-def prepare(stage: str, data: dict[str, Any], ids: list[str]) -> dict[str, Any]:
-    """Return the request data of a stage: the audit view for verify, data itself otherwise."""
+def view(stage: str, data: dict[str, Any], ids: list[str]) -> dict[str, Any]:
+    """Return the model-visible view of the request data of a stage (keys in MODEL_VISIBLE); data stays the context.
+
+    The audit view for verify; data itself for every other stage.
+    """
     if stage != 'verify':
         return data
     entry = data['claims'][0]

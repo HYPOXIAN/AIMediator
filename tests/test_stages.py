@@ -28,18 +28,18 @@ def proposal(qualification=None):
     return {'claim_id': source['record_id'] + ':1', 'comment_id': source['record_id'], 'model': 'm', 'claim': claim}
 
 
-class Prepare(unittest.TestCase):
+class View(unittest.TestCase):
     def test_returns_data_itself_except_for_verify(self):
         data = {'comments': [{'comment_id': 'a', 'units': []}]}
         for stage in STAGES[:-1]:
-            self.assertIs(stages.prepare(stage, data, ['a']), data)
+            self.assertIs(stages.view(stage, data, ['a']), data)
 
     def test_builds_the_verify_audit_view(self):
         entry = proposal()
         text = case('numeric_request')['source']['text_original']
         data = {'claims': [entry], 'original_comment': text}
         before = copy.deepcopy(data)
-        view = stages.prepare('verify', data, [entry['claim_id']])
+        view = stages.view('verify', data, [entry['claim_id']])
         self.assertEqual(data, before)
         self.assertEqual(list(view), ['original_evidence', 'proposed_claim', 'naming_reference', 'claim_id'])
         self.assertEqual(view['original_evidence'], text)
@@ -51,7 +51,7 @@ class Prepare(unittest.TestCase):
         self.assertEqual(list(view['proposed_claim']), ['character', 'target', 'direction', 'recommendation', 'parameters'])
         self.assertEqual([e['canonical_name'] for e in view['naming_reference']], ['Ryu'])
         # Without the original comment, the audit sees the claim's evidence spans.
-        spans = stages.prepare('verify', {'claims': [entry]}, [entry['claim_id']])
+        spans = stages.view('verify', {'claims': [entry]}, [entry['claim_id']])
         self.assertEqual(spans['original_evidence'], '\n'.join(u['text'] for u in entry['claim']['evidence']))
 
     def test_adds_the_selected_quality_spans_to_the_verify_view(self):
@@ -60,7 +60,7 @@ class Prepare(unittest.TestCase):
         point = c['annotation']['information_points'][0]
         entry = proposal({'selected_segments': [segment], 'selected_points': [point],
                           'route': 'mechanism_evidence', 'mode': 'enforce'})
-        view = stages.prepare('verify', {'claims': [entry], 'original_comment': c['source']['text_original']},
+        view = stages.view('verify', {'claims': [entry], 'original_comment': c['source']['text_original']},
                               [entry['claim_id']])
         self.assertEqual(list(view), ['original_evidence', 'proposed_claim', 'naming_reference', 'claim_id',
                                       'selected_source_segments', 'selected_source_points'])

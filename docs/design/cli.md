@@ -537,8 +537,11 @@ every path keeps the exception type it raises.
   characters) -> (errors, enriched or None)`, whose span invariant raises
   `AssertionError` explicitly, so it holds under `python -O`.
 - `stages`: `schema_for(stage, ids, data=None)`, `exact_coverage(rows, key,
-  expected)`, `prepare(stage, data, ids)` (the audit view for `verify`,
-  `data` itself for every other stage), `options(stage, quality_policy)`
+  expected)`, `view(stage, data, ids)` (the model-visible view of the request
+  data: the audit view for `verify`, `data` itself for every other stage;
+  pipeline upgrade step U2.1, LNK-01), `MODEL_VISIBLE` (per stage, the sets
+  `top` and `comments` of the keys a view may hold at its top level and in
+  its `comments[]` entries), `options(stage, quality_policy)`
   (`temperature` 0, `seed` 42, `num_ctx` 8192, `num_predict` 4096 for
   `extract` and 256 otherwise; `quality` takes `num_predict` and `num_ctx`
   from the policy) and `normalize(stage, parsed, ids, data) -> (parsed or
@@ -559,8 +562,13 @@ every path keeps the exception type it raises.
   quality_policy=None, chat_transport=None, progress=None, log=None,
   journal=None)` with
   `runtime_options` (default `{}`), `cached_single_ids(model, language,
-  stage)` and `generate(model, language, stage, data, ids) -> (parsed or
-  None, meta)`; `meta` holds `request_id`, `errors` and `elapsed_seconds`.
+  stage)` and `generate(model, language, stage, data, ids,
+  request_context=None) -> (parsed or None, meta)`; `meta` holds
+  `request_id`, `errors` and `elapsed_seconds`. The model sees only
+  `stages.view(stage, data, ids)`; `data` stays the program context of
+  `stages.schema_for` and of `stages.normalize`, which receives the view for
+  `verify` only, because the verdict's `scope` reads
+  `selected_source_segments` from it (step U2.1).
   `progress(stage, ids, None)` runs before a request and `progress(stage,
   ids, bool(parsed))` after it; `journal(<request directory relative to the
   run folder>, <no errors>)` runs after each `validation.json` write
@@ -695,11 +703,13 @@ Analysis modules do not print (`common`, `schema`, `resources`, `config`,
 `runner`, `retrieval`, `pipeline`, `run_store`, `review`, `reporting`,
 `evaluation`); they report through `log` or `progress` callbacks. The order
 and content of every model request is frozen. The user content is
-`json.dumps({**data, 'response_schema': schema}, ensure_ascii=False)`, the
+`json.dumps({**view, 'response_schema': schema}, ensure_ascii=False)`, where
+`view` is `stages.view(stage, data, ids)`, the
 payload keys are `model`, `messages`, `format`, `stream`, `keep_alive` and
 `options`, and `runtime_options` come after the stage options. The cache
 identity is the SHA-256 of the payload with `stream` false, plus
-`pipeline_quality_identity` when set, dumped with `sort_keys`. The write
+`pipeline_quality_identity` when set and `request_context` when it is not
+`None`, dumped with `sort_keys`. The write
 points and order of the run artifacts are frozen too, because partial runs,
 resume, `status` and partial reports read them: per model, `relevance.json`
 and `review-queue.json` after relevance; the quality, extraction and audit
