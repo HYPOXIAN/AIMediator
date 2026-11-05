@@ -31,9 +31,9 @@ class BalancedCollectionTests(unittest.TestCase):
                  'delta': None, 'unit': None, 'evidence_id': 'E1'}],
              'evidence_ids': ['E1', 'E2'], 'uncertain': False}
         schema = stages.schema_for('extract', ['one'], data)
-        self.assertTrue(evidence_quality.schema_errors({'assessments': {'one': {'subjects': [c['character']], 'claims': [c]}}}, schema))
+        self.assertTrue(evidence_quality.schema_errors({'assessments': {'one': {'claims': [c]}}}, schema))
         c.update(specificity='qualitative_only', parameters=[])
-        self.assertFalse(evidence_quality.schema_errors({'assessments': {'one': {'subjects': [c['character']], 'claims': [c]}}}, schema))
+        self.assertFalse(evidence_quality.schema_errors({'assessments': {'one': {'claims': [c]}}}, schema))
 
     def test_explicit_numeric_target_remains_available(self):
         text = "Please reduce Ryu's Hadoken damage from 600 to 500."
@@ -44,7 +44,7 @@ class BalancedCollectionTests(unittest.TestCase):
              'specificity': 'source_numeric', 'parameters': [{'metric': 'damage',
                  'current': '600', 'proposed': '500', 'delta': None, 'unit': None,
                  'evidence_id': 'E1'}], 'evidence_ids': ['E1'], 'uncertain': False}
-        self.assertFalse(evidence_quality.schema_errors({'assessments': {'one': {'subjects': [c['character']], 'claims': [c]}}},
+        self.assertFalse(evidence_quality.schema_errors({'assessments': {'one': {'claims': [c]}}},
             stages.schema_for('extract', ['one'], data)))
 
     def test_newest_unique_relevant_rows_fill_equal_quotas(self):

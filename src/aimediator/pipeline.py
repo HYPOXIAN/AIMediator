@@ -395,15 +395,11 @@ def extract_claims(state: RunState, model: str, language: str, selected: list[di
             state.coverage.append({'comment_id': record_id, 'model': model,
                 'disposition': assessment['disposition'], 'claims_generated': len(assessment['claims'])})
             consistent = (assessment['disposition'] == 'extracted') == bool(assessment['claims'])
-            subjects = set(assessment.get('subjects', ()))
             for i, claim in enumerate(assessment['claims']):
                 errors, enriched = ground_claim(claim, state.by_id[record_id], state.characters)
                 if enriched is not None:
                     # Glossary reference of the target literal (plan 4.8, U6.1, UP-D12); review recomputes it.
                     enriched['target_reference'] = topics.target_reference(claim['target'], claim['character'])
-                if claim['character'] not in subjects:
-                    # Program gate of plan 4.3 (U5.2, UP-D11): a claim needs its fighter declared as a subject.
-                    errors.append('Claim character not declared as subject')
                 if state.quality_mode == 'enforce':
                     quality_errors, qualification = quality.bind_claim(claim, state.quality_records[record_id],
                         character_reference(state.by_id[record_id]['text_original']))

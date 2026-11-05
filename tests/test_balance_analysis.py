@@ -155,7 +155,7 @@ class BalanceEvidenceTests(unittest.TestCase):
     def test_extraction_schema_requires_exact_number_of_assessments(self):
         schema = stages.schema_for('extract', ['a', 'b'])
         self.assertTrue(evidence_quality.schema_errors({'assessments': []}, schema))
-        empty = {'subjects': [], 'claims': []}
+        empty = {'claims': []}
         self.assertEqual(evidence_quality.schema_errors({'assessments': {'a': empty, 'b': empty}}, schema), [])
         self.assertTrue(evidence_quality.schema_errors({'assessments': {'a': empty}}, schema))
 

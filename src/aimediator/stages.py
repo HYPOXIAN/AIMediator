@@ -45,9 +45,6 @@ def schema_for(stage: str, ids: list[str], data: dict[str, Any] | None = None) -
         for record_id in ids:
             claim = copy.deepcopy(CLAIM)
             claims = arr(claim)
-            # Subjects before claims (plan 4.3, U5.2, UP-D11): the fighters whose balance the
-            # author takes a position on; the pipeline gates each claim's character on them.
-            subjects = {**arr({'type': 'string'}), 'uniqueItems': True}
             if data and 'allowed_quality_points' in records[record_id]:
                 allowed_points = records[record_id]['allowed_quality_points']
                 claim['properties']['quality_point_ids'] = {**arr({'type': 'string',
@@ -80,12 +77,9 @@ def schema_for(stage: str, ids: list[str], data: dict[str, Any] | None = None) -
                 allowed, _ = attributed_candidates(text, data['character_normalization_reference'], allowed)
                 if allowed:
                     claim['properties']['character'] = {'type': 'string', 'enum': allowed}
-                    subjects = {**arr({'type': 'string', 'enum': allowed}), 'uniqueItems': True,
-                                'maxItems': len(allowed)}
                 else:
                     claims['maxItems'] = 0
-                    subjects['maxItems'] = 0
-            properties[record_id] = obj({'subjects': subjects, 'claims': claims})
+            properties[record_id] = obj({'claims': claims})
         return obj({'assessments': obj(properties)})
     if len(ids) != 1:
         raise ValueError('Semantic audits require exactly one proposal')

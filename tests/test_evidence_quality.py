@@ -261,7 +261,7 @@ class MockPipelineTests(unittest.TestCase):
                     for c in claims:c['quality_point_ids']=[row['allowed_quality_points'][0]['point_id']]
                     if self.inject_bad_claim and 'numeric_request' in cid:
                         claims.append({**basic_claim('Ryu',direction='buff'),'quality_point_ids':['P1']})
-                assessments[cid]={'subjects':list(dict.fromkeys(c['character'] for c in claims)),'claims':claims}
+                assessments[cid]={'claims':claims}
             result={'assessments':assessments}
         return {'done':True,'done_reason':'stop','message':{'content':json.dumps(result)}}
 

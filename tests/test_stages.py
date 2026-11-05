@@ -130,12 +130,12 @@ class Normalize(unittest.TestCase):
 
     def test_extract_assessments_and_coverage(self):
         claim = {'character': 'Ryu'}
-        response = {'assessments': {'a': {'subjects': [], 'claims': []}, 'b': {'subjects': ['Ryu'], 'claims': [claim]}}}
+        response = {'assessments': {'a': {'claims': []}, 'b': {'claims': [claim]}}}
         parsed, errors = stages.normalize('extract', copy.deepcopy(response), ['a', 'b'], {})
         self.assertEqual(errors, [])
         self.assertEqual(parsed, {'assessments': [
-            {'comment_id': 'a', 'subjects': [], 'claims': [], 'disposition': 'no_supported_character_claim'},
-            {'comment_id': 'b', 'subjects': ['Ryu'], 'claims': [claim], 'disposition': 'extracted'}]})
+            {'comment_id': 'a', 'claims': [], 'disposition': 'no_supported_character_claim'},
+            {'comment_id': 'b', 'claims': [claim], 'disposition': 'extracted'}]})
         self.assertEqual(stages.normalize('extract', copy.deepcopy(response), ['a', 'b', 'c'], {}),
                          (None, ['Missing or duplicated item IDs']))
 
