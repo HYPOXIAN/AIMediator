@@ -1,6 +1,6 @@
 # AIMediator Project Rules
 
-Version 1.4 · Effective 2026-11-04 · Approved by the project owner.
+Version 1.5 · Effective 2026-11-05 · Approved by the project owner.
 
 This file is the highest-level convention for the project's structure. Every
 rule has a **Check**: the way compliance is verified. Rule IDs are stable; cite
@@ -189,7 +189,7 @@ README "Layout" section.
   (Ollama and similar) are stored separately, marked, and excluded from the
   default suite.
 - Every reorganization step keeps the suite passing with at least the recorded
-  baseline count (241 on 2026-11-04; a baseline change is recorded with its
+  baseline count (333 on 2026-11-05; a baseline change is recorded with its
   reason in a change record).
 - Tests do not depend on historical run results under `reports/`.
 
@@ -262,3 +262,10 @@ README "Layout" section.
 - 2026-11-04 v1.4 — Owner decision CR-D10 of the code restructuring plan.
   P4: the test floor rises from 192 to 241, the count at the end of the code
   restructuring, so later work cannot drop tests silently.
+- 2026-11-05 v1.5 — Owner decision UP-D16 of the pipeline upgrade plan
+  (step U7.4; change record `docs/records/20261104-pipeline-upgrade.md`).
+  P4: the test floor rises from 241 to 333, the count at the end of the
+  pipeline upgrade, so later work cannot drop tests silently. The owner's
+  approval of this wording was recorded as adopted under the owner's
+  standing instruction of 2026-11-04 and the authorization of 2026-11-05,
+  not given in person.
