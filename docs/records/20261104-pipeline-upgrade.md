@@ -2119,6 +2119,49 @@ the archive with `SHA256SUMS`.
   reverts of U4.F1, U4.5 and U4.4) to the review of batch U4; blockers:
   none.
 
+### 2026-11-05 U5-1 to U5-4 and U5-L1 to U5-L3 (implementation and live)
+
+- Steps: U2-R (E-3), U5.1, U5-L1, U5.2, U5-L2, U5.3, U5-L3 and U5.4
+  done; none started and stashed.
+- State: HEAD is this entry's commit (parent `4458779`); tests 326; lock
+  updated by UP-D11 (U5.1, 18 keys; U5.2, 50 keys; U5.3, 32 keys; 771
+  keys), green after every step; U5.4 left it unchanged; rule check 0.
+  Foreign working directory: 326 pass. Installed-wheel acceptance at
+  `90a7dd1`: `"passed": true`, 18 commands.
+- Findings: entry without the tags `upgrade-u2` to `upgrade-u4`
+  (UP-D20); resume procedure: clean tree, no `WIP Step` stash, gates at
+  the entry commit `d025bf3` passed (316 tests, rule check 0, lock green;
+  checked in a temporary worktree); the owner authorization of 03:11 was
+  already in the record. E-3 settled before U5.1 under that
+  authorization: U2.3 measured alone (`u2r`, code of `39a1efd`) holds
+  rule 4 against U2-L0 (precision −0.3, recall −0.8 points), so U2.3 is
+  kept and the U5 reference is `u2l1-extraction-development-off`; the
+  U2-L1 recall loss arises with U2.4 and run-to-run variation (finding
+  for U2-V). D-13 (rule reading for U5: rule 3 on T7; one report written
+  by the last L session) adopted under the authorization. Verdicts: U5.1
+  kept (precision +1.0, recall +3.3 points, T6 33.6 %); U5.2 fails rule
+  3 (precision −0.02 points; the subjects gate quarantined no claim):
+  E-5; U5.3 fails rules 3 and 4 (precision −2.1, recall −4.9 points, the
+  loss English, T6 42.9 %): E-6. Adopted action for both: the
+  verification session reverts U5.3 (U5.F1) and U5.2 (U5.F2) and fixes
+  the U5.4 text (U5.F3); this session did not revert (its instruction).
+  An entry rerun (`u5r`, decides nothing) moved precision by 1.0 point
+  with unchanged code: differences of a few points are within run-to-run
+  variation. Deviations: `subjects` also carries `maxItems` (the bridge
+  drops `uniqueItems`); U5.4 was committed while U5-L3 ran, so its text
+  names E-5 but not E-6; every run used a `git archive` copy of its
+  commit. One development comment (`加强曼侬`, 4 characters) occurs in
+  the extraction prompt through a rule line that predates U5, not through
+  an example (U5-V checklist item 5). T6 met by U5.1 and U5.2, T7 met by
+  none. Spend of this session 0.1246 USD for five runs with their
+  `doctor` calls (0.1851 to 0.3097 USD; 2.67 USD below the refusal
+  point). Boundary check of plan 8.8 from `d025bf3` and the commit
+  hygiene check print nothing; the verify prompts have no diff. Nothing
+  bypassed.
+- Next: U6 (work order U6, chain session 5); U5-V runs in the
+  verification session after U6 and carries E-5 and E-6 (U5.F1 to U5.F3)
+  to the review of batch U5; blockers: none.
+
 ## Deferred
 
 - **Relevance and route agreement in `measurement`** (D-4, from U0.6). Add
