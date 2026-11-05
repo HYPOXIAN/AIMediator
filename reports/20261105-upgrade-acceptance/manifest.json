@@ -1,0 +1,52 @@
+{
+ "schema": "aimediator-report-manifest-v1",
+ "name": "20261105-upgrade-acceptance",
+ "record": "docs/records/20261104-pipeline-upgrade.md",
+ "session": "U7-L (steps U7.1 and U7.2)",
+ "decisions": [
+  "UP-D17",
+  "UP-D18",
+  "UP-D19",
+  "UP-D20",
+  "D-16"
+ ],
+ "reason": "U7.1 acceptance evidence cited by the change record and the validation record: the latency-benchmark sample in off and enforce at the final code with the adopted configuration (max_parallel_requests 2, a new empty cache_dir per run), through the API bridge, compared per request and per comment with the U2-L0 API references and, beside them as a different model, with the local U0.8 and U0.6 rows and the archived 600-comment off run",
+ "datasets": {
+  "upgrade-samples-v1/latency-benchmark": "data/evaluation/upgrade-samples-v1/latency-benchmark, 30 (u7-benchmark-off, u7-benchmark-enforce); input SHA-256 ce7ee3df8efc73d36840b96dff00407e42cea9f29de2369ccb64aa4abac28f4a, equal to the U2-L0 runs",
+  "extraction-precision-v1": "data/evaluation/extraction-precision-v1, development split labels of the 11 benchmark comments it holds (scores)"
+ },
+ "code": {
+  "U7.1": "b73f0e9 (tag upgrade-u6, the adopted configuration; a git archive copy first on sys.path)"
+ },
+ "files": {
+  "summary/u7-benchmark-off-{metrics,scores,doctor,identity}.json": "U7.1 off run: request metrics and claim outcomes, position scores, doctor output, identity and API-environment check",
+  "summary/u7-benchmark-enforce-{metrics,scores,doctor,identity}.json": "U7.1 enforce run, the same four files",
+  "summary/u7-1-benchmark-analysis.json": "run values, coverage, technical failure units and the comparisons: per request (stage means with intervals) and per comment (admission, coverage status, accepted positions) against u2l0-benchmark-off, u6-benchmark-off, u0s-benchmark-off, u0-benchmark-off (the 30 sample comments) and the archived 600-comment off run; enforce against u2l0-benchmark-shadow",
+  "summary/u7l-spend.json": "bridge spend before and after the four U7-L runs, per run with its doctor call",
+  "provenance/": "one-off scripts: u7_api_runs.sh (runs), u5_identity.py (identity check, unchanged from U5), u7l_analyze.py (comparisons; imports rows_api.py, compare_u0s.py, compare_u2l1.py and score_u0_extra.py, kept in the provenance of earlier upgrade reports and in the archive), u7l_archive.sh (archive)"
+ },
+ "archive": {
+  "path": "~/Archives/AIMediator/reports/20261105-upgrade-acceptance/",
+  "checksums": "SHA256SUMS",
+  "files": 1819,
+  "bytes": 78424818,
+  "archived_on": "2026-11-05",
+  "contents": "runs/ (the four U7-L runs), measurements/ (metrics, scores, identity, doctor, agreement, spend, analysis), logs/ (run logs, timeline; the bridge log of the U7 window, counters and timings only), config/ (API configuration, no credential), inputs/ (the three materialized inputs, source text), provenance/ (run, analysis and archive scripts, the identity and comparison tools, the bridge)"
+ },
+ "runs": {
+  "u7-benchmark-off": {
+   "code": "b73f0e9",
+   "why": "U7.1 (UP-D18): benchmark off with the adopted configuration",
+   "manifest": "runs/u7-benchmark-off/manifest.json"
+  },
+  "u7-benchmark-enforce": {
+   "code": "b73f0e9",
+   "why": "U7.1 (UP-D18): benchmark enforce with the adopted configuration; enforce is measured only here",
+   "manifest": "runs/u7-benchmark-enforce/manifest.json"
+  }
+ },
+ "references": {
+  "u7-benchmark-off": "u2l0-benchmark-off of reports/20261105-upgrade-api-reference (API reference) and u6-benchmark-off of reports/20261105-upgrade-u6-evaluation (latest accepted API run); local u0s-benchmark-off, u0-benchmark-off and the archived 600-comment run beside, deciding nothing (UP-D19)",
+  "u7-benchmark-enforce": "u2l0-benchmark-shadow of reports/20261105-upgrade-api-reference (UP-D18, UP-D19)"
+ }
+}

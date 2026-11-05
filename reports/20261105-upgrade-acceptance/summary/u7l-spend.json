@@ -1,0 +1,33 @@
+{
+ "after_usd": 0.367605,
+ "before_usd": 0.338001,
+ "bridge": "openrouter-bridge-2",
+ "limit_usd": 3.0,
+ "note": "each run includes its doctor call; the four runs together are the U7-L spend",
+ "refuses_from_usd": 2.98,
+ "requests_after": 2596,
+ "requests_before": 2359,
+ "runs": {
+  "u7-benchmark-enforce": {
+   "after_usd": 0.349406,
+   "before_usd": 0.341948,
+   "run_usd": 0.007458
+  },
+  "u7-benchmark-off": {
+   "after_usd": 0.341948,
+   "before_usd": 0.338001,
+   "run_usd": 0.003947
+  },
+  "u7-extraction-test-off": {
+   "after_usd": 0.367605,
+   "before_usd": 0.353786,
+   "run_usd": 0.013819
+  },
+  "u7-silver-holdout-off": {
+   "after_usd": 0.353786,
+   "before_usd": 0.349406,
+   "run_usd": 0.00438
+  }
+ },
+ "session_usd": 0.029604
+}

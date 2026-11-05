@@ -1,0 +1,3632 @@
+{
+ "comparisons": {
+  "u7-benchmark-enforce vs u2l0-benchmark-shadow": {
+   "kind": "API reference shadow row (UP-D18)",
+   "per_comment": {
+    "accepted_claims": [
+     0,
+     8
+    ],
+    "accepted_positions_equal": 23,
+    "admission_equal": 28,
+    "admitted_only_new": [],
+    "admitted_only_reference": [
+     "steam:234299803",
+     "steam:237735508"
+    ],
+    "comments": 30,
+    "coverage_status_equal": 4,
+    "differences": {
+     "steam:217837645": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_routed_without_extraction",
+       "generated": 0,
+       "quality_status": "completed"
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": "failed"
+      }
+     },
+     "steam:221768502": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_failed",
+       "generated": 0,
+       "quality_status": "failed"
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": "failed"
+      }
+     },
+     "steam:223226427": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_routed_without_extraction",
+       "generated": 0,
+       "quality_status": "completed"
+      },
+      "reference": {
+       "accepted": [
+        "Ken/keep"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": "completed"
+      }
+     },
+     "steam:223477777": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_routed_without_extraction",
+       "generated": 0,
+       "quality_status": "completed"
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": "completed"
+      }
+     },
+     "steam:227560160": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_routed_without_extraction",
+       "generated": 0,
+       "quality_status": "completed"
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": "completed"
+      }
+     },
+     "steam:229390012": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_routed_without_extraction",
+       "generated": 0,
+       "quality_status": "completed"
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": "completed"
+      }
+     },
+     "steam:231957078": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_routed_without_extraction",
+       "generated": 0,
+       "quality_status": "completed"
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": "completed"
+      }
+     },
+     "steam:231977697": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_routed_without_extraction",
+       "generated": 0,
+       "quality_status": "completed"
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": "completed"
+      }
+     },
+     "steam:232121391": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_routed_without_extraction",
+       "generated": 0,
+       "quality_status": "completed"
+      },
+      "reference": {
+       "accepted": [
+        "Jamie/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 2,
+       "quality_status": "completed"
+      }
+     },
+     "steam:232134159": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_routed_without_extraction",
+       "generated": 0,
+       "quality_status": "completed"
+      },
+      "reference": {
+       "accepted": [
+        "A.K.I./buff"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": "completed"
+      }
+     },
+     "steam:232159732": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_routed_without_extraction",
+       "generated": 0,
+       "quality_status": "completed"
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": "completed"
+      }
+     },
+     "steam:232196897": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_routed_without_extraction",
+       "generated": 0,
+       "quality_status": "completed"
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": "completed"
+      }
+     },
+     "steam:232702842": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_routed_without_extraction",
+       "generated": 0,
+       "quality_status": "completed"
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": "completed"
+      }
+     },
+     "steam:233452817": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_routed_without_extraction",
+       "generated": 0,
+       "quality_status": "completed"
+      },
+      "reference": {
+       "accepted": [
+        "Akuma/buff",
+        "Ryu/buff"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 2,
+       "quality_status": "completed"
+      }
+     },
+     "steam:233697597": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_routed_without_extraction",
+       "generated": 0,
+       "quality_status": "completed"
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": "completed"
+      }
+     },
+     "steam:234010465": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_routed_without_extraction",
+       "generated": 0,
+       "quality_status": "completed"
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": "completed"
+      }
+     },
+     "steam:234299803": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_pending_or_failed",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": "completed"
+      }
+     },
+     "steam:235458828": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_pending_or_failed",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_rejected",
+       "generated": 0,
+       "quality_status": null
+      }
+     },
+     "steam:237677410": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_routed_without_extraction",
+       "generated": 0,
+       "quality_status": "completed"
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": "completed"
+      }
+     },
+     "steam:237688561": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_routed_without_extraction",
+       "generated": 0,
+       "quality_status": "completed"
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": "failed"
+      }
+     },
+     "steam:237706669": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_routed_without_extraction",
+       "generated": 0,
+       "quality_status": "completed"
+      },
+      "reference": {
+       "accepted": [
+        "Arjun/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 2,
+       "quality_status": "completed"
+      }
+     },
+     "steam:237735508": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_rejected",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": "completed"
+      }
+     },
+     "steam:237780586": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_routed_without_extraction",
+       "generated": 0,
+       "quality_status": "completed"
+      },
+      "reference": {
+       "accepted": [
+        "Arjun/buff"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": "completed"
+      }
+     },
+     "steam:237791399": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_routed_without_extraction",
+       "generated": 0,
+       "quality_status": "completed"
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": "completed"
+      }
+     },
+     "steam:238162977": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_failed",
+       "generated": 0,
+       "quality_status": "failed"
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": "completed"
+      }
+     },
+     "steam:238427985": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "quality_routed_without_extraction",
+       "generated": 0,
+       "quality_status": "completed"
+      },
+      "reference": {
+       "accepted": [
+        "Arjun/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": "completed"
+      }
+     }
+    },
+    "generated_claims": [
+     0,
+     13
+    ]
+   },
+   "per_request": {
+    "audit_rejection": null,
+    "quality_first_attempt_valid": {
+     "beyond_u0_interval": false,
+     "difference_points": -0.9615384615384581,
+     "u0": [
+      23,
+      26,
+      0.8846153846153846,
+      [
+       0.7102409678828635,
+       0.9599675537638938
+      ]
+     ],
+     "u0s": [
+      21,
+      24,
+      0.875,
+      [
+       0.6899611872949993,
+       0.9565566591987655
+      ]
+     ]
+    },
+    "quality_seconds_per_comment": [
+     9.73197280825002,
+     18.33096085119228
+    ],
+    "stages": {
+     "extract": {
+      "elapsed_seconds": {
+       "beyond_u0_interval": true,
+       "difference": -4.12615780985636,
+       "relative": -0.8690834615603851,
+       "u0": [
+        7,
+        4.747711804857155,
+        [
+         2.6402735106597754,
+         6.855150099054534
+        ]
+       ],
+       "u0s": [
+        1,
+        0.6215539950007951,
+        [
+         0.6215539950007951,
+         0.6215539950007951
+        ]
+       ]
+      },
+      "output_tokens": {
+       "beyond_u0_interval": true,
+       "difference": -186.14285714285714,
+       "relative": -0.8652058432934927,
+       "u0": [
+        7,
+        215.14285714285714,
+        [
+         107.35465644170245,
+         322.93105784401183
+        ]
+       ],
+       "u0s": [
+        1,
+        29.0,
+        [
+         29.0,
+         29.0
+        ]
+       ]
+      },
+      "prompt_tokens": {
+       "beyond_u0_interval": true,
+       "difference": -2474.8571428571427,
+       "relative": -0.6089921608605477,
+       "u0": [
+        7,
+        4063.8571428571427,
+        [
+         3490.1469335249385,
+         4637.567352189347
+        ]
+       ],
+       "u0s": [
+        1,
+        1589.0,
+        [
+         1589.0,
+         1589.0
+        ]
+       ]
+      },
+      "uncached_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -938.8571428571429,
+       "relative": -0.465735950676777,
+       "u0": [
+        7,
+        2015.857142857143,
+        [
+         777.0589401337877,
+         3254.655345580498
+        ]
+       ],
+       "u0s": [
+        1,
+        1077.0,
+        [
+         1077.0,
+         1077.0
+        ]
+       ]
+      }
+     },
+     "quality": {
+      "elapsed_seconds": {
+       "beyond_u0_interval": true,
+       "difference": -7.784012060019112,
+       "relative": -0.4736340537844159,
+       "u0": [
+        29,
+        16.43465455624135,
+        [
+         10.033284088399675,
+         22.83602502408303
+        ]
+       ],
+       "u0s": [
+        27,
+        8.65064249622224,
+        [
+         5.595799890068129,
+         11.70548510237635
+        ]
+       ]
+      },
+      "output_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -114.99489144316738,
+       "relative": -0.14703932327389124,
+       "u0": [
+        29,
+        782.0689655172414,
+        [
+         438.1020196096323,
+         1126.0359114248504
+        ]
+       ],
+       "u0s": [
+        27,
+        667.074074074074,
+        [
+         388.04212457117166,
+         946.1060235769764
+        ]
+       ]
+      },
+      "prompt_tokens": {
+       "beyond_u0_interval": true,
+       "difference": -1542.464878671775,
+       "relative": -0.4446778750159701,
+       "u0": [
+        29,
+        3468.7241379310344,
+        [
+         3323.0488271095496,
+         3614.399448752519
+        ]
+       ],
+       "u0s": [
+        27,
+        1926.2592592592594,
+        [
+         1824.9253301565968,
+         2027.5931883619219
+        ]
+       ]
+      },
+      "uncached_tokens": {
+       "beyond_u0_interval": true,
+       "difference": -1429.3409961685825,
+       "relative": -0.5309791697801689,
+       "u0": [
+        29,
+        2691.896551724138,
+        [
+         2484.9705051075925,
+         2898.8225983406837
+        ]
+       ],
+       "u0s": [
+        27,
+        1262.5555555555557,
+        [
+         1130.2629674321224,
+         1394.848143678989
+        ]
+       ]
+      }
+     },
+     "relevance": {
+      "elapsed_seconds": {
+       "beyond_u0_interval": false,
+       "difference": -0.010132519464436607,
+       "relative": -0.010028769023285755,
+       "u0": [
+        8,
+        1.0103452817499345,
+        [
+         0.6038870464155526,
+         1.4168035170843165
+        ]
+       ],
+       "u0s": [
+        7,
+        1.000212762285498,
+        [
+         0.7456402948278142,
+         1.2547852297431816
+        ]
+       ]
+      },
+      "output_tokens": {
+       "beyond_u0_interval": false,
+       "difference": 0.25,
+       "relative": 0.015873015873015817,
+       "u0": [
+        8,
+        15.75,
+        [
+         10.924148354905828,
+         20.575851645094172
+        ]
+       ],
+       "u0s": [
+        7,
+        16.0,
+        [
+         10.97567196032388,
+         21.02432803967612
+        ]
+       ]
+      },
+      "prompt_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -32.80357142857133,
+       "relative": -0.02087571167198876,
+       "u0": [
+        8,
+        1571.375,
+        [
+         823.7345287935083,
+         2319.015471206492
+        ]
+       ],
+       "u0s": [
+        7,
+        1538.5714285714287,
+        [
+         1121.845136174673,
+         1955.2977209681844
+        ]
+       ]
+      },
+      "uncached_tokens": {
+       "beyond_u0_interval": true,
+       "difference": -1230.517857142857,
+       "relative": -0.8920836300084147,
+       "u0": [
+        8,
+        1379.375,
+        [
+         535.4693046340407,
+         2223.280695365959
+        ]
+       ],
+       "u0s": [
+        7,
+        148.85714285714286,
+        [
+         73.72872636656645,
+         223.9855593477193
+        ]
+       ]
+      }
+     },
+     "retrieval_review": {
+      "elapsed_seconds": {
+       "beyond_u0_interval": false,
+       "difference": 0.13556679874974975,
+       "relative": 0.19207436562521263,
+       "u0": [
+        4,
+        0.7058037042500303,
+        [
+         0.386896730054665,
+         1.0247106784453954
+        ]
+       ],
+       "u0s": [
+        5,
+        0.84137050299978,
+        [
+         0.3412750652369828,
+         1.341465940762577
+        ]
+       ]
+      },
+      "output_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -0.5,
+       "relative": -0.03448275862068961,
+       "u0": [
+        4,
+        14.5,
+        [
+         7.320893334754002,
+         21.679106665245996
+        ]
+       ],
+       "u0s": [
+        5,
+        14.0,
+        [
+         7.927273702968032,
+         20.07272629703197
+        ]
+       ]
+      },
+      "prompt_tokens": {
+       "beyond_u0_interval": false,
+       "difference": 38.5,
+       "relative": 0.029288702928870203,
+       "u0": [
+        4,
+        1314.5,
+        [
+         388.59713027589703,
+         2240.402869724103
+        ]
+       ],
+       "u0s": [
+        5,
+        1353.0,
+        [
+         859.7447768770484,
+         1846.2552231229515
+        ]
+       ]
+      },
+      "uncached_tokens": {
+       "beyond_u0_interval": false,
+       "difference": 268.9,
+       "relative": 0.6425328554360812,
+       "u0": [
+        4,
+        418.5,
+        [
+         -79.56775329447544,
+         916.5677532944754
+        ]
+       ],
+       "u0s": [
+        5,
+        687.4,
+        [
+         -126.41438491536701,
+         1501.214384915367
+        ]
+       ]
+      }
+     }
+    }
+   },
+   "scores": {
+    "precision_accepted": null,
+    "precision_generated": null,
+    "recall": {
+     "difference_points": -40.0,
+     "difference_points_ci95": [
+      -68.7,
+      -3.8
+     ],
+     "new": [
+      0,
+      10,
+      0.0
+     ],
+     "reference": [
+      4,
+      10,
+      40.0
+     ]
+    },
+    "recall_admitted": {
+     "difference_points": -40.0,
+     "difference_points_ci95": [
+      -68.7,
+      -3.8
+     ],
+     "new": [
+      0,
+      10,
+      0.0
+     ],
+     "reference": [
+      4,
+      10,
+      40.0
+     ]
+    }
+   },
+   "technical_failure_units": [
+    2,
+    3
+   ]
+  },
+  "u7-benchmark-off vs archived-600-off": {
+   "kind": "archived local 600-comment off run; decides nothing",
+   "per_comment": {
+    "accepted_claims": [
+     8,
+     10
+    ],
+    "accepted_positions_equal": 24,
+    "admission_equal": 27,
+    "admitted_only_new": [],
+    "admitted_only_reference": [
+     "steam:228907116",
+     "steam:230206787",
+     "steam:234299803"
+    ],
+    "comments": 30,
+    "coverage_status_equal": 26,
+    "differences": {
+     "steam:217837645": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [
+        "Terry/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      }
+     },
+     "steam:228907116": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_rejected",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      }
+     },
+     "steam:229390012": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_rejected",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_pending_or_failed",
+       "generated": 0,
+       "quality_status": null
+      }
+     },
+     "steam:230206787": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_pending_or_failed",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      }
+     },
+     "steam:232121391": {
+      "new": {
+       "accepted": [
+        "Jamie/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      }
+     },
+     "steam:232159732": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [
+        "Mai/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      }
+     },
+     "steam:233452817": {
+      "new": {
+       "accepted": [
+        "Akuma/buff",
+        "Ryu/buff"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 2,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [
+        "Akuma/buff",
+        "Manon/buff",
+        "Ryu/buff"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 3,
+       "quality_status": null
+      }
+     },
+     "steam:233697597": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [
+        "Jamie/buff"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      }
+     },
+     "steam:234299803": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_pending_or_failed",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      }
+     },
+     "steam:237706669": {
+      "new": {
+       "accepted": [
+        "Arjun/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      }
+     }
+    },
+    "generated_claims": [
+     11,
+     14
+    ]
+   }
+  },
+  "u7-benchmark-off vs u0-benchmark-off": {
+   "kind": "local U0.6 row on the 30 sample comments; decides nothing",
+   "per_comment": {
+    "accepted_claims": [
+     8,
+     14
+    ],
+    "accepted_positions_equal": 24,
+    "admission_equal": 25,
+    "admitted_only_new": [
+     "steam:221768502"
+    ],
+    "admitted_only_reference": [
+     "steam:228907116",
+     "steam:230206787",
+     "steam:234299803",
+     "steam:237735508"
+    ],
+    "comments": 30,
+    "coverage_status_equal": 24,
+    "differences": {
+     "steam:217837645": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [
+        "Terry/nerf",
+        "Terry/nerf",
+        "Terry/nerf",
+        "Terry/nerf",
+        "Terry/nerf",
+        "Terry/nerf",
+        "Terry/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 13,
+       "quality_status": null
+      }
+     },
+     "steam:221768502": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_rejected",
+       "generated": 0,
+       "quality_status": null
+      }
+     },
+     "steam:228907116": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_rejected",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      }
+     },
+     "steam:229390012": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_rejected",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_pending_or_failed",
+       "generated": 0,
+       "quality_status": null
+      }
+     },
+     "steam:230206787": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_pending_or_failed",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      }
+     },
+     "steam:232121391": {
+      "new": {
+       "accepted": [
+        "Jamie/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      }
+     },
+     "steam:232159732": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [
+        "Mai/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      }
+     },
+     "steam:233452817": {
+      "new": {
+       "accepted": [
+        "Akuma/buff",
+        "Ryu/buff"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 2,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [
+        "Akuma/buff",
+        "Manon/buff",
+        "Ryu/buff"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 3,
+       "quality_status": null
+      }
+     },
+     "steam:234299803": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_pending_or_failed",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      }
+     },
+     "steam:237706669": {
+      "new": {
+       "accepted": [
+        "Arjun/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [
+        "Arjun/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 2,
+       "quality_status": null
+      }
+     },
+     "steam:237735508": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_rejected",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      }
+     },
+     "steam:237780586": {
+      "new": {
+       "accepted": [
+        "Arjun/buff"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      }
+     },
+     "steam:238427985": {
+      "new": {
+       "accepted": [
+        "Arjun/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      }
+     }
+    },
+    "generated_claims": [
+     11,
+     28
+    ]
+   },
+   "per_request": {
+    "audit_rejection": {
+     "beyond_u0_interval": false,
+     "difference_points": -16.72727272727273,
+     "u0": [
+      11,
+      25,
+      0.44,
+      [
+       0.26665638881067344,
+       0.6293266813020123
+      ]
+     ],
+     "u0s": [
+      3,
+      11,
+      0.2727272727272727,
+      [
+       0.09746059290024889,
+       0.5656453011761291
+      ]
+     ]
+    },
+    "stages": {}
+   },
+   "technical_failure_units": [
+    0,
+    0
+   ]
+  },
+  "u7-benchmark-off vs u0s-benchmark-off": {
+   "kind": "local U0.8 row; different model, decides nothing",
+   "per_comment": {
+    "accepted_claims": [
+     8,
+     8
+    ],
+    "accepted_positions_equal": 25,
+    "admission_equal": 25,
+    "admitted_only_new": [
+     "steam:221768502"
+    ],
+    "admitted_only_reference": [
+     "steam:228907116",
+     "steam:230206787",
+     "steam:234299803",
+     "steam:235458828"
+    ],
+    "comments": 30,
+    "coverage_status_equal": 23,
+    "differences": {
+     "steam:217837645": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [
+        "Terry/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      }
+     },
+     "steam:221768502": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_rejected",
+       "generated": 0,
+       "quality_status": null
+      }
+     },
+     "steam:228907116": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_rejected",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      }
+     },
+     "steam:229390012": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_rejected",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_pending_or_failed",
+       "generated": 0,
+       "quality_status": null
+      }
+     },
+     "steam:230206787": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_pending_or_failed",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      }
+     },
+     "steam:232121391": {
+      "new": {
+       "accepted": [
+        "Jamie/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [
+        "Jamie/keep"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      }
+     },
+     "steam:232159732": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [
+        "Mai/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      }
+     },
+     "steam:234299803": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_pending_or_failed",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      }
+     },
+     "steam:235458828": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_pending_or_failed",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      }
+     },
+     "steam:237706669": {
+      "new": {
+       "accepted": [
+        "Arjun/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      }
+     },
+     "steam:237735508": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_rejected",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_pending_or_failed",
+       "generated": 0,
+       "quality_status": null
+      }
+     },
+     "steam:238427985": {
+      "new": {
+       "accepted": [
+        "Arjun/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      }
+     }
+    },
+    "generated_claims": [
+     11,
+     13
+    ]
+   },
+   "per_request": {
+    "audit_rejection": {
+     "beyond_u0_interval": false,
+     "difference_points": -11.188811188811194,
+     "u0": [
+      5,
+      13,
+      0.38461538461538464,
+      [
+       0.17709707797762575,
+       0.6447710848733431
+      ]
+     ],
+     "u0s": [
+      3,
+      11,
+      0.2727272727272727,
+      [
+       0.09746059290024889,
+       0.5656453011761291
+      ]
+     ]
+    },
+    "stages": {
+     "extract": {
+      "elapsed_seconds": {
+       "beyond_u0_interval": true,
+       "difference": -9.895306563001213,
+       "relative": -0.7353966158786993,
+       "u0": [
+        7,
+        13.455741227715148,
+        [
+         11.426929646147821,
+         15.484552809282475
+        ]
+       ],
+       "u0s": [
+        7,
+        3.560434664713934,
+        [
+         2.1624168000396344,
+         4.958452529388234
+        ]
+       ]
+      },
+      "output_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -38.85714285714286,
+       "relative": -0.1706398996235885,
+       "u0": [
+        7,
+        227.71428571428572,
+        [
+         160.21810085923732,
+         295.2104705693341
+        ]
+       ],
+       "u0s": [
+        7,
+        188.85714285714286,
+        [
+         106.32180226977673,
+         271.392483444509
+        ]
+       ]
+      },
+      "prompt_tokens": {
+       "beyond_u0_interval": true,
+       "difference": -1167.2857142857142,
+       "relative": -0.2951204536425037,
+       "u0": [
+        7,
+        3955.285714285714,
+        [
+         3414.4275205685963,
+         4496.143908002832
+        ]
+       ],
+       "u0s": [
+        7,
+        2788.0,
+        [
+         2074.923830417152,
+         3501.076169582848
+        ]
+       ]
+      },
+      "uncached_tokens": {
+       "beyond_u0_interval": true,
+       "difference": -834.5714285714284,
+       "relative": -0.24007561436672964,
+       "u0": [
+        7,
+        3476.285714285714,
+        [
+         3004.6130433475028,
+         3947.9583852239257
+        ]
+       ],
+       "u0s": [
+        7,
+        2641.714285714286,
+        [
+         1941.112344341092,
+         3342.3162270874795
+        ]
+       ]
+      }
+     },
+     "relevance": {
+      "elapsed_seconds": {
+       "beyond_u0_interval": true,
+       "difference": -2.2498991685137195,
+       "relative": -0.6809721437184637,
+       "u0": [
+        9,
+        3.303951841889001,
+        [
+         1.7238266965882516,
+         4.88407698718975
+        ]
+       ],
+       "u0s": [
+        8,
+        1.0540526733752813,
+        [
+         0.49679729106190673,
+         1.6113080556886559
+        ]
+       ]
+      },
+      "output_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -4.069444444444443,
+       "relative": -0.20928571428571419,
+       "u0": [
+        9,
+        19.444444444444443,
+        [
+         11.916272424649517,
+         26.97261646423937
+        ]
+       ],
+       "u0s": [
+        8,
+        15.375,
+        [
+         10.632490283850817,
+         20.117509716149183
+        ]
+       ]
+      },
+      "prompt_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -102.06944444444434,
+       "relative": -0.06474661685931771,
+       "u0": [
+        9,
+        1576.4444444444443,
+        [
+         846.9786982353659,
+         2305.910190653523
+        ]
+       ],
+       "u0s": [
+        8,
+        1474.375,
+        [
+         1092.1748549443964,
+         1856.5751450556036
+        ]
+       ]
+      },
+      "uncached_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -268.8472222222222,
+       "relative": -0.18890038254352404,
+       "u0": [
+        9,
+        1423.2222222222222,
+        [
+         661.3463390242165,
+         2185.098105420228
+        ]
+       ],
+       "u0s": [
+        8,
+        1154.375,
+        [
+         625.4020321608989,
+         1683.347967839101
+        ]
+       ]
+      }
+     },
+     "retrieval_review": {
+      "elapsed_seconds": {
+       "beyond_u0_interval": false,
+       "difference": -4.0736457544324365,
+       "relative": -0.7872112328903577,
+       "u0": [
+        6,
+        5.174781029832957,
+        [
+         0.44456527978583704,
+         9.904996779880076
+        ]
+       ],
+       "u0s": [
+        5,
+        1.1011352754005201,
+        [
+         0.16152826507364038,
+         2.0407422857274
+        ]
+       ]
+      },
+      "output_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -6.933333333333332,
+       "relative": -0.32499999999999996,
+       "u0": [
+        6,
+        21.333333333333332,
+        [
+         12.500197030984305,
+         30.16646963568236
+        ]
+       ],
+       "u0s": [
+        5,
+        14.4,
+        [
+         8.27687676998293,
+         20.52312323001707
+        ]
+       ]
+      },
+      "prompt_tokens": {
+       "beyond_u0_interval": false,
+       "difference": 24.0,
+       "relative": 0.018058690744920947,
+       "u0": [
+        6,
+        1329.0,
+        [
+         506.65133585511853,
+         2151.3486641448817
+        ]
+       ],
+       "u0s": [
+        5,
+        1353.0,
+        [
+         859.7447768770484,
+         1846.2552231229515
+        ]
+       ]
+      },
+      "uncached_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -139.20000000000005,
+       "relative": -0.11746835443037984,
+       "u0": [
+        6,
+        1185.0,
+        [
+         276.4587002516589,
+         2093.541299748341
+        ]
+       ],
+       "u0s": [
+        5,
+        1045.8,
+        [
+         354.0106166951059,
+         1737.589383304894
+        ]
+       ]
+      }
+     },
+     "verify": {
+      "elapsed_seconds": {
+       "beyond_u0_interval": true,
+       "difference": -0.27285294830759155,
+       "relative": -0.3257740313406068,
+       "u0": [
+        13,
+        0.8375527883077806,
+        [
+         0.61610758991986,
+         1.058997986695701
+        ]
+       ],
+       "u0s": [
+        11,
+        0.564699840000189,
+        [
+         0.5025631925144515,
+         0.6268364874859266
+        ]
+       ]
+      },
+      "output_tokens": {
+       "beyond_u0_interval": false,
+       "difference": 0.006993006993007533,
+       "relative": 0.0010695187165776776,
+       "u0": [
+        13,
+        6.538461538461538,
+        [
+         6.2564033184398005,
+         6.820519758483276
+        ]
+       ],
+       "u0s": [
+        11,
+        6.545454545454546,
+        [
+         6.060756503019906,
+         7.0301525878891855
+        ]
+       ]
+      },
+      "prompt_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -13.412587412587413,
+       "relative": -0.017573436440600276,
+       "u0": [
+        13,
+        763.2307692307693,
+        [
+         713.2213199483596,
+         813.240218513179
+        ]
+       ],
+       "u0s": [
+        11,
+        749.8181818181819,
+        [
+         699.1037977789762,
+         800.5325658573876
+        ]
+       ]
+      },
+      "uncached_tokens": {
+       "beyond_u0_interval": true,
+       "difference": 179.937062937063,
+       "relative": 0.5336942318461828,
+       "u0": [
+        13,
+        337.15384615384613,
+        [
+         250.00228992737675,
+         424.3054023803155
+        ]
+       ],
+       "u0s": [
+        11,
+        517.0909090909091,
+        [
+         443.5600973813829,
+         590.6217208004354
+        ]
+       ]
+      }
+     }
+    }
+   },
+   "scores": {
+    "precision_accepted": {
+     "difference_points": 33.3,
+     "difference_points_ci95": [
+      -18.5,
+      66.8
+     ],
+     "new": [
+      4,
+      6,
+      66.7
+     ],
+     "reference": [
+      2,
+      6,
+      33.3
+     ]
+    },
+    "precision_generated": {
+     "difference_points": 19.2,
+     "difference_points_ci95": [
+      -21.2,
+      52.4
+     ],
+     "new": [
+      5,
+      9,
+      55.6
+     ],
+     "reference": [
+      4,
+      11,
+      36.4
+     ]
+    },
+    "recall": {
+     "difference_points": 20.0,
+     "difference_points_ci95": [
+      -18.7,
+      52.1
+     ],
+     "new": [
+      4,
+      10,
+      40.0
+     ],
+     "reference": [
+      2,
+      10,
+      20.0
+     ]
+    },
+    "recall_admitted": {
+     "difference_points": 20.0,
+     "difference_points_ci95": [
+      -18.7,
+      52.1
+     ],
+     "new": [
+      4,
+      10,
+      40.0
+     ],
+     "reference": [
+      2,
+      10,
+      20.0
+     ]
+    }
+   },
+   "technical_failure_units": [
+    0,
+    0
+   ]
+  },
+  "u7-benchmark-off vs u2l0-benchmark-off": {
+   "kind": "API reference (U0.8 sample run through the API)",
+   "per_comment": {
+    "accepted_claims": [
+     8,
+     8
+    ],
+    "accepted_positions_equal": 30,
+    "admission_equal": 27,
+    "admitted_only_new": [],
+    "admitted_only_reference": [
+     "steam:229390012",
+     "steam:234299803",
+     "steam:237735508"
+    ],
+    "comments": 30,
+    "coverage_status_equal": 26,
+    "differences": {
+     "steam:229390012": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_rejected",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      }
+     },
+     "steam:232121391": {
+      "new": {
+       "accepted": [
+        "Jamie/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [
+        "Jamie/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 2,
+       "quality_status": null
+      }
+     },
+     "steam:232159732": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      }
+     },
+     "steam:234299803": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_pending_or_failed",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      }
+     },
+     "steam:235458828": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_pending_or_failed",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_rejected",
+       "generated": 0,
+       "quality_status": null
+      }
+     },
+     "steam:237706669": {
+      "new": {
+       "accepted": [
+        "Arjun/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [
+        "Arjun/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 2,
+       "quality_status": null
+      }
+     },
+     "steam:237735508": {
+      "new": {
+       "accepted": [],
+       "admitted": false,
+       "coverage_status": "relevance_rejected",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      }
+     }
+    },
+    "generated_claims": [
+     11,
+     14
+    ]
+   },
+   "per_request": {
+    "audit_rejection": {
+     "beyond_u0_interval": false,
+     "difference_points": -15.584415584415584,
+     "u0": [
+      6,
+      14,
+      0.42857142857142855,
+      [
+       0.21380798904474121,
+       0.6740935542034926
+      ]
+     ],
+     "u0s": [
+      3,
+      11,
+      0.2727272727272727,
+      [
+       0.09746059290024889,
+       0.5656453011761291
+      ]
+     ]
+    },
+    "stages": {
+     "extract": {
+      "elapsed_seconds": {
+       "beyond_u0_interval": false,
+       "difference": -3.60860892971464,
+       "relative": -0.5033598808799367,
+       "u0": [
+        7,
+        7.169043594428574,
+        [
+         3.137242004967681,
+         11.200845183889466
+        ]
+       ],
+       "u0s": [
+        7,
+        3.560434664713934,
+        [
+         2.1624168000396344,
+         4.958452529388234
+        ]
+       ]
+      },
+      "output_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -42.571428571428555,
+       "relative": -0.18395061728395057,
+       "u0": [
+        7,
+        231.42857142857142,
+        [
+         117.36121962912317,
+         345.49592322801965
+        ]
+       ],
+       "u0s": [
+        7,
+        188.85714285714286,
+        [
+         106.32180226977673,
+         271.392483444509
+        ]
+       ]
+      },
+      "prompt_tokens": {
+       "beyond_u0_interval": true,
+       "difference": -1275.8571428571427,
+       "relative": -0.3139522621014518,
+       "u0": [
+        7,
+        4063.8571428571427,
+        [
+         3490.1469335249385,
+         4637.567352189347
+        ]
+       ],
+       "u0s": [
+        7,
+        2788.0,
+        [
+         2074.923830417152,
+         3501.076169582848
+        ]
+       ]
+      },
+      "uncached_tokens": {
+       "beyond_u0_interval": true,
+       "difference": -1129.5714285714284,
+       "relative": -0.29951892117125645,
+       "u0": [
+        7,
+        3771.285714285714,
+        [
+         3254.040201528224,
+         4288.531227043205
+        ]
+       ],
+       "u0s": [
+        7,
+        2641.714285714286,
+        [
+         1941.112344341092,
+         3342.3162270874795
+        ]
+       ]
+      }
+     },
+     "relevance": {
+      "elapsed_seconds": {
+       "beyond_u0_interval": false,
+       "difference": -0.3782852617497241,
+       "relative": -0.26410336029863635,
+       "u0": [
+        8,
+        1.4323379351250054,
+        [
+         0.8784998601114726,
+         1.9861760101385382
+        ]
+       ],
+       "u0s": [
+        8,
+        1.0540526733752813,
+        [
+         0.49679729106190673,
+         1.6113080556886559
+        ]
+       ]
+      },
+      "output_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -0.375,
+       "relative": -0.023809523809523836,
+       "u0": [
+        8,
+        15.75,
+        [
+         10.924148354905828,
+         20.575851645094172
+        ]
+       ],
+       "u0s": [
+        8,
+        15.375,
+        [
+         10.632490283850817,
+         20.117509716149183
+        ]
+       ]
+      },
+      "prompt_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -96.5,
+       "relative": -0.06143073128033738,
+       "u0": [
+        8,
+        1570.875,
+        [
+         823.6777762787297,
+         2318.0722237212703
+        ]
+       ],
+       "u0s": [
+        8,
+        1474.375,
+        [
+         1092.1748549443964,
+         1856.5751450556036
+        ]
+       ]
+      },
+      "uncached_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -384.5,
+       "relative": -0.24985785070262367,
+       "u0": [
+        8,
+        1538.875,
+        [
+         765.6469013211209,
+         2312.103098678879
+        ]
+       ],
+       "u0s": [
+        8,
+        1154.375,
+        [
+         625.4020321608989,
+         1683.347967839101
+        ]
+       ]
+      }
+     },
+     "retrieval_review": {
+      "elapsed_seconds": {
+       "beyond_u0_interval": false,
+       "difference": -0.5411284035995039,
+       "relative": -0.3295015353009557,
+       "u0": [
+        4,
+        1.642263679000024,
+        [
+         0.6969014796419231,
+         2.587625878358125
+        ]
+       ],
+       "u0s": [
+        5,
+        1.1011352754005201,
+        [
+         0.16152826507364038,
+         2.0407422857274
+        ]
+       ]
+      },
+      "output_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -0.5999999999999996,
+       "relative": -0.039999999999999925,
+       "u0": [
+        4,
+        15.0,
+        [
+         7.798632485467035,
+         22.201367514532965
+        ]
+       ],
+       "u0s": [
+        5,
+        14.4,
+        [
+         8.27687676998293,
+         20.52312323001707
+        ]
+       ]
+      },
+      "prompt_tokens": {
+       "beyond_u0_interval": false,
+       "difference": 38.5,
+       "relative": 0.029288702928870203,
+       "u0": [
+        4,
+        1314.5,
+        [
+         388.59713027589703,
+         2240.402869724103
+        ]
+       ],
+       "u0s": [
+        5,
+        1353.0,
+        [
+         859.7447768770484,
+         1846.2552231229515
+        ]
+       ]
+      },
+      "uncached_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -268.70000000000005,
+       "relative": -0.20441232407759613,
+       "u0": [
+        4,
+        1314.5,
+        [
+         388.59713027589703,
+         2240.402869724103
+        ]
+       ],
+       "u0s": [
+        5,
+        1045.8,
+        [
+         354.0106166951059,
+         1737.589383304894
+        ]
+       ]
+      }
+     },
+     "verify": {
+      "elapsed_seconds": {
+       "beyond_u0_interval": true,
+       "difference": -0.6347163055712444,
+       "relative": -0.529187728475048,
+       "u0": [
+        14,
+        1.1994161455714334,
+        [
+         0.811168097691354,
+         1.5876641934515128
+        ]
+       ],
+       "u0s": [
+        11,
+        0.564699840000189,
+        [
+         0.5025631925144515,
+         0.6268364874859266
+        ]
+       ]
+      },
+      "output_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -0.16883116883116855,
+       "relative": -0.025145067698259194,
+       "u0": [
+        14,
+        6.714285714285714,
+        [
+         6.394099347951201,
+         7.034472080620228
+        ]
+       ],
+       "u0s": [
+        11,
+        6.545454545454546,
+        [
+         6.060756503019906,
+         7.0301525878891855
+        ]
+       ]
+      },
+      "prompt_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -4.896103896103796,
+       "relative": -0.00648736083148338,
+       "u0": [
+        14,
+        754.7142857142857,
+        [
+         708.719480264659,
+         800.7090911639124
+        ]
+       ],
+       "u0s": [
+        11,
+        749.8181818181819,
+        [
+         699.1037977789762,
+         800.5325658573876
+        ]
+       ]
+      },
+      "uncached_tokens": {
+       "beyond_u0_interval": false,
+       "difference": 18.3766233766234,
+       "relative": 0.03684799875003253,
+       "u0": [
+        14,
+        498.7142857142857,
+        [
+         402.04354527767924,
+         595.3850261508921
+        ]
+       ],
+       "u0s": [
+        11,
+        517.0909090909091,
+        [
+         443.5600973813829,
+         590.6217208004354
+        ]
+       ]
+      }
+     }
+    }
+   },
+   "scores": {
+    "precision_accepted": {
+     "difference_points": 0.0,
+     "difference_points_ci95": [
+      -43.6,
+      43.6
+     ],
+     "new": [
+      4,
+      6,
+      66.7
+     ],
+     "reference": [
+      4,
+      6,
+      66.7
+     ]
+    },
+    "precision_generated": {
+     "difference_points": -2.8,
+     "difference_points_ci95": [
+      -39.3,
+      34.0
+     ],
+     "new": [
+      5,
+      9,
+      55.6
+     ],
+     "reference": [
+      7,
+      12,
+      58.3
+     ]
+    },
+    "recall": {
+     "difference_points": 0.0,
+     "difference_points_ci95": [
+      -36.9,
+      36.9
+     ],
+     "new": [
+      4,
+      10,
+      40.0
+     ],
+     "reference": [
+      4,
+      10,
+      40.0
+     ]
+    },
+    "recall_admitted": {
+     "difference_points": 0.0,
+     "difference_points_ci95": [
+      -36.9,
+      36.9
+     ],
+     "new": [
+      4,
+      10,
+      40.0
+     ],
+     "reference": [
+      4,
+      10,
+      40.0
+     ]
+    }
+   },
+   "technical_failure_units": [
+    0,
+    0
+   ]
+  },
+  "u7-benchmark-off vs u6-benchmark-off": {
+   "kind": "latest accepted API benchmark off run",
+   "per_comment": {
+    "accepted_claims": [
+     8,
+     8
+    ],
+    "accepted_positions_equal": 30,
+    "admission_equal": 30,
+    "admitted_only_new": [],
+    "admitted_only_reference": [],
+    "comments": 30,
+    "coverage_status_equal": 30,
+    "differences": {
+     "steam:232121391": {
+      "new": {
+       "accepted": [
+        "Jamie/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [
+        "Jamie/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 2,
+       "quality_status": null
+      }
+     },
+     "steam:232159732": {
+      "new": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 0,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      }
+     },
+     "steam:237706669": {
+      "new": {
+       "accepted": [
+        "Arjun/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 1,
+       "quality_status": null
+      },
+      "reference": {
+       "accepted": [
+        "Arjun/nerf"
+       ],
+       "admitted": true,
+       "coverage_status": "extraction_completed",
+       "generated": 2,
+       "quality_status": null
+      }
+     }
+    },
+    "generated_claims": [
+     11,
+     14
+    ]
+   },
+   "per_request": {
+    "audit_rejection": {
+     "beyond_u0_interval": false,
+     "difference_points": -15.584415584415584,
+     "u0": [
+      6,
+      14,
+      0.42857142857142855,
+      [
+       0.21380798904474121,
+       0.6740935542034926
+      ]
+     ],
+     "u0s": [
+      3,
+      11,
+      0.2727272727272727,
+      [
+       0.09746059290024889,
+       0.5656453011761291
+      ]
+     ]
+    },
+    "stages": {
+     "extract": {
+      "elapsed_seconds": {
+       "beyond_u0_interval": false,
+       "difference": -0.0821544604290727,
+       "relative": -0.022553864190172024,
+       "u0": [
+        7,
+        3.6425891251430067,
+        [
+         1.9406789358032186,
+         5.344499314482794
+        ]
+       ],
+       "u0s": [
+        7,
+        3.560434664713934,
+        [
+         2.1624168000396344,
+         4.958452529388234
+        ]
+       ]
+      },
+      "output_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -56.28571428571428,
+       "relative": -0.22960372960372954,
+       "u0": [
+        7,
+        245.14285714285714,
+        [
+         120.01073705821,
+         370.2749772275043
+        ]
+       ],
+       "u0s": [
+        7,
+        188.85714285714286,
+        [
+         106.32180226977673,
+         271.392483444509
+        ]
+       ]
+      },
+      "prompt_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -492.57142857142844,
+       "relative": -0.15014805782964635,
+       "u0": [
+        7,
+        3280.5714285714284,
+        [
+         2541.4224511990315,
+         4019.7204059438254
+        ]
+       ],
+       "u0s": [
+        7,
+        2788.0,
+        [
+         2074.923830417152,
+         3501.076169582848
+        ]
+       ]
+      },
+      "uncached_tokens": {
+       "beyond_u0_interval": false,
+       "difference": 19.42857142857156,
+       "relative": 0.007409021573327568,
+       "u0": [
+        7,
+        2622.285714285714,
+        [
+         1826.5789903213758,
+         3417.9924382500526
+        ]
+       ],
+       "u0s": [
+        7,
+        2641.714285714286,
+        [
+         1941.112344341092,
+         3342.3162270874795
+        ]
+       ]
+      }
+     },
+     "relevance": {
+      "elapsed_seconds": {
+       "beyond_u0_interval": false,
+       "difference": -0.23771885749965804,
+       "relative": -0.1840254656631478,
+       "u0": [
+        8,
+        1.2917715308749393,
+        [
+         0.48363589823552544,
+         2.099907163514353
+        ]
+       ],
+       "u0s": [
+        8,
+        1.0540526733752813,
+        [
+         0.49679729106190673,
+         1.6113080556886559
+        ]
+       ]
+      },
+      "output_tokens": {
+       "beyond_u0_interval": false,
+       "difference": 0.0,
+       "relative": 0.0,
+       "u0": [
+        8,
+        15.375,
+        [
+         10.632490283850817,
+         20.117509716149183
+        ]
+       ],
+       "u0s": [
+        8,
+        15.375,
+        [
+         10.632490283850817,
+         20.117509716149183
+        ]
+       ]
+      },
+      "prompt_tokens": {
+       "beyond_u0_interval": false,
+       "difference": 0.125,
+       "relative": 8.478887569940419e-05,
+       "u0": [
+        8,
+        1474.25,
+        [
+         1092.3050155829774,
+         1856.1949844170226
+        ]
+       ],
+       "u0s": [
+        8,
+        1474.375,
+        [
+         1092.1748549443964,
+         1856.5751450556036
+        ]
+       ]
+      },
+      "uncached_tokens": {
+       "beyond_u0_interval": false,
+       "difference": 64.125,
+       "relative": 0.05881678514102262,
+       "u0": [
+        8,
+        1090.25,
+        [
+         609.4976263263391,
+         1571.002373673661
+        ]
+       ],
+       "u0s": [
+        8,
+        1154.375,
+        [
+         625.4020321608989,
+         1683.347967839101
+        ]
+       ]
+      }
+     },
+     "retrieval_review": {
+      "elapsed_seconds": {
+       "beyond_u0_interval": false,
+       "difference": 0.2701626440004474,
+       "relative": 0.3251161756618399,
+       "u0": [
+        5,
+        0.8309726314000727,
+        [
+         0.5172088308617102,
+         1.1447364319384352
+        ]
+       ],
+       "u0s": [
+        5,
+        1.1011352754005201,
+        [
+         0.16152826507364038,
+         2.0407422857274
+        ]
+       ]
+      },
+      "output_tokens": {
+       "beyond_u0_interval": false,
+       "difference": 0.0,
+       "relative": 0.0,
+       "u0": [
+        5,
+        14.4,
+        [
+         8.27687676998293,
+         20.52312323001707
+        ]
+       ],
+       "u0s": [
+        5,
+        14.4,
+        [
+         8.27687676998293,
+         20.52312323001707
+        ]
+       ]
+      },
+      "prompt_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -0.20000000000004547,
+       "relative": -0.00014779781259244285,
+       "u0": [
+        5,
+        1353.2,
+        [
+         859.9812259417622,
+         1846.418774058238
+        ]
+       ],
+       "u0s": [
+        5,
+        1353.0,
+        [
+         859.7447768770484,
+         1846.2552231229515
+        ]
+       ]
+      },
+      "uncached_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -0.20000000000004547,
+       "relative": -0.00019120458891019876,
+       "u0": [
+        5,
+        1046.0,
+        [
+         354.1513139321753,
+         1737.8486860678247
+        ]
+       ],
+       "u0s": [
+        5,
+        1045.8,
+        [
+         354.0106166951059,
+         1737.589383304894
+        ]
+       ]
+      }
+     },
+     "verify": {
+      "elapsed_seconds": {
+       "beyond_u0_interval": false,
+       "difference": -0.20228142199978827,
+       "relative": -0.2637371106985327,
+       "u0": [
+        14,
+        0.7669812619999773,
+        [
+         0.4364872943887037,
+         1.0974752296112509
+        ]
+       ],
+       "u0s": [
+        11,
+        0.564699840000189,
+        [
+         0.5025631925144515,
+         0.6268364874859266
+        ]
+       ]
+      },
+      "output_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -0.16883116883116855,
+       "relative": -0.025145067698259194,
+       "u0": [
+        14,
+        6.714285714285714,
+        [
+         6.394099347951201,
+         7.034472080620228
+        ]
+       ],
+       "u0s": [
+        11,
+        6.545454545454546,
+        [
+         6.060756503019906,
+         7.0301525878891855
+        ]
+       ]
+      },
+      "prompt_tokens": {
+       "beyond_u0_interval": false,
+       "difference": -3.3246753246752405,
+       "relative": -0.004414401986480798,
+       "u0": [
+        14,
+        753.1428571428571,
+        [
+         708.2998852575907,
+         797.9858290281235
+        ]
+       ],
+       "u0s": [
+        11,
+        749.8181818181819,
+        [
+         699.1037977789762,
+         800.5325658573876
+        ]
+       ]
+      },
+      "uncached_tokens": {
+       "beyond_u0_interval": false,
+       "difference": 38.23376623376629,
+       "relative": 0.07984378390106328,
+       "u0": [
+        14,
+        478.85714285714283,
+        [
+         414.18066236882356,
+         543.533623345462
+        ]
+       ],
+       "u0s": [
+        11,
+        517.0909090909091,
+        [
+         443.5600973813829,
+         590.6217208004354
+        ]
+       ]
+      }
+     }
+    }
+   },
+   "scores": {
+    "precision_accepted": {
+     "difference_points": 0.0,
+     "difference_points_ci95": [
+      -43.6,
+      43.6
+     ],
+     "new": [
+      4,
+      6,
+      66.7
+     ],
+     "reference": [
+      4,
+      6,
+      66.7
+     ]
+    },
+    "precision_generated": {
+     "difference_points": 5.6,
+     "difference_points_ci95": [
+      -32.4,
+      41.1
+     ],
+     "new": [
+      5,
+      9,
+      55.6
+     ],
+     "reference": [
+      6,
+      12,
+      50.0
+     ]
+    },
+    "recall": {
+     "difference_points": 0.0,
+     "difference_points_ci95": [
+      -36.9,
+      36.9
+     ],
+     "new": [
+      4,
+      10,
+      40.0
+     ],
+     "reference": [
+      4,
+      10,
+      40.0
+     ]
+    },
+    "recall_admitted": {
+     "difference_points": 0.0,
+     "difference_points_ci95": [
+      -36.9,
+      36.9
+     ],
+     "new": [
+      4,
+      10,
+      40.0
+     ],
+     "reference": [
+      4,
+      10,
+      40.0
+     ]
+    }
+   },
+   "technical_failure_units": [
+    0,
+    0
+   ]
+  }
+ },
+ "runs": {
+  "u0-benchmark-off@sample": {
+   "admitted": 26,
+   "claims": {
+    "accepted": 14,
+    "audit_rejected": 11,
+    "audit_rejection": {
+     "denominator": 25,
+     "numerator": 11,
+     "value": 0.44,
+     "wilson95": [
+      0.26665638881067344,
+      0.6293266813020123
+     ]
+    },
+    "audited": 25,
+    "binding_quarantined": 3,
+    "generated": 28
+   },
+   "coverage_status": {
+    "extraction_completed": 26,
+    "relevance_pending_or_failed": 2,
+    "relevance_rejected": 2
+   },
+   "quality": null,
+   "stages": {},
+   "technical_failure_units": 0
+  },
+  "u0s-benchmark-off": {
+   "admitted": 26,
+   "claims": {
+    "accepted": 8,
+    "audit_rejected": 5,
+    "audit_rejection": {
+     "denominator": 13,
+     "numerator": 5,
+     "value": 0.38461538461538464,
+     "wilson95": [
+      0.17709707797762575,
+      0.6447710848733431
+     ]
+    },
+    "audited": 13,
+    "binding_quarantined": 0,
+    "generated": 13
+   },
+   "coverage_status": {
+    "extraction_completed": 26,
+    "relevance_pending_or_failed": 2,
+    "relevance_rejected": 2
+   },
+   "quality": null,
+   "stages": {
+    "extract": {
+     "elapsed_seconds": 13.5,
+     "fresh": 7,
+     "output_tokens": 227.7,
+     "prompt_tokens": 3955.3,
+     "requests": 7,
+     "uncached_tokens": 3476.3
+    },
+    "relevance": {
+     "elapsed_seconds": 3.3,
+     "fresh": 9,
+     "output_tokens": 19.4,
+     "prompt_tokens": 1576.4,
+     "requests": 9,
+     "uncached_tokens": 1423.2
+    },
+    "retrieval_review": {
+     "elapsed_seconds": 5.2,
+     "fresh": 6,
+     "output_tokens": 21.3,
+     "prompt_tokens": 1329.0,
+     "requests": 6,
+     "uncached_tokens": 1185.0
+    },
+    "verify": {
+     "elapsed_seconds": 0.8,
+     "fresh": 13,
+     "output_tokens": 6.5,
+     "prompt_tokens": 763.2,
+     "requests": 13,
+     "uncached_tokens": 337.2
+    }
+   },
+   "technical_failure_units": 0
+  },
+  "u2l0-benchmark-off": {
+   "admitted": 26,
+   "claims": {
+    "accepted": 8,
+    "audit_rejected": 6,
+    "audit_rejection": {
+     "denominator": 14,
+     "numerator": 6,
+     "value": 0.42857142857142855,
+     "wilson95": [
+      0.21380798904474121,
+      0.6740935542034926
+     ]
+    },
+    "audited": 14,
+    "binding_quarantined": 0,
+    "generated": 14
+   },
+   "coverage_status": {
+    "extraction_completed": 26,
+    "relevance_pending_or_failed": 1,
+    "relevance_rejected": 3
+   },
+   "quality": null,
+   "stages": {
+    "extract": {
+     "elapsed_seconds": 7.2,
+     "fresh": 7,
+     "output_tokens": 231.4,
+     "prompt_tokens": 4063.9,
+     "requests": 7,
+     "uncached_tokens": 3771.3
+    },
+    "relevance": {
+     "elapsed_seconds": 1.4,
+     "fresh": 8,
+     "output_tokens": 15.8,
+     "prompt_tokens": 1570.9,
+     "requests": 8,
+     "uncached_tokens": 1538.9
+    },
+    "retrieval_review": {
+     "elapsed_seconds": 1.6,
+     "fresh": 4,
+     "output_tokens": 15.0,
+     "prompt_tokens": 1314.5,
+     "requests": 4,
+     "uncached_tokens": 1314.5
+    },
+    "verify": {
+     "elapsed_seconds": 1.2,
+     "fresh": 14,
+     "output_tokens": 6.7,
+     "prompt_tokens": 754.7,
+     "requests": 14,
+     "uncached_tokens": 498.7
+    }
+   },
+   "technical_failure_units": 0
+  },
+  "u2l0-benchmark-shadow": {
+   "admitted": 26,
+   "claims": {
+    "accepted": 8,
+    "audit_rejected": 5,
+    "audit_rejection": {
+     "denominator": 13,
+     "numerator": 5,
+     "value": 0.38461538461538464,
+     "wilson95": [
+      0.17709707797762575,
+      0.6447710848733431
+     ]
+    },
+    "audited": 13,
+    "binding_quarantined": 0,
+    "generated": 13
+   },
+   "coverage_status": {
+    "extraction_completed": 26,
+    "relevance_pending_or_failed": 1,
+    "relevance_rejected": 3
+   },
+   "quality": {
+    "attempts": 29,
+    "comments": 26,
+    "elapsed_sum": 476.60498213099925,
+    "first_attempt_valid": {
+     "denominator": 26,
+     "numerator": 23,
+     "value": 0.8846153846153846,
+     "wilson95": [
+      0.7102409678828635,
+      0.9599675537638938
+     ]
+    },
+    "seconds_per_comment": 18.33096085119228,
+    "status": {
+     "completed": 23,
+     "failed": 3
+    }
+   },
+   "stages": {
+    "extract": {
+     "elapsed_seconds": 4.7,
+     "fresh": 7,
+     "output_tokens": 215.1,
+     "prompt_tokens": 4063.9,
+     "requests": 7,
+     "uncached_tokens": 2015.9
+    },
+    "quality": {
+     "elapsed_seconds": 16.4,
+     "fresh": 29,
+     "output_tokens": 782.1,
+     "prompt_tokens": 3468.7,
+     "requests": 29,
+     "uncached_tokens": 2691.9
+    },
+    "relevance": {
+     "elapsed_seconds": 1.0,
+     "fresh": 8,
+     "output_tokens": 15.8,
+     "prompt_tokens": 1571.4,
+     "requests": 8,
+     "uncached_tokens": 1379.4
+    },
+    "retrieval_review": {
+     "elapsed_seconds": 0.7,
+     "fresh": 4,
+     "output_tokens": 14.5,
+     "prompt_tokens": 1314.5,
+     "requests": 4,
+     "uncached_tokens": 418.5
+    },
+    "verify": {
+     "elapsed_seconds": 0.8,
+     "fresh": 13,
+     "output_tokens": 6.8,
+     "prompt_tokens": 759.5,
+     "requests": 13,
+     "uncached_tokens": 405.1
+    }
+   },
+   "technical_failure_units": 3
+  },
+  "u6-benchmark-off": {
+   "admitted": 23,
+   "claims": {
+    "accepted": 8,
+    "audit_rejected": 6,
+    "audit_rejection": {
+     "denominator": 14,
+     "numerator": 6,
+     "value": 0.42857142857142855,
+     "wilson95": [
+      0.21380798904474121,
+      0.6740935542034926
+     ]
+    },
+    "audited": 14,
+    "binding_quarantined": 0,
+    "generated": 14
+   },
+   "coverage_status": {
+    "extraction_completed": 23,
+    "relevance_pending_or_failed": 3,
+    "relevance_rejected": 4
+   },
+   "quality": null,
+   "stages": {
+    "extract": {
+     "elapsed_seconds": 3.6,
+     "fresh": 7,
+     "output_tokens": 245.1,
+     "prompt_tokens": 3280.6,
+     "requests": 7,
+     "uncached_tokens": 2622.3
+    },
+    "relevance": {
+     "elapsed_seconds": 1.3,
+     "fresh": 8,
+     "output_tokens": 15.4,
+     "prompt_tokens": 1474.2,
+     "requests": 8,
+     "uncached_tokens": 1090.2
+    },
+    "retrieval_review": {
+     "elapsed_seconds": 0.8,
+     "fresh": 5,
+     "output_tokens": 14.4,
+     "prompt_tokens": 1353.2,
+     "requests": 5,
+     "uncached_tokens": 1046.0
+    },
+    "verify": {
+     "elapsed_seconds": 0.8,
+     "fresh": 14,
+     "output_tokens": 6.7,
+     "prompt_tokens": 753.1,
+     "requests": 14,
+     "uncached_tokens": 478.9
+    }
+   },
+   "technical_failure_units": 0
+  },
+  "u7-benchmark-enforce": {
+   "admitted": 24,
+   "claims": {
+    "accepted": 0,
+    "audit_rejected": 0,
+    "audit_rejection": {
+     "denominator": 0,
+     "numerator": 0,
+     "value": null,
+     "wilson95": null
+    },
+    "audited": 0,
+    "binding_quarantined": 0,
+    "generated": 0
+   },
+   "coverage": {
+    "complete": true,
+    "input_comments": 30,
+    "with_coverage_status": 30
+   },
+   "coverage_status": {
+    "extraction_completed": 1,
+    "quality_failed": 2,
+    "quality_routed_without_extraction": 21,
+    "relevance_pending_or_failed": 3,
+    "relevance_rejected": 3
+   },
+   "failures": {
+    "generation_failed_comments": 0,
+    "pending_units": 3,
+    "quality_failed_comments": 2,
+    "requests_with_validation_errors": {
+     "quality": 5
+    },
+    "transport_failures": 0
+   },
+   "identity_passed": true,
+   "quality": {
+    "attempts": 27,
+    "comments": 24,
+    "elapsed_sum": 233.5673473980005,
+    "first_attempt_valid": {
+     "denominator": 24,
+     "numerator": 21,
+     "value": 0.875,
+     "wilson95": [
+      0.6899611872949993,
+      0.9565566591987655
+     ]
+    },
+    "seconds_per_comment": 9.73197280825002,
+    "status": {
+     "completed": 22,
+     "failed": 2
+    }
+   },
+   "run_state": "partial",
+   "spend": {
+    "after_usd": 0.349406,
+    "before_usd": 0.341948,
+    "requests": 43,
+    "run_usd": 0.007458
+   },
+   "stages": {
+    "extract": {
+     "elapsed_seconds": 0.6,
+     "fresh": 1,
+     "output_tokens": 29.0,
+     "prompt_tokens": 1589.0,
+     "requests": 1,
+     "uncached_tokens": 1077.0
+    },
+    "quality": {
+     "elapsed_seconds": 8.7,
+     "fresh": 27,
+     "output_tokens": 667.1,
+     "prompt_tokens": 1926.3,
+     "requests": 27,
+     "uncached_tokens": 1262.6
+    },
+    "relevance": {
+     "elapsed_seconds": 1.0,
+     "fresh": 7,
+     "output_tokens": 16.0,
+     "prompt_tokens": 1538.6,
+     "requests": 7,
+     "uncached_tokens": 148.9
+    },
+    "retrieval_review": {
+     "elapsed_seconds": 0.8,
+     "fresh": 5,
+     "output_tokens": 14.0,
+     "prompt_tokens": 1353.0,
+     "requests": 5,
+     "uncached_tokens": 687.4
+    }
+   },
+   "technical_failure_units": 2,
+   "wall_seconds": 155.874921
+  },
+  "u7-benchmark-off": {
+   "admitted": 23,
+   "claims": {
+    "accepted": 8,
+    "audit_rejected": 3,
+    "audit_rejection": {
+     "denominator": 11,
+     "numerator": 3,
+     "value": 0.2727272727272727,
+     "wilson95": [
+      0.09746059290024889,
+      0.5656453011761291
+     ]
+    },
+    "audited": 11,
+    "binding_quarantined": 0,
+    "generated": 11
+   },
+   "coverage": {
+    "complete": true,
+    "input_comments": 30,
+    "with_coverage_status": 30
+   },
+   "coverage_status": {
+    "extraction_completed": 23,
+    "relevance_pending_or_failed": 3,
+    "relevance_rejected": 4
+   },
+   "failures": {
+    "generation_failed_comments": 0,
+    "pending_units": 3,
+    "quality_failed_comments": 0,
+    "requests_with_validation_errors": {},
+    "transport_failures": 0
+   },
+   "identity_passed": true,
+   "quality": null,
+   "run_state": "partial",
+   "spend": {
+    "after_usd": 0.341948,
+    "before_usd": 0.338001,
+    "requests": 34,
+    "run_usd": 0.003947
+   },
+   "stages": {
+    "extract": {
+     "elapsed_seconds": 3.6,
+     "fresh": 7,
+     "output_tokens": 188.9,
+     "prompt_tokens": 2788.0,
+     "requests": 7,
+     "uncached_tokens": 2641.7
+    },
+    "relevance": {
+     "elapsed_seconds": 1.1,
+     "fresh": 8,
+     "output_tokens": 15.4,
+     "prompt_tokens": 1474.4,
+     "requests": 8,
+     "uncached_tokens": 1154.4
+    },
+    "retrieval_review": {
+     "elapsed_seconds": 1.1,
+     "fresh": 5,
+     "output_tokens": 14.4,
+     "prompt_tokens": 1353.0,
+     "requests": 5,
+     "uncached_tokens": 1045.8
+    },
+    "verify": {
+     "elapsed_seconds": 0.6,
+     "fresh": 11,
+     "output_tokens": 6.5,
+     "prompt_tokens": 749.8,
+     "requests": 11,
+     "uncached_tokens": 517.1
+    }
+   },
+   "technical_failure_units": 0,
+   "wall_seconds": 43.939723
+  }
+ }
+}

@@ -1,0 +1,127 @@
+{
+  "schema_version": "aimediator-position-scores-v1",
+  "run": "u7-benchmark-enforce",
+  "labels": "extraction-precision-v1",
+  "split": "development",
+  "labeled_comments": 227,
+  "absent_from_run": 214,
+  "overall": {
+    "comments": 11,
+    "admitted_comments": 11,
+    "precision_accepted": {
+      "numerator": 0,
+      "denominator": 0,
+      "value": null,
+      "wilson95": null
+    },
+    "precision_generated": {
+      "numerator": 0,
+      "denominator": 0,
+      "value": null,
+      "wilson95": null
+    },
+    "recall": {
+      "numerator": 0,
+      "denominator": 10,
+      "value": 0.0,
+      "wilson95": [
+        0,
+        0.2775327998628892
+      ]
+    },
+    "recall_admitted": {
+      "numerator": 0,
+      "denominator": 10,
+      "value": 0.0,
+      "wilson95": [
+        0,
+        0.2775327998628892
+      ]
+    },
+    "uncertain": {
+      "comments": 2,
+      "accepted_claims": 0,
+      "generated_claims": 0
+    }
+  },
+  "by_language": {
+    "en": {
+      "comments": 3,
+      "admitted_comments": 3,
+      "precision_accepted": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null,
+        "wilson95": null
+      },
+      "precision_generated": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null,
+        "wilson95": null
+      },
+      "recall": {
+        "numerator": 0,
+        "denominator": 2,
+        "value": 0.0,
+        "wilson95": [
+          0,
+          0.6576197724933469
+        ]
+      },
+      "recall_admitted": {
+        "numerator": 0,
+        "denominator": 2,
+        "value": 0.0,
+        "wilson95": [
+          0,
+          0.6576197724933469
+        ]
+      },
+      "uncertain": {
+        "comments": 1,
+        "accepted_claims": 0,
+        "generated_claims": 0
+      }
+    },
+    "zh": {
+      "comments": 8,
+      "admitted_comments": 8,
+      "precision_accepted": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null,
+        "wilson95": null
+      },
+      "precision_generated": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null,
+        "wilson95": null
+      },
+      "recall": {
+        "numerator": 0,
+        "denominator": 8,
+        "value": 0.0,
+        "wilson95": [
+          0,
+          0.32440756488388023
+        ]
+      },
+      "recall_admitted": {
+        "numerator": 0,
+        "denominator": 8,
+        "value": 0.0,
+        "wilson95": [
+          0,
+          0.32440756488388023
+        ]
+      },
+      "uncertain": {
+        "comments": 1,
+        "accepted_claims": 0,
+        "generated_claims": 0
+      }
+    }
+  }
+}
