@@ -2,7 +2,7 @@
 
 - Type: Record
 - Status: Active
-- Updated: 2026-11-04
+- Updated: 2026-11-05
 - Applies to: the [pipeline upgrade plan](../plans/pipeline-upgrade.md); commit `31d00f8` (tag `upgrade-plan`) and later
 
 The single change record of the pipeline upgrade. Every step adds its row to
@@ -57,6 +57,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | U0.5 | D | done | 250 | green | UP-D02: `data/evaluation/extraction-precision-v1/` frozen (`labels.jsonl`, `manifest.json`); 301 comments labeled by session U0-A from the source text only, 227 development and 74 test; see "Evaluation sets". `materialize` reproduces 301, 227 and 74 rows with every hash matching; `score_positions` reads the labels |
 | U0.6 | L | done | 250 | green | Session U0-L on the owner's machine: environment and live configuration recorded (Ollama 0.34.2, local embeddings, `connection_timeout` 120 after E-1); the five reference runs at `50becc2` measured and scored, see "Live evaluations" and the plan 5.5 baselines there; curated report `reports/20261104-upgrade-baseline/`; full runs archived with `SHA256SUMS` (5,323 files). Decisions found during execution D-2 (Failures column), D-3 (interrupted run rerun clean), D-4 (relevance and route agreement outside the package); escalation E-1 resolved by the owner. UP-D10 row corrected to the owner's answer |
 | U0.7 | D | done | 250 | green | UP-D17 (owner's amendment of 2026-11-04 after U0.6): `data/evaluation/upgrade-samples-v1/` frozen, four samples with `ids.json` and `manifest.json` each and a top-level manifest; see "Evaluation sets". `materialize` reproduces 30, 114, 19 and 120 rows with every content hash matching |
+| U0.8 | L | done | 250 | green | UP-D17. Session U0-L2 on the owner's machine: environment equal to the U0.6 record, checked before and after the runs (`doctor` passed); the four samples materialized (30, 114, 19 and 120 rows, every content hash matching); the four sample reference runs at `0abfe02` measured and scored, see "Live evaluations" and the plan 5.5 baselines on the samples there; compared with the U0.6 rows in full and paired (D-5), differences beyond the intervals recorded as findings; curated report `reports/20261105-upgrade-baseline-samples/`; full runs archived with `SHA256SUMS` (2,693 files). The first U0-L2 agent was stopped after the runs had finished; a second agent finished the step without rerunning them |
 
 ## Baseline measurements (U0.4)
 
@@ -253,6 +254,10 @@ rows, `8a41f808074bce16f5badcc3a645c0f34eec7f78ece77196fd22c5725dc8a216`).
 | U0-L (`u0-extraction-development-off`) | `50becc2` | `extraction-precision-v1` development (227) | `off` | 2,434.7 s | relevance 2,439 (2,250); retrieval_review 1,836 (1,621); extract 4,429 (3,782); verify 1,019 (345) | relevance 21; retrieval_review 21; extract 491; verify 7 | 0 requests with errors; 0 failed comments; 5 pending | 327 / 137 (26 quarantined; 164 of 301 rejected, 54.5 %) | accepted 65/117 (55.6 %, Wilson 46.5–64.2 %) / 64/222 (28.8 %, Wilson 23.3–35.1 %); generated 108/291 (37.1 %); recall over admitted 64/220 (29.1 %) | — | reference |
 | U0-L (`u0-silver-development-relevance`) | `50becc2` | `balance-silver-v1` development (70) | `off`, `--stop-after relevance` | 186.8 s | relevance 2,033 (1,857); retrieval_review 1,520 (1,301) | relevance 20; retrieval_review 22 | 0 requests with errors; 3 pending | — | relevance agreement 59/69 (85.5 %, Wilson 75.3–91.9 %): 55 TP, 4 TN, 8 FN, 2 FP; 1 uncertain excluded | — | reference |
 | U0-L (`u0-quality-synthetic-shadow`) | `50becc2` | `evidence-quality-synthetic-v1` (38) | `shadow`, `--stop-after quality` | 851.2 s | relevance 1,255 (1,089); retrieval_review 772 (664); quality 2,725 (1,681) | relevance 19; retrieval_review 18; quality 383 | 12 quality requests with validation errors, 0 transport; 6 quality-failed comments; 1 pending | — | — | first attempt 28/34 (82.4 %, Wilson 66.5–91.7 %); 40 attempts; route agreement 16/34 (47.1 %, Wilson 31.5–63.3 %), English 10/16, Chinese 6/18; 4 cases do not reach quality (3 rejected, 1 pending) | reference |
+| U0-L2 (`u0s-benchmark-off`) | `0abfe02` | `upgrade-samples-v1/latency-benchmark` (30) | `off` | 188.0 s | relevance 1,576 (1,423 uncached); retrieval_review 1,329 (1,185); extract 3,955 (3,476); verify 763 (337) | relevance 19; retrieval_review 21; extract 228; verify 7 | 0 requests with errors; 0 failed comments; 2 pending (review queue) | 13 / 8 (0 quarantined; 5 of 13 audited rejected) | 2/6 (33.3 %) / 2/10 (20.0 %), the 11 scored sample comments of the development split | — | sample reference |
+| U0-L2 (`u0s-benchmark-shadow`) | `0abfe02` | `upgrade-samples-v1/latency-benchmark` (30) | `shadow` | 1,565.4 s | relevance 1,619 (1,466); retrieval_review 1,329 (1,185); quality 3,338 (2,093); extract 3,880 (3,382); verify 856 (213) | relevance 20; retrieval_review 21; quality 633; extract 354; verify 7 | 13 quality requests with validation errors, 0 transport; 6 quality-failed comments; 1 pending | 30 / 19 (0 quarantined; 11 of 30 rejected) | 2/17 (11.8 %) / 2/10 (20.0 %), same 11 comments | first attempt 21/28 (75.0 %, Wilson 56.6–87.3 %); 35 attempts | sample reference |
+| U0-L2 (`u0s-extraction-development-off`) | `0abfe02` | `upgrade-samples-v1/extraction-development` (114) | `off` | 1,372.4 s | relevance 2,861 (2,682); retrieval_review 1,773 (1,584); extract 3,955 (3,261), 44 of 48 requests with counters; verify 1,129 (394) | relevance 23; retrieval_review 19; extract 398; verify 7 | 4 extract requests with validation errors (`duplicate_claim_loop`), 0 transport; 1 generation-failed comment; 3 pending | 178 / 70 (23 quarantined; 85 of 155 rejected, 54.8 %) | accepted 45/66 (68.2 %, Wilson 56.2–78.2 %) / 40/123 (32.5 %, Wilson 24.9–41.2 %); generated 81/169 (47.9 %); recall over admitted 40/121 (33.1 %) | — | sample reference |
+| U0-L2 (`u0s-quality-synthetic-shadow`) | `0abfe02` | `upgrade-samples-v1/quality-synthetic` (19) | `shadow`, `--stop-after quality` | 475.8 s | relevance 1,677 (1,576); retrieval_review 654 (582); quality 2,777 (1,636) | relevance 22; retrieval_review 16; quality 521 | 10 quality requests with validation errors, 0 transport; 5 quality-failed comments; 1 pending | — | — | first attempt 13/18 (72.2 %, Wilson 49.1–87.5 %); 23 attempts; route agreement 8/18 (44.4 %, Wilson 24.6–66.3 %), English 5/8, Chinese 3/10; 1 case does not reach quality (pending) | sample reference |
 
 Rows of U0.6 (2026-11-04, session U0-L): the five reference runs of plan
 7 U0.6, environment and configuration as in the section above. Token
@@ -320,6 +325,148 @@ Findings of U0.6:
 - **Extraction tokens** agree with the archive: 3,404 and 3,782 uncached
   tokens per request against 3,421; extraction requests take 16.9 s on
   the benchmark and 23.5 s on the development split against 19.7 s.
+
+Rows of U0.8 (runs from 2026-11-04 23:19 to 2026-11-05 00:19, session
+U0-L2): the four sample reference runs of plan 7 U0.8 on
+`upgrade-samples-v1` (UP-D17), at `0abfe02` (the U0.7 commit; `src/` is
+unchanged since `50becc2`, and every module hash in the run manifests
+equals the package file at `0abfe02`), with the U0.6 commands and live
+configuration, one after another, each in its own process session. They
+are the sample reference of U2 and later live sessions (plan 5.4); the
+U0.6 rows stay the full-set baseline. The environment was checked against
+the section above before the runs and again after them: service 0.34.2,
+the same service process since 2026-11-04 17:10:10 (no restart before or
+during the runs), the server settings, GPU, the three model digests
+(each run manifest records them, embedding digest verified) and the
+runtime equal to the U0.6 record; `doctor` passed every check;
+`live-config.json` unchanged (SHA-256
+`03659ca91320224b2d8c772758654e30e9fa8c36ce4b81b34637a973ca781f7b`); no
+`--env-file`. Each run's identity differs from its U0.6 run only by the
+input and source hashes. Inputs, materialized with the command in each
+sample's manifest, every content hash checked:
+`runs/upgrade/inputs/upgrade-sample-benchmark.jsonl` (30 rows,
+`ce7ee3df8efc73d36840b96dff00407e42cea9f29de2369ccb64aa4abac28f4a`),
+`upgrade-sample-extraction-development.jsonl` (114,
+`46e5bb22d38c7b76f8521b376eaac5635ac8988007b9d3c37510315273c6b311`),
+`upgrade-sample-quality-synthetic.jsonl` (19,
+`0d7a8e8adf6650ee673145d93530abfd0a2c79785712b5bfc2fa58af1590a8e4`) and
+`upgrade-sample-full-balanced.jsonl` (120,
+`434bf553b4b2447d336ba736c6269fa15dcbee1214601fbd67430779bfd1f3c7`, for
+U7.1, not run here). Route agreement uses the D-4 scorer with `cases.json`
+of `evidence-quality-synthetic-v1` filtered to the 19 sample IDs
+(`runs/upgrade/inputs/upgrade-sample-quality-synthetic-cases.json`).
+Token figures are means over fresh requests with counters (every request
+is fresh; the 4 looped extraction requests of the extraction sample carry
+no counters). "Failures" follows D-2. Wall time is the measurement
+tool's; every run ended `partial` (exit 5) because of pending review-queue
+units, as in U0.6. Measurements, scores, the paired U0.6 values and the
+comparison are in
+[`reports/20261105-upgrade-baseline-samples/`](../../reports/20261105-upgrade-baseline-samples/manifest.json);
+full runs in the archive (see "Archive and deletions").
+
+Baselines of plan 5.5 on the samples (from U0.8 on, a baseline named U0.6
+is the U0.8 run of the same sample and mode, plan 5.5). "U0.6 paired" is
+the U0.6 run over the sample's comments only; the batched stages
+(relevance, extraction) have no paired value, because their requests mix
+comments.
+
+| ID | U0.8 sample baseline | Run | U0.6 full set | U0.6 paired | Target (plan 5.5) |
+| -- | -------------------- | --- | ------------- | ----------- | ----------------- |
+| T1 | extraction 3,476 uncached prompt tokens per request (shadow 3,382) | `u0s-benchmark-off` | 3,404 (shadow 3,399) | — | at most 1,700 |
+| T2 | quality 2,093 uncached prompt tokens per request (3,338 in total) | `u0s-benchmark-shadow` | 2,089 (3,353) | 2,176 (3,333) | at most 1,500 |
+| T3 | relevance 1,423 uncached prompt tokens per request (shadow 1,466) | `u0s-benchmark-off` | 1,278 (shadow 1,240) | — | at most 925 (65 %) |
+| T4 | quality 46.9 s per comment (1,312.7 s for 28 comments) | `u0s-benchmark-shadow` | 50.0 s (54 comments) | 44.1 s (1,147.5 s for 26) | at most 23.4 s |
+| T5 | quality first-attempt validity 75.0 % (21/28, Wilson 56.6–87.3 %) | `u0s-benchmark-shadow` | 75.9 % (41/54) | 80.8 % (21/26) | at least 95 % |
+| T6 | 54.8 % of audited claims rejected (85/155, Wilson 47.0–62.5 %) | `u0s-extraction-development-off` | 54.5 % (164/301) | 57.2 % (91/159) | at most 35 % |
+| T7 | precision of accepted claims 68.2 % (45/66, Wilson 56.2–78.2 %), recall 32.5 % (40/123, Wilson 24.9–41.2 %) | `u0s-extraction-development-off` | 55.6 %, 28.8 % | 64.5 % (40/62), 31.7 % (39/123) | precision at least 78.2 %, recall at least 29.5 % |
+
+Comparison with the U0.6 rows (`summary/u0s-comparison.json`, rule D-5).
+Within the intervals: the quality prompt, uncached and output tokens and
+elapsed time per request; first-attempt validity on the benchmark (75.0 %
+against 75.9 %, paired 80.8 %) and on the synthetic sample (72.2 % against
+82.4 %, paired 81.3 %); route agreement (8/18, 44.4 %, against 16/34,
+47.1 %, paired 8/16, 50.0 %); extraction recall (32.5 % against 28.8 %,
+paired 31.7 %); audit rejection on the extraction sample (54.8 % against
+54.5 %, paired 57.2 %); the relevance and retrieval-review means of every
+run; the extraction prompt tokens and elapsed time on the benchmark.
+Differences beyond the intervals are the findings below; none is a stop.
+
+Findings of U0.8:
+
+- **The extraction sample scores higher than the full split.** Precision
+  of accepted claims, 68.2 %, lies above the U0.6 interval (55.6 %, 46.5
+  to 64.2 %), and precision of generated claims, 47.9 %, above its own
+  (37.1 %, 31.8 to 42.8 %). Paired, the U0.6 run scores 64.5 % and 41.9 %
+  on the same 114 comments, so the sample run differs by +3.7 and +6.1
+  points, within the intervals. The sample's comments are easier than the
+  rest of the development split: T7 on the sample starts from 68.2 % and
+  its target is 78.2 %, not 65.6 %.
+- **Benchmark precision follows one comment.** In `u0s-benchmark-shadow`
+  precision of accepted claims is 2/17 (11.8 %), below the full U0.6
+  interval (3/8, 37.5 %, 13.7 to 69.4 %; paired 2/7, 28.6 %, within), and
+  precision of generated claims is 4/27 (14.8 %), below both intervals
+  (paired 5/14, 35.7 %, 16.3 to 61.2 %). Twelve of the 17 accepted claims
+  are the same `Terry` `nerf` claim on one English comment
+  (`steam:217837645`) whose label holds no position; that comment receives
+  1 such claim in `u0s-benchmark-off`, 7 in `u0-benchmark-off` and 3 in
+  `u0-benchmark-shadow`. Precision counts every claim (recall counts a
+  position once), so on 11 scored comments one comment decides the value;
+  without it, 2/5. Benchmark precision is not a stable comparison;
+  adoption rule 4 reads the extraction sample.
+- **One generation failure on the extraction sample.** Four extraction
+  requests of `llama3.1:latest` ended with `duplicate_claim_loop` (no
+  counters, 92.8 s together): three 4-comment batches, whose comments were
+  then retried one per request, and the retry of `steam:231760293`, which
+  ended `generation_failed` (coverage `extraction_failed`). The U0.6 run of
+  the full split had no such request; the archived run had 7. Under the
+  D-2 reading the extraction sample reference holds 1 technical-failure
+  unit. The benchmark references hold 0 failed comments in `off` and 6
+  quality-failed comments of 28 in `shadow` (U0.6: 13 of 54; paired 5 of
+  26), with 2 and 1 pending units.
+- **Extraction requests on the extraction sample are smaller.** 3,955
+  prompt tokens (3,261 uncached), 398 output tokens and 18.3 s per request
+  against 4,429 (3,782), 491 and 23.5 s, all beyond the intervals. The
+  sample fills fewer batches: 2.56 comments per request against 3.32 (18
+  single-comment requests against 10, 12 of them the retries above).
+  Per-request means of batched stages depend on how an input fills the
+  batches; T1 is measured on the benchmark sample, where the extraction
+  means agree with U0.6 (3,476 uncached against 3,404).
+- **Verification and audit rejection follow the claim set.** The verify
+  means lie outside the U0.6 intervals in all three full-pipeline runs
+  (uncached prompt tokens 337, 213 and 394 against 254, 305 and 345;
+  elapsed time within 0.2 s per request); a verify request carries one
+  claim, so these means move with the claims. Audit rejection on the
+  benchmark is 5/13 (38.5 %) in `off` and 11/30 (36.7 %) in `shadow`
+  against 21/38 (55.3 %) and 17/28 (60.7 %) for the full set, beyond the
+  intervals; paired (11/25, 44.0 %; 5/15, 33.3 %) within. Benchmark
+  extraction output in `shadow` (354 tokens against 252) lies above the
+  U0.6 interval; its own interval is wide (84 to 623, 8 requests).
+- **Admission differs on a few sample comments.** Paired over the sample
+  comments: benchmark `off` admits `steam:235458828` and not
+  `steam:237735508`; `shadow` admits `steam:229390012` and
+  `steam:235458828` in addition; the extraction sample admits 3 comments
+  the U0.6 run did not and misses 2 it admitted; the synthetic sample
+  admits `price_and_opinion:en` and `venting:zh`, which U0.6 rejected at
+  relevance. Relevance and retrieval-review requests batch several
+  comments, so on a sample a comment meets other neighbours than in the
+  full set, and the embedding drift of U0.6 adds to that. From U2 on the
+  comparisons use the U0.8 runs, so these differences do not enter them.
+- **Route agreement is unchanged on the common cases.** The 16 cases that
+  reached quality in both runs agree in the same 8. The two cases admitted
+  only in U0.8 disagree (`venting:zh` failed validation and carries its
+  fallback `review`; `price_and_opinion:en` gives `system_evidence` where
+  `exclude` and `opinion_only` are expected); `high_emotion:zh` failed
+  validation in U0.8 (completed in U0.6, disagreeing in both); `me_too:en`
+  stays pending.
+- **Failure classes of quality attempts (ALG-01)** are those of U0.6.
+  Benchmark (13 failed attempts): `character_literal` 8, uncovered
+  non-whitespace original content 7, quote/offset mismatch 4,
+  point/segment detail conflict 2, `mechanic_literal` 2. Synthetic (10):
+  quote/offset mismatch 8, `character_literal` 4, uncovered content 4,
+  detail conflict 2. No attempt failed in transport.
+- **Wall time.** 188.0 s, 1,565.4 s, 1,372.4 s and 475.8 s, together
+  3,601.6 s (60.0 minutes), against 6,848.0 s for the four U0.6 runs
+  (53 %). Quality takes 1,312.7 s of the benchmark `shadow` run (84 %).
 
 ## Behavior changes (P7)
 
@@ -403,6 +550,7 @@ Findings of U0.6:
 | Path | Archive location | SHA256SUMS entry | Reason | Step |
 | ---- | ---------------- | ---------------- | ------ | ---- |
 | `runs/upgrade/` (the five U0.6 runs, `u0-benchmark-shadow-interrupted`, measurements, materialized inputs, logs, live configuration, one-off scripts; ignored, not tracked) | `~/Archives/AIMediator/reports/20261104-upgrade-baseline/` | `SHA256SUMS` at the archive root, 5,323 files, 156,944,888 bytes | full runs of the U0.6 reference (P2); the curated report keeps the manifest and summary | U0.6 |
+| `runs/upgrade/` (the four U0.8 sample runs, their measurements and the comparison, the materialized samples and derived inputs, logs, live configuration, doctor output and environment check, one-off scripts; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-baseline-samples/` | `SHA256SUMS` at the archive root, 2,693 files, 74,493,575 bytes | full runs of the U0.8 sample reference (P2); the curated report keeps the manifest and summary | U0.8 |
 
 ## Decisions found during execution
 
@@ -471,6 +619,22 @@ Findings of U0.6:
   add both functions to `measurement` (outside the U0-L boundary).
   Recommendation and action: (a); both functions move into `measurement`
   with tests before U2-L1 (see "Deferred").
+- **D-5 (U0.8) How the sample runs are compared with the U0.6 rows.** The
+  step note asks for a comparison of each sample row with its U0.6 row,
+  where "a difference beyond the intervals is a finding". The sample and
+  the full set hold different comments, and the note does not define the
+  interval. Options: (a) compare twice, with the whole U0.6 run and paired
+  with the U0.6 run restricted to the sample's comments (quality requests
+  are per comment and pair; the batched stages compare over the whole run
+  only), and call a difference beyond the interval when the U0.8 value
+  lies outside the 95 % interval of the U0.6 value (Wilson for
+  proportions, mean ± 1.96 standard errors for per-request means); (b) an
+  interval of the difference (Newcombe for proportions, Welch for means),
+  full set only; (c) paired values only. Recommendation and action: (a),
+  as implemented by the one-off `compare_u0s.py` of the first U0-L2 agent
+  (archived under `provenance/`): it reports every comparison both ways and
+  flags more differences than (b), which suits a step whose flags are
+  findings and not stops. N-class (run output and record only).
 
 ## Escalations
 
@@ -547,6 +711,32 @@ Findings of U0.6:
   the same commit differ by one admitted comment through embedding drift;
   quality takes 40 s per request, twice the archive, because of long
   `llama3.1:latest` outputs.
+- Next: U0-V (verification, fresh session); then U1 (work order U1);
+  blockers: none.
+
+### 2026-11-05 U0-L2 (live)
+
+- Steps: U0.8 done; none started and stashed.
+- State: HEAD is this entry's commit (parent `8255249`); tests 250; lock
+  green; rule check 0. The four sample runs ran at `0abfe02`; the commits
+  since add only the curated report and change the change record.
+- Findings: the first U0-L2 agent checked the environment, materialized
+  the samples and ran the four runs (2026-11-04 23:19 to 2026-11-05 00:19,
+  each `partial`, exit 5, like U0.6), and was stopped after the runs and
+  before it recorded anything; a second agent verified its environment
+  check, inputs and code identity, did not rerun the runs, regenerated
+  every measurement and the comparison, and finished the step. Decision
+  found during execution D-5 (comparison rule); no escalation; nothing
+  adopted or bypassed under the owner's standing instruction. The
+  extraction sample scores higher than the full split (precision 68.2 %
+  against 55.6 %, paired 64.5 %), so the T7 target on the sample is
+  78.2 %; benchmark precision depends on one comment with 1 to 12
+  identical accepted claims; one `generation_failed` comment after
+  `duplicate_claim_loop` on the extraction sample (U0.6: none); smaller
+  extraction batches on the extraction sample; verify, audit and
+  admission differences that follow the claim set and the batch
+  composition. The sample runs took 60 minutes against 114 for the U0.6
+  equivalents.
 - Next: U0-V (verification, fresh session); then U1 (work order U1);
   blockers: none.
 
