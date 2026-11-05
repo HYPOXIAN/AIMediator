@@ -41,7 +41,8 @@ class FakeChat:
         if 'support' in payload['format']['properties']:
             result = {'support': 'supported'}
         else:
-            result = {'assessments': {data['comments'][0]['comment_id']: {'claims': self.claims}}}
+            result = {'assessments': {data['comments'][0]['comment_id']: {'subjects': list(dict.fromkeys(c['character'] for c in self.claims)),
+                                                                   'claims': self.claims}}}
         return {'done': True, 'done_reason': 'stop', 'message': {'content': json.dumps(result)}}
 
     def stage_payloads(self, key):

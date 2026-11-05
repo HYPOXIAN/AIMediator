@@ -90,7 +90,7 @@ class FixtureTransport(Transport):
                     if 'allowed_quality_points' in row:
                         claim['quality_point_ids'] = [point['point_id']]
                     claims.append(claim)
-                assessments[cid] = {'claims': claims}
+                assessments[cid] = {'subjects': list(dict.fromkeys(c['character'] for c in claims)), 'claims': claims}
             result = {'assessments': assessments}
         raw = json.dumps(result,ensure_ascii=False)
         partial_path.parent.mkdir(parents=True,exist_ok=True)
