@@ -161,6 +161,19 @@ near-duplicates), which the demo and the fixture run now include.
   `balance-silver-v1` were labeled by agents from the source text; they
   are not independent human gold. The silver character expectations are
   selected, not exhaustive.
+- **Comments shared between the sets** (U7-V finding V-1, added by
+  fix-up step U7.F1). Each split was run once, in U7.2, but the two sets
+  share 41 comments. 12 of the 30 holdout comments went through earlier
+  runs of the upgrade: 11 as members of the `extraction-precision-v1`
+  development split, 1 as a member of `latency-benchmark-v1`. Those runs
+  scored them against the extraction labels only. 8 test-split comments
+  belong to the `balance-silver-v1` development split and went through
+  relevance (not extraction) in its three development runs. Without these
+  comments the holdout relevance agreement is 16/18 (88.9 %, 67.2–96.9
+  %; both misses remain, and the 11 earlier-run comments with a clear
+  label agree 11/11). The test split gives precision 18/28 (64.3 %,
+  45.8–79.3 %) and recall 18/64 (28.1 %, 18.6–40.1 %). So the overlap
+  does not explain the gap of E-8.
 - **Same-model audit.** The claim audit uses the same hosted model that
   generated the claims; the second audit (UP-D15) was skipped (UP-D20),
   so audit errors are not decorrelated.
