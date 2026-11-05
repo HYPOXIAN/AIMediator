@@ -7,9 +7,11 @@ import copy
 import hashlib
 import json
 from pathlib import Path
+import re
 import unicodedata
 
-from .evidence import character_terms, numeric_tokens
+from .balance_policy import _term_pattern
+from .evidence import character_reference, character_terms, numeric_tokens
 from .resources import asset_path
 from .schema import NULLABLE_NONEMPTY_STRING, STRING, enum, quality_obj, schema_errors
 POLICY_PATH = asset_path('configs/evidence-quality-policy.json')
@@ -53,6 +55,82 @@ def annotation_schema(ids):
             'stance': enum(('explicit_request', 'strength_assessment', 'observation', 'uncertain')),
             'direction': enum(('buff', 'nerf', 'keep', 'unclear')),
             'character_literal': NULLABLE_NONEMPTY_STRING, 'mechanic_literal': NULLABLE_NONEMPTY_STRING})}})
+
+
+LABELS = ('scope', 'content_kind', 'emotional_tone', 'reason_code')
+
+
+def character_literals(text):
+    """Return the character names of the reference as text writes them, by first occurrence (longer first).
+
+    A name is a canonical name, Chinese label or permitted alias of a reference entry; Latin terms match whole
+    words without case, as term_matches does, and the literal is the matched source text.
+    """
+    found = {}
+    for entry in character_reference(text):
+        for term in character_terms(entry):
+            if not term:
+                continue
+            pattern = _term_pattern(term)
+            for match in (pattern or re.compile(re.escape(term))).finditer(text):
+                found.setdefault(match.group(), match.start())
+    return sorted(found, key=lambda literal: (found[literal], -len(literal), literal))
+
+
+def annotation_schema_v2(comment_id, segments, literals):
+    """Return the evidence-quality-v2 response schema of one comment (plan 4.2, ALG-01, ALG-02).
+
+    The model labels the program's clause segments and groups them into points: segment_labels has one
+    required key per segment ID, point segment_ids are limited to those IDs, and character_literal to null
+    and the given literal names. Property order (reaches the decoding grammar): comment_id, segment_labels,
+    information_points; labels scope, content_kind, emotional_tone, reason_code; points as in v1.
+    """
+    ids = [s['segment_id'] for s in segments]
+    return quality_obj({'comment_id': enum([comment_id]),
+        'segment_labels': quality_obj({segment_id: quality_obj({
+            'scope': enum(SCOPES), 'content_kind': enum(KINDS),
+            'emotional_tone': {'type': 'boolean'}, 'reason_code': enum(REASONS)}) for segment_id in ids}),
+        'information_points': {'type': 'array', 'items': quality_obj({
+            'point_id': STRING,
+            'segment_ids': {'type': 'array', 'items': enum(ids), 'minItems': 1, 'uniqueItems': True},
+            'scope': enum(('character_balance', 'system_balance', 'uncertain')),
+            'detail_level': enum(('general', 'concrete', 'uncertain')),
+            'stance': enum(('explicit_request', 'strength_assessment', 'observation', 'uncertain')),
+            'direction': enum(('buff', 'nerf', 'keep', 'unclear')),
+            'character_literal': {'type': ['string', 'null'], 'enum': [None] + list(literals)},
+            'mechanic_literal': NULLABLE_NONEMPTY_STRING})}})
+
+
+def to_v1_annotation(annotation, segments, text):
+    """Return the v1 shape of a schema-valid v2 annotation: one v1 segment per clause, offsets and quotes from the program.
+
+    Points keep their IDs, labels, literals and segment sets; the v1 segment IDs are the clause IDs.
+    """
+    labels = annotation['segment_labels']
+    return {'comment_id': annotation['comment_id'],
+            'segments': [{'segment_id': s['segment_id'], 'evidence_id': s['evidence_id'], 'start': s['start'],
+                          'end': s['end'], 'quote': text[s['start']:s['end']],
+                          **{key: labels[s['segment_id']][key] for key in LABELS}} for s in segments],
+            'information_points': [{key: p[key] for key in ('point_id', 'segment_ids', 'scope', 'detail_level',
+                                    'stance', 'direction', 'character_literal', 'mechanic_literal')}
+                                   for p in annotation['information_points']]}
+
+
+def validate_annotation_v2(annotation, row, segments, units, literals=None):
+    """Return the errors of a v2 annotation: the v2 schema, then the v1 rules on its conversion.
+
+    The v1 rules add duplicate point IDs, point/segment scope and detail conflicts, system points with a
+    character, and both literals inside the selected segments (the mechanic literal is the only literal the
+    schema leaves free). Offsets, quotes and coverage hold by construction. A valid v2 annotation therefore
+    converts into a valid v1 annotation.
+    """
+    text = row['text_original']
+    if literals is None:
+        literals = character_literals(text)
+    errors = schema_errors(annotation, annotation_schema_v2(row['record_id'], segments, literals))
+    if errors:
+        return errors
+    return validate_annotation(to_v1_annotation(annotation, segments, text), row, units)
 
 
 def weight(text):

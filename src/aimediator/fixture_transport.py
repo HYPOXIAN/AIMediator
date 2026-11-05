@@ -3,9 +3,30 @@ import json
 
 import numpy as np
 from .common import read
-from .evidence import character_candidates, character_reference
+from .evidence import character_candidates, character_reference, clause_segments, evidence_units
 from .inference import Transport
 from .resources import anchors, asset_path
+
+LABELS = ('scope', 'content_kind', 'emotional_tone', 'reason_code')
+
+
+def v2_annotation(annotation, text):
+    """Return the evidence-quality-v2 answer of a v1 fixture annotation (plan 4.2, checked in U4.2).
+
+    Each clause segment takes the labels of the v1 segment that holds it; each point keeps its segment set,
+    written as the clause IDs of its v1 segments. Every fixture v1 segment is a union of whole clauses.
+    """
+    clauses = clause_segments(evidence_units(text))
+    labels, members = {}, {}
+    for segment in annotation['segments']:
+        members[segment['segment_id']] = [c['segment_id'] for c in clauses
+                                          if segment['start'] <= c['start'] and c['end'] <= segment['end']]
+        for clause_id in members[segment['segment_id']]:
+            labels[clause_id] = {key: segment[key] for key in LABELS}
+    return {'comment_id': annotation['comment_id'],
+            'segment_labels': {c['segment_id']: labels[c['segment_id']] for c in clauses},
+            'information_points': [{**p, 'segment_ids': [c for s in p['segment_ids'] for c in members[s]]}
+                                   for p in annotation['information_points']]}
 
 
 class FixtureTransport(Transport):
