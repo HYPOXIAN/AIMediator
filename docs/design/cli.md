@@ -545,8 +545,15 @@ every path keeps the exception type it raises.
   `previous_attempt_errors`: at most 20 errors, each cut to 300
   characters, or the single entry `transport failure`, so that no remote
   text reaches the model; `source`, `quality_contract` and `attempt` stay
-  in the context (step U2.2, UP-D04); `data` itself for every other
-  stage; pipeline upgrade step U2.1, LNK-01), `MODEL_VISIBLE` (per stage, the sets
+  in the context (step U2.2, UP-D04); for `extract` the units with
+  `evidence_id` and `text` only, the allowed quality points with
+  `point_id`, `evidence_ids`, `quotes` (from the selected segments),
+  `scope`, `detail_level`, `stance`, `direction`, `character_literal` and
+  `mechanic_literal`, and the reference entries with a candidate in a
+  comment of the batch (found in its joined unit texts, as `schema_for`
+  finds the allowed characters), while `schema_for`, `ground_claim` and
+  `bind_claim` read the full context (step U2.3, UP-D05); `data` itself for
+  every other stage; pipeline upgrade step U2.1, LNK-01), `MODEL_VISIBLE` (per stage, the sets
   `top` and `comments` of the keys a view may hold at its top level and in
   its `comments[]` entries), `options(stage, quality_policy)`
   (`temperature` 0, `seed` 42, `num_ctx` 8192, `num_predict` 4096 for
@@ -652,7 +659,8 @@ every path keeps the exception type it raises.
   allowed_points=None)` sends one extraction request whose data holds
   `comments` (one entry with `comment_id`, `units`, then
   `allowed_quality_points` when given) and then
-  `character_normalization_reference`.
+  `character_normalization_reference`; the model sees its extraction view
+  (step U2.3).
   `audit(runner, model, language, row, claims, characters, *,
   quality_record=None)` grounds each claim, binds it when a quality record
   is given, sends the `verify` request only when no error remains, and

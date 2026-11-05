@@ -8,8 +8,8 @@ import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
-from support import case
-from aimediator import stages
+from support import case, qualified
+from aimediator import evidence_quality, stages
 from aimediator.common import canonical, read, sha
 from aimediator.config import defaults
 from aimediator.demo import demo
@@ -156,6 +156,45 @@ class QualityView(unittest.TestCase):
             for (_, attempt), (entry, message) in requests.items():
                 self.assertFalse({'source', 'quality_contract', 'attempt'} & set(message))
                 self.assertEqual('previous_attempt_errors' in message, attempt == 2)
+
+
+class ExtractView(unittest.TestCase):
+    """Plan 4.1, UP-D05: units without offsets, candidate references only, trimmed quality points."""
+
+    def test_extract_view_of_a_batch(self):
+        rows = [case('numeric_request')['source'], case('negation', 'zh')['source'], case('venting')['source']]
+        record = qualified(case('numeric_request'))
+        comments = [{'comment_id': r['record_id'], 'units': evidence_units(r['text_original'])} for r in rows]
+        comments[0]['allowed_quality_points'] = evidence_quality.allowed_points(record)
+        text = '\n'.join(r['text_original'] for r in rows)
+        data = {'comments': comments, 'character_normalization_reference': character_reference(text)}
+        ids = [r['record_id'] for r in rows]
+        visible = stages.view('extract', data, ids)
+        self.assertEqual(list(visible), ['comments', 'character_normalization_reference'])
+        for row, entry in zip(rows, visible['comments']):
+            self.assertEqual(entry['units'], [{'evidence_id': u['evidence_id'], 'text': u['text']}
+                                              for u in evidence_units(row['text_original'])])
+        [point] = visible['comments'][0]['allowed_quality_points']
+        [routed] = evidence_quality.allowed_points(record)
+        self.assertEqual(point, {'point_id': routed['point_id'],
+            'evidence_ids': list(dict.fromkeys(s['evidence_id'] for s in routed['segments'])),
+            'quotes': [s['quote'] for s in routed['segments']],
+            **{k: routed['point'][k] for k in ('scope', 'detail_level', 'stance', 'direction',
+                                                'character_literal', 'mechanic_literal')}})
+        self.assertNotIn('allowed_quality_points', visible['comments'][1])
+        reference = data['character_normalization_reference']
+        names = {n for c in comments for n in character_candidates('\n'.join(u['text'] for u in c['units']), reference)}
+        self.assertEqual(visible['character_normalization_reference'],
+                         [e for e in reference if e['canonical_name'] in names])
+        self.assertLess(len(visible['character_normalization_reference']), len(reference))
+        # Every character the schema allows has its reference entry in the view.
+        schema = stages.schema_for('extract', ids, data)['properties']['assessments']['properties']
+        for identity in ids:
+            character = schema[identity]['properties']['claims']['items']['properties']['character']
+            self.assertLessEqual(set(character.get('enum', [])), names)
+        # The context is unchanged, so schema and gates read the offsets and full points.
+        self.assertIn('start', data['comments'][0]['units'][0])
+        self.assertIn('segments', data['comments'][0]['allowed_quality_points'][0])
 
 
 class RunnerContext(unittest.TestCase):

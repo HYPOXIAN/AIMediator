@@ -94,10 +94,13 @@ def exact_coverage(rows: list[dict[str, Any]], key: str, expected: list[str]) ->
 def view(stage: str, data: dict[str, Any], ids: list[str]) -> dict[str, Any]:
     """Return the model-visible view of the request data of a stage (keys in MODEL_VISIBLE); data stays the context.
 
-    The audit view for verify; the quality view (plan 4.1, UP-D04) for quality; data itself otherwise.
+    The audit view for verify; the quality view (plan 4.1, UP-D04) for quality; the extraction view
+    (plan 4.1, UP-D05) for extract; data itself otherwise.
     """
     if stage == 'quality':
         return _quality_view(data)
+    if stage == 'extract':
+        return _extract_view(data)
     if stage != 'verify':
         return data
     entry = data['claims'][0]
@@ -145,6 +148,34 @@ def _quality_view(data: dict[str, Any]) -> dict[str, Any]:
         result['previous_attempt_errors'] = (['transport failure'] if previous['transport_failure']
                                              else [str(error)[:300] for error in previous['errors'][:20]])
     return result
+
+
+def _extract_view(data: dict[str, Any]) -> dict[str, Any]:
+    """Return units without offsets, trimmed allowed quality points and the reference entries of the batch's candidates.
+
+    The candidates of a comment are found in its joined unit texts, as schema_for finds its allowed characters.
+    """
+    reference = data['character_normalization_reference']
+    candidates, comments = set(), []
+    for comment in data['comments']:
+        candidates.update(character_candidates('\n'.join(u['text'] for u in comment['units']), reference))
+        entry = {'comment_id': comment['comment_id'],
+                 'units': [{'evidence_id': u['evidence_id'], 'text': u['text']} for u in comment['units']]}
+        if 'allowed_quality_points' in comment:
+            entry['allowed_quality_points'] = [_allowed_point(r) for r in comment['allowed_quality_points']]
+        comments.append(entry)
+    return {'comments': comments,
+            'character_normalization_reference': [e for e in reference if e['canonical_name'] in candidates]}
+
+
+def _allowed_point(routed: dict[str, Any]) -> dict[str, Any]:
+    """Return the model-visible fields of a mechanism-evidence routing entry; quotes come from its selected segments."""
+    point = routed['point']
+    return {'point_id': routed['point_id'],
+            'evidence_ids': list(dict.fromkeys(s['evidence_id'] for s in routed['segments'])),
+            'quotes': [s['quote'] for s in routed['segments']],
+            **{key: point[key] for key in ('scope', 'detail_level', 'stance', 'direction',
+                                           'character_literal', 'mechanic_literal')}}
 
 
 def options(stage: str, quality_policy: dict[str, Any] | None) -> dict[str, Any]:

@@ -4,7 +4,7 @@ from .evidence_quality import bind_claim
 
 
 def extract(runner, model, language, row, *, allowed_points=None):
-    """Send the extraction request for one source row and return (parsed, meta) from the runner."""
+    """Send the extraction request for one source row and return (parsed, meta); the model sees its extraction view."""
     text = row['text_original']
     comment = {'comment_id': row['record_id'], 'units': evidence_units(text)}
     if allowed_points is not None:

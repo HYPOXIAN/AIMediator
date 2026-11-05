@@ -31,7 +31,7 @@ def proposal(qualification=None):
 class View(unittest.TestCase):
     def test_returns_data_itself_for_the_stages_without_a_view(self):
         data = {'comments': [{'comment_id': 'a', 'units': []}]}
-        for stage in ('relevance', 'retrieval_review', 'extract'):
+        for stage in ('relevance', 'retrieval_review'):
             self.assertIs(stages.view(stage, data, ['a']), data)
 
     def test_builds_the_verify_audit_view(self):

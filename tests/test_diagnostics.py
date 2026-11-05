@@ -7,10 +7,10 @@ import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
-from aimediator import diagnostics
+from aimediator import diagnostics, evidence_quality
 from aimediator.evidence import character_reference, evidence_units, ground_claim
 from aimediator.runner import Runner
-from aimediator.stages import schema_for
+from aimediator.stages import schema_for, view
 from support import case, qualified
 
 PROMPTS = {'extract': {'en': 'fixture extract prompt'}, 'verify': {'en': 'fixture verify prompt'}}
@@ -55,20 +55,28 @@ class DiagnosticsTests(unittest.TestCase):
         return Runner('http://fixture.invalid', Path(folder.name), prompts, chat_transport=chat)
 
     def test_extract_sends_the_scripts_request_data(self):
-        allowed = [{'point_id': 'P1'}]
+        allowed = evidence_quality.allowed_points(qualified(case('numeric_request')))
         for allowed_points in (None, allowed):
             chat = FakeChat([numeric_claim()])
             parsed, meta = diagnostics.extract(self.runner(chat), 'fixture-model', 'en', ROW,
                                                allowed_points=allowed_points)
-            # The data the live scripts built inline, in their key order.
+            # The data the live scripts built inline, in their key order; the model sees its
+            # extraction view (pipeline upgrade step U2.3) and the schema the full data gives.
             comment = {'comment_id': 'fixture:1', 'units': evidence_units(TEXT)}
             if allowed_points is not None:
                 comment['allowed_quality_points'] = allowed_points
             data = {'comments': [comment], 'character_normalization_reference': character_reference(TEXT)}
-            expected = json.dumps({**data, 'response_schema': schema_for('extract', ['fixture:1'], data)},
+            visible = view('extract', data, ['fixture:1'])
+            expected = json.dumps({**visible, 'response_schema': schema_for('extract', ['fixture:1'], data)},
                                   ensure_ascii=False)
             [payload] = chat.payloads
             self.assertEqual(payload['messages'][1]['content'], expected)
+            self.assertEqual(visible['comments'][0]['units'], [{'evidence_id': 'E1', 'text': TEXT}])
+            self.assertEqual([e['canonical_name'] for e in visible['character_normalization_reference']], ['Ryu'])
+            if allowed_points is not None:
+                self.assertEqual(list(visible['comments'][0]['allowed_quality_points'][0]),
+                                 ['point_id', 'evidence_ids', 'quotes', 'scope', 'detail_level', 'stance',
+                                  'direction', 'character_literal', 'mechanic_literal'])
             self.assertEqual(payload['messages'][0]['content'], 'fixture extract prompt')
             self.assertEqual(sorted(meta), ['elapsed_seconds', 'errors', 'request_id'])
             if allowed_points is None:
