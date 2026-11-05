@@ -4,6 +4,7 @@
 - Status: Active
 - Updated: 2026-11-04
 - Applies to: commit `7282f49` and later; `RULES.md` v1.2 and later amendments
+- Final 2026-11-04 (tag `restructure-done`); frozen from then on (D3).
 
 The single change record of the code restructuring
 ([plan](../archive/code-restructuring.md)). Every step adds its row to the
@@ -85,7 +86,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | B7.2 | done | 241 | green | S-03: `common`, `resources`, `schema`, `evidence`, `stages`, `runner`, `retrieval`, `pipeline` and `run_store` have `from __future__ import annotations` right after the module docstring (`common` had it already). Every module-level function and every `Runner` method has parameter and return hints, the few private helpers included, and every public function and the classes `Failure` and `Runner` have a one-line docstring: 39 added (27 to 66), existing ones unchanged. Hint style as in `common`: built-in generics, PEP 604 unions with `None`, and `Any`, `Callable`, `Iterable` and `Iterator` from `typing`; under the future import no annotation is evaluated at runtime, so Python 3.9 is unaffected. Added imports: only `__future__`, `typing` and, in `runner` and `retrieval`, `pathlib.Path`. Checks besides the suite and the lock (`465 keys, 0 differ`): with annotations, docstrings and imports removed, each module's AST equals HEAD's; every tracked `.py` file under `src/`, `scripts/` and `tests/` parses with `feature_version=(3, 9)`; `typing.get_type_hints` resolves all 69 annotated functions; the nine modules import under Python 3.10 (the oldest local interpreter, NumPy stubbed). Blueprint 7.3: nothing over 60 lines in `pipeline`, `runner`, `stages`, `evidence` or `retrieval` (longest `evidence.ground_claim`, 55) |
 | B7.3 | done | 241 | green | Documents describe the code at HEAD (D9). `docs/design/cli.md` section 5: the "Target structure" block is replaced by the actual layout, grouped by the blueprint 3.1 layers; a paragraph on the layering that `tests/test_module_layers.py` enforces, with a link to ADR 0002; one on the research commands and the script layout; the module contracts of blueprint 3.3, each checked against the code and kept only where it still holds (P6 merge); condensed, the frozen request construction and artifact write order of blueprint 3.4 and 3.5, which blueprint 9 counts among the section 3 contracts; and a dated paragraph on the difference from the original target. That paragraph names more than the work order lists, because the target also lacked `schema` (it put schemas in `evidence`) and the modules the CLI implementation had added before the restructuring (`common`, `legacy_review`, `quality_scoring`, `glossary_vectors`, `presentation`, `engine`), and it stored the glossary at the asset root. Blueprint 3.1 places `design_briefs`, `diagnostics` and `collection.*` outside run identities, but only `collection/` is: `run_store.code_manifest` and the legacy `shared_code_sha256` and `code-snapshot/` cover every top-level module (as E-5 found), and section 5 states that. Section 2 gains a dated note that `prepare_balance_design.py` calls `aimediator.design_briefs`. `docs/plans/cli-implementation-status.md` ("Layout decisions"): a dated note on the split and a link to section 5. `README.md`: the intro says the CLI runs the analysis pipeline in-process instead of "the existing Python engine"; in "Layout", `src/aimediator/` is the package and `scripts/` has no files at its top level, and a bullet links section 5 and says the rule check runs without the package. Register: a B7.3 change-log line (1 symlink, no forwarding script, checked against the tree), and the link's "Used by" cell adds `README.md` and ADR 0002. Index: the rows of `cli.md` and the register. Checks: a scratch script finds every module of `ls src/aimediator` in the section 5 block and none extra, and no import edge of `test_module_layers.package_imports()` points to a higher layer |
 | B7.4 | done | 241 | green | CR-D10: `RULES.md` v1.4 in the work order's draft wording, effective 2026-11-04, which the owner confirms at the final review. The version line reads 1.4; P4's second bullet reads "baseline count (241 on 2026-11-04;", where 241 is the test count after B7.2 (unchanged by B7.3, a documents-only step), and keeps the words `check_rules.py` reads; the revision log gains the v1.4 entry; `CLAUDE.md` names v1.4. `check_rules.recorded_baseline` now returns 241 and `count_tests` 241, so the floor equals the suite; rule check 0. The other mentions of v1.3 are in the restructuring's plan documents, the revision log and ADR 0002, a decision frozen once final (D3), so they stay. No test changes: the P4 test of the rule check writes its own `RULES.md` in a temporary root |
-| B7.5 | item 1 done | 241 | green | Item 1: every gate (plan 8.1), the wheel acceptance (8.2), the foreign directory check (8.5), the timings (8.4), the greps (8.7) and the function-length metric (blueprint 7.3) were run at `05812d0`; the results are under "Batch results", "Acceptance (B7.5, item 1)", with the blueprint section 2 metrics and their achieved values. Every metric meets its target. B7-V sets `restructure-b7-review`; items 2 and 3 (archive the plan documents, freeze this record, tag `restructure-done`) follow the owner's final review, in session B7-3 |
+| B7.5 | done | 241 | green | Item 1: every gate (plan 8.1), the wheel acceptance (8.2), the foreign directory check (8.5), the timings (8.4), the greps (8.7) and the function-length metric (blueprint 7.3) were run at `05812d0`; the results are under "Batch results", "Acceptance (B7.5, item 1)", with the blueprint section 2 metrics and their achieved values. Every metric meets its target. B7-V sets `restructure-b7-review`; items 2 and 3 (archive the plan documents, freeze this record, tag `restructure-done`) follow the owner's final review, in session B7-3. Done by B7-3 on 2026-11-04: the owner's review recorded (`990b0fa`), the planning documents archived (`43b418d`), this record finalized, tag `restructure-done` |
 
 ## Baseline measurements (B0.4)
 
@@ -2656,6 +2657,23 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
 - Next: the owner's final review, then session B7-3 (closure); blockers:
   the owner's review.
 
+### 2026-11-04 B7-3 (closure)
+
+- Steps: B7.5, items 2 and 3; none started and stashed.
+- State: HEAD is this entry's commit (parent `43b418d`), tagged
+  `restructure-done`; tests 241; lock green (`465 keys, 0 differ`),
+  fixture unchanged since `e41aaec`; rule check 0.
+- Findings: the owner closed the restructuring with no review item
+  rejected (see "2026-11-04 B7 owner review"), so there are no fix-up steps
+  and no escalations. One commit that is not restructuring work,
+  `67f6876` (the pipeline upgrade documents), lies between
+  `restructure-b7-review` and this closure. The closure commits are
+  `990b0fa` (review), `43b418d` (archive) and this one. The two open items
+  B2-1 and B5-3 go to the pipeline upgrade plan (see "Deferred").
+- Next: none; the restructuring is finished. The pipeline upgrade
+  (`docs/plans/pipeline-upgrade.md`) starts from `restructure-done` with
+  batch U0; blockers: its owner decisions UP-D01 and UP-D02.
+
 ## Batch results
 
 ### Acceptance (B7.5, item 1)
@@ -2716,4 +2734,35 @@ The other results of B7.5, item 1:
   lines), `experiments/` 13 (1,276) and `maintenance/` 3 (1,110); the two
   slowest tests are the lock (3.7 s) and the presentation demo test (1.1 s).
 
+### Closure (B7.5, items 2 and 3)
+
+Done on 2026-11-04 by the closure session B7-3, after the owner's final
+review ("2026-11-04 B7 owner review", `990b0fa`).
+
+- Item 2 (`43b418d`): `git mv` of `docs/plans/code-restructuring.md`,
+  `docs/plans/code-restructuring-blueprint.md` and
+  `docs/plans/code-restructuring-handoffs/` (eight work orders) to
+  `docs/archive/`, names kept, each with Status Archived and the line
+  "Archived 2026-11-04 when the code restructuring was completed (tag
+  `restructure-done`)." The plan's link to the implementation status, the
+  index rows (now under Archive), this record's links, the pipeline upgrade
+  plan's link and the docstring of `tests/behavior_lock.py` follow the move;
+  `CLAUDE.md` names the archived plan and this record. The rule check
+  reports 0 after the move.
+- Item 3 (this commit): this record is final; from now on only its header
+  may change (D3). Tag `restructure-done` is set on this commit.
+- Final state: 241 offline tests pass (the P4 floor of `RULES.md` v1.4);
+  the behavior lock is green with 465 keys; the rule check reports 0; the
+  acceptance table above is unchanged since `8d892c6`.
+
 ## Deferred
+
+Not work of this plan; carried into the pipeline upgrade plan
+(`docs/plans/pipeline-upgrade.md`, commit `67f6876`):
+
+- B2-1: `scripts/experiments/replay_balance_admission.py` builds its
+  `Runner` without `quality_identity`, so it cannot replay runs made with
+  one. Pipeline upgrade step U1.6 (finding LNK-05).
+- B5-3: `run_store.state` still lists the request directories on every
+  call, which dominates resume and replay. Pipeline upgrade step U1.1
+  (finding LAT-05).
