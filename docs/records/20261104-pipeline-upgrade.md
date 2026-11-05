@@ -130,6 +130,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | U5.F2 | B | done | 333 | updated by UP-D11 | Fix-up step of the U5 review (E-5 option (a)), adopted under the owner's standing instruction and the owner authorization of 2026-11-05 03:11 and executed by the verification session U2-V to U6-V after U5.F1. `git revert` of U5.2 (`30d41be`): each comment's extraction schema is `{claims}` again (no `subjects`), `FixtureTransport` no longer fills `subjects`, the source-binding error `Claim character not declared as subject` is gone, and the prompt pair `summarize-balance.{en,zh}` returns to its U5.1 text. Conflict in `pipeline.extract_claims`: U6.1's `target_reference` lines sit next to the U5.2 gate. The resolution keeps U6.1's lines and removes only the gate and its `subjects` set. This record kept HEAD's version, and the lock was regenerated. `tests/test_subjects.py` (+6 in U5.2) is removed with the step, and the five test files that U5.2 edited return to their earlier assertions, so the count falls from 339 to 333 (above the P4 floor of 241); the file is archived. The lock changes in exactly the 50 keys of U5.2 (780 keys); the 26 `off` request keys now equal those of U5.1 (`e64701d`). Rule check 0 |
 | U5.F3 | N | done | 333 | green | Documentation fix-up of the U5 review (E-6) after U5.F1 and U5.F2, executed by the verification session U2-V to U6-V. The U5.4 text on U5.2 and U5.3 is replaced. In balance-analysis.md the prompt entry now says that the `subjects` definition and the authored examples were reverted, which also removes the last reference to the archived `tests/test_prompt_examples.py`, and the model-boundary paragraph says again that each value holds only a claims array, with one sentence on the revert. In design/cli.md section 5, `stages` gives each comment's schema as `{claims}`, with one sentence on the revert. The U5.1 text (evidence-first order, `claim_key`) stays. Lock unchanged |
 | U7.1 | L | done | 333 | green | UP-D18, UP-D19, UP-D20, D-16. Session U7-L: `u7-benchmark-off` and `u7-benchmark-enforce` on the `latency-benchmark` sample (30) at `b73f0e9` (tag `upgrade-u6`) through bridge `openrouter-bridge-2` with `max_parallel_requests` 2 and a new empty cache per run (D-16, adopted); identity check passed; coverage complete (30 of 30, both runs); off against U2-L0: accepted positions equal on all 30 comments, extraction −31.4 % prompt tokens, 0 against 0 technical failure units; enforce against U2-L0 `shadow`: 2 against 3 quality-failed comments, quality −44.5 % prompt tokens, first-attempt validity 21/24 against 23/26, no formal claim (only 1 comment routed to mechanism evidence); E-7 (failures and pending units) adopted (a). See "U7-L"; report `reports/20261105-upgrade-acceptance/`; spend 0.0114 USD for the two runs |
+| U7.2 | L | done | 333 | green | UP-D18, UP-D19, UP-D20, D-16; rule 1.11. Session U7-L: `u7-silver-holdout-off` (`balance-silver-v1` holdout, 30) and `u7-extraction-test-off` (`extraction-precision-v1` test split, 74), each run once, in `off`, at `b73f0e9` with the U7.1 configuration; identity checks passed; coverage complete. Holdout relevance agreement 27/29 (93.1 %; development U2-L1 64/69); selected character expectations 5/7 (the 2 misses are the source literal `source:Arjun`). Test split: precision of accepted claims 19/32 (59.4 %), recall 19/71 (26.8 %), audit rejection 50.7 %, against 75.3 %, 47.2 % and 33.6 % in development (U5-L1); E-8 (much worse than development) recorded, not tuned, (a) adopted. See "U7-L"; spend 0.0182 USD for the two runs |
 
 ## Baseline measurements (U0.4)
 
@@ -428,6 +429,8 @@ runs (U7.1 and U7.2):
 | U4-L2 (`u4f1-quality-synthetic-shadow`) | `385f744` | `upgrade-samples-v1/quality-synthetic` (19) | `shadow`, `--stop-after quality` | 108.7 s | quality 2,971 (1,978) | quality 307 | 2 quality requests with validation errors; 0 transport; 1 quality-failed comment; 2 pending | — | — | first attempt 15/16 (93.8 %, Wilson 71.7–98.9 %); 17 attempts; route agreement 14/16 (87.5 %), English 7/7, Chinese 7/9 | rule 4 holds against U2-L1 |
 | U7-L (`u7-benchmark-off`) | `b73f0e9` | `upgrade-samples-v1/latency-benchmark` (30) | `off`, N 2, fresh cache | 43.9 s | relevance 1,474 (1,154); retrieval_review 1,353 (1,046); extract 2,788 (2,642); verify 750 (517) | relevance 15; retrieval_review 14; extract 189; verify 7 | 0 requests with errors; 0 transport; 0 generation-failed comments; 3 pending | 11 / 8 (0 quarantined; 3 of 11 audited rejected, 27.3 %) | 4/6 (66.7 %) / 4/10 (40.0 %), the 11 scored sample comments of the development split | — | acceptance (U7.1) |
 | U7-L (`u7-benchmark-enforce`) | `b73f0e9` | `upgrade-samples-v1/latency-benchmark` (30) | `enforce`, N 2, fresh cache | 155.9 s | relevance 1,539 (149); retrieval_review 1,353 (687); quality 1,926 (1,263); extract 1,589 (1,077), 1 request | relevance 16; retrieval_review 14; quality 667; extract 29 | 5 quality requests with validation errors; 0 transport; 2 quality-failed comments; 0 generation-failed comments; 3 pending | 0 / 0 (one comment reaches extraction, `no_supported_character_claim`) | — / 0/10 (0.0 %), same 11 comments | first attempt 21/24 (87.5 %, Wilson 69.0–95.7 %); 27 attempts | acceptance (U7.1) |
+| U7-L (`u7-silver-holdout-off`) | `b73f0e9` | `balance-silver-v1` holdout (30) | `off`, N 2, fresh cache | 37.3 s | relevance 1,543 (1,095); retrieval_review 1,696 (1,491); extract 3,023 (2,584); verify 742 (520) | relevance 16; retrieval_review 16; extract 235; verify 7 | 0 requests with errors; 0 transport; 0 generation-failed comments; 1 pending | 15 / 9 (0 quarantined; 6 of 15 audited rejected, 40.0 %) | relevance agreement 27/29 (93.1 %, Wilson 78.0–98.1 %): 25 TP, 2 TN, 2 FN, 0 FP; 1 uncertain excluded; selected character expectations found 5/7 | — | acceptance (U7.2, holdout, once) |
+| U7-L (`u7-extraction-test-off`) | `b73f0e9` | `extraction-precision-v1` test (74) | `off`, N 2, fresh cache | 124.8 s | relevance 1,885 (1,360); retrieval_review 2,296 (1,784); extract 3,189 (2,703); verify 822 (536) | relevance 16; retrieval_review 16; extract 361; verify 7 | 0 requests with errors; 0 transport; 0 generation-failed comments; 2 pending | 70 / 34 (1 quarantined; 35 of 69 audited rejected, 50.7 %) | accepted 19/32 (59.4 %, Wilson 42.3–74.5 %) / 19/71 (26.8 %, Wilson 17.9–38.1 %); generated 41/68 (60.3 %); recall over admitted 19/71; 72 scored comments (2 uncertain) | — | acceptance (U7.2, test split, once) |
 
 Rows of U0.6 (2026-11-04, session U0-L): the five reference runs of plan
 7 U0.6, environment and configuration as in the section above. Token
@@ -1315,6 +1318,43 @@ fresh request, uncached in parentheses):
 - E-7 records the technical failures and pending units that the runs
   leave (work order section 6, first trigger).
 
+**U7.2.** The `balance-silver-v1` holdout and the
+`extraction-precision-v1` test split, each run once, in `off`; neither
+appears in an earlier run directory or entry of this record (inputs
+materialized in this session, SHA-256 `e4a8c600...` and `ac6747f8...`).
+Coverage is complete in both (30 of 30, 74 of 74).
+
+- **Holdout, relevance**: agreement 27/29 (93.1 %, Wilson 78.0–98.1 %;
+  English 15/15, Chinese 12/14), 25 TP, 2 TN, 2 FN, 0 FP, 1 uncertain
+  label excluded; the two misses are related comments kept out
+  (`steam:237438503`, `youtube:UgyFLymm__gPy5y-V4V4AaABAg`). Development
+  rows: U2-L1, the adopted relevance request (U2.4), 64/69 (92.8 %);
+  U2-L0 63/69 (91.3 %). No sign of overfitting.
+- **Holdout, character expectations** (the selected clear
+  expectations of 7 comments; not exhaustive, so recall only): found by
+  accepted claims 5/7 (71.4 %, Wilson 35.9–91.8 %), English 2/2, Chinese
+  3/5. The two misses are `source:Arjun` nerf expectations, a source
+  literal that is not a roster identity (the set's `identity_policy`), so
+  the pipeline cannot claim it by design; every roster expectation is
+  found. No development reference exists: the development runs stop
+  after relevance.
+- **Test split, positions**: 72 of 74 comments scored (2 uncertain), 70
+  admitted. Precision of accepted claims 19/32 (59.4 %, Wilson
+  42.3–74.5 %), recall 19/71 (26.8 %, Wilson 17.9–38.1 %), audit
+  rejection 35/69 (50.7 %). Against the last accepted development run
+  (`u5l1-extraction-development-off`, the extraction request of the
+  adopted configuration; different comments, unpaired): precision −15.9
+  points (Newcombe −35.0 to +2.5), recall −20.4 points (−32.9 to −6.2),
+  audit rejection 50.7 % against 33.6 %. Against U6-L −15.6 and −18.8
+  points, against the U2-L0 reference −16.9 and −22.0 points (−34.5 to
+  −7.8). By language: English precision 10/12 and recall 10/17 (U5-L1
+  development 30/33 and 30/46); Chinese 9/20 and 9/54 (28/44 and 28/77).
+  The loss is mostly Chinese. The test split holds 54 of its 71
+  positions in Chinese (76 %, development 67 %), and 6 of its 43 Chinese
+  comments are labeled without a position (development 16 of 121).
+- **E-8**: the test split is much worse than the development results
+  (work order section 6, second trigger). Recorded, not tuned.
+
 ## Behavior changes (P7)
 
 | Step | Decision | Asset or request part | Old SHA-256 | New SHA-256 | Lock paths |
@@ -1919,6 +1959,26 @@ fresh request, uncached in parentheses):
   which U7 may not make (work order section 3). Recommendation: (a).
   Adopted under the owner authorization of 2026-11-05 03:11; the items
   are under "Deferred". Blocked: nothing.
+
+- **E-8 (U7.2) The test split scores much lower than development.**
+  Raised on 2026-11-05 by session U7-L (work order section 6, second
+  trigger). Recall of the `extraction-precision-v1` test split is 26.8 %
+  against 47.2 % in the last accepted development run (−20.4 points,
+  Newcombe −32.9 to −6.2), precision 59.4 % against 75.3 % (−15.9,
+  −35.0 to +2.5), mostly in Chinese. The holdout relevance agreement does
+  not fall (93.1 % against 92.8 %). Options: (a) record it as the
+  measured limit of the adopted configuration, without tuning, and name
+  it in the validation record and the final acceptance; (b) tune the
+  extraction prompts against the test split, which rule 1.11 forbids;
+  (c) rerun the pre-upgrade code on the test split to separate split
+  difficulty from overfitting, which a second test run forbids (rule
+  1.11). The development reference itself is the U2-L0 code, 22.0 points
+  above the test recall, and the prompt additions of U4.F1, U5.2 and
+  U5.3 were reverted; so the gap reads more as a harder, more Chinese
+  split than as overfitting, but one run cannot show it.
+  Recommendation: (a), with a fresh labeled set for a later plan.
+  Adopted under the owner authorization of 2026-11-05 03:11. Blocked:
+  nothing.
 
 ## Verification notes
 
