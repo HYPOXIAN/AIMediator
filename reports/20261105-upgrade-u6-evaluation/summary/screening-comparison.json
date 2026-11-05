@@ -1,0 +1,703 @@
+{
+ "step": "U6.4",
+ "decision": "UP-D13",
+ "method": "coarse-v1 (a copy of the module before U6.4) and coarse-v2 classify_rules on every raw record of each dataset (load_sources over the dataset directory: all input views joined by record ID), offline; boundary overrides not applied, so the comparison is of the rules. Two passes: the generator as the work order states it, then with the reviewed exclusions of configs/feedback-screening-terms.json (the committed state)",
+ "first_pass": {
+  "generator": "Chinese labels and every Chinese alias of character entries; canonical names, Chinese labels and unflagged aliases of system and mechanic entries; the supplemental terms",
+  "datasets": {
+   "20261027-balanced": {
+    "records": 6376,
+    "changed_decisions": 264,
+    "share_percent": 4.14,
+    "transitions": {
+     "exclude->keep": 56,
+     "exclude->review": 207,
+     "review->keep": 1
+    },
+    "counts_v1": {
+     "exclude": 5550,
+     "keep": 624,
+     "review": 202
+    },
+    "counts_v2": {
+     "exclude": 5287,
+     "keep": 681,
+     "review": 408
+    },
+    "changed_reasons_or_signals_only": 53
+   },
+   "20261015-expanded": {
+    "records": 3752,
+    "changed_decisions": 150,
+    "share_percent": 4.0,
+    "transitions": {
+     "exclude->keep": 35,
+     "exclude->review": 114,
+     "review->keep": 1
+    },
+    "counts_v1": {
+     "exclude": 3359,
+     "keep": 290,
+     "review": 103
+    },
+    "counts_v2": {
+     "exclude": 3210,
+     "keep": 326,
+     "review": 216
+    },
+    "changed_reasons_or_signals_only": 29
+   }
+  },
+  "drivers": "the glossary system entries of the control types (Modern, 现代, 现代模式, Modern Controls, Classic, Classic Controls, 经典) and the unflagged alias PC of Punish Counter account for most new mechanic matches; a few changes come from DI, DR, SA, CH, Hitbox, 启动 and new Chinese character aliases",
+  "agent_review": {
+   "reviewer": "session U6 (agent), from the source text",
+   "sample": "40 changed records, the first by SHA-256 of \"u6.4-review:<record_id>\" over both datasets",
+   "labels": "better: coarse-v2 is closer to the screening scope (Modern/Classic competitive fairness and balance claims are kept or reviewed); worse: the record is no balance claim and moves into review or keep; neutral: both acceptable",
+   "counts": {
+    "worse": 26,
+    "better": 11,
+    "neutral": 3
+   },
+   "records": [
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:224562649",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "Modern as a beginner option, no balance claim"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:215023420",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "\"modern audiences\", not the control type"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:229344803",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "praise of Modern controls"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:232000669",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "better",
+     "note": "asks to separate Classic and Modern matchmaking (control fairness)"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:217593739",
+     "coarse_v1": "exclude",
+     "coarse_v2": "keep",
+     "reason_v2": "competitive_mechanic_with_claim",
+     "label": "worse",
+     "note": "teabagging anecdote, no balance claim"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "youtube:UgxiPOer75zb8IjVRPt4AaABAg",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "\"pc\" is the platform, not Punish Counter"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:218952122",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "Modern as a beginner option"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:228290910",
+     "coarse_v1": "exclude",
+     "coarse_v2": "keep",
+     "reason_v2": "competitive_mechanic_with_claim",
+     "label": "better",
+     "note": "Classic player beaten by Modern combo spam (control fairness)"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:237554554",
+     "coarse_v1": "exclude",
+     "coarse_v2": "keep",
+     "reason_v2": "competitive_mechanic_with_claim",
+     "label": "better",
+     "note": "wants to opt out of Modern opponents (control fairness)"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:226115728",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "\"classic\" as an adjective"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:227347945",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "\"modern fighters\" as an adjective"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:234055135",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "praise of Modern mode"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:237556145",
+     "coarse_v1": "exclude",
+     "coarse_v2": "keep",
+     "reason_v2": "competitive_mechanic_with_claim",
+     "label": "better",
+     "note": "complaint about Modern mode"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:235103568",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "praise of Modern mode"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:231880550",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "better",
+     "note": "abusive complaint aimed at Modern players"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:225838746",
+     "coarse_v1": "exclude",
+     "coarse_v2": "keep",
+     "reason_v2": "competitive_mechanic_with_claim",
+     "label": "better",
+     "note": "losing to Modern players (control fairness)"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:230169033",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "better",
+     "note": "prices, then stomped by Modern controls"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:233497546",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "character_complaint_without_clear_reason",
+     "label": "worse",
+     "note": "server disconnects; a new Chinese name alias raised it to review"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:228594864",
+     "coarse_v1": "exclude",
+     "coarse_v2": "keep",
+     "reason_v2": "competitive_mechanic_with_claim",
+     "label": "worse",
+     "note": "Modern controls help newcomers"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:234503737",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "better",
+     "note": "hostile to Modern players"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:230340565",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "neutral",
+     "note": "dislikes the Modern setting"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:217159455",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "better",
+     "note": "Modern Zangief as the answer to Bison (strength)"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:221977183",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "general praise"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "youtube:Ugz8VS9nwQzKrJr3WoV4AaABAg",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "\"Xbox Classic\""
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:219303753",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "general praise (Vietnamese)"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:227284592",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "Modern controls for accessibility"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:233774391",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "\"classic fighter\""
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:237708581",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "\"启动\" as starting the game"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:233899871",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "better",
+     "note": "Jamie throw range and combo complaint (a balance claim coarse-v1 excluded)"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:231866721",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "nostalgia"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "youtube:Ugw3QrvgzHRNRT_sPXl4AaABAg",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "\"classic player\" without a claim"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:232118300",
+     "coarse_v1": "exclude",
+     "coarse_v2": "keep",
+     "reason_v2": "competitive_mechanic_with_claim",
+     "label": "neutral",
+     "note": "venting at Modern players, grapplers and DI users"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:226514309",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "roster price"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:217989016",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "Modern layout praise"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:237389425",
+     "coarse_v1": "exclude",
+     "coarse_v2": "keep",
+     "reason_v2": "competitive_mechanic_with_claim",
+     "label": "neutral",
+     "note": "ranked defaults to Modern (a setting complaint)"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:215090328",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "better",
+     "note": "Modern Zangief as strong"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:232634987",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "Modern mode friendly to beginners"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "youtube:Ugxom4QWRmP3meKP_v94AaABAg",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "open-world loading"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:221311122",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "\"modern fighting games\""
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:236452025",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "Modern controls help beginners"
+    }
+   ]
+  }
+ },
+ "committed": {
+  "generator": "as the first pass, without the entries system.modern and system.classic (control types, which CONTROL already handles) and the terms PC, 启动 and 发生 (collisions with the platform name, starting the game and the verb \"happen\")",
+  "datasets": {
+   "20261027-balanced": {
+    "records": 6376,
+    "changed_decisions": 24,
+    "share_percent": 0.38,
+    "transitions": {
+     "exclude->keep": 4,
+     "exclude->review": 20
+    },
+    "counts_v1": {
+     "exclude": 5550,
+     "keep": 624,
+     "review": 202
+    },
+    "counts_v2": {
+     "exclude": 5526,
+     "keep": 628,
+     "review": 222
+    },
+    "changed_reasons_or_signals_only": 11
+   },
+   "20261015-expanded": {
+    "records": 3752,
+    "changed_decisions": 7,
+    "share_percent": 0.19,
+    "transitions": {
+     "exclude->keep": 1,
+     "exclude->review": 6
+    },
+    "counts_v1": {
+     "exclude": 3359,
+     "keep": 290,
+     "review": 103
+    },
+    "counts_v2": {
+     "exclude": 3352,
+     "keep": 291,
+     "review": 109
+    },
+    "changed_reasons_or_signals_only": 7
+   }
+  },
+  "trigger_5_percent": {
+   "20261027-balanced": false,
+   "20261015-expanded": false
+  },
+  "agent_review": {
+   "reviewer": "session U6 (agent), from the source text",
+   "sample": "all 24 changed record IDs (31 changed decisions; 7 IDs occur in both datasets)",
+   "labels": "better: coarse-v2 is closer to the screening scope; worse: no balance claim, moved into review or keep; neutral: both acceptable",
+   "counts": {
+    "worse": 15,
+    "neutral": 5,
+    "better": 4
+   },
+   "records": [
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:217593739",
+     "coarse_v1": "exclude",
+     "coarse_v2": "keep",
+     "reason_v2": "competitive_mechanic_with_claim",
+     "label": "worse",
+     "note": "teabagging anecdote, no balance claim"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:233497546",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "character_complaint_without_clear_reason",
+     "label": "worse",
+     "note": "server disconnects; a Chinese character alias raised it to review"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:219303753",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "general praise (Vietnamese); \"SA\""
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:232118300",
+     "coarse_v1": "exclude",
+     "coarse_v2": "keep",
+     "reason_v2": "competitive_mechanic_with_claim",
+     "label": "neutral",
+     "note": "venting at Modern players, grapplers and DI users"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:214785025",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "better",
+     "note": "dislikes Drive Impact"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:225808372",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "general remark (Vietnamese)"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:238292314",
+     "coarse_v1": "exclude",
+     "coarse_v2": "keep",
+     "reason_v2": "competitive_mechanic_with_claim",
+     "label": "worse",
+     "note": "frame drops after a super (technical), kept"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:237708277",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "better",
+     "note": "push-palm pressure, blocked throws and anti-airs of a fighter: a balance claim, ideally keep"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:233417250",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "character_complaint_without_clear_reason",
+     "label": "worse",
+     "note": "generic complaint naming Ed"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:221860354",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "better",
+     "note": "Drive Rush narrows the skill gap: a balance claim"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "youtube:UgwCLqAXV45wpzOKhF94AaABAg",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "Portuguese remark"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:216346560",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "neutral",
+     "note": "joke about DI"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:237915217",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "praise of tutorials and the Drive system"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:226536770",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "combo notation with DR"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:232561795",
+     "coarse_v1": "exclude",
+     "coarse_v2": "keep",
+     "reason_v2": "competitive_mechanic_with_claim",
+     "label": "worse",
+     "note": "Hitbox controller purchase"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:226153716",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "Romanian text; \"sa\""
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:214457788",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "\"SA\" as a region"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:232166775",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "neutral",
+     "note": "learning curve of charge fighters and the Hitbox controller"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:235609006",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "Modern controls helped a beginner (Hitbox or combo terms)"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:237202837",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "neutral",
+     "note": "DI meme"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:224262403",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "better",
+     "note": "Drive Rush is annoying: a balance opinion"
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:237882515",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "\"startup\" of the game (technical)"
+    },
+    {
+     "dataset": "20261015-expanded",
+     "record_id": "steam:237060317",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "worse",
+     "note": "combo poem with \"ca\""
+    },
+    {
+     "dataset": "20261027-balanced",
+     "record_id": "steam:238213824",
+     "coarse_v1": "exclude",
+     "coarse_v2": "review",
+     "reason_v2": "combat_mechanic_without_clear_balance_claim",
+     "label": "neutral",
+     "note": "long general review"
+    }
+   ]
+  }
+ },
+ "owner_review": "recorded as adopted under the owner authorization of 2026-11-05 03:11 after the agent review; see U6.4 in the change record"
+}

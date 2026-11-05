@@ -5,20 +5,25 @@
  "session": "U6-1 to U6-L",
  "decisions": [
   "UP-D12",
+  "UP-D13",
   "UP-D14",
   "UP-D17",
   "UP-D18",
   "UP-D19",
-  "UP-D20"
+  "UP-D20",
+  "D-15"
  ],
- "reason": "U6 evidence cited by the change record: the near-duplicate threshold chosen on development comments (U6.5); the U6-L measurements follow in the same directory",
+ "reason": "U6 evidence cited by the change record: the near-duplicate threshold chosen on development comments (U6.5), the coarse-v1 and coarse-v2 screening comparison with its agent review (U6.4); the U6-L measurements follow in the same directory",
  "datasets": {
-  "upgrade-samples-v1/extraction-development": "data/evaluation/upgrade-samples-v1/extraction-development, 114 development comments (threshold of U6.5)"
+  "upgrade-samples-v1/extraction-development": "data/evaluation/upgrade-samples-v1/extraction-development, 114 development comments (threshold of U6.5)",
+  "raw": "data/raw/feedback/20261027-balanced and 20261015-expanded, every raw record (U6.4 comparison; record IDs and labels only, no text)"
  },
  "code": {
-  "U6.5": "the commit with 'Step: U6.5'"
+  "U6.5": "the commit with 'Step: U6.5'",
+  "U6.4": "the commit with 'Step: U6.4'"
  },
  "files": {
-  "summary/near-duplicate-threshold.json": "U6.5: cosine distribution of the 6,441 development pairs, the 5 pairs at or above 0.90 and the 20 just below, each with the agent's label"
+  "summary/near-duplicate-threshold.json": "U6.5: cosine distribution of the 6,441 development pairs, the 5 pairs at or above 0.90 and the 20 just below, each with the agent's label",
+  "summary/screening-comparison.json": "U6.4: changed-decision counts of coarse-v1 against coarse-v2 on both raw datasets, both passes, with the agent review of the changed records"
  }
 }

@@ -1486,6 +1486,37 @@ the archive with `SHA256SUMS`.
   would not change the U5-L1 verdict; (c) multiplies reports for one
   batch. N-class (record and run output only).
 
+- **D-14 (U6.4) `balanced` and `expansion` write the literal `coarse-v1`.**
+  `collection/balanced.py` (`select_balanced`) and
+  `collection/expansion.py` (the expansion report) classify with
+  `screening` but write `'coarse-v1'` as the screening version, so after
+  U6.4 new collections made through them would label `coarse-v2`
+  decisions `coarse-v1`. Options: (a) both read `screening.VERSION`; (b)
+  keep them and record the mismatch. Recommendation: (a). Not
+  implementable here: both files lie outside the U6 boundary, and the
+  change alters collection outputs (not N-class, plan rule 1.8), so it is
+  **bypassed**; kept: the current state, (b). `screening.VERSION` exists,
+  so (a) is a one-line change in each module for a session whose boundary
+  lists them (U7 or the owner). No step of U6 depends on it.
+- **D-15 (U6.4) Reviewed exclusions in the screening terms file.**
+  Generated as the work order states it, the mechanic pattern takes the
+  glossary's control-type entries (`Modern`, `现代`, `Classic`, `经典`) and
+  the alias `PC` of Punish Counter; on the two raw datasets 4.14 % and
+  4.00 % of the decisions change (below the 5 % trigger), and the agent
+  review of 40 of them finds 26 worse (accessibility praise, adjectives,
+  the platform), 11 better and 3 neutral; the existing test that
+  accessibility praise is excluded fails. Options: (a) keep the plain
+  generator and change that test; (b) add `excluded_glossary_entries`
+  (`system.modern`, `system.classic`: control types, which `CONTROL`
+  already handles) and `excluded_glossary_terms` (`PC`, `启动`, `发生`)
+  with reasons to `configs/feedback-screening-terms.json`, the reviewed
+  collection configuration of plan 4.8; (c) skip U6.4. Recommendation and
+  action: (b), adopted under the owner authorization of 2026-11-05 03:11:
+  the glossary stays untouched, every exclusion is listed with its reason,
+  the test holds, and the changes fall to 0.38 % and 0.19 %. Fully undone
+  by a revert of U6.4. Both passes are in
+  `reports/20261105-upgrade-u6-evaluation/summary/screening-comparison.json`.
+
 ## Escalations
 
 - **E-1 (U0.6) `aimediator doctor` fails with the local embedding
