@@ -5,6 +5,7 @@ from collections import Counter, deque
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 import json
+from pathlib import Path
 from typing import Any, Callable, Iterable, Iterator
 
 from . import evidence_quality as quality
@@ -75,7 +76,8 @@ def quality_source_counts(records: list[dict[str, Any]], accepted: list[dict[str
 
 def build_full_coverage(rows: list[dict[str, Any]], decisions: dict[str, dict[str, Any]], routes: dict[str, dict[str, Any]],
                         models: list[str], quality_records: dict[str, dict[str, Any]], coverage: list[dict[str, Any]],
-                        accepted: list[dict[str, Any]], quarantine: list[dict[str, Any]], quality_mode: str, args: Any) -> list[dict[str, Any]]:
+                        accepted: list[dict[str, Any]], quarantine: list[dict[str, Any]], quality_mode: str,
+                        options: RunOptions) -> list[dict[str, Any]]:
     """Return one full-pipeline coverage record per input row, with the stage it reached."""
     extraction = {c['comment_id']: c for c in coverage}
     all_languages = {route['language'] for route in routes.values()}
@@ -92,11 +94,11 @@ def build_full_coverage(rows: list[dict[str, Any]], decisions: dict[str, dict[st
             status = 'relevance_pending_or_failed' if not d or d['model_related'] is None or d.get('model_uncertain') else 'relevance_rejected'
             if d and d.get('retrieval_triage') == 'unrelated':
                 status = 'relevance_rejected'
-        elif getattr(args, 'relevance_only', False):
+        elif options.relevance_only:
             status = 'relevance_only_complete'
         elif quality_mode != 'off' and not q:
             status = 'quality_pending'
-        elif getattr(args, 'quality_only', False):
+        elif options.quality_only:
             status = 'quality_failed' if q['status'] == 'failed' else 'quality_completed'
         elif e:
             status = 'extraction_failed' if e['disposition'] == 'generation_failed' else 'extraction_completed'
@@ -145,6 +147,22 @@ def ordered(units: Iterable[Any], work: Callable[[Any], Any], commit: Callable[[
             raise
 
 
+@dataclass(frozen=True)
+class RunOptions:
+    """The run settings that process and its stages read (pipeline upgrade LNK-05).
+
+    operations.analyze builds them from the resolved configuration and engine.run from its
+    argparse namespace, so the stages read one typed object instead of a caller's namespace.
+    """
+    out: Path
+    base_url: str
+    embedding_model: str
+    quality_mode: str = 'off'
+    relevance_only: bool = False
+    quality_only: bool = False
+    max_parallel_requests: int = 1
+
+
 def validate_modes(args: Any) -> str:
     """Return the evidence-quality mode after checking that the relevance-only and quality-only flags fit it."""
     mode = getattr(args, 'evidence_quality', 'off')
@@ -158,7 +176,7 @@ def validate_modes(args: Any) -> str:
 @dataclass
 class RunState:
     """The inputs, the runner and the accumulated results that the stages of one run share."""
-    args: object
+    options: RunOptions
     rows: list
     models: list
     quality_identity: object
@@ -331,7 +349,7 @@ def assess_quality(state: RunState, model: str, language: str, selected: list[di
         write_json(state.folder / 'evidence-quality.json', list(state.quality_records.values()))
         write_json(state.folder / 'full-pipeline-coverage.json', build_full_coverage(
             state.rows, state.decisions, state.routes, state.models, state.quality_records, state.coverage, [],
-            state.quarantine, state.quality_mode, state.args))
+            state.quarantine, state.quality_mode, state.options))
         write_json(state.folder / 'request-trace.json', state.trace)
 
     ordered(selected, work, commit, state.max_parallel_requests)
@@ -509,7 +527,7 @@ def assemble(state: RunState, log: Callable[[str], None] | None = None) -> dict[
     report['evidence_quality_mode'] = state.quality_mode
     report['quality_assessment'] = 'enforced' if state.quality_mode == 'enforce' else 'observation_only' if state.quality_mode == 'shadow' else 'quality_not_assessed'
     full_coverage = build_full_coverage(state.rows, state.decisions, state.routes, state.models, state.quality_records,
-                                        state.coverage, accepted, state.quarantine, state.quality_mode, state.args)
+                                        state.coverage, accepted, state.quarantine, state.quality_mode, state.options)
     write_json(state.folder / 'full-pipeline-coverage.json', full_coverage)
     report['full_pipeline_coverage'] = full_coverage
     if state.quality_mode != 'off':
@@ -525,21 +543,21 @@ def assemble(state: RunState, log: Callable[[str], None] | None = None) -> dict[
     return report
 
 
-def process(args: Any, rows: list[dict[str, Any]], routing: dict[str, Any], models: list[str],
+def process(options: RunOptions, rows: list[dict[str, Any]], routing: dict[str, Any], models: list[str],
             prompts: dict[str, dict[str, str]], quality_identity: dict[str, Any] | None,
             quality_policy: dict[str, Any] | None, identity: dict[str, Any],
             embedding_config: dict[str, Any] | None = None, runner_factory: Callable[..., Runner] = Runner,
             retrieval_service: Callable[..., list[dict[str, Any]]] = retrieve,
             log: Callable[[str], None] | None = None) -> dict[str, Any]:
     """Shared orchestration with explicit inputs and injected inference boundaries; log receives the summary text."""
-    state = RunState(args, rows, models, quality_identity, quality_policy, identity,
-                     folder=args.out.resolve(), routes=routing['models'], quality_mode=args.evidence_quality,
-                     max_parallel_requests=getattr(args, 'max_parallel_requests', 1))
+    state = RunState(options, rows, models, quality_identity, quality_policy, identity,
+                     folder=Path(options.out).resolve(), routes=routing['models'], quality_mode=options.quality_mode,
+                     max_parallel_requests=options.max_parallel_requests)
     state.by_id = {r['record_id']: r for r in state.rows}
     state.eligible = [r for r in state.rows if any(state.routes[m]['language'] == r['language'] for m in state.models)]
-    retrieval = retrieval_service(state.eligible, state.args.base_url, state.folder, state.args.embedding_model,
+    retrieval = retrieval_service(state.eligible, state.options.base_url, state.folder, state.options.embedding_model,
                                   embedding_config)
-    state.runner = runner_factory(state.args.base_url, state.folder, prompts, state.quality_identity,
+    state.runner = runner_factory(state.options.base_url, state.folder, prompts, state.quality_identity,
                                   state.quality_policy)
     state.runner.runtime_options = state.identity.get('runtime_options', {})
     triage(state, retrieval)
@@ -550,16 +568,16 @@ def process(args: Any, rows: list[dict[str, Any]], routing: dict[str, Any], mode
         language_rows = [d for d in state.decisions.values() if d['language'] == language]
         review_retrieval(state, model, language, language_rows)
         admit_relevance(state, model, language, language_rows)
-        if getattr(state.args, 'relevance_only', False):
+        if state.options.relevance_only:
             continue
         selected = [state.by_id[d['comment_id']] for d in state.decisions.values()
                     if d['language'] == language and d['agreement']]
         write_json(state.folder / 'full-pipeline-coverage.json', build_full_coverage(
             state.rows, state.decisions, state.routes, state.models, state.quality_records, state.coverage, [],
-            state.quarantine, state.quality_mode, state.args))
+            state.quarantine, state.quality_mode, state.options))
         if state.quality_mode != 'off':
             assess_quality(state, model, language, selected)
-            if getattr(state.args, 'quality_only', False):
+            if state.options.quality_only:
                 continue
         extract_claims(state, model, language, selected)
         audit_claims(state, model, language)

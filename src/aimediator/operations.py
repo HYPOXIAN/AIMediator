@@ -2,7 +2,6 @@
 from pathlib import Path
 import sys
 import threading
-from types import SimpleNamespace
 from . import balance_policy, cache, evidence_quality, pipeline, resources, retrieval, runner
 from .common import Failure, canonical, input_rows, new_path, read, sha, write
 from .config import credential, resolve, validate
@@ -99,11 +98,11 @@ def analyze(input_path=None, out=None, cfg=None, resume=None, env_file=None, tra
             policy = evidence_quality.load_policy() if mode != 'off' else None
             write(folder / 'quality-policy-snapshot.json', policy)
             manifest = read(folder / 'manifest.json')
-            args = SimpleNamespace(out=folder, base_url=cfg['base_url'], embedding_model=cfg['embedding']['model'],
-                evidence_quality=mode, relevance_only=cfg['stop_after'] == 'relevance', quality_only=cfg['stop_after'] == 'quality',
+            options = pipeline.RunOptions(out=folder, base_url=cfg['base_url'], embedding_model=cfg['embedding']['model'],
+                quality_mode=mode, relevance_only=cfg['stop_after'] == 'relevance', quality_only=cfg['stop_after'] == 'quality',
                 max_parallel_requests=cfg['max_parallel_requests'])
             quality_identity = {'mode': mode, 'policy': policy, 'run_identity': manifest['run_id']}
-            engine_identity = {'mode': 'relevance_only' if args.relevance_only else 'quality_only' if args.quality_only else 'full_pipeline',
+            engine_identity = {'mode': 'relevance_only' if options.relevance_only else 'quality_only' if options.quality_only else 'full_pipeline',
                                'runtime_options': {'num_gpu': cfg['num_gpu']} if cfg['num_gpu'] is not None else {}}
             # Requests run on worker threads when max_parallel_requests is above 1;
             # run-state.json, the request index and progress lines change under one lock.
@@ -139,7 +138,7 @@ def analyze(input_path=None, out=None, cfg=None, resume=None, env_file=None, tra
                     print('retrieval: %d/%d comments' % (len(result),len(values[0])), file=sys.stderr, flush=True)
                 return result
             embedding_cfg = {'url': cfg['embedding']['endpoint'], 'model': cfg['embedding']['model']} if cfg['embedding']['provider'] == 'configured' else None
-            pipeline.process(args, rows, cfg['routing'], list(cfg['routing']['models']), prompts,
+            pipeline.process(options, rows, cfg['routing'], list(cfg['routing']['models']), prompts,
                 quality_identity, policy, engine_identity, embedding_cfg, runner_factory, retrieve)
             ledger = store.coverage(folder, rows)
             write(folder / 'full-pipeline-coverage.json', ledger)

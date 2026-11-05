@@ -681,17 +681,24 @@ every path keeps the exception type it raises.
 - `pipeline`: `VERSION` (`'balance-evidence-v2'`), `relevance_agrees`,
   `quality_request(runner, row, units, language, contract, attempts) ->
   (data, request_context)` (the context of the next quality attempt after
-  the failed `attempts`: `source`, `segments` (the clause segments),
-  `character_literals`, `quality_contract`, `attempt` and, after a failure,
-  `previous_attempt`; `request_context` is `{'attempt': n}`;
+  the failed `attempts`: `source`, `language`,
+  `character_normalization_reference`, `quality_contract`, `attempt` and,
+  after a failure, `previous_attempt` (`segments` and `character_literals`
+  of step U4.4 left with its revert, U4.F4); `request_context` is `{'attempt': n}`;
   `assess_quality` and the quality experiment scripts call it; step U2.2),
   `batches`, `aggregate`, `quality_source_counts`, `build_full_coverage`,
   `validate_modes`, the `RunState` dataclass shared by the stage functions
   (`triage`, `review_retrieval`, `admit_relevance`, `assess_quality`,
   `extract_claims`, `audit_claims`, `summarize`, `report_quality`,
-  `assemble`), and `process(args, rows, routing, models, prompts,
-  quality_identity, quality_policy, identity, embedding_config=None,
-  runner_factory=Runner, retrieval_service=retrieve, log=None)`; `log`
+  `assemble`), the frozen `RunOptions` dataclass (`out`, `base_url`,
+  `embedding_model`, `quality_mode`, `relevance_only`, `quality_only`,
+  `max_parallel_requests`; pipeline upgrade step U6.7, LNK-05), and
+  `process(options, rows, routing, models, prompts, quality_identity,
+  quality_policy, identity, embedding_config=None, runner_factory=Runner,
+  retrieval_service=retrieve, log=None)`. `operations.analyze` builds the
+  options from the resolved configuration and `engine.run` from its
+  argparse namespace; `RunState.options` holds them and the stage
+  functions read nothing else of the caller's arguments. `log`
   receives the summary JSON text. `KeyboardInterrupt` passes through
   `process`; `operations.analyze` handles it.
 - `run_store`: run identity (`code_manifest`, `resource_manifest`,

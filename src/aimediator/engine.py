@@ -18,7 +18,7 @@ from .resources import asset_path, module_path, workspace_root
 from .inference import api
 from .runner import Runner
 from .retrieval import retrieve
-from .pipeline import VERSION, process, validate_modes
+from .pipeline import VERSION, RunOptions, process, validate_modes
 ROOT = workspace_root()
 
 
@@ -104,7 +104,11 @@ def run(args, *, api_transport=None, chat_transport=None, embed_transport=None, 
     runner_factory = partial(Runner, chat_transport=chat_transport, log=log)
     if retrieval_service is None:
         retrieval_service = partial(retrieve, api_transport=api_transport, embed_transport=embed_transport, log=log)
-    return process(args, rows, routing, models, prompts, quality_identity,
+    options = RunOptions(out=folder, base_url=args.base_url, embedding_model=args.embedding_model,
+                         quality_mode=quality_mode, relevance_only=bool(getattr(args, 'relevance_only', False)),
+                         quality_only=bool(getattr(args, 'quality_only', False)),
+                         max_parallel_requests=getattr(args, 'max_parallel_requests', 1))
+    return process(options, rows, routing, models, prompts, quality_identity,
                    quality_policy, identity, embedding_config, runner_factory, retrieval_service, log=log)
 
 
