@@ -1321,6 +1321,7 @@ and tools are in the archive with `SHA256SUMS`.
 | `runs/upgrade/` (the two U4-L runs, their measurements, route scores, identity check and comparison, the materialized benchmark and synthetic samples with the synthetic cases, run logs and the bridge log, the API configuration and doctor output, the spend before and after, the bridge and one-off scripts; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-u4-evaluation/` | `SHA256SUMS` at the archive root, 721 files, 32,688,012 bytes | full runs of the U4-L evaluation (P2); the curated report keeps the manifest, summary and provenance | U4-L |
 | `runs/upgrade/` (the two U4-L2 runs, their measurements, route scores, identity check and comparison with U2-L1 and U4-L, run logs and the bridge log, the API configuration and doctor output, the spend before and after, the bridge and one-off scripts, a manifest; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-u4-fixup-evaluation/` | `SHA256SUMS` at the archive root, 726 files, 32,827,363 bytes | full runs of the U4-L2 rerun (P2); no curated `reports/` directory (D-12) | U4-L2 |
 | `tests/test_quality_readers.py` (tracked; added by U4.5, removed by its revert) | `~/Archives/AIMediator/scripts/20261105-upgrade-u4-reverts/tests/test_quality_readers.py` | `SHA256SUMS` in that directory: `c6c232925c767c1c4f0e9014211328b7a79fed2bf75374267c7301be86f34b79` | U4.F3 reverts U4.5 (E-4, fallback (a)); git history keeps the file at `2614453`; outside this record nothing refers to it | U4.F3 |
+| `runs/upgrade/` (the U2-R and U5 runs `u2r`, `u5r`, `u5l1`, `u5l2` and `u5l3` of the extraction-development sample, their measurements, scores, comparisons, identity checks and doctor outputs, inputs, logs, configuration and the bridge and one-off scripts; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-u5-evaluation/` | `SHA256SUMS` at the archive root, 6,427 files, 208,654,055 bytes (row added by U2-V to U6-V, which found the archive without a row) | full runs of U2-R and U5-L1 to U5-L3 (P2); the curated report keeps the manifest, summary and provenance | U2-R, U5-L1 to U5-L3 |
 | `runs/upgrade/` (the two U6-L runs, their measurements, identity checks, comparisons, linkage readings and report exports, run logs and the bridge log, the API configuration and doctor outputs, the spend before and after, the materialized inputs, the run script, tools and the U6.4 and U6.5 helper scripts with the coarse-v1 module copy; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-u6-evaluation/` | `SHA256SUMS` at the archive root, 1,606 files, 61,177,205 bytes | U6-L full runs (P2); the curated summary is `reports/20261105-upgrade-u6-evaluation/` | U6-L |
 
 ## Decisions found during execution
@@ -2177,6 +2178,52 @@ about 60 %, and no offset errors. A later owner decision could restore
 it with `git revert` of the three reverts. `upgrade-u4` is set on this
 commit, after `upgrade-u4-review`. The quality stage at HEAD is the U2.2
 request, the state U2-L1 accepted.
+
+### 2026-11-05 U5-V
+
+- Range: `d025bf3..dc05a37`; 9 commits: U2-R `e34e08d` (the E-3 item of
+  the U2 review, run by the U5 session before U5.1); U5.1 `e64701d`;
+  U5-L1 `ec900f1`; U5.2 `30d41be`; U5-L2 `24b582d`; U5.3 `476d502`; U5.4
+  `90a7dd1`; U5-L3 `4458779`; session log `dc05a37`. The checklist was
+  shortened as in the U2-V note.
+- Checks:
+  1. Boundary and commit hygiene (plan 8.8): pass. The boundary check
+     prints nothing for the U5 commits. `e34e08d` changes only this
+     record. The hygiene check prints nothing.
+  2. Verify prompts: `git diff d025bf3..HEAD` of `verify-balance.{en,zh}`
+     and `quality-verify.{en,zh}` prints nothing.
+  3. Live verdicts: every B step has one (D-13 reading). U5.1 is kept by
+     U5-L1. U5.2 fails rule 3 in U5-L2 (E-5). U5.3 fails rules 3 and 4
+     in U5-L3 (E-6). When the batch arrived here, neither failed step had
+     been reverted or kept by a recorded decision. The review below
+     adopts the recommendation of E-5 and E-6 and this session executes
+     it as fix-up steps U5.F1 to U5.F3, so the item passes after those
+     fix-ups.
+  4. Test split: pass. The four U5 score files (`u5r`, `u5l1`, `u5l2`,
+     `u5l3`) record `split` `development`, and the run script scores
+     `--split development` on the extraction-development sample. No run
+     directory under `runs/upgrade/` and no entry of this record uses the
+     `extraction-precision-v1` test split.
+  5. Prompt examples: pass. All 301 labeled comments of
+     `extraction-precision-v1` were materialized and their first 30
+     characters searched for in both prompts of the pair (whitespace kept
+     and whitespace normalized). Nothing matches in English. One comment
+     matches in Chinese: a 4-character comment whose whole text equals a
+     recommendation line that the prompt already held at `d025bf3`
+     (once then, once now), outside the examples. The U5.3 note records
+     the same match. Texts were compared, not read or printed.
+  6. Gates, foreign directory and wheel at HEAD: pass (U6-V note).
+- Lock and hashes: `e64701d` (U5.1, 18 keys), `30d41be` (U5.2, 50 keys)
+  and `476d502` (U5.3, 32 keys) change the fixture, each with
+  `Decision: UP-D11` and its paths. The four `summarize-balance` SHA-256
+  values of U5.2 and U5.3 recompute.
+- Targets (not gates): T6 is met by U5.1 (33.6 %) and U5.2 (34.9 %), not
+  by U5.3 (42.9 %). T7 is met by no step.
+- Finding, fixed in this commit: "Archive and deletions" had no row for
+  the U5 archive. The archive exists with `SHA256SUMS` (6,427 files),
+  and a row now records it.
+- Result: tag `upgrade-u5-review`. The batch is accepted once the review
+  and its fix-up steps U5.F1 to U5.F3 are committed.
 
 ## Session log
 
