@@ -731,7 +731,8 @@ means the lock passes without regeneration.
 
 ### U0 Baseline, measurement tool and evaluation sets
 
-Entry: tag `restructure-done`; UP-D01 and UP-D02 answered.
+Entry: tag `upgrade-plan` (the corrected plan, after `restructure-done`);
+UP-D01 and UP-D02 answered.
 
 - **U0.1** N `docs`: create the change record from the section 11 skeleton,
   dated with the start date; copy the owner's answers; add it to

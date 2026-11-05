@@ -3,7 +3,7 @@
 - Type: Agent handoff
 - Status: Active
 - Updated: 2026-11-04
-- Applies to: [pipeline upgrade plan](../pipeline-upgrade.md) batch U0; entry tag `restructure-done`
+- Applies to: [pipeline upgrade plan](../pipeline-upgrade.md) batch U0; entry tag `upgrade-plan`
 
 Work order for batch U0. The steps are defined in plan section 7 (U0). This
 batch changes no pipeline behavior. It builds what every later batch is
@@ -22,8 +22,9 @@ and the offline, archived and live baselines.
 
 ## 2. Entry conditions
 
-- Tag `restructure-done` exists. If it does not, stop: the restructuring
-  closure comes first (plan, entry condition).
+- Tags `restructure-done` and `upgrade-plan` exist. If either is missing,
+  stop: the restructuring closure and the review corrections of the plan
+  come first (plan, entry condition).
 - Clean tree, no `WIP Step` stash, the gates pass.
 - UP-D01 and UP-D02 are answered (U0.2 needs UP-D01; U0.3 and U0.5 need
   UP-D02).
@@ -84,7 +85,7 @@ Step notes:
 
 - **U0.1**
   - Copy plan section 11. `Applies to` names the commit tagged
-    `restructure-done`.
+    `upgrade-plan`.
   - Fill "Owner decisions" with the sixteen answers and their dates; a
     decision without an answer gets the row `pending`.
   - Add the index row to `docs/README.md` (Records) in the same commit.
@@ -256,7 +257,7 @@ message repeats the verification note.
 
 Checklist:
 
-1. Boundary and commit hygiene from `restructure-done` (plan 8.8).
+1. Boundary and commit hygiene from `upgrade-plan` (plan 8.8).
 2. The lock fixture changed only in the U0.2 commit, only by the three
    existence-only `measurement.py` keys.
 3. Gates, foreign directory and wheel acceptance pass; the test count is at
