@@ -2606,6 +2606,93 @@ against the rule with `git revert` of the fix-up commits.
   (`api-bridge-spend.json`, 2,359 requests).
 - Result: accepted, tag `upgrade-u6`.
 
+### 2026-11-05 U7-V
+
+- Range: `upgrade-u6..b615794` (`f1a64a4..b615794`); 13 commits: the
+  U2-V to U6-V session log `b73f0e9`; U7.1 `853b0b3` and `dc94ecb`; U7.2
+  `1d22200` and `4f5966a`; U7.3 `f9e17dd`, `defb029`, `af5272e` and
+  `dee3c74`; U7.4 `a3b0310` and `2ac04b6`; U7.5 `4246494`; the U7-1
+  session log `b615794`. At the start `git status --short` printed
+  nothing and no `WIP Step` stash existed. This session did not
+  implement U7.
+- Checks:
+  1. Boundary and commit hygiene (plan 8.8): pass. The boundary check
+     with the pattern of the work order prints nothing, and so does the
+     hygiene check: every commit names `Step:` or `Session:`, none
+     carries attribution, and every subject uses a P5 type. No file
+     under `src/`, `tests/` or `scripts/` changed in U7. ADR 0005
+     changes only its Status line (D3); `RULES.md` and `CLAUDE.md`
+     change only as U7.4 names.
+  2. Gates, foreign directory and wheel: pass. 333 tests in 33.1 s, at
+     the new P4 floor of 333; rule check 0; lock green; the foreign
+     directory 333 OK; wheel `"passed": true` with 18 commands (Python
+     3.14.8, NumPy 2.4.6).
+  3. U7.1 coverage: pass. `u7-benchmark-off` and `u7-benchmark-enforce`
+     each hold 30 coverage records, one per input row, with no
+     duplicate, missing or extra ID, and each input snapshot equals
+     `upgrade-sample-benchmark.jsonl` in order. Statuses: `off` 23
+     extraction completed, 4 relevance rejected, 3 relevance pending;
+     `enforce` 21 routed without extraction, 3 rejected, 3 pending, 2
+     quality failed, 1 extraction completed (E-7).
+  4. Holdout and test split: pass for the splits, with finding V-1.
+     Each split is the input of exactly one run, `u7-silver-holdout-off`
+     and `u7-extraction-test-off` (U7.2). No earlier run directory under
+     `runs/upgrade/` has either split as its input, and no earlier entry
+     of this record reports a run on either split or a score against its
+     labels. **V-1**: the two sets share 41 comments (same ID and text).
+     12 of the 30 holdout comments went through earlier runs: 11 also
+     belong to the `extraction-precision-v1` development split (7 of
+     them to the `extraction-development` sample) and 1 to
+     `latency-benchmark-v1`. They were processed in 14 earlier run
+     directories, from U0.6 to U6-L, and scored there against the
+     extraction labels only. 8 test-split comments belong to the
+     `balance-silver-v1` development split and went through relevance
+     in the three silver development runs (U0.6, U2-L0 and U2-L1,
+     relevance only, no extraction). The U7-L sentence "neither appears
+     in an earlier run directory" therefore holds for the splits, not
+     for every comment. Without these comments the readings hardly
+     move. The holdout relevance agreement is 16/18 (88.9 %, Wilson
+     67.2–96.9 %); both misses are among them, and the 11 earlier-run
+     comments with a clear label agree 11/11. The test-split precision
+     of accepted claims is 18/28 (64.3 %, 45.8–79.3 %) and the recall
+     18/64 (28.1 %, 18.6–40.1 %), against 19/32 and 19/71 in full. V-1
+     does not explain E-8. It comes from the frozen sets of U0.5, whose
+     test split was not drawn apart from `balance-silver-v1`, and is no
+     U7 defect.
+  5. Completion criteria of plan section 13 except item 9: pass. 1: the
+     49 plan steps of section 7 all have a row except U7.6 (criterion
+     9), with 19 live, rerun and fix-up rows besides; statuses are
+     `done` 62, `skipped (UP-D20)` 4 and `skipped` 1 (U4.6, by its own
+     condition). The five reverted steps (U4.4, U4.5, U4.F1, U5.2,
+     U5.3) keep `done` in their rows, which "Batch results" explains
+     (V-2). 2: check 2. 3: every commit that changes
+     `tests/fixtures/behavior-lock.json` since `upgrade-plan` (22) names
+     its step and a decision, and each is a B step except U0.2, the
+     recorded module exception of plan 1.3. 4: "Live evaluations" holds
+     every L session; the nine `reports/*-upgrade-*` directories each
+     hold a `manifest.json`. 5 and 6: "Batch results" and check 3. 7:
+     check 6. 8: rule check 0 and the P4 floor equals the test count;
+     `ls -A` matches the G3 allowlist.
+  6. Design documents against the code: pass. Every module of
+     `tests/test_module_layers.py` (all 32 package modules, `collection`
+     with its modules) is named in design/cli.md section 5; all 13
+     top-level keys of `config.defaults` are in the section 6 table
+     (`embedding` by its four `embedding.*` rows); the new artifact
+     names `near-duplicates.json`, `reuse-provenance.json` and the
+     per-text `embeddings/` records are in section 7, and
+     `aimediator-report-v2` and `target_reference` in section 8. The
+     shared cache layout (`chat/<key[:2]>/<key>/`) is in section 5 under
+     `cache`, where its module is.
+- Findings for the final review: V-1 (above), not named in the
+  validation record's limitations; V-2, the progress rows of the five
+  reverted steps read `done`, while plan section 11 provides the status
+  `reverted (see Live evaluations)`.
+- Measurements: tests 333 in 33.1 s; demo 0.98 s plain and 1.2 s under
+  cProfile; lock green. API spend: this session made no live run; the
+  bridge total stays 0.367605 USD of 3.00 (`api-bridge-spend.json`,
+  2,596 requests).
+- Result: accepted, tag `upgrade-u7-review`.
+
 ## Session log
 
 ### 2026-11-04 U0-1 (implementation)
