@@ -75,6 +75,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | U2-L1 | L | done | 280 | green | UP-D19, UP-D20, D-8. The five U2-L1 runs at the code of `b7d1cc5` (the U2.4 commit) through bridge version 1, run by the orchestrating session in parallel with the U2-L0 runs; identity checked (30 module hashes equal to `b7d1cc5` and HEAD, service `openrouter-bridge-1`, digests equal to `doctor` and to U2-L0, inputs equal to the references, every response from `deepseek/deepseek-v4-flash` on DeepInfra); measured and scored; compared with the U2-L0 rows (`compare_u2l1.py` pointed at the `u2l0-*` runs) and the adoption rule applied per step as D-8 reads it: U2.2 holds, U2.3 fails rule 4 (recall 43.9 % against 48.8 %, −4.9 points), U2.4 holds; nothing reverted, U2.3 recorded for the owner's review (E-3). T2 met (48.0 % of the U2-L0 baseline, target 71.8 %); T1 (66.2 %, target 49.9 %) and T3 (75.0 %, target 65 %) not met. Budgets of U2.6 measured. Curated report `reports/20261105-upgrade-u2-evaluation/`; full runs archived with `SHA256SUMS` (3,244 files, with the local runs `u2l1-local-*`, which decide nothing) |
 | U2.5 | B | skipped (UP-D20) | — | — | Response template trial (UP-D06) skipped by the owner's decision UP-D20 |
 | U2-L2 | L | skipped (UP-D20) | — | — | Skipped with U2.5 (UP-D20); U2-L2 adds no summary file to the U2 report |
+| U2.6 | N | done | 285 | green | Payload test of plan 4.1 (`cd3fd48`, `chore`): new `tests/test_request_payload.py` (+5). Every request of the offline demo and of lock target L2, three modes each, holds only the keys of `stages.MODEL_VISIBLE` (`response_schema` last); both targets send relevance, extraction, verify and, in `shadow` and `enforce`, quality requests and no retrieval-review request; no quality request holds `source`, `quality_contract` or `attempt`; the non-comment characters of every user message (its length minus the JSON-encoded `comments[].text`, `comments[].units[].text` and verify `original_evidence`) stay within the U2-L1 maxima plus 20 %, written as constants with that origin: relevance 2,512, retrieval review 2,422, quality 5,688, extraction 12,072, verify 2,376 (the demo and L2 reach 1,990, none, 4,784, 8,218 and 1,187); the count is checked on a hand-made message. ADR `docs/decisions/0003-model-visible-request-views.md` (context, decision, the measured effects of U2-L1, consequences) with its index row; design/cli.md section 5 (the payload contract after the frozen request construction text), balance-analysis.md (the relevance and retrieval-review prompts with the topic list, the relevance request, the extraction view under output), evidence-quality.md (inputs; the retry result of U2-L1). Lock unchanged (468 keys). Foreign working directory: 285 pass. Installed-wheel acceptance: `"passed": true`, 18 commands. The work order places U2.6 after U2-L2, which UP-D20 skips. The extraction budget measures the U2.3 view, which E-3 may revert |
 
 ## Baseline measurements (U0.4)
 
@@ -1397,6 +1398,31 @@ Findings of U2-L1:
   recorded under U2-L0.
 - Next: U2.6 (step of session U2-2), in this agent; then U2-V
   (verification); blockers: none.
+
+### 2026-11-05 U2-2 (implementation)
+
+- Steps: U2.6 done; U2.5 skipped (UP-D20); none started and stashed.
+- State: HEAD is this entry's commit (parent `cd3fd48`); tests 285; lock
+  green, unchanged (468 keys); rule check 0. Foreign working directory:
+  285 pass. Installed-wheel acceptance: `"passed": true`, 18 commands.
+- Findings: the budgets are those of the U2-L1 runs plus 20 %; the demo's
+  largest quality request (4,784 non-comment characters) exceeds the live
+  maximum (4,740) and stays within its budget. Boundary check of plan 8.8
+  from `upgrade-u1`: outside the pattern of work order section 3 are
+  `reports/20261105-upgrade-api-reference/` (the U2-L0 report, which the
+  UP-D19 note of the work order names), `docs/plans/` and the U2 handoff
+  (UP-D19 and UP-D20, committed by the orchestrating session) and
+  `scripts/maintenance/` (E-2); the commit hygiene check prints nothing.
+  `.gitignore` tracks only `manifest.json` and `summary/` under
+  `reports/`, so the `provenance/` lists of the U2-L0 and U2-L1 manifests
+  name files kept in each archive's `provenance/` (every SHA-256 checked
+  against the manifest) and in the ignored local report directory, as the
+  earlier reports keep theirs. No escalation in this session beyond E-3
+  of U2-L1; nothing adopted or bypassed under the owner's standing
+  instruction.
+- Next: U2-V (verification, fresh session; work order U2 section 4),
+  which carries E-3 to the review of batch U2; then U3 (work order U3);
+  blockers: none.
 
 ## Deferred
 

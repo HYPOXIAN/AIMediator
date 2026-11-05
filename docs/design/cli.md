@@ -750,6 +750,22 @@ artifacts (shadow and enforce), then `relevance.json`,
 `summary.json` and `balance-report.json`. `tests/test_behavior_lock.py`
 checks request digests and artifacts against a fixture.
 
+Payload contract ([ADR 0003](../decisions/0003-model-visible-request-views.md);
+pipeline upgrade step U2.6). A view holds only the keys that
+`stages.MODEL_VISIBLE` lists for its stage, at its top level and in its
+`comments[]` entries; the program context (`source`, `quality_contract`,
+`attempt`, offsets, routing entries, topic texts) stays in `data` or in the
+`request_context` of the cache identity. `tests/test_request_payload.py`
+checks every request of the offline demo and of lock target L2 (three modes
+each) against that table, checks that no quality request holds `source`,
+`quality_contract` or `attempt`, and bounds the non-comment characters of
+each user message (its length minus the JSON-encoded comment texts
+`comments[].text`, `comments[].units[].text` and verify
+`original_evidence`) per stage: relevance 2,512, retrieval review 2,422,
+quality 5,688, extract 12,072 and verify 2,376, the maxima of the U2-L1 live
+runs plus 20 %. A new view key or a larger program part of a request fails
+the test and needs its own decision (P7).
+
 Difference from the original target (2026-11-04). The 2026-10-28 target
 listed 17 modules. The CLI implementation kept the shared runner as `engine`,
 added `common`, `operations` (which holds the preflight the target placed in

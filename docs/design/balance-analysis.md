@@ -2,7 +2,7 @@
 
 - Type: Design
 - Status: Active
-- Updated: 2026-11-04
+- Updated: 2026-11-05
 - Applies to: balance pipeline `aimediator.engine` (`python3 -m aimediator.engine`); dataset `data/raw/feedback/20261015-expanded`
 
 The current full-corpus test runner is `python3 -m aimediator.engine`, run from
@@ -16,7 +16,7 @@ direction experiment.
 
 - `src/aimediator/assets/prompts/summarize-balance.zh.txt`: Chinese instructions for `qwen2.5:7b`.
 - `src/aimediator/assets/prompts/summarize-balance.en.txt`: equivalent English instructions for `llama3.1:latest`.
-- `src/aimediator/assets/prompts/relevance.{zh,en}.txt`: topic-agreement review before extraction.
+- `src/aimediator/assets/prompts/relevance.{zh,en}.txt` and `retrieval-review.{zh,en}.txt`: topic-agreement review before extraction. Each ends with a line that introduces the topic list; `resources.prompts` appends the twenty anchors of `retrieval-anchors.json` after it, `P1: <text>` to `N10: <text>`, so the anchors keep one source (pipeline upgrade step U2.4, UP-D07).
 - `src/aimediator/assets/prompts/verify-balance.{zh,en}.txt`: claim entailment audit after extraction.
 - `src/aimediator/assets/configs/local-language-routing.json`: model, language, and prompt assignments.
 
@@ -61,6 +61,10 @@ evidence-quality stage was added.
    top-three negative similarities. Positive must be strictly greater; ties fail.
 3. Ask the language-routed generation model to review each retrieval-positive
    comment against the retrieved topics. This stage makes no balance suggestions.
+   The request carries the comment ID and text and, per retrieved topic, its
+   `topic_id` and cosine rounded to 4 decimals; the topic texts are in the
+   system prompt. `retrieval.json`, `relevance.json` and the review queue keep
+   the full topic references (step U2.4).
 4. Recheck batch rejections and uncertainty individually, retaining both results.
    This prevents an initial batch-level mistake from silently becoming final.
 5. Only vector-positive **and** model-related **and** model-not-uncertain comments
@@ -79,6 +83,17 @@ was not tuned against the new corpus. This run does not establish retrieval
 precision/recall without independently reviewed reference labels.
 
 ## Output and engineering specificity
+
+Extraction requests show the model a view of the batch (pipeline upgrade
+step U2.3, UP-D05; [ADR 0003](../decisions/0003-model-visible-request-views.md)):
+evidence units with `evidence_id` and `text` but no offsets, the character
+reference entries with a candidate in a comment of the batch, and in
+`enforce` the allowed quality points with their evidence IDs, quotes and
+labels instead of the whole routing entry. Source binding, the identity
+rules and the response schema read the full program context, so every claim
+still binds to the original offsets and the output files keep their shape.
+The payload test bounds the non-comment part of every request
+([CLI design](cli.md), section 5).
 
 The model receives full comments and immutable evidence units in bounded
 batches. Extraction sends all original text through the ordered evidence units
