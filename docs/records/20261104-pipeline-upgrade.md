@@ -2305,6 +2305,61 @@ and tools are in the archive with `SHA256SUMS`.
   verification session after U6 and carries E-5 and E-6 (U5.F1 to U5.F3)
   to the review of batch U5; blockers: none.
 
+### 2026-11-05 U6-1 to U6-3 and U6-L (implementation and live)
+
+- Steps: E-4 fix-ups U4.F2 (revert of U4.F1), U4.F3 (revert of U4.5),
+  U4.F4 (revert of U4.4) and U4.F5 (documents); U6.7, U6.1, U6.2, U6.5,
+  U6.4 and U6-L done; U6.3 and U6.6 skipped (UP-D20); none started and
+  stashed.
+- State: HEAD is this entry's commit (parent `c008cef`); tests 341
+  (326 at entry, 320 after U4.F3, which removed the 6 tests of U4.5); lock
+  updated by UP-D10 (U4.F2, 25 keys; U4.F4, the 100 keys of U4.4), UP-D12
+  (U6.1, 32 keys with the 3 existence-only `code-snapshot/topics.py`
+  keys; U6.2, 4 report keys), UP-D14 (U6.5, 23 keys) and UP-D13 (U6.4,
+  `L4:classify_rules`); 780 keys; green after every step; U4.F3, U4.F5
+  and U6.7 left it unchanged; rule check 0. Foreign working directory:
+  341 pass. Installed-wheel acceptance at `4555fa4`: `"passed": true`, 18
+  commands.
+- Findings: entry without the tags `upgrade-u2` to `upgrade-u5`
+  (UP-D20); resume procedure: clean tree, no `WIP Step` stash, gates at
+  the entry commit `dc05a37` passed (326 tests, rule check 0, lock green);
+  the owner authorization of 03:11 was already in the record. E-4
+  executed as adopted, moved here from the verification session by this
+  session's prompt: each revert resolved only record and lock conflicts
+  (the record kept its rows as history, the lock was regenerated), the
+  code merged with the U5 commits without conflict; `tests/test_quality_readers.py`
+  archived with `SHA256SUMS`; the deferred legacy quality identity item
+  (D-11, part 3) no longer applies; the sentence in ADR 0005 is
+  **bypassed** (D3), the three design documents carry it. U6.1: only exact
+  terms resolve; a term inside a longer matched term is dropped and a
+  target naming several entries is a candidate (`shoryuken startup` names
+  the move and the mechanic Startup). U6.2: `topic_literal_normalized`
+  stays for `presentation` (outside the boundary). U6.5: threshold 0.90
+  from the 114 development comments; only 5 pairs reach it, so 5 instead
+  of 20 are recorded above. U6.4: D-15 (reviewed exclusions in the terms
+  file; changes 0.38 % and 0.19 % instead of 4.14 % and 4.00 %), D-14
+  **bypassed** (`balanced` and `expansion` write `coarse-v1`, outside the
+  boundary, not N-class); the comparison and the owner's review, adopted
+  under the authorization after the agent review, were committed before
+  the code (`f7b8745`, then `4555fa4`). U6-L: runs at the U6.5 commit
+  `a05b0ee` while U6.4 was written, identity-equal to HEAD (U6.4 changes
+  only `collection/` and root `configs/`); no U6 step is under the
+  adoption rule; no regression against U2-L1 and U5-L3; 5 of 117 grounded
+  claims resolve (100 have no target), report groups 8 and 8, 3
+  near-duplicate clusters; the U5.3 and U6 runs share their extraction
+  code yet differ by 4 points of recall, which bears on E-6. Boundary
+  check of plan 8.8 from `dc05a37`: only the U4 fix-up files
+  (`evidence_quality.py`, `legacy_review.py`, `design_briefs.py`,
+  `evidence-quality-policy.json`, all in the U4 boundary) fall outside the
+  U6 pattern; the commit hygiene check prints nothing; the glossary,
+  `data/`, `cases.json` and `docs/decisions/` have no diff. Spend of this
+  session 0.0283 USD (0.3097 to 0.3380 USD; 2.64 USD below the refusal
+  point).
+- Next: the verification session (chain session 6: U2-V to U6-V with
+  the reviews, the fix-up reverts of E-5 and E-6 (U5.F1 to U5.F3) and the
+  batch tags); it checks U4.F2 to U4.F5 for U4-V and runs U6-V from
+  `upgrade-u5`; blockers: none.
+
 ## Deferred
 
 - **Relevance and route agreement in `measurement`** (D-4, from U0.6). Add
