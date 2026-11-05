@@ -2017,6 +2017,37 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
 - Result: accepted, tag `restructure-b7-review`. The owner's final review
   and the closure session B7-3 follow (work order section 4).
 
+### 2026-11-04 B7 owner review
+
+- Recorded by the closure session B7-3 at `67f6876`. The tag
+  `restructure-b7-review` is on `d0aed08`. The one commit between them,
+  `67f6876` (`docs: add the pipeline upgrade plan and work orders`), adds
+  the documents of the next project, an index row for each, and pointers in
+  the README and `CLAUDE.md`; it changes no code, test, asset, data or
+  restructuring document.
+- Outcome: the owner's answer, 2026-11-04, was "The restructuring can be
+  closed." No review item of the B7-V note was rejected.
+  1. `RULES.md` v1.4 (`75adaa1`) stands as drafted, with the P4 floor of
+     241.
+  2. The acceptance table under "Batch results" stands as measured,
+     including the four functions on blueprint 1.2's list that grew.
+  3. `docs/design/cli.md` section 5 and the README "Layout" stand as the
+     description of the code. The two points of the B7-V note (the research
+     group's place in the layer wording; `design_briefs` and `diagnostics`
+     inside run identities) stay as recorded, without a change.
+  4. The decisions found during execution that no earlier review closed
+     stand as implemented: B2.10, B3.4, B5.3, B5.5, B6.2, B6.4 and B7.1.
+     The two open items that are not decisions, B2-1 and B5-3, are not work
+     of this plan; they go to the pipeline upgrade plan as steps U1.6 and
+     U1.1 (see "Deferred").
+- Rejected items: none, so there are no fix-up steps.
+- Gates at `67f6876`, run by B7-3: tree clean, no stash; 241 tests OK;
+  rule check `Total: 0`; lock `465 keys, 0 differ`, and the fixture is the
+  same blob (`acb2d80`) as at `e41aaec`.
+- Result: the restructuring closes. The closure sequence of the B7 work
+  order follows: the planning documents move to `docs/archive/`, this
+  record is finalized and frozen, and tag `restructure-done` is set.
+
 ## Session log
 
 ### 2026-11-03 B0-1 (implementation)
