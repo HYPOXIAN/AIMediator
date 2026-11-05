@@ -1,10 +1,11 @@
 """Shared analysis orchestration: relevance, evidence quality, extraction, source audit and report."""
 from __future__ import annotations
 
-from collections import Counter
+from collections import Counter, deque
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 import json
-from typing import Any, Callable, Iterator
+from typing import Any, Callable, Iterable, Iterator
 
 from . import evidence_quality as quality
 from .balance_policy import load_policy, retrieval_review_agrees, triage_retrieval
@@ -113,6 +114,37 @@ def build_full_coverage(rows: list[dict[str, Any]], decisions: dict[str, dict[st
     return result
 
 
+def ordered(units: Iterable[Any], work: Callable[[Any], Any], commit: Callable[[Any, Any], None],
+            limit: int = 1) -> None:
+    """Run work(unit) on a thread pool with at most limit units in flight; commit(unit, result) in input order.
+
+    commit runs on the calling thread, so every trace entry, progress file and artifact keeps the serial
+    order (plan 4.5). The next unit is submitted only after the oldest one is committed when the window is
+    full, so with limit 1 the requests and writes interleave exactly as in a serial loop. On any exception,
+    KeyboardInterrupt included, pending units are cancelled, running ones finish or fail, nothing after the
+    failed unit is committed, and the exception propagates.
+    """
+    source = iter(units)
+    window = deque()
+    end = object()
+    with ThreadPoolExecutor(max_workers=limit) as pool:
+        try:
+            while True:
+                while len(window) < limit:
+                    unit = next(source, end)
+                    if unit is end:
+                        break
+                    window.append((unit, pool.submit(work, unit)))
+                if not window:
+                    return
+                unit, future = window.popleft()
+                commit(unit, future.result())
+        except BaseException:
+            for _, future in window:
+                future.cancel()
+            raise
+
+
 def validate_modes(args: Any) -> str:
     """Return the evidence-quality mode after checking that the relevance-only and quality-only flags fit it."""
     mode = getattr(args, 'evidence_quality', 'off')
@@ -135,6 +167,7 @@ class RunState:
     folder: object
     routes: dict
     quality_mode: str
+    max_parallel_requests: int = 1
     by_id: dict = None
     eligible: list = None
     runner: object = None
@@ -162,61 +195,84 @@ def review_retrieval(state: RunState, model: str, language: str, language_rows: 
     cached = state.runner.cached_single_ids(model, language, 'retrieval_review')
     review_batches = [[d] for d in queued if d['comment_id'] in cached]
     review_batches += list(batches([d for d in queued if d['comment_id'] not in cached], count=8, chars=10000))
-    for batch in review_batches:
+
+    def work(batch):
+        # One unit: the batch and the single rechecks of its items, in serial order.
         data = {'comments': [{'comment_id': d['comment_id'], 'text': state.by_id[d['comment_id']]['text_original'],
                               'retrieved_topics': d['references']} for d in batch]}
         parsed, meta = state.runner.generate(model, language, 'retrieval_review', data, [d['comment_id'] for d in batch])
-        state.trace.append({'model': model, 'stage': 'retrieval_review', **meta})
         reviewed = {d['comment_id']: d for d in parsed['decisions']} if parsed else {}
+        retries = {}
+        for decision in batch:
+            item = reviewed.get(decision['comment_id'], {})
+            if len(batch) > 1 and (item.get('related') is not True or item.get('uncertain') is not False):
+                record_id = decision['comment_id']
+                single = {'comments': [{'comment_id': record_id, 'text': state.by_id[record_id]['text_original'],
+                                        'retrieved_topics': decision['references']}]}
+                retries[record_id] = state.runner.generate(model, language, 'retrieval_review', single, [record_id])
+        return meta, reviewed, retries
+
+    def commit(batch, result):
+        meta, reviewed, retries = result
+        state.trace.append({'model': model, 'stage': 'retrieval_review', **meta})
         for decision in batch:
             item = reviewed.get(decision['comment_id'], {})
             decision.update(retrieval_review_related=item.get('related'),
                             retrieval_review_uncertain=item.get('uncertain', True),
                             initial_retrieval_review_related=item.get('related'),
                             initial_retrieval_review_uncertain=item.get('uncertain', True))
-            if len(batch) > 1 and (item.get('related') is not True or item.get('uncertain') is not False):
-                record_id = decision['comment_id']
-                single = {'comments': [{'comment_id': record_id, 'text': state.by_id[record_id]['text_original'],
-                                        'retrieved_topics': decision['references']}]}
-                retry, meta = state.runner.generate(model, language, 'retrieval_review', single, [record_id])
+            if decision['comment_id'] in retries:
+                retry, meta = retries[decision['comment_id']]
                 state.trace.append({'model': model, 'stage': 'retrieval_review', 'refinement': True, **meta})
                 result = retry['decisions'][0] if retry else {}
                 decision.update(retrieval_review_related=result.get('related'),
                                 retrieval_review_uncertain=result.get('uncertain', True))
+
+    ordered(review_batches, work, commit, state.max_parallel_requests)
 
 
 def admit_relevance(state: RunState, model: str, language: str, language_rows: list[dict[str, Any]]) -> None:
     """Check relevance in batches, recheck each disagreement alone, then write relevance.json and review-queue.json."""
     candidates = [d for d in language_rows if d['retrieval_related'] or (
         d.get('retrieval_review_related') is True and d.get('retrieval_review_uncertain') is False)]
-    for batch in batches(candidates, count=8, chars=10000):
+    def work_batch(batch):
         data = {'comments': [{'comment_id': d['comment_id'],
             'text': state.by_id[d['comment_id']]['text_original'], 'retrieved_topics': d['references']} for d in batch]}
-        parsed, meta = state.runner.generate(model, language, 'relevance', data, [d['comment_id'] for d in batch])
+        return state.runner.generate(model, language, 'relevance', data, [d['comment_id'] for d in batch])
+
+    def commit_batch(batch, result):
+        parsed, meta = result
         state.trace.append({'model': model, 'stage': 'relevance', **meta})
         if parsed:
             for item in parsed['decisions']:
                 state.decisions[item['comment_id']].update(model_related=item['related'],
                     model_uncertain=item['uncertain'], model_reason=item['reason'],
                     agreement=relevance_agrees(state.decisions[item['comment_id']], item))
+
+    ordered(batches(candidates, count=8, chars=10000), work_batch, commit_batch, state.max_parallel_requests)
     # Recheck every rejection alone: short ordered arrays can still drift
     # semantically across comments. Preserve the initial result for review.
     for decision in candidates:
         decision['initial_model_related'] = decision['model_related']
         decision['initial_model_uncertain'] = decision.get('model_uncertain')
-        decision['refinement_performed'] = False
-        if decision['agreement']:
-            continue
-        decision['refinement_performed'] = True
+        decision['refinement_performed'] = not decision['agreement']
+
+    def work_single(decision):
         record_id = decision['comment_id']
         data = {'comments': [{'comment_id': record_id, 'text': state.by_id[record_id]['text_original'],
                               'retrieved_topics': decision['references']}]}
-        parsed, meta = state.runner.generate(model, language, 'relevance', data, [record_id])
+        return state.runner.generate(model, language, 'relevance', data, [record_id])
+
+    def commit_single(decision, result):
+        parsed, meta = result
         state.trace.append({'model': model, 'stage': 'relevance_refinement', **meta})
         if parsed:
             item = parsed['decisions'][0]
             decision.update(model_related=item['related'], model_uncertain=item['uncertain'],
                 model_reason=item['reason'], agreement=relevance_agrees(decision, item))
+
+    ordered([d for d in candidates if d['refinement_performed']], work_single, commit_single,
+            state.max_parallel_requests)
     write_json(state.folder / 'relevance.json', list(state.decisions.values()))
     write_json(state.folder / 'review-queue.json', [d for d in state.decisions.values()
                if d['retrieval_triage'] == 'review_queue' and not d['agreement']])
@@ -241,10 +297,11 @@ def quality_request(runner: Runner, row: dict[str, Any], units: list[dict[str, A
 
 def assess_quality(state: RunState, model: str, language: str, selected: list[dict[str, Any]]) -> None:
     """Annotate the evidence quality of each admitted comment and write the quality progress after each record."""
-    for row in selected:
+    def work(row):
+        # One unit: one comment with its attempts, in serial order.
         record_id = row['record_id']
         units = evidence_units(row['text_original'])
-        attempts = []
+        attempts, trace = [], []
         result = None
         for attempt in range(state.quality_policy['max_attempts']):
             data, context = quality_request(state.runner, row, units, language, state.quality_identity, attempts)
@@ -252,8 +309,8 @@ def assess_quality(state: RunState, model: str, language: str, selected: list[di
             # attempt 1 cannot masquerade as a fresh attempt 2.
             parsed, meta = state.runner.generate(model, language, 'quality', data, [record_id],
                                                  request_context=context)
-            state.trace.append({'model': model, 'stage': 'quality', 'comment_id': record_id,
-                                'attempt': attempt + 1, **meta})
+            trace.append({'model': model, 'stage': 'quality', 'comment_id': record_id,
+                          'attempt': attempt + 1, **meta})
             if parsed is not None:
                 result = quality.qualify(parsed, row, units, state.quality_policy)
                 if result['errors']:
@@ -265,12 +322,19 @@ def assess_quality(state: RunState, model: str, language: str, selected: list[di
             result = None
         record = result or quality.failed_record(row, units, attempts, state.quality_policy)
         record.update(attempts=attempts, model=model, observation_only=state.quality_mode == 'shadow')
-        state.quality_records[record_id] = record
+        return record, trace
+
+    def commit(row, result):
+        record, trace = result
+        state.trace.extend(trace)
+        state.quality_records[row['record_id']] = record
         write_json(state.folder / 'evidence-quality.json', list(state.quality_records.values()))
         write_json(state.folder / 'full-pipeline-coverage.json', build_full_coverage(
             state.rows, state.decisions, state.routes, state.models, state.quality_records, state.coverage, [],
             state.quarantine, state.quality_mode, state.args))
         write_json(state.folder / 'request-trace.json', state.trace)
+
+    ordered(selected, work, commit, state.max_parallel_requests)
 
 
 def extract_claims(state: RunState, model: str, language: str, selected: list[dict[str, Any]]) -> None:
@@ -282,20 +346,31 @@ def extract_claims(state: RunState, model: str, language: str, selected: list[di
     if state.quality_mode == 'enforce':
         prepared = [{**r, 'allowed_quality_points': quality.allowed_points(state.quality_records[r['comment_id']])}
                     for r in prepared if quality.allowed_points(state.quality_records[r['comment_id']])]
-    extraction_queue = list(batches(prepared, count=4, chars=9000 if language == 'en' else 4000))
-    while extraction_queue:
-        batch = extraction_queue.pop(0)
-        parsed, meta = state.runner.generate(model, language, 'extract',
+    def request(batch):
+        return state.runner.generate(model, language, 'extract',
             {'comments': batch, 'character_normalization_reference': character_reference('\n'.join(state.by_id[r['comment_id']]['text_original'] for r in batch))},
             [r['comment_id'] for r in batch])
+
+    def work(batch):
+        # One unit: the batch and, when it fails with several comments, its single-comment
+        # split retries in queue order.
+        results = [(batch, request(batch))]
+        if not results[0][1][0] and len(batch) > 1:
+            results.extend(([item], request([item])) for item in batch)
+        return results
+
+    def commit(_, results):
+        for batch, (parsed, meta) in results:
+            commit_batch(batch, parsed, meta)
+
+    def commit_batch(batch, parsed, meta):
         state.trace.append({'model': model, 'stage': 'extract', **meta})
         if not parsed:
             if len(batch) > 1:
-                extraction_queue[0:0] = [[item] for item in batch]
-                continue
+                return
             state.coverage.extend({'comment_id': r['comment_id'], 'model': model,
                                    'disposition': 'generation_failed', 'claims_generated': 0} for r in batch)
-            continue
+            return
         for assessment in parsed['assessments']:
             record_id = assessment['comment_id']
             state.coverage.append({'comment_id': record_id, 'model': model,
@@ -321,15 +396,22 @@ def extract_claims(state: RunState, model: str, language: str, selected: list[di
         write_json(state.folder / 'claims-before-audit.json', state.claims)
         write_json(state.folder / 'quarantined-claims.json', state.quarantine)
 
+    ordered(batches(prepared, count=4, chars=9000 if language == 'en' else 4000), work, commit,
+            state.max_parallel_requests)
+
 
 def audit_claims(state: RunState, model: str, language: str) -> None:
     """Audit each claim of the model alone and quarantine unsupported ones; write the progress after each audit."""
     # Audit in a separate context, with original spans, never the generator's rationale.
     pending = [c for c in state.claims if c['model'] == model]
-    for batch in batches(pending, count=1):
-        parsed, meta = state.runner.generate(model, language, 'verify',
+
+    def work(batch):
+        return state.runner.generate(model, language, 'verify',
             {'claims': batch, 'original_comment': state.by_id[batch[0]['comment_id']]['text_original']},
-                                             [c['claim_id'] for c in batch])
+                                     [c['claim_id'] for c in batch])
+
+    def commit(batch, result):
+        parsed, meta = result
         state.trace.append({'model': model, 'stage': 'verify', **meta})
         verdicts = {v['claim_id']: v for v in parsed['verdicts']} if parsed else {}
         for entry in batch:
@@ -340,6 +422,8 @@ def audit_claims(state: RunState, model: str, language: str) -> None:
                     'errors': [verdict['reason'] if verdict else 'Audit failed; fail closed']})
         write_json(state.folder / 'audit-progress.json', state.claims)
         write_json(state.folder / 'quarantined-claims.json', state.quarantine)
+
+    ordered(batches(pending, count=1), work, commit, state.max_parallel_requests)
 
 
 def summarize(state: RunState, accepted: list[dict[str, Any]]) -> dict[str, Any]:
