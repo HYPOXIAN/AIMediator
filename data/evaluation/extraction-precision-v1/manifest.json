@@ -1,0 +1,156 @@
+{
+  "version": "extraction-precision-v1",
+  "purpose": "precision and recall of extracted (character, direction) claims at comment level (plan 5.3, scored by aimediator.measurement.score_positions)",
+  "reviewer_type": "agent",
+  "independent_human_gold": false,
+  "labels_without_model_outputs": "Labels were written by the annotation session U0-A from the text_original of each comment only. The session read no claims, quarantined claims, audit results, relevance decisions, requests or responses of the archived run. From the run it read extraction-coverage.json only to select the IDs (comment_id, claims_generated, disposition); the selection group is not recorded per comment, and comments were labeled in the set order without it.",
+  "source_dataset": "data/raw/feedback/20261027-balanced/screened/records.jsonl",
+  "source_dataset_sha256": "3eb87a7561b41ff31cef3e7035f0a25353adbe1999e023ff5e46b1bcf4852e3f",
+  "archived_run": {
+    "name": "latest-balanced-20261027/full-pipeline-final",
+    "archive": "~/Archives/AIMediator/reports/latest-balanced-20261027/",
+    "curated_report": "reports/20261027-balanced-validation",
+    "selection_file": "full-pipeline-final/extraction-coverage.json",
+    "selection_file_sha256": "85646b270e17184f731b45d229831235a7181f183efdf4277caa222ec5e38ead"
+  },
+  "selection": "From the 525 entries of extraction-coverage.json (one per comment): every comment with claims_generated above 0 (251), plus the first 50 comments, ordered by the hexadecimal SHA-256 of the UTF-8 string \"extraction-precision-v1:<record_id>\" ascending, with claims_generated 0 and a disposition other than generation_failed (272 eligible). The text of each comment is the text_original of its source dataset row, checked against content_sha256.",
+  "selection_counts": {
+    "with_claims": 251,
+    "zero_claims": 50,
+    "zero_claims_eligible": 272
+  },
+  "split": "development when int(first 8 hexadecimal digits of SHA-256 of \"extraction-precision-v1:<record_id>\", base 16) modulo 10 is below 7, or when the record_id is in latency-benchmark-v1 (27 of its 60 IDs are in this set; 8 of them are forced into development); test otherwise.",
+  "test_split_policy": "The test split runs once, in U7.2; no session tunes against it (plan rule 1.11).",
+  "order": "labels.jsonl lists the comments by the hexadecimal SHA-256 of \"extraction-precision-v1:<record_id>\", ascending.",
+  "counts": {
+    "all": {
+      "comments": 301,
+      "uncertain": 24,
+      "scored_comments": 277,
+      "scored_comments_without_positions": 85,
+      "scored_positions": 293,
+      "scored_positions_by_direction": {
+        "buff": 62,
+        "keep": 3,
+        "nerf": 215,
+        "unclear": 13
+      }
+    },
+    "development": {
+      "all": {
+        "comments": 227,
+        "uncertain": 22,
+        "scored_comments": 205,
+        "scored_comments_without_positions": 62,
+        "scored_positions": 222,
+        "scored_positions_by_direction": {
+          "buff": 45,
+          "keep": 1,
+          "nerf": 166,
+          "unclear": 10
+        }
+      },
+      "en": {
+        "comments": 89,
+        "uncertain": 5,
+        "scored_comments": 84,
+        "scored_comments_without_positions": 46,
+        "scored_positions": 73,
+        "scored_positions_by_direction": {
+          "buff": 8,
+          "keep": 1,
+          "nerf": 58,
+          "unclear": 6
+        }
+      },
+      "zh": {
+        "comments": 138,
+        "uncertain": 17,
+        "scored_comments": 121,
+        "scored_comments_without_positions": 16,
+        "scored_positions": 149,
+        "scored_positions_by_direction": {
+          "buff": 37,
+          "nerf": 108,
+          "unclear": 4
+        }
+      }
+    },
+    "test": {
+      "all": {
+        "comments": 74,
+        "uncertain": 2,
+        "scored_comments": 72,
+        "scored_comments_without_positions": 23,
+        "scored_positions": 71,
+        "scored_positions_by_direction": {
+          "buff": 17,
+          "keep": 2,
+          "nerf": 49,
+          "unclear": 3
+        }
+      },
+      "en": {
+        "comments": 30,
+        "uncertain": 1,
+        "scored_comments": 29,
+        "scored_comments_without_positions": 17,
+        "scored_positions": 17,
+        "scored_positions_by_direction": {
+          "buff": 6,
+          "keep": 1,
+          "nerf": 9,
+          "unclear": 1
+        }
+      },
+      "zh": {
+        "comments": 44,
+        "uncertain": 1,
+        "scored_comments": 43,
+        "scored_comments_without_positions": 6,
+        "scored_positions": 54,
+        "scored_positions_by_direction": {
+          "buff": 11,
+          "keep": 1,
+          "nerf": 40,
+          "unclear": 2
+        }
+      }
+    }
+  },
+  "fields": {
+    "comment_id": "record_id of the source row",
+    "language": "language of the source row",
+    "content_sha256": "SHA-256 of text_original as UTF-8",
+    "split": "development or test",
+    "positions": "every (character, direction) position the author takes, as objects with character and direction",
+    "exhaustive": "true: positions lists every position of the comment, so an unlisted character or direction is not a position",
+    "uncertain": "true when the author's position cannot be resolved; score_positions excludes these comments from precision and recall and counts them apart",
+    "reason": "one or two English sentences, quoting the source where needed",
+    "reviewer_type": "agent"
+  },
+  "label_policy": {
+    "position": "A fighter whose balance the author takes a stance on. A mention, a comparison, a victim, the author's own character, roster wishes, story, cosmetic design or praise is not a position. System-only feedback (Drive, throw loops, modern controls, netcode, monetization) gives positions [] with that reason.",
+    "directions": "buff: the author wants the fighter stronger, calls it too weak, or objects to its nerfs; nerf: wants it weaker, calls it too strong or cheap, or objects to its buffs; keep: a clear request to preserve, or approval of, its balance; unclear: a balance stance whose requested change cannot be established (meanings of the extraction prompt). One comment may hold two directions for one fighter when it asks for both.",
+    "characters": "Glossary canonical names (src/aimediator/assets/data/glossary.json), including the glossary aliases and labels and plain transliteration variants of a canonical name (for example 吉米 for Jamie, 雅思敏 for Yasmine, 阿利克斯 for Alex); a move name scoped to one character in the glossary identifies that character. A name outside the glossary keeps its source literal and is flagged in reason; a nationality-only nickname never establishes identity.",
+    "source_literals": {
+      "阿俊": 46,
+      "Arjun": 8,
+      "高人": 3,
+      "保安": 1,
+      "大力士": 1,
+      "牛角包": 1,
+      "牢玛": 1,
+      "老沙": 1,
+      "货物": 1
+    },
+    "source_literals_note": "source_literals counts the positions of every comment, uncertain ones included. The literals 阿俊 and Arjun probably name the same character (Arjun, listed in the glossary roster_policy as a future character and absent from the glossary entries); they are kept apart as source literals. A scorer that maps both to one name changes the comparison and must say so.",
+    "uncertain": "Set when a stance cannot be resolved: sarcasm the text itself does not settle, a character named only by nationality or by an unresolvable nickname, or a statement that may not be a balance stance. Positions that can be resolved are still listed. A request with no textual cue of sarcasm is labeled literally."
+  },
+  "labels_sha256": "de7d7e32ae46dc1feba31d9c01b818d33116157630a6e2492bdc8161eded9e63",
+  "materialize": "python3 scripts/experiments/materialize_evaluation_input.py --set data/evaluation/extraction-precision-v1 --dataset data/raw/feedback/20261027-balanced/screened/records.jsonl --split development --out runs/upgrade/inputs/extraction-precision-v1-development.jsonl",
+  "score": "python3 scripts/experiments/score_extraction.py --run <run> --labels data/evaluation/extraction-precision-v1 --split development --out <file>",
+  "decision": "UP-D02 (docs/records/20261104-pipeline-upgrade.md)",
+  "set_status": "frozen",
+  "created": "2026-11-04 (pipeline upgrade step U0.5, annotation session U0-A)"
+}

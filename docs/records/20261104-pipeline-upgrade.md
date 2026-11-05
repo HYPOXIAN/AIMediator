@@ -39,6 +39,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | U0.2 | N | done | 250 | updated by UP-D01 | New module `aimediator.measurement` (`request_metrics`, `claim_outcomes`, `materialize`, `score_positions`; standard library, `common` and `quality_scoring.proportion` only) and the scripts `measure_run_requests.py` (writes both metrics and outcomes), `materialize_evaluation_input.py` and `score_extraction.py`. New `tests/test_measurement.py` (+9): synthetic runs with and without counters and both reuse formats, wall time, the three demo runs end to end (counters `None`), the three label formats, missing rows, hash mismatches, hand-computed precision and recall, the scripts. Layering row `measurement` → `common`, `quality_scoring`; design/cli.md section 5 layout and contract. Lock regenerated for exactly `L2:enforce/code-snapshot/measurement.py`, `L2:off/…` and `L2:shadow/…` (existence only); no other key differed. Beyond plan 5.2: fresh and reused statistics kept apart (reused archived responses keep their original counters with near-zero elapsed time); counts and sums beside the means; audit rejection share; extraction dispositions; quality attempt errors (IDs and key names only, no source text); `materialize` also checks `ids_sha256` or `labels_sha256` and `source_dataset_sha256` when the set's manifest records them. Nested text parts are counted without JSON quotes, which matches plan 0.2 (unit text 15.3 %, raw; 15.75 % with quotes). Decision found during execution D-1 |
 | U0.3 | D | done | 250 | green | UP-D02: `data/evaluation/latency-benchmark-v1/` frozen (`ids.json`, `manifest.json`); 60 IDs, 10 per language and length tercile; see "Evaluation sets". `materialize` reproduces the 60 rows in set order with every content hash matching |
 | U0.4 | N | done | 250 | green | Plan 8.1, 8.2, 8.4 and 8.5 at `bca6490`, and plan 8.7 with the committed tool; see "Baseline measurements (U0.4)". Every archived figure of plan 0.2 agrees within rounding; no baseline of plan 5.5 changes |
+| U0.5 | D | done | 250 | green | UP-D02: `data/evaluation/extraction-precision-v1/` frozen (`labels.jsonl`, `manifest.json`); 301 comments labeled by session U0-A from the source text only, 227 development and 74 test; see "Evaluation sets". `materialize` reproduces 301, 227 and 74 rows with every hash matching; `score_positions` reads the labels |
 
 ## Baseline measurements (U0.4)
 
@@ -173,6 +174,34 @@ blocking:
   `content_sha256` and `length_tercile` only; `ids_sha256`
   `8f0931b032fd215b1666559de9e91385b81d844b0c0b7b09ddcf961cc1a8514a`. The
   manifest states the selection rule in full, so U0-V can rerun it.
+- **`extraction-precision-v1`** (U0.5, UP-D02; frozen 2026-11-04). Purpose:
+  comment-level (character, direction) precision and recall of extracted
+  claims. Agent silver labels (`reviewer_type` `agent`,
+  `independent_human_gold` false), written by session U0-A from
+  `text_original` only, without any claim, quarantined claim, audit or
+  relevance result of the archived run. Same source dataset and SHA-256 as
+  `latency-benchmark-v1`. Selection from
+  `full-pipeline-final/extraction-coverage.json` of the archived run
+  `latest-balanced-20261027` (SHA-256 `85646b27…c5e38ead`, matching the
+  archive's `SHA256SUMS`; IDs only): the 251 comments with
+  `claims_generated` above 0 and the first 50 of the 272 eligible
+  zero-claim comments (not `generation_failed`) in the order of SHA-256 of
+  `extraction-precision-v1:<record_id>`. Split by that hash (first 8 hex
+  digits modulo 10 below 7) plus the benchmark IDs: 27 benchmark IDs are in
+  the set, 8 of them forced into development. 301 comments: development
+  227 (89 English, 138 Chinese), test 74 (30, 44). Uncertain 24 (22
+  development, 2 test). Scored positions: development 222 in 205 comments
+  (166 nerf, 45 buff, 10 unclear, 1 keep; 62 comments without a position),
+  test 71 in 72 comments. `labels_sha256`
+  `de7d7e32ae46dc1feba31d9c01b818d33116157630a6e2492bdc8161eded9e63`. The
+  manifest states the selection, split and label policy. Characters
+  outside the glossary keep their source literal: `阿俊` (46 positions)
+  and `Arjun` (8) probably name the same future character and are kept
+  apart, so a scorer comparing strings counts a claim of one against a
+  label of the other as wrong; seven other nicknames occur once to three
+  times. Nationality-only references and sarcasm the text does not settle
+  make a comment uncertain; a request with no textual cue of sarcasm is
+  labeled literally.
 
 ## Archive and deletions
 
@@ -211,5 +240,21 @@ blocking:
 - Next: U0.5 in session U0-A (annotation, fresh context); then U0.6 in
   session U0-L on the owner's machine; blockers: U0.6 needs the live
   environment, the embedding keys of the live configuration, and U0.5.
+
+### 2026-11-04 U0-A (annotation)
+
+- Steps: U0.5 done; none started and stashed.
+- State: HEAD is this entry's commit (parent `cdf6e33`); tests 250; lock
+  green; rule check 0.
+- Findings: no escalation; no label needed model outputs. Interpretations
+  of the step notes, stated in the manifest's label policy: plain
+  transliteration variants of a canonical name (`吉米`, `雅思敏`,
+  `阿利克斯`) and a Ryu-only move name map to the glossary character;
+  nicknames outside the glossary keep their literal, so `阿俊` and `Arjun`
+  stay apart (see "Evaluation sets"); a comment with an unresolvable stance
+  is uncertain even when it also holds clear positions.
+- Next: U0.6 in session U0-L on the owner's machine; then U0-V; blockers:
+  U0.6 needs the live environment and the embedding keys of the live
+  configuration.
 
 ## Deferred
