@@ -1,9 +1,10 @@
 # Code Optimization and Restructuring Plan
 
 - Type: Plan
-- Status: Active
-- Updated: 2026-11-03
+- Status: Archived
+- Updated: 2026-11-04
 - Applies to: commit `7282f49` and later; `RULES.md` v1.2; `aimediator` 0.1.0
+- Archived 2026-11-04 when the code restructuring was completed (tag `restructure-done`).
 
 The owner adopted every recommendation in section 9 on 2026-11-03. The
 [blueprint](code-restructuring-blueprint.md) governs how the work is
@@ -248,7 +249,7 @@ module.
 `demo.py` line 78, both inside functions.
 - [design/cli.md](../design/cli.md) section 5 planned separate `pipeline`,
 `retrieval`, `evidence` and `preflight` modules. The
-[implementation status](cli-implementation-status.md) ("Layout decisions")
+[implementation status](../plans/cli-implementation-status.md) ("Layout decisions")
 records that the primitives stayed in `engine.py` to keep test patch seams.
 Tests still replace `engine` module globals: `streamed_chat`
 (`test_balance_analysis.py` lines 96 and 112, `test_balanced_collection.py`

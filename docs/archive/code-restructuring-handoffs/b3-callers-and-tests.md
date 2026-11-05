@@ -1,9 +1,10 @@
 # Handoff B3: Callers leave the facade and the forwarders
 
 - Type: Agent handoff
-- Status: Active
-- Updated: 2026-11-03
+- Status: Archived
+- Updated: 2026-11-04
 - Applies to: [code restructuring plan](../code-restructuring.md) batch B3; entry tag `restructure-b2`
+- Archived 2026-11-04 when the code restructuring was completed (tag `restructure-done`).
 
 Work order for batch B3. The steps are defined in plan section 7 (B3). The
 contracts are in [blueprint](../code-restructuring-blueprint.md) sections 3.3

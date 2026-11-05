@@ -1,9 +1,10 @@
 # Handoff B1: Confirmed defects, the main hot spot, archives
 
 - Type: Agent handoff
-- Status: Active
-- Updated: 2026-11-03
+- Status: Archived
+- Updated: 2026-11-04
 - Applies to: [code restructuring plan](../code-restructuring.md) batch B1; entry tag `restructure-b0`
+- Archived 2026-11-04 when the code restructuring was completed (tag `restructure-done`).
 
 Work order for batch B1. The steps are defined in plan section 7 (B1).
 Roles, the session protocol and the standards are in the

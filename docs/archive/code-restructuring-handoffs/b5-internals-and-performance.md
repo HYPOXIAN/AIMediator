@@ -1,9 +1,10 @@
 # Handoff B5: Internal decomposition and performance
 
 - Type: Agent handoff
-- Status: Active
-- Updated: 2026-11-03
+- Status: Archived
+- Updated: 2026-11-04
 - Applies to: [code restructuring plan](../code-restructuring.md) batch B5; entry tag `restructure-b4`
+- Archived 2026-11-04 when the code restructuring was completed (tag `restructure-done`).
 
 Work order for batch B5. The steps are defined in plan section 7 (B5). This
 batch rewrites code, so the frozen contracts govern every change:

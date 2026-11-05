@@ -6,7 +6,7 @@
 - Applies to: commit `7282f49` and later; `RULES.md` v1.2 and later amendments
 
 The single change record of the code restructuring
-([plan](../plans/code-restructuring.md)). Every step adds its row to the
+([plan](../archive/code-restructuring.md)). Every step adds its row to the
 progress table in its own commit. Deletions are entered under "Archive and
 deletions" (G6). Frozen when the plan is finished (D3).
 
@@ -2119,7 +2119,7 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   decisions found during execution (see "2026-11-03 B1 owner review"). No
   fix-up steps, no escalations.
 - Next: B2.1, session B2-1
-  ([B2 work order](../plans/code-restructuring-handoffs/b2-engine-split.md)),
+  ([B2 work order](../archive/code-restructuring-handoffs/b2-engine-split.md)),
   from `restructure-b1`; blockers: none.
 
 ### 2026-11-03 B2-1 (implementation)
@@ -2191,7 +2191,7 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   implemented and open to the owner. `evidence.ground_claim` (61 lines) is
   noted for B5.
 - Next: B3.1, session B3-1
-  ([B3 work order](../plans/code-restructuring-handoffs/b3-callers-and-tests.md)),
+  ([B3 work order](../archive/code-restructuring-handoffs/b3-callers-and-tests.md)),
   from `restructure-b2`; blockers: none.
 
 ### 2026-11-03 B3-1 (implementation)
@@ -2273,7 +2273,7 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   `quality_contract` effect of CR-D06 on the screening experiment's
   requests is noted for the owner.
 - Next: B4.1, session B4-1
-  ([B4 work order](../plans/code-restructuring-handoffs/b4-layer-removal-and-docs.md)),
+  ([B4 work order](../archive/code-restructuring-handoffs/b4-layer-removal-and-docs.md)),
   from `restructure-b3`; blockers: none.
 
 ### 2026-11-04 B4-1 (implementation)
@@ -2335,7 +2335,7 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   review items.
 - Next: the owner's B4 review, then a closure session that records it and
   sets `restructure-b4` (blueprint 6.4). B5.1, session B5-1
-  ([B5 work order](../plans/code-restructuring-handoffs/b5-internals-and-performance.md)),
+  ([B5 work order](../archive/code-restructuring-handoffs/b5-internals-and-performance.md)),
   starts from that tag. Blockers: the owner's review.
 
 ### 2026-11-04 B4-2 (closure)
@@ -2350,7 +2350,7 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   escalations. This closure ran in the same session context as B4-V, at
   the owner's instruction.
 - Next: B5.1, session B5-1
-  ([B5 work order](../plans/code-restructuring-handoffs/b5-internals-and-performance.md)),
+  ([B5 work order](../archive/code-restructuring-handoffs/b5-internals-and-performance.md)),
   from `restructure-b4`; blockers: none.
 
 ### 2026-11-04 B5-1 (implementation)
@@ -2466,7 +2466,7 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   three decisions found during execution in B5-1, and the cost of the
   `run_store.state` listing (B5-3).
 - Next: B6.1, session B6-1
-  ([B6 work order](../plans/code-restructuring-handoffs/b6-research-code.md)),
+  ([B6 work order](../archive/code-restructuring-handoffs/b6-research-code.md)),
   from `restructure-b5`; blockers: none.
 
 ### 2026-11-04 B6-1 (implementation)
@@ -2506,7 +2506,7 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
     anything was pushed (there is no remote); the trees are unchanged.
   - No escalation.
 - Next: B6.3, session B6-2
-  ([B6 work order](../plans/code-restructuring-handoffs/b6-research-code.md));
+  ([B6 work order](../archive/code-restructuring-handoffs/b6-research-code.md));
   blockers: none.
 
 ### 2026-11-04 B6-2 (implementation)
@@ -2543,7 +2543,7 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   - `2f3ec2a` fixed the table cell of the B6.3 progress row, whose code
     span contained pipes.
 - Next: B6-V (verification)
-  ([B6 work order](../plans/code-restructuring-handoffs/b6-research-code.md));
+  ([B6 work order](../archive/code-restructuring-handoffs/b6-research-code.md));
   blockers: none.
 
 ### 2026-11-04 B6-V (verification)
@@ -2558,7 +2558,7 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
   Still open to the owner, none of them blocking: the two decisions
   found during execution in B6.
 - Next: B7.1, session B7-1
-  ([B7 work order](../plans/code-restructuring-handoffs/b7-readability-and-acceptance.md)),
+  ([B7 work order](../archive/code-restructuring-handoffs/b7-readability-and-acceptance.md)),
   from `restructure-b6`; blockers: none.
 
 ### 2026-11-04 B7-1 (implementation)
@@ -2596,7 +2596,7 @@ git grep -nE "(^|[^a-z/])(prompts/[a-z-]+\.(en|zh)\.txt|configs/(balance-review-
     standard-library imports.
   - No escalation.
 - Next: B7.3, session B7-2
-  ([B7 work order](../plans/code-restructuring-handoffs/b7-readability-and-acceptance.md));
+  ([B7 work order](../archive/code-restructuring-handoffs/b7-readability-and-acceptance.md));
   blockers: none.
 
 ### 2026-11-04 B7-2 (implementation)

@@ -13,6 +13,10 @@ this file (G1); this file only points to it and lists commands.
 The completed 2026-11 reorganization is described in
 [docs/archive/reorganization.md](docs/archive/reorganization.md) and recorded in
 [docs/records/20261103-reorganization.md](docs/records/20261103-reorganization.md).
+The completed 2026-11 code restructuring is described in
+[docs/archive/code-restructuring.md](docs/archive/code-restructuring.md) and
+recorded in
+[docs/records/20261103-code-restructuring.md](docs/records/20261103-code-restructuring.md).
 
 The current engineering project is the pipeline upgrade:
 [docs/plans/pipeline-upgrade.md](docs/plans/pipeline-upgrade.md), with one

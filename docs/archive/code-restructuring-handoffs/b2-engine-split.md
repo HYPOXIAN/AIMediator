@@ -1,9 +1,10 @@
 # Handoff B2: Split `engine.py` by pure moves
 
 - Type: Agent handoff
-- Status: Active
-- Updated: 2026-11-03
+- Status: Archived
+- Updated: 2026-11-04
 - Applies to: [code restructuring plan](../code-restructuring.md) batch B2; entry tag `restructure-b1`
+- Archived 2026-11-04 when the code restructuring was completed (tag `restructure-done`).
 
 Work order for batch B2. The steps are defined in plan section 7 (B2). The
 target interfaces are in [blueprint](../code-restructuring-blueprint.md)

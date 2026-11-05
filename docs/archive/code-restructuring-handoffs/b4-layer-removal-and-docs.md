@@ -1,9 +1,10 @@
 # Handoff B4: Remove the compatibility layers; documentation
 
 - Type: Agent handoff
-- Status: Active
-- Updated: 2026-11-03
+- Status: Archived
+- Updated: 2026-11-04
 - Applies to: [code restructuring plan](../code-restructuring.md) batch B4; entry tag `restructure-b3`
+- Archived 2026-11-04 when the code restructuring was completed (tag `restructure-done`).
 
 Work order for batch B4. The steps are defined in plan section 7 (B4).
 Roles and the review protocol are in the

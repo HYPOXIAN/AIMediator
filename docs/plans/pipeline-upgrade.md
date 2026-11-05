@@ -24,7 +24,7 @@ creates the change record `docs/records/<YYYYMMDD>-pipeline-upgrade.md`.
 > 241 offline tests pass and the rule check reports 0 violations.
 > **Entry condition**: the code restructuring is closed: the owner's final
 > review is recorded and tag `restructure-done` exists
-> ([restructuring plan](code-restructuring.md), section 12). U0 does not start before.
+> ([restructuring plan](../archive/code-restructuring.md), section 12). U0 does not start before.
 > **Scope**: `src/aimediator/`, `scripts/experiments/`, `tests/`, prompts and
 > policies under `src/aimediator/assets/` (only under the decisions that name
 > them), new evaluation sets under `data/evaluation/`, new curated

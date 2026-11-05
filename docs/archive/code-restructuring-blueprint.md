@@ -1,9 +1,10 @@
 # Code Restructuring Blueprint
 
 - Type: Plan (blueprint)
-- Status: Active
-- Updated: 2026-11-03
+- Status: Archived
+- Updated: 2026-11-04
 - Applies to: the [code restructuring plan](code-restructuring.md), batches B0 to B7; commit `7282f49` and later; `RULES.md` v1.2
+- Archived 2026-11-04 when the code restructuring was completed (tag `restructure-done`).
 
 This blueprint governs the code restructuring as an engineering project. It
 fixes the approved scope, the target interfaces, the engineering standards,

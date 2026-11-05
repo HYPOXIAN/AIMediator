@@ -1,9 +1,10 @@
 # Handoff B7: Readability and final acceptance
 
 - Type: Agent handoff
-- Status: Active
-- Updated: 2026-11-03
+- Status: Archived
+- Updated: 2026-11-04
 - Applies to: [code restructuring plan](../code-restructuring.md) batch B7; entry tag `restructure-b6`
+- Archived 2026-11-04 when the code restructuring was completed (tag `restructure-done`).
 
 Work order for batch B7. The steps are defined in plan section 7 (B7). The
 document lifecycle is in [blueprint](../code-restructuring-blueprint.md)

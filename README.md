@@ -135,8 +135,8 @@ Current engineering work: the [pipeline upgrade](docs/plans/pipeline-upgrade.md)
 which lowers live-analysis run time, replaces fragile algorithms and data
 structures, improves the prompts and model-visible requests, and links
 modules that work in isolation. It runs in batches U0 to U7, each with a
-work order in `docs/plans/pipeline-upgrade-handoffs/`, and starts once the
-code restructuring is closed.
+work order in `docs/plans/pipeline-upgrade-handoffs/`, and starts from tag
+`restructure-done`, which closes the code restructuring.
 
 ## Development
 

@@ -1,6 +1,6 @@
 """Behavior lock: offline producers, normalizer and fixture writer.
 
-Plan section 5 (docs/plans/code-restructuring.md). Four targets run offline
+Plan section 5 (docs/archive/code-restructuring.md). Four targets run offline
 with fixture transports:
 
 - L1: the CLI demo (``aimediator.demo.demo``);

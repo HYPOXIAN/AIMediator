@@ -1,9 +1,10 @@
 # Handoff B0: Safety net and baseline
 
 - Type: Agent handoff
-- Status: Active
-- Updated: 2026-11-03
+- Status: Archived
+- Updated: 2026-11-04
 - Applies to: [code restructuring plan](../code-restructuring.md) batch B0; entry tag `restructure-plan`
+- Archived 2026-11-04 when the code restructuring was completed (tag `restructure-done`).
 
 Work order for batch B0. The steps are defined in plan section 7 (B0).
 Roles, the session protocol and the standards are in the

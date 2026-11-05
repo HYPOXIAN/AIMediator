@@ -1,9 +1,10 @@
 # Handoff B6: Research code: workspace root, collection, shared helpers
 
 - Type: Agent handoff
-- Status: Active
-- Updated: 2026-11-03
+- Status: Archived
+- Updated: 2026-11-04
 - Applies to: [code restructuring plan](../code-restructuring.md) batch B6; entry tag `restructure-b5`
+- Archived 2026-11-04 when the code restructuring was completed (tag `restructure-done`).
 
 Work order for batch B6. The steps are defined in plan section 7 (B6). The
 contracts (`resources.workspace_root`, `collection`, `design_briefs`,
