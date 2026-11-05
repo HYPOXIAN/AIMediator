@@ -2086,6 +2086,71 @@ against the rule (plan 5.4) and revert a kept step in a later session.
   and a row now records it.
 - Result: accepted, tag `upgrade-u3`.
 
+### 2026-11-05 U4-V
+
+- Range: `d9b2de9..d025bf3`; 11 commits: U4.1 `470f1c8`; U4.2 `9932d40`;
+  U4.3 `7517a0f`; U4.4 `09a79e3`; U4.5 `2614453`; U4-L `680a94c`; U4.6
+  `8f84438` (recorded as skipped); U4.7 `0cd9eab`; U4.F1 `385f744`;
+  U4-L2 `81ccfd8`; session log `d025bf3`. Also checked: the E-4 fix-ups
+  that session U6 made before U6.7, `dc05a37..294c5b2`, 4 commits:
+  U4.F2 `a834abe`, U4.F3 `e03122c`, U4.F4 `d8ee25d` and U4.F5 `294c5b2`.
+  `d9b2de9` stands in for `upgrade-u3`. The checklist was shortened as
+  in the U2-V note.
+- Checks:
+  1. Boundary and commit hygiene (plan 8.8): pass for both ranges. The
+     boundary check prints nothing and so does the hygiene check. Every
+     revert carries `Step:` and `Reverts:` (`385f744`, `2614453`,
+     `09a79e3`) and the subject `fix: revert ...` (plan 1.7).
+  2. Fixture cases and evaluation sets:
+     `git diff d9b2de9..HEAD -- src/aimediator/assets/fixtures/cases.json data/evaluation`
+     prints nothing. U4.2 mapped all 38 cases, so the fallback of plan 4.2
+     was not needed.
+  3. Routing rules: pass. The source of `evidence_quality.qualify` is
+     identical at `d9b2de9`, `09a79e3`, `2614453`, `d025bf3` and HEAD
+     (compared as AST segments). The U4.3 round-trip test
+     (`test_fixture_round_trip_keeps_the_v1_routing`) passes within the
+     suite.
+  4. Earlier runs at HEAD: pass. A demo made with the code of `d9b2de9`
+     (a `git archive` copy first on `PYTHONPATH`, checked by
+     `aimediator.__file__`) passes, at HEAD, `review export`,
+     `review import` (agent reviewer), `report --review` and `report`
+     twice, in `enforce` and `shadow`. The two automatic exports are
+     byte-identical. Invariant 2.1.9: the U4.4-era v2 runs
+     `u4-benchmark-shadow` and `u4-quality-synthetic-shadow` (code
+     `2614453`) still pass `status`, `report` and `review export` at
+     HEAD. Their records keep the derived v1 `annotation`, which the v1
+     rules accept.
+  5. Lock and hashes: pass. In the batch range only `09a79e3` (U4.4) and
+     `385f744` (U4.F1) change the fixture, both with `Decision: UP-D10`.
+     U4.5 records `Lock: unchanged`, and U4.6 made no code change. Of the
+     fix-ups, `a834abe` (U4.F2) and `d8ee25d` (U4.F4) regenerate the 25
+     and 100 keys of the steps they revert, and `e03122c` (U4.F3) leaves
+     the lock unchanged. Every listed SHA-256 recomputes: the policy and
+     `evidence-quality.{en,zh}` for U4.4, U4.F1, U4.F2 and U4.F4, and the
+     unchanged `quality-extract` and `quality-verify` pairs, whose
+     abbreviated values match. The policy and both prompts at HEAD equal
+     their values before U4.4 (`496090a7…`, `0da81e6d…`, `1db0f055…`).
+  6. Verdicts, documents and gates: pass. U4-L and U4-L2 verdicts are
+     recorded (rules 2 and 3 fail, E-4). Gates, foreign directory and
+     wheel pass at HEAD (U6-V note). ADR 0005 and its index row exist.
+- Fix-ups of E-4: verified. Outside the record and the lock, the lines
+  each revert changes are exactly the inverse of the reverted step's
+  (sorted `+` and `-` lines compared). U4.F3 archived
+  `tests/test_quality_readers.py` with `SHA256SUMS` and recorded it
+  (G6, plan 1.9). U4.F5 adds the "no longer sent" sentence to the three
+  design documents. None of the adopted reverts is `bypassed`, so this
+  session had none of them to execute.
+- Finding passed to U7: ADR 0005 still reads `Status: Active`, but its
+  pipeline decisions (v2 requests and the readers of both versions) are
+  reverted. U4.F5 bypassed a sentence in the ADR under D3. D3 does allow
+  a status change, but D2 has no status for a partly reverted decision,
+  and the ADR's U4.1 to U4.3 code (clause segments, the v2 schema
+  builder and its conversion) stays in the package unused.
+  Recommendation for U7.3: a short ADR that supersedes 0005 in part,
+  with 0005 set to `Superseded by` it. Not decided here.
+- Result: accepted after the E-4 fix-ups, tag `upgrade-u4-review`; the
+  review follows.
+
 ## Session log
 
 ### 2026-11-04 U0-1 (implementation)
