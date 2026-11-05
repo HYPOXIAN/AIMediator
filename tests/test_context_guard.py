@@ -67,7 +67,7 @@ class PipelineContextTests(unittest.TestCase):
 
         def chat(base, payload, partial):
             result = original(base, payload, partial)
-            stage = 'quality' if 'segment_labels' in payload['format']['properties'] else \
+            stage = 'quality' if 'segments' in payload['format']['properties'] else \
                 'extract' if 'assessments' in payload['format']['properties'] else 'other'
             if full(stage, json.loads(payload['messages'][1]['content']), payload):
                 result = {**result, 'prompt_eval_count': payload['options']['num_ctx'] - 100, 'eval_count': 100}

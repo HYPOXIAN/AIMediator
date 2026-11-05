@@ -84,7 +84,7 @@ def main():
             attempts.append(meta)
             trace.append({'stage':'quality','comment_id':cid,'attempt':attempt+1,**meta})
             if annotation is not None:
-                record=q.qualify_v2(annotation,row,units,data['segments'],policy)
+                record=q.qualify(annotation,row,units,policy)
                 break
         record=record or q.failed_record(row,units,attempts,policy)
         record['attempts']=attempts

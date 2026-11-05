@@ -1,7 +1,6 @@
 {
-  "version": "evidence-quality-policy-v2",
-  "schema_version": "evidence-quality-v2",
-  "segmentation_version": "clause-v1",
+  "version": "evidence-quality-policy-v1",
+  "schema_version": "evidence-quality-v1",
   "measurement_version": "unicode-LNMS-codepoint-v1",
   "high_emotion_threshold": 0.70,
   "threshold_status": "uncalibrated_diagnostic_only",

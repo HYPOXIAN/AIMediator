@@ -14,7 +14,7 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 import behavior_lock as lock
-from aimediator import evidence_quality, stages
+from aimediator import stages
 from aimediator.demo import demo
 
 # Per stage, the largest non-comment character count of a user message over every request of the five U2-L1 live
@@ -30,26 +30,6 @@ BUDGETS = {  # stage: ceil(1.2 * U2-L1 maximum)
 }
 
 
-def segment_characters():
-    """Return the characters one clause segment adds to a v2 quality message (U4.4, UP-D10), with 16 for longer IDs.
-
-    The v2 response schema holds one label object per segment and the view one {segment_id, text} entry; the
-    quality budget above covers the rest of the message, which v2 does not grow.
-    """
-    one = [{'segment_id': 'E1.1', 'evidence_id': 'E1', 'text': '', 'start': 0, 'end': 0}]
-    two = one + [{**one[0], 'segment_id': 'E1.2'}]
-    size = lambda segments: len(json.dumps(evidence_quality.annotation_schema_v2('c', segments, []), ensure_ascii=False))
-    return size(two) - size(one) + len(json.dumps({'segment_id': 'E1.2', 'text': ''})) + 2 + 16
-
-
-def budget(stage, user):
-    """Return the non-comment character budget of a user message: the stage budget, plus the segments' part for quality."""
-    if stage != 'quality':
-        return BUDGETS[stage]
-    count = sum(len(u.get('segments') or []) for c in user.get('comments') or [] for u in c.get('units') or [])
-    return BUDGETS[stage] + count * segment_characters()
-
-
 def comment_texts(user):
     """Return the comment texts a user message carries: comments[].text, comments[].units[].text, original_evidence.
 
@@ -60,8 +40,6 @@ def comment_texts(user):
         if isinstance(comment.get('text'), str):
             texts.append(comment['text'])
         texts.extend(u['text'] for u in comment.get('units') or [] if isinstance(u.get('text'), str))
-        texts.extend(s['text'] for u in comment.get('units') or [] for s in u.get('segments') or []
-                     if isinstance(s.get('text'), str))
     if isinstance(user.get('original_evidence'), str):
         texts.append(user['original_evidence'])
     return texts
@@ -118,7 +96,7 @@ class PayloadContract(unittest.TestCase):
     def test_non_comment_characters_stay_within_the_budgets(self):
         self.assertEqual(set(BUDGETS), set(stages.MODEL_VISIBLE))
         for run, stage, content in self.requests:
-            self.assertLessEqual(non_comment_characters(content), budget(stage, json.loads(content)), (run, stage))
+            self.assertLessEqual(non_comment_characters(content), BUDGETS[stage], (run, stage))
 
     def test_the_count_excludes_only_comment_texts(self):
         user = {'comments': [{'comment_id': 'c', 'text': '平衡"', 'units': [{'evidence_id': 'E1', 'text': 'ab'}]}],

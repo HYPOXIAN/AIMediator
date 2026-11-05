@@ -8,8 +8,7 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 from support import case
 from aimediator import evidence_quality, stages
-from aimediator.evidence import clause_segments, evidence_units
-from aimediator.fixture_transport import v2_annotation
+from aimediator.evidence import evidence_units
 
 STAGES = ('relevance', 'retrieval_review', 'quality', 'extract', 'verify')
 
@@ -105,18 +104,17 @@ class Normalize(unittest.TestCase):
     def test_quality_validates_the_annotation_against_the_source(self):
         c = case('numeric_request')
         row = c['source']
-        units = evidence_units(row['text_original'])
-        data = {'comments': [{'comment_id': row['record_id'], 'units': units}], 'segments': clause_segments(units),
-                'source': row, 'character_literals': evidence_quality.character_literals(row['text_original'])}
-        annotation = v2_annotation(c['annotation'], row['text_original'])
+        data = {'comments': [{'comment_id': row['record_id'], 'units': evidence_units(row['text_original'])}],
+                'source': row}
+        annotation = c['annotation']
         parsed, errors = stages.normalize('quality', annotation, [row['record_id']], data)
         self.assertIs(parsed, annotation)
         self.assertEqual(errors, [])
         broken = copy.deepcopy(annotation)
-        broken['information_points'][0]['mechanic_literal'] = 'uppercut'
+        broken['segments'][0]['quote'] = broken['segments'][0]['quote'][:-1] + '?'
         parsed, errors = stages.normalize('quality', broken, [row['record_id']], data)
         self.assertIsNone(parsed)
-        self.assertIn('Literal absent from selected spans: mechanic_literal', errors)
+        self.assertIn('Quote/offset mismatch: S1', errors)
 
     def test_verify_verdict_and_scope(self):
         parsed, errors = stages.normalize('verify', {'support': 'supported'}, ['c:1'], {'claim_id': 'c:1'})

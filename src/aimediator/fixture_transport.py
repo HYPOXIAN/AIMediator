@@ -59,9 +59,8 @@ class FixtureTransport(Transport):
         self.calls.append(('chat', payload['model']))
         data = json.loads(payload['messages'][1]['content'])
         props = payload['format']['properties']
-        if 'segment_labels' in props:
-            cid = data['comments'][0]['comment_id']
-            result = v2_annotation(self.annotations[cid], self.originals[cid]['text_original'])
+        if 'segments' in props:
+            result = self.annotations[data['comments'][0]['comment_id']]
         elif 'decisions' in props:
             result = {'decisions': ['related'] * len(data['comments'])}
         elif 'support' in props:

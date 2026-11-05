@@ -13,8 +13,7 @@ from aimediator import evidence_quality, stages
 from aimediator.common import canonical, read, sha
 from aimediator.config import defaults
 from aimediator.demo import demo
-from aimediator.evidence import character_candidates, character_reference, clause_segments, evidence_units
-from aimediator.evidence_quality import character_literals
+from aimediator.evidence import character_candidates, character_reference, evidence_units
 from aimediator.fixture_transport import FixtureTransport
 from aimediator.operations import analyze
 from aimediator.pipeline import quality_request
@@ -64,27 +63,24 @@ class ModelVisibleKeys(unittest.TestCase):
 class QualityView(unittest.TestCase):
     """Plan 4.1, UP-D04: no source row, contract or attempt; a repair attempt sees the previous errors."""
 
-    def test_quality_view_keeps_the_comment_language_segments_and_literals(self):
+    def test_quality_view_keeps_the_comment_language_and_candidate_references(self):
         source = case('numeric_request')['source']
         data, context = quality_request(None, source, evidence_units(source['text_original']), 'en',
                                         {'run_identity': 'run'}, [])
         self.assertEqual(context, {'attempt': 1})
         self.assertEqual((data['source'], data['quality_contract'], data['attempt']), (source, {'run_identity': 'run'}, 1))
         visible = stages.view('quality', data, [source['record_id']])
-        self.assertEqual(list(visible), ['comments', 'language', 'character_literals'])
-        units = evidence_units(source['text_original'])
-        segments = clause_segments(units)
-        self.assertEqual(data['segments'], segments)
-        self.assertEqual(visible['comments'], [{'comment_id': source['record_id'], 'units': [
-            {'evidence_id': u['evidence_id'], 'segments': [{'segment_id': s['segment_id'], 'text': s['text']}
-                                                           for s in segments if s['evidence_id'] == u['evidence_id']]}
-            for u in units]}])
+        self.assertEqual(list(visible), ['comments', 'language', 'character_normalization_reference'])
+        self.assertEqual(visible['comments'], [{'comment_id': source['record_id'],
+                                                'units': evidence_units(source['text_original'])}])
         self.assertEqual(visible['language'], 'en')
-        self.assertEqual(visible['character_literals'], character_literals(source['text_original']))
-        self.assertTrue(visible['character_literals'])
-        # Plan 4.1 (v2): no offsets, quotes or reference entries reach the model.
-        self.assertNotIn('start', json.dumps(visible))
-        self.assertNotIn('character_normalization_reference', visible)
+        names = [e['canonical_name'] for e in visible['character_normalization_reference']]
+        reference = character_reference(source['text_original'])
+        self.assertEqual(names, character_candidates(source['text_original'], reference))
+        self.assertTrue(names)
+        self.assertLess(len(names), len(reference))
+        self.assertEqual(visible['character_normalization_reference'],
+                         [e for e in reference if e['canonical_name'] in names])
 
     def test_previous_attempt_errors(self):
         source = case('numeric_request')['source']
@@ -129,7 +125,7 @@ class QualityView(unittest.TestCase):
 
             def chat(base, payload, partial):
                 data = json.loads(payload['messages'][1]['content'])
-                if 'segment_labels' in payload['format']['properties'] and 'previous_attempt_errors' not in data:
+                if 'segments' in payload['format']['properties'] and 'previous_attempt_errors' not in data:
                     comment = data['comments'][0]['comment_id']
                     if comment == 'synthetic:numeric_request:en':
                         return {'done': True, 'done_reason': 'stop', 'message': {'content': '{"comment_id": 1}'}}

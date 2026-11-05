@@ -10,7 +10,7 @@ from typing import Any, Callable, Iterable, Iterator
 from . import evidence_quality as quality
 from .balance_policy import load_policy, retrieval_review_agrees, triage_retrieval
 from .common import write as write_json
-from .evidence import character_reference, clause_segments, evidence_units, ground_claim
+from .evidence import character_reference, evidence_units, ground_claim
 from .retrieval import retrieve
 from .runner import Runner
 VERSION = 'balance-evidence-v2'
@@ -282,13 +282,12 @@ def quality_request(runner: Runner, row: dict[str, Any], units: list[dict[str, A
                     contract: Any, attempts: list[dict[str, Any]]) -> tuple[dict[str, Any], dict[str, Any]]:
     """Return the request data and the request context of the next quality attempt after the failed attempts.
 
-    The model sees stages.view of the data: the clause segments of the units and the character literals, no
-    source row, contract or attempt number (plan 4.2, UP-D10). A repair attempt carries the errors of the
-    previous attempt (plan 4.1, UP-D04); the attempt enters request_context.
+    The model sees stages.view of the data: no source row, contract or attempt number. A repair attempt
+    carries the errors of the previous attempt (plan 4.1, UP-D04); the attempt enters request_context.
     """
     data = {'comments': [{'comment_id': row['record_id'], 'units': units}],
-            'segments': clause_segments(units), 'source': row, 'language': language,
-            'character_literals': quality.character_literals(row['text_original']),
+            'source': row, 'language': language,
+            'character_normalization_reference': character_reference(row['text_original']),
             'quality_contract': contract, 'attempt': len(attempts) + 1}
     if attempts:
         data['previous_attempt'] = {'errors': attempts[-1]['errors'],
@@ -313,7 +312,7 @@ def assess_quality(state: RunState, model: str, language: str, selected: list[di
             trace.append({'model': model, 'stage': 'quality', 'comment_id': record_id,
                           'attempt': attempt + 1, **meta})
             if parsed is not None:
-                result = quality.qualify_v2(parsed, row, units, data['segments'], state.quality_policy)
+                result = quality.qualify(parsed, row, units, state.quality_policy)
                 if result['errors']:
                     meta = {**meta, 'errors': result['errors']}
                 else:

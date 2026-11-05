@@ -116,6 +116,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | U5-L3 | L | done | 326 | green | UP-D11, UP-D18, UP-D19, UP-D20, D-13. `u5l3-extraction-development-off` at the U5.3 commit `476d502` (a `git archive` copy first on `sys.path`; U5.2 included) through bridge version 2 (identity check passed; all 190 chat attempts from `deepseek/deepseek-v4-flash` on DeepInfra). Reference `u5l1-extraction-development-off` (U5.1, the latest step that passed; D-13). Verdict: U5.3 **fails rules 3 and 4**: precision of accepted claims 52/71 (73.2 %) against 58/77 (75.3 %), −2.1 points (Newcombe −16.1 to +11.8); recall 52/123 (42.3 %) against 58/123 (47.2 %), −4.9 points (−17.0 to +7.5), beyond 3; T6 54/126 (42.9 %) against 40/119 (33.6 %); rule 2 holds (0 against 0, coverage complete). Against the U5.2 run: −2.1 and −6.5 points. Escalation E-6; not reverted. Run U5-L3 ran while U5.4 (documents) was committed. Curated report `reports/20261105-upgrade-u5-evaluation/` (D-13) with the five U5 runs; full runs archived with `SHA256SUMS`. See "U5-L3" under "Live evaluations". Spend 0.0256 USD (0.2841 to 0.3097 USD) |
 | U4.F2 | B | done | 326 | updated by UP-D10 | Fix-up step of E-4, fallback (a), adopted under the owner authorization of 2026-11-05 03:11 and moved from the verification session to session U6 by its prompt (later commits would make the reverts harder; the verification session checks them). `git revert` of U4.F1 (`385f744`): the prompt pair `evidence-quality.{en,zh}` returns to its U4.4 text; see "Behavior changes". The record and the lock kept their HEAD versions in the conflict resolution (the record keeps the U4.F1 rows as history); the lock was regenerated: exactly the 25 keys of U4.F1 (the prompt assets and snapshots, manifests, the quality request digests and the two reports), 771 keys |
 | U4.F3 | B | done | 320 | green | Fix-up step of E-4, fallback (a), adopted under the owner authorization of 2026-11-05 03:11 (moved to session U6 as U4.F2). `git revert` of U4.5 (`2614453`): `evidence_quality.stored_annotation_errors` and `SCHEMA_VERSIONS` removed; `review.load_run` again validates the stored `annotation` with `validate_annotation`; `quality_scoring.evaluate` and `legacy_review.apply_review` no longer refuse unknown schema versions. The record kept its HEAD version in the conflict resolution. `tests/test_quality_readers.py` (+6 in U4.5) removed with the step, so the count falls from 326 to 320 (above the P4 floor of 241); the file is archived (see "Archive and deletions"). Until U4.F4, the pipeline still writes v2 records, whose derived `annotation` the v1 rules accept, as at the U4.4 commit. Lock unchanged (771 keys) |
+| U4.F4 | B | done | 320 | updated by UP-D10 | Fix-up step of E-4, fallback (a), adopted under the owner authorization of 2026-11-05 03:11 (moved to session U6 as U4.F2). `git revert` of U4.4 (`09a79e3`): the pipeline sends quality v1 requests again (the U2.2 view with offsets and the character reference; `annotation_schema`, `validate_annotation`, `qualify`), the policy returns to `evidence-quality-policy-v1` (schema `evidence-quality-v1`, no `segmentation_version`), the prompt pair `evidence-quality.{en,zh}` to its U2.2 text, `FixtureTransport` to v1 answers, `design_briefs.quality_design_errors` to v1 (D-11, part 2) and the two quality scripts to `qualify`; the tests of U4.4 return to their U2.2 to U3 form. The code merged without conflict with the U5 commits; the record and the lock kept their HEAD versions. U4.1 to U4.3 (`clause_segments`, the v2 schema builder, `to_v1_annotation`, `validate_annotation_v2`, `qualify_v2`, `fixture_transport.v2_annotation`) and U4.7 stay, unused by the pipeline. Lock regenerated (771 keys): exactly the 100 keys of U4.4; 77 return to their values before U4.4, and 23 (extraction and verify requests of `enforce`, manifests, prompt snapshots, reports) keep the U5 changes. See "Behavior changes" |
 
 ## Baseline measurements (U0.4)
 
@@ -1140,6 +1141,9 @@ the archive with `SHA256SUMS`.
 | U5.3 | UP-D11 | Prompt `src/aimediator/assets/prompts/summarize-balance.zh.txt`: five authored synthetic examples at the end (the three of English, an `unclear` and `uncertain` position, a qualitative claim from a general complaint) | `b40bbfa5e14323b3d9a418c8126c39834e286eab7e1a559183bbbb840e324381` | `e901d527721bb9663e9e1d7cce2ed6a47ee0e24b22254e99da951099be5fce86` | as above |
 | U4.F2 | UP-D10 (E-4) | Revert of U4.F1: prompt `src/aimediator/assets/prompts/evidence-quality.en.txt` returns to its U4.4 text | `825c11cdfe6a9a43495aeedabff678b0ede56ad7b70b1532ea3483e7b0564b7f` | `e24371de447ec5b5598ed415bc3a78d80e832ca544bf0a942faebecf66fb62ea` | the 25 keys of U4.F1 |
 | U4.F2 | UP-D10 (E-4) | Revert of U4.F1: prompt `src/aimediator/assets/prompts/evidence-quality.zh.txt` (same) | `a383d423eeec97c91a88a1fba05f3a20f3c2e491879b329db38ac19f49eae7ae` | `ebc63543f4036b632ee4ac5102e4a5ebc63a9e60f42ad7711ca0ba7a276fea21` | as above |
+| U4.F4 | UP-D10 (E-4) | Revert of U4.4: quality requests return to v1 (the U2.2 view `comments[comment_id, units[evidence_id, text, start, end]]`, `language`, `character_normalization_reference`, `previous_attempt_errors`; the v1 schema); records `evidence-quality-v1` without `annotation_v2`. Policy `src/aimediator/assets/configs/evidence-quality-policy.json` returns to `evidence-quality-policy-v1` | `fb273e2ce8132a8ad90397c13b4108b64d95667f27dba7d8fa80db4f4ddcc06f` | `496090a7296a3d8a739d8f3d87ea15b9e3a9a026fa2df8830661bf29aab3146e` | the 100 keys of U4.4 |
+| U4.F4 | UP-D10 (E-4) | Revert of U4.4: prompt `src/aimediator/assets/prompts/evidence-quality.en.txt` returns to its U2.2 text | `e24371de447ec5b5598ed415bc3a78d80e832ca544bf0a942faebecf66fb62ea` | `0da81e6d66b596c68d911723be5b3e97f3b368c85032da4dacd92b666b4bf2c7` | as above |
+| U4.F4 | UP-D10 (E-4) | Revert of U4.4: prompt `src/aimediator/assets/prompts/evidence-quality.zh.txt` (same) | `ebc63543f4036b632ee4ac5102e4a5ebc63a9e60f42ad7711ca0ba7a276fea21` | `1db0f055acbd7c40e945e97c9fb955061107c1477632dfd3543404bb76675f6e` | as above |
 
 ## Evaluation sets
 
@@ -1582,7 +1586,10 @@ the archive with `SHA256SUMS`.
   Fix-ups (session U6, 2026-11-05, before U6.7): the session's prompt
   moved the adopted reverts from the verification session to U6, because
   later commits would make them harder; the verification session checks
-  them. U4.F2 reverts U4.F1 (`385f744`); U4.F3 reverts U4.5 (`2614453`).
+  them. U4.F2 reverts U4.F1 (`385f744`); U4.F3 reverts U4.5 (`2614453`);
+  U4.F4 reverts U4.4 (`09a79e3`). Each revert regenerated the lock (U4.F2
+  and U4.F4 the keys of the reverted step; U4.F3 none) and passed the
+  gates. U4.1 to U4.3 (N, unused by the pipeline) and U4.7 stay.
 
 - **E-5 (U5-L2) U5.2 fails adoption rule 3.** Raised on 2026-11-05 by
   the U5 session at U5-L2. Precision of accepted claims, the metric the
@@ -2207,4 +2214,6 @@ the archive with `SHA256SUMS`.
   v2 requests. A session whose boundary lists `engine.py` replaces it with
   the hash of the v2 schema builder's output for a fixed example, with its
   lock update; the policy version and module hash in the same identity
-  already mark the change.
+  already mark the change. No longer needed since U4.F4 (2026-11-05): the
+  revert of U4.4 returns the legacy runner to v1 requests, which the
+  recorded v1 schema hash describes.

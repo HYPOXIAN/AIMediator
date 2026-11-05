@@ -12,7 +12,6 @@ from unittest.mock import Mock, patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 from aimediator import engine, evidence, evidence_quality as q, pipeline
 from aimediator.design_briefs import prepare_briefs
-from aimediator.fixture_transport import v2_annotation
 from aimediator.legacy_review import apply_review, proposal_hash
 from support import CASES, case, qualified
 
@@ -233,20 +232,16 @@ class MockPipelineTests(unittest.TestCase):
         self.annotations={c['source']['record_id']:c['annotation'] for c in self.cases}
         self.calls=[];self.fail_quality=None;self.inject_bad_claim=False
 
-    def text(self,cid):
-        return next(r['text_original'] for r in self.rows if r['record_id']==cid)
-
     def transport(self,base,payload,path):
         data=json.loads(payload['messages'][1]['content']);props=payload['format']['properties']
-        stage='quality' if 'segment_labels' in props else 'extract' if 'assessments' in props else 'verify' if 'support' in props else 'relevance'
+        stage='quality' if 'segments' in props else 'extract' if 'assessments' in props else 'verify' if 'support' in props else 'relevance'
         self.calls.append((stage,data,payload))
         if stage=='quality':
             if self.fail_quality:
                 outcome=self.fail_quality(data)
                 if isinstance(outcome,Exception):raise outcome
                 if outcome:return outcome
-            cid=data['comments'][0]['comment_id']
-            result=v2_annotation(self.annotations[cid],self.text(cid))
+            result=copy.deepcopy(self.annotations[data['comments'][0]['comment_id']])
         elif stage=='relevance':result={'decisions':['related']*len(data['comments'])}
         elif stage=='verify':result={'support':'supported'}
         else:
@@ -362,8 +357,8 @@ class MockPipelineTests(unittest.TestCase):
                 if 'numeric_request' not in data['comments'][0]['comment_id']:return None
                 raw='not json'
                 if mode=='quote':
-                    cid=data['comments'][0]['comment_id'];ann=v2_annotation(self.annotations[cid],self.text(cid));next(iter(ann['segment_labels'].values()))['scope']='forged';raw=json.dumps(ann)
-                if mode=='truncated':cid=data['comments'][0]['comment_id'];raw=json.dumps(v2_annotation(self.annotations[cid],self.text(cid)))
+                    ann=copy.deepcopy(self.annotations[data['comments'][0]['comment_id']]);ann['segments'][0]['quote']='forged';raw=json.dumps(ann)
+                if mode=='truncated':raw=json.dumps(self.annotations[data['comments'][0]['comment_id']])
                 return {'done':True,'done_reason':'length' if mode=='truncated' else 'stop','message':{'content':raw}}
             self.fail_quality=fail
             with tempfile.TemporaryDirectory() as temp:

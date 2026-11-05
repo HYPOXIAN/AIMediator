@@ -22,7 +22,7 @@ def quality_design_errors(claim):
     q = claim.get('evidence_quality') or {}
     errors = []
     if (q.get('mode') != 'enforce' or q.get('route') != 'mechanism_evidence'
-            or q.get('schema_version') not in ('evidence-quality-v1', 'evidence-quality-v2')
+            or q.get('schema_version') != 'evidence-quality-v1'
             or q.get('comment_id') != claim.get('comment_id')):
         errors.append('mechanism_evidence_qualification_required')
     points, spans = q.get('selected_points', []), q.get('selected_segments', [])
