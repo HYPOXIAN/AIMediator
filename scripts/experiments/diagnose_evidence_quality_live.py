@@ -14,6 +14,7 @@ from aimediator.common import sha as digest, write as write_json
 from aimediator.diagnostics import audit, extract
 from aimediator.evidence import character_reference, evidence_units
 from aimediator.inference import api
+from aimediator.pipeline import quality_request
 from aimediator.resources import asset_path, module_path
 from aimediator.run_store import code_manifest
 from aimediator.runner import Runner
@@ -78,10 +79,8 @@ def main():
         attempts=[]
         record=None
         for attempt in range(policy['max_attempts']):
-            data={'source':row,'comments':[{'comment_id':cid,'units':units}],
-                'language':lang,'character_normalization_reference':character_reference(row['text_original']),
-                'quality_contract':policy,'attempt':attempt+1}
-            annotation,meta=runner.generate(model,lang,'quality',data,[cid])
+            data,context=quality_request(runner,row,units,lang,policy,attempts)
+            annotation,meta=runner.generate(model,lang,'quality',data,[cid],request_context=context)
             attempts.append(meta)
             trace.append({'stage':'quality','comment_id':cid,'attempt':attempt+1,**meta})
             if annotation is not None:

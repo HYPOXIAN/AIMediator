@@ -29,9 +29,9 @@ def proposal(qualification=None):
 
 
 class View(unittest.TestCase):
-    def test_returns_data_itself_except_for_verify(self):
+    def test_returns_data_itself_for_the_stages_without_a_view(self):
         data = {'comments': [{'comment_id': 'a', 'units': []}]}
-        for stage in STAGES[:-1]:
+        for stage in ('relevance', 'retrieval_review', 'extract'):
             self.assertIs(stages.view(stage, data, ['a']), data)
 
     def test_builds_the_verify_audit_view(self):

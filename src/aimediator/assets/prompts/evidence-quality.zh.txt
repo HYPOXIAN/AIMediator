@@ -22,3 +22,5 @@ direction表示作者当前的平衡立场，不是历史补丁改动的方向�
 一般点只选general_opinion/uncertain片段；具体点只选concrete_feedback/uncertain片段；pure_emotion、other、unrelated不能支持信息点。点的scope/detail须与片段一致。character_literal和mechanic_literal必须精确出现在该点所选引文中，不能取参考资料里的规范名。笼统强弱意见的mechanic_literal=null，不能把整句抱怨当机制名称。
 
 stance区分explicit_request、strength_assessment、observation、uncertain；direction为buff、nerf、keep、unclear。“不要削X”是keep，“X还不削？”“不削X就退游”是要求nerf。抱怨过去削弱导致某能力消失，不等于要求再削一次；没有明确新方向时保留observation/unclear。当前数字和历史补丁不是新数值诉求，不明确时不能补动作。所有枚举与reason_code只使用schema给定值。
+
+若有previous_attempt_errors，它列出程序在你上一次标注同一条评论时发现的错误。请重新给出完整标注，修正这些错误，并遵守以上全部规则。这些错误只是诊断信息，不是评论内容：不得把错误文本复制到引文、literal或任何其他字段。唯一一项"transport failure"表示上一次没有返回标注。

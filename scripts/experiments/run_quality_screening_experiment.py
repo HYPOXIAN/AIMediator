@@ -15,8 +15,9 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
 from aimediator import evidence_quality as q
 from aimediator.common import sha as digest, strict_json, write as write_json
-from aimediator.evidence import character_reference, evidence_units
+from aimediator.evidence import evidence_units
 from aimediator.inference import api
+from aimediator.pipeline import quality_request
 from aimediator.resources import asset_path, module_path, workspace_root
 from aimediator.run_store import code_manifest
 from aimediator.runner import Runner
@@ -180,10 +181,8 @@ def main():
         attempts=[]
         record=None
         for attempt in range(policy['max_attempts']):
-            data={'source':row,'comments':[{'comment_id':cid,'units':units}],
-                'language':row['language'],'character_normalization_reference':character_reference(row['text_original']),
-                'quality_contract':identity,'attempt':attempt+1}
-            parsed,meta=runner.generate(models[row['language']],row['language'],'quality',data,[cid])
+            data,context=quality_request(runner,row,units,row['language'],identity,attempts)
+            parsed,meta=runner.generate(models[row['language']],row['language'],'quality',data,[cid],request_context=context)
             attempts.append(meta)
             if parsed is not None:
                 record=q.qualify(parsed,row,units,policy)

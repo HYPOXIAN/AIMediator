@@ -368,7 +368,7 @@ class MockPipelineTests(unittest.TestCase):
                 self.assertEqual(r['status'],'failed');self.assertEqual(len(r['attempts']),2)
 
     def test_one_failed_attempt_then_valid_new_request(self):
-        self.fail_quality=lambda data: {'done':True,'done_reason':'stop','message':{'content':'{}'}} if data['attempt']==1 else None
+        self.fail_quality=lambda data: {'done':True,'done_reason':'stop','message':{'content':'{}'}} if 'previous_attempt_errors' not in data else None
         with tempfile.TemporaryDirectory() as temp:
             self.run_mock(Path(temp)/'run',quality_only=True)
             records=json.loads((Path(temp)/'run/evidence-quality.json').read_text(encoding='utf-8'))

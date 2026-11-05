@@ -2,7 +2,7 @@
 
 - Type: Design
 - Status: Active
-- Updated: 2026-11-04
+- Updated: 2026-11-05
 - Applies to: evidence-quality module v1 (`evidence-quality-policy.json` v1); written 2026-10-26 as its pre-implementation specification
 - Related: [emotion-quantification-and-evidence-isolation.md](emotion-quantification-and-evidence-isolation.md), a description of the implemented module
 - Translated 2026-11 from the Chinese original (commit `3ceb123`); only the language changed.
@@ -84,6 +84,8 @@ Repeated expressions of the same meaning are merged into one information_point; 
 7. Strict JSON, unknown fields, enums, abnormal output and truncation are all validated. During implementation, check whether the existing `schema_errors()` actually supports the integer/bounds constraints used by the new fields; add explicit validation where needed rather than only writing a JSON schema.
 
 On failure, keep the raw response and the error, and allow one new, recorded retry; if the retry also fails, the result is `review`. It is not counted as a successful exclude and is not passed automatically into mechanism evidence. Reading the same failed cache repeatedly must not pass as a retry.
+
+Since pipeline upgrade step U2.2 (decision UP-D04), the retry holds through `previous_attempt_errors`. The request shows the model only the comment's units, its language and the character reference entries with a candidate in the comment; the source row, the quality contract and the attempt number stay program context (`stages.view`). The attempt number enters the request's cache identity as `request_context`, so attempt 2 is a new, recorded request and never a reread of attempt 1. Attempt 2 adds `previous_attempt_errors`, the validation errors of attempt 1 (at most 20, each cut to 300 characters), so it is a repair attempt instead of a repetition of attempt 1 with the same content; after a transport, service or cache failure it holds the single entry `transport failure` and no remote text. The quality prompts tell the model to repair the annotation and never to copy the error text into it.
 
 ## 4. Quantitative definitions and deterministic routing
 

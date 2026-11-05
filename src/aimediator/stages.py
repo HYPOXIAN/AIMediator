@@ -20,8 +20,8 @@ MODEL_VISIBLE = {
                   'comments': frozenset({'comment_id', 'text', 'retrieved_topics'})},
     'retrieval_review': {'top': frozenset({'comments'}),
                          'comments': frozenset({'comment_id', 'text', 'retrieved_topics'})},
-    'quality': {'top': frozenset({'comments', 'source', 'language', 'character_normalization_reference',
-                                  'quality_contract', 'attempt'}),
+    'quality': {'top': frozenset({'comments', 'language', 'character_normalization_reference',
+                                  'previous_attempt_errors'}),
                 'comments': frozenset({'comment_id', 'units'})},
     'extract': {'top': frozenset({'comments', 'character_normalization_reference'}),
                 'comments': frozenset({'comment_id', 'units', 'allowed_quality_points'})},
@@ -94,8 +94,10 @@ def exact_coverage(rows: list[dict[str, Any]], key: str, expected: list[str]) ->
 def view(stage: str, data: dict[str, Any], ids: list[str]) -> dict[str, Any]:
     """Return the model-visible view of the request data of a stage (keys in MODEL_VISIBLE); data stays the context.
 
-    The audit view for verify; data itself for every other stage.
+    The audit view for verify; the quality view (plan 4.1, UP-D04) for quality; data itself otherwise.
     """
+    if stage == 'quality':
+        return _quality_view(data)
     if stage != 'verify':
         return data
     entry = data['claims'][0]
@@ -122,6 +124,27 @@ def view(stage: str, data: dict[str, Any], ids: list[str]) -> dict[str, Any]:
             ('point_id', 'segment_ids', 'character_literal', 'mechanic_literal', 'stance', 'direction')}
             for p in qualification['selected_points']]
     return data
+
+
+def _quality_view(data: dict[str, Any]) -> dict[str, Any]:
+    """Return the comment units, the language and the reference entries of the comment's character candidates.
+
+    The source row, the quality contract and the attempt number stay in the context. After a failed attempt,
+    data['previous_attempt'] ({'errors', 'transport_failure'}) adds previous_attempt_errors: at most 20
+    errors, each cut to 300 characters, or the single entry 'transport failure' without remote text.
+    """
+    reference = data['character_normalization_reference']
+    candidates = character_candidates(data['source']['text_original'], reference)
+    result = {'comments': [{'comment_id': c['comment_id'], 'units': [
+                  {key: u[key] for key in ('evidence_id', 'text', 'start', 'end')} for u in c['units']]}
+                  for c in data['comments']],
+              'language': data['language'],
+              'character_normalization_reference': [e for e in reference if e['canonical_name'] in candidates]}
+    previous = data.get('previous_attempt')
+    if previous is not None:
+        result['previous_attempt_errors'] = (['transport failure'] if previous['transport_failure']
+                                             else [str(error)[:300] for error in previous['errors'][:20]])
+    return result
 
 
 def options(stage: str, quality_policy: dict[str, Any] | None) -> dict[str, Any]:

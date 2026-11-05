@@ -97,7 +97,8 @@ class PipelineContextTests(unittest.TestCase):
 
     def test_full_quality_attempt_is_retried(self):
         target = 'synthetic:numeric_request:zh'
-        run, trace = self.run_with('shadow', lambda stage, data, payload: stage == 'quality' and data['attempt'] == 1
+        run, trace = self.run_with('shadow', lambda stage, data, payload: stage == 'quality'
+                                   and 'previous_attempt_errors' not in data
                                    and data['comments'][0]['comment_id'].startswith(target))
         quality = [entry for entry in trace if entry['stage'] == 'quality' and entry['comment_id'].startswith(target)]
         self.assertEqual([(entry['attempt'], entry['errors']) for entry in quality],

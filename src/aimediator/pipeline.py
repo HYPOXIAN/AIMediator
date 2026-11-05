@@ -222,6 +222,23 @@ def admit_relevance(state: RunState, model: str, language: str, language_rows: l
                if d['retrieval_triage'] == 'review_queue' and not d['agreement']])
 
 
+def quality_request(runner: Runner, row: dict[str, Any], units: list[dict[str, Any]], language: str,
+                    contract: Any, attempts: list[dict[str, Any]]) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Return the request data and the request context of the next quality attempt after the failed attempts.
+
+    The model sees stages.view of the data: no source row, contract or attempt number. A repair attempt
+    carries the errors of the previous attempt (plan 4.1, UP-D04); the attempt enters request_context.
+    """
+    data = {'comments': [{'comment_id': row['record_id'], 'units': units}],
+            'source': row, 'language': language,
+            'character_normalization_reference': character_reference(row['text_original']),
+            'quality_contract': contract, 'attempt': len(attempts) + 1}
+    if attempts:
+        data['previous_attempt'] = {'errors': attempts[-1]['errors'],
+                                    'transport_failure': runner.transport_failed('quality', attempts[-1]['request_id'])}
+    return data, {'attempt': len(attempts) + 1}
+
+
 def assess_quality(state: RunState, model: str, language: str, selected: list[dict[str, Any]]) -> None:
     """Annotate the evidence quality of each admitted comment and write the quality progress after each record."""
     for row in selected:
@@ -230,13 +247,11 @@ def assess_quality(state: RunState, model: str, language: str, selected: list[di
         attempts = []
         result = None
         for attempt in range(state.quality_policy['max_attempts']):
-            data = {'comments': [{'comment_id': record_id, 'units': units}],
-                'source': row, 'language': language,
-                'character_normalization_reference': character_reference(row['text_original']),
-                'quality_contract': state.quality_identity, 'attempt': attempt + 1}
+            data, context = quality_request(state.runner, row, units, language, state.quality_identity, attempts)
             # A retry is a new request/cache identity. Failed cached
             # attempt 1 cannot masquerade as a fresh attempt 2.
-            parsed, meta = state.runner.generate(model, language, 'quality', data, [record_id])
+            parsed, meta = state.runner.generate(model, language, 'quality', data, [record_id],
+                                                 request_context=context)
             state.trace.append({'model': model, 'stage': 'quality', 'comment_id': record_id,
                                 'attempt': attempt + 1, **meta})
             if parsed is not None:

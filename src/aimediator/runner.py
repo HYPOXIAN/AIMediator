@@ -45,6 +45,19 @@ class Runner:
                 identities.add(comments[0]['comment_id'])
         return identities
 
+    def transport_failed(self, stage: str, request_id: str) -> bool:
+        """Return whether a journaled response failed outside the model: a transport, service, cache or envelope error.
+
+        These are the responses that _generate answers with the response's error message, which is no model output.
+        """
+        try:
+            response = json.loads((self.folder / 'requests' / stage / request_id / 'response.json')
+                                  .read_text(encoding='utf-8'))
+        except (ValueError, OSError):
+            return True
+        result = response.get('response') if isinstance(response, dict) else None
+        return not isinstance(result, dict) or not isinstance(result.get('message'), dict) or bool(result.get('error'))
+
     def generate(self, model: str, language: str, stage: str, data: dict[str, Any], ids: list[str],
                  request_context: dict[str, Any] | None = None) -> tuple[dict[str, Any] | None, dict[str, Any]]:
         """Send or replay one stage request; return the parsed result or None, and its metadata.

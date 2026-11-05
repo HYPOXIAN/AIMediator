@@ -538,8 +538,15 @@ every path keeps the exception type it raises.
   `AssertionError` explicitly, so it holds under `python -O`.
 - `stages`: `schema_for(stage, ids, data=None)`, `exact_coverage(rows, key,
   expected)`, `view(stage, data, ids)` (the model-visible view of the request
-  data: the audit view for `verify`, `data` itself for every other stage;
-  pipeline upgrade step U2.1, LNK-01), `MODEL_VISIBLE` (per stage, the sets
+  data: the audit view for `verify`; for `quality` the comment units,
+  `language`, the character reference entries with a candidate in the
+  comment (`evidence.character_candidates` on the source text) and, when
+  the context holds `previous_attempt` (`errors`, `transport_failure`),
+  `previous_attempt_errors`: at most 20 errors, each cut to 300
+  characters, or the single entry `transport failure`, so that no remote
+  text reaches the model; `source`, `quality_contract` and `attempt` stay
+  in the context (step U2.2, UP-D04); `data` itself for every other
+  stage; pipeline upgrade step U2.1, LNK-01), `MODEL_VISIBLE` (per stage, the sets
   `top` and `comments` of the keys a view may hold at its top level and in
   its `comments[]` entries), `options(stage, quality_policy)`
   (`temperature` 0, `seed` 42, `num_ctx` 8192, `num_predict` 4096 for
@@ -564,7 +571,10 @@ every path keeps the exception type it raises.
   `runtime_options` (default `{}`), `cached_single_ids(model, language,
   stage)` and `generate(model, language, stage, data, ids,
   request_context=None) -> (parsed or None, meta)`; `meta` holds
-  `request_id`, `errors` and `elapsed_seconds`. The model sees only
+  `request_id`, `errors` and `elapsed_seconds`;
+  `transport_failed(stage, request_id)` tells whether a journaled response
+  failed outside the model (unreadable, malformed envelope or message, or
+  an `error` from transport, service or cache). The model sees only
   `stages.view(stage, data, ids)`; `data` stays the program context of
   `stages.schema_for` and of `stages.normalize`, which receives the view for
   `verify` only, because the verdict's `scope` reads
@@ -589,6 +599,11 @@ every path keeps the exception type it raises.
   `embeddings/<sha256>.json` and `retrieval.json`; `log` receives the
   `'Embedding <n>/<total>'` lines.
 - `pipeline`: `VERSION` (`'balance-evidence-v2'`), `relevance_agrees`,
+  `quality_request(runner, row, units, language, contract, attempts) ->
+  (data, request_context)` (the context of the next quality attempt after
+  the failed `attempts`: `source`, `quality_contract`, `attempt` and, after
+  a failure, `previous_attempt`; `request_context` is `{'attempt': n}`;
+  `assess_quality` and the quality experiment scripts call it; step U2.2),
   `batches`, `aggregate`, `quality_source_counts`, `build_full_coverage`,
   `validate_modes`, the `RunState` dataclass shared by the stage functions
   (`triage`, `review_retrieval`, `admit_relevance`, `assess_quality`,
