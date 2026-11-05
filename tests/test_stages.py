@@ -29,10 +29,13 @@ def proposal(qualification=None):
 
 
 class View(unittest.TestCase):
-    def test_returns_data_itself_for_the_stages_without_a_view(self):
-        data = {'comments': [{'comment_id': 'a', 'units': []}]}
+    def test_relevance_views_cite_topics_by_id(self):
+        topic = {'topic_id': 'P3', 'text': 'anchor text', 'cosine': 0.123456789, 'class': 'related'}
+        data = {'comments': [{'comment_id': 'a', 'text': 'Ryu is too strong', 'retrieved_topics': [topic]}]}
         for stage in ('relevance', 'retrieval_review'):
-            self.assertIs(stages.view(stage, data, ['a']), data)
+            self.assertEqual(stages.view(stage, data, ['a']), {'comments': [
+                {'comment_id': 'a', 'text': 'Ryu is too strong', 'retrieved_topics': [{'topic_id': 'P3', 'cosine': 0.1235}]}]})
+        self.assertEqual(topic['text'], 'anchor text')
 
     def test_builds_the_verify_audit_view(self):
         entry = proposal()

@@ -33,13 +33,22 @@ def module_path(name: str) -> Path:
 
 
 def prompts(mode: str) -> dict[str, dict[str, str]]:
-    """Return the stage prompts for an evidence-quality mode, keyed by stage, then language."""
+    """Return the stage prompts for an evidence-quality mode, keyed by stage, then language.
+
+    The relevance and retrieval-review prompts end with the topic list: one line per anchor, P1 to N10.
+    """
     names = {'relevance': 'relevance', 'retrieval_review': 'retrieval-review',
              'extract': 'summarize-balance', 'verify': 'verify-balance'}
     if mode != 'off':
         names['quality'] = 'evidence-quality'
     result = {stage: {lang: asset_path('prompts/%s.%s.txt' % (name, lang)).read_text(encoding='utf-8')
                       for lang in ('en', 'zh')} for stage, name in names.items()}
+    # The anchors keep one source (retrieval-anchors.json); requests cite them by topic_id (plan 4.4, UP-D07).
+    topics = ''.join('%s%d: %s\n' % (prefix, index, text) for prefix, texts in zip('PN', anchors())
+                     for index, text in enumerate(texts, 1))
+    for stage in ('relevance', 'retrieval_review'):
+        for lang in ('en', 'zh'):
+            result[stage][lang] += topics
     if mode == 'enforce':
         for stage, name in (('extract', 'quality-extract'), ('verify', 'quality-verify')):
             for lang in ('en', 'zh'):

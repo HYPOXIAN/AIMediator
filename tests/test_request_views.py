@@ -17,7 +17,7 @@ from aimediator.evidence import character_candidates, character_reference, evide
 from aimediator.fixture_transport import FixtureTransport
 from aimediator.operations import analyze
 from aimediator.pipeline import quality_request
-from aimediator.resources import asset_path
+from aimediator.resources import anchors, asset_path, prompts
 from aimediator.runner import Runner
 
 # Keys a view holds only on some requests, which the offline demo does not send.
@@ -195,6 +195,44 @@ class ExtractView(unittest.TestCase):
         # The context is unchanged, so schema and gates read the offsets and full points.
         self.assertIn('start', data['comments'][0]['units'][0])
         self.assertIn('segments', data['comments'][0]['allowed_quality_points'][0])
+
+
+class RelevanceView(unittest.TestCase):
+    """Plan 4.4, UP-D07: anchors in the system prompts, topics by ID and rounded cosine."""
+
+    def test_topic_list_ends_the_relevance_prompts_only(self):
+        positive, negative = anchors()
+        lines = ['P%d: %s' % (i, t) for i, t in enumerate(positive, 1)] + ['N%d: %s' % (i, t) for i, t in enumerate(negative, 1)]
+        self.assertEqual(len(lines), 20)
+        for mode in ('off', 'shadow', 'enforce'):
+            texts = prompts(mode)
+            for stage, pair in texts.items():
+                for language, text in pair.items():
+                    name = {'relevance': 'relevance', 'retrieval_review': 'retrieval-review'}.get(stage)
+                    if name is None:
+                        self.assertNotIn(lines[0], text, (mode, stage))
+                        continue
+                    asset = asset_path('prompts/%s.%s.txt' % (name, language)).read_text(encoding='utf-8')
+                    self.assertEqual(text, asset + ''.join(line + '\n' for line in lines))
+                    self.assertIn('topic_id', asset.splitlines()[-1])
+
+    def test_demo_relevance_requests_cite_topics_of_the_system_prompt(self):
+        cited = 0
+        with tempfile.TemporaryDirectory() as temp:
+            with contextlib.redirect_stderr(io.StringIO()), contextlib.redirect_stdout(io.StringIO()):
+                demo(Path(temp) / 'demo', quiet=True)
+            retrieval = {d['comment_id']: d for d in read(Path(temp) / 'demo/off/retrieval.json')}
+            for path in sorted(Path(temp).glob('demo/*/requests/relevance/*/request.json')):
+                request = read(path)
+                system = request['messages'][0]['content']
+                for comment in json.loads(request['messages'][1]['content'])['comments']:
+                    references = retrieval[comment['comment_id']]['references']
+                    self.assertEqual(comment['retrieved_topics'], [{'topic_id': r['topic_id'], 'cosine': round(r['cosine'], 4)}
+                                                                   for r in references])
+                    for reference in references:
+                        self.assertIn('\n%s: %s\n' % (reference['topic_id'], reference['text']), system)
+                        cited += 1
+        self.assertTrue(cited)
 
 
 class RunnerContext(unittest.TestCase):

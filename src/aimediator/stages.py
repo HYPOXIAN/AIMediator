@@ -95,12 +95,17 @@ def view(stage: str, data: dict[str, Any], ids: list[str]) -> dict[str, Any]:
     """Return the model-visible view of the request data of a stage (keys in MODEL_VISIBLE); data stays the context.
 
     The audit view for verify; the quality view (plan 4.1, UP-D04) for quality; the extraction view
-    (plan 4.1, UP-D05) for extract; data itself otherwise.
+    (plan 4.1, UP-D05) for extract; for relevance and retrieval review, the comments with the IDs and
+    rounded cosines of their retrieved topics, whose texts are in the system prompt (plan 4.4, UP-D07).
     """
     if stage == 'quality':
         return _quality_view(data)
     if stage == 'extract':
         return _extract_view(data)
+    if stage in ('relevance', 'retrieval_review'):
+        return {'comments': [{'comment_id': c['comment_id'], 'text': c['text'], 'retrieved_topics': [
+            {'topic_id': t['topic_id'], 'cosine': round(t['cosine'], 4)} for t in c['retrieved_topics']]}
+            for c in data['comments']]}
     if stage != 'verify':
         return data
     entry = data['claims'][0]

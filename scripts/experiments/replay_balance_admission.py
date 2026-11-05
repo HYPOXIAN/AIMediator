@@ -11,7 +11,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
 from aimediator.balance_policy import retrieval_review_agrees
 from aimediator.common import sha as digest, strict_json, write as write_json
-from aimediator.resources import asset_path
+from aimediator.resources import asset_path, prompts as stage_prompts
 from aimediator.run_store import code_manifest
 from aimediator.runner import Runner
 
@@ -33,7 +33,9 @@ def main():
     by_id={r['record_id']:r for r in sources}
     if digest(asset_path('configs/balance-review-policy.json').read_bytes())!=old['identity']['review_policy_sha256']:
         raise ValueError('Retrieval policy changed')
-    prompts={s:{l:asset_path(f'prompts/{name}.{l}.txt').read_text(encoding='utf-8') for l in ('en','zh')} for s,name in [('relevance','relevance'),('retrieval_review','retrieval-review')]}
+    # The prompts as runs send them: since pipeline upgrade step U2.4 they end with the topic list.
+    current=stage_prompts('off')
+    prompts={s:current[s] for s in ('relevance','retrieval_review')}
     for stage,langs in prompts.items():
         for language,t in langs.items():
             if digest(t.encode())!=old['identity']['prompts'][stage][language]:

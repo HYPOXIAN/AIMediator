@@ -517,7 +517,12 @@ every path keeps the exception type it raises.
   `prompts(mode)` returns stage, then language, then text for `relevance`,
   `retrieval_review`, `extract` and `verify`, plus `quality` in `shadow` and
   `enforce`; in `enforce`, `extract` and `verify` get `'\n'` and the
-  `quality-extract` or `quality-verify` appendix. `operations.prompts_for` is
+  `quality-extract` or `quality-verify` appendix. The `relevance` and
+  `retrieval_review` texts end with the topic list: after the asset, whose
+  last line introduces it, one line `P<n>: <anchor text>` per positive and
+  then `N<n>: <anchor text>` per negative anchor of
+  `retrieval-anchors.json`, in file order, each ending with `'\n'`
+  (pipeline upgrade step U2.4, UP-D07). `operations.prompts_for` is
   an alias. `workspace_root()` returns the checkout root when the package is
   imported from a checkout holding `RULES.md` and `pyproject.toml`, and the
   working directory otherwise, evaluated at call time.
@@ -552,8 +557,11 @@ every path keeps the exception type it raises.
   `mechanic_literal`, and the reference entries with a candidate in a
   comment of the batch (found in its joined unit texts, as `schema_for`
   finds the allowed characters), while `schema_for`, `ground_claim` and
-  `bind_claim` read the full context (step U2.3, UP-D05); `data` itself for
-  every other stage; pipeline upgrade step U2.1, LNK-01), `MODEL_VISIBLE` (per stage, the sets
+  `bind_claim` read the full context (step U2.3, UP-D05); for `relevance`
+  and `retrieval_review` the comments with `comment_id`, `text` and
+  `retrieved_topics` items holding `topic_id` and `cosine` rounded to 4
+  decimals, the topic texts being in the system prompt (step U2.4,
+  UP-D07); pipeline upgrade step U2.1, LNK-01), `MODEL_VISIBLE` (per stage, the sets
   `top` and `comments` of the keys a view may hold at its top level and in
   its `comments[]` entries), `options(stage, quality_policy)`
   (`temperature` 0, `seed` 42, `num_ctx` 8192, `num_predict` 4096 for
