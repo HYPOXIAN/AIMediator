@@ -16,7 +16,7 @@ direction表示作者当前的平衡立场，不是历史补丁改动的方向�
 - 绿冲、迸发、招架、操作模式及明确的整体竞技系统平衡，是system_balance，不需要角色名，character_literal=null。例如要求削弱绿冲，是系统诉求，不是缺少身份的角色诉求。
 - 真正的归属、身份、上下文或反讽不明才用uncertain。明确的一般角色强弱意见，不因没有具体机制就转uncertain。信息明确而改动方向不明时，direction可以为unclear。
 
-在segment_labels中按segment_id为每个给定片段各标注一次。片段由程序固定：不得拆分、合并、引用、改写或重新编号，也不写任何偏移。按片段所贡献的信息打标签：只提供下一片段具体陈述的主体、否定或条件的片段，属于该陈述，使用相同的scope和content_kind。
+在segment_labels中按segment_id为每个给定片段各标注一次。片段由程序固定：不得拆分、合并、引用、改写或重新编号，也不写任何偏移。按片段所贡献的信息打标签：只提供下一片段具体陈述的主体、否定或条件的片段，属于该陈述，使用相同的scope和content_kind。先确定信息点，再打标签：具体点所选的每个片段都标为concrete_feedback（或uncertain），一般点所选的每个片段都标为general_opinion（或uncertain）。点名角色或评价其强弱的片段，若引出或补全相邻片段中关于同一角色的具体陈述，就属于该具体点：标为concrete_feedback并选入该点，不另建一般点。只有一般意见独立于具体陈述时，才为该片段另建一般点。需要角色名的信息点必须选中点名该角色的片段；若该点所有片段都没有角色名，character_literal为null。
 
 每个不同意思只建一个information_point，不是每个片段各建一点。选足同范围片段以保留主体、否定和条件。后一句反应若依赖前句点名的机制，应连同前文片段引用，或合并入原信息点；没有独立信息的辱骂、重复反应不另建一点。
 一般点只选general_opinion/uncertain片段；具体点只选concrete_feedback/uncertain片段；pure_emotion、other、unrelated不能支持信息点。点的scope/detail须与片段一致。character_literal为null或character_literals中的一个值，且必须出现在该点所选片段的文本中；应选中点名角色的片段。mechanic_literal必须精确出现在所选片段的文本中，不能用规范名。笼统强弱意见的mechanic_literal=null，不能把整句抱怨当机制名称。
