@@ -278,6 +278,8 @@ Checklist:
 - The archive or the raw dataset is missing or differs from its manifest.
 - The lock differs at any key other than the three `measurement.py` keys.
 - The measured archived numbers differ from plan section 0.2 by more than
-  rounding.
+  rounding and the difference changes a baseline of plan 5.5. Other
+  differences are findings for the record (U0.4) and do not stop the
+  session.
 - The annotation session would need model outputs to decide a label.
 - `aimediator doctor` fails in the live environment.

@@ -115,11 +115,14 @@ run by the legacy runner.
 
 | Stage, model | Requests (fresh) | Mean elapsed | Prompt tokens | Cached tokens | Output tokens | Prefill | Decode |
 | ------------ | ---------------- | ------------ | ------------- | ------------- | ------------- | ------- | ------ |
-| extract, `llama3.1:latest` | 81 (62) | 20.2 s | 4,369 | — | 228 | 9.1 s | 9.0 s |
-| extract, `qwen2.5:7b` | 76 (60) | 19.1 s | 3,796 | — | 336 | 6.1 s | 12.4 s |
+| extract, `llama3.1:latest` | 81 (62) | 20.2 s | 4,369 | — | 228 | 9.7 s | 9.6 s |
+| extract, `qwen2.5:7b` | 76 (60) | 19.1 s | 3,796 | — | 336 | 6.2 s | 12.6 s |
 | extract, both, fresh with cache counters | 117 | — | 4,080 | 659 | — | 7.9 s | — |
 | verify, both | 387 (66) | 0.8 s | 872 | 556 | 6 to 7 | 0.6 s | 0.2 s |
 
+- Token, prefill and decode means are over the requests that carry
+  counters (58 of the 62 fresh llama requests, 59 of the 60 fresh qwen
+  requests); the 5 fresh requests that a loop guard stopped carry none.
 - Uncached prefill runs at about 450 tokens/s (extract) and 510 tokens/s
   (verify). The only cached prefix is the system prompt. Every 1,000
   model-visible tokens therefore cost about 2.2 s per request.
