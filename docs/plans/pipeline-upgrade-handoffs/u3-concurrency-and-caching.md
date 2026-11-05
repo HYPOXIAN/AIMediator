@@ -2,7 +2,7 @@
 
 - Type: Agent handoff
 - Status: Active
-- Updated: 2026-11-04
+- Updated: 2026-11-05
 - Applies to: [pipeline upgrade plan](../pipeline-upgrade.md) batch U3; entry tag `upgrade-u2`
 
 Work order for batch U3. The steps are defined in plan section 7 (U3) and
@@ -45,7 +45,8 @@ Allowed paths:
   U3.4).
 - **Owner actions**: start the model service with `OLLAMA_NUM_PARALLEL` of
   at least the tested limit for U3-L; choose the default value for later
-  live runs after U3-L.
+  live runs after U3-L. Under UP-D19 the bridge serves parallel requests,
+  so the first action falls away.
 
 ## 4. Sessions
 
@@ -170,6 +171,17 @@ memory the service reports in `/api/ps` during runs 2 and 3.
 
 Inputs (UP-D17): the benchmark is the `latency-benchmark` sample of plan
 5.3 (30 comments).
+
+**UP-D19 (owner, 2026-11-05).** The live session runs through the API
+bridge of plan 5.4 ("Hosted API") with `runs/upgrade/live-config-api.json`,
+after `bash runs/upgrade/tools/api_bridge_start.sh`. In the prompt above,
+"the local model service" reads as the bridge, and "the U0.6 record" of
+the environment check reads as the bridge record of U2-L0. References
+and baselines named U0.8 or U0.6 are their U2-L0 API runs; local rows are
+never compared with API runs. `OLLAMA_NUM_PARALLEL` and the owner's memory
+confirmation do not apply: run 3 runs, and the bridge log's overlapping
+requests replace the `/api/ps` record. Run 5 compares with
+`u2l0-benchmark-shadow`. T8 is indicative (plan 5.4).
 
 ### U3-V (verification)
 

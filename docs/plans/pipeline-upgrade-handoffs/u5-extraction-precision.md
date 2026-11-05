@@ -2,7 +2,7 @@
 
 - Type: Agent handoff
 - Status: Active
-- Updated: 2026-11-04
+- Updated: 2026-11-05
 - Applies to: [pipeline upgrade plan](../pipeline-upgrade.md) batch U5; entry tag `upgrade-u4`
 
 Work order for batch U5. The steps are defined in plan section 7 (U5) and
@@ -150,6 +150,14 @@ U0.6 record or doctor fails, stop and report. Never run the test split.
 Do not revert anything yourself. Never add attribution.
 Finish with a session-log entry; your final message repeats it.
 ```
+
+**UP-D19 (owner, 2026-11-05).** The live session runs through the API
+bridge of plan 5.4 ("Hosted API") with `runs/upgrade/live-config-api.json`,
+after `bash runs/upgrade/tools/api_bridge_start.sh`. In the prompt above,
+"the local model service" reads as the bridge, and "the U0.6 record" of
+the environment check reads as the bridge record of U2-L0. References
+and baselines named U0.8 or U0.6 are their U2-L0 API runs; local rows are
+never compared with API runs.
 
 Each live session reports, against the reference: precision of accepted and
 of generated claims, recall over all and over admitted positions, by

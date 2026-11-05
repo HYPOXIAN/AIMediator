@@ -2,7 +2,7 @@
 
 - Type: Plan
 - Status: Active
-- Updated: 2026-11-04
+- Updated: 2026-11-05
 - Applies to: commit `d0aed08` and later; `RULES.md` v1.4; `aimediator` 0.1.0
 
 The owner commissioned this project on 2026-11-04. It follows the code
@@ -84,7 +84,9 @@ Stop, write the reason in the change record, and report to the owner when:
   of a model request without the decision the step names;
 - a live evaluation fails the adoption rule (section 5.4);
 - a step needs a new runtime dependency, Python syntax newer than 3.9, or
-  network access other than the local model service in a live session;
+  network access other than the local model service in a live session
+  (under UP-D19 the API bridge of 5.4 and its calls to OpenRouter are that
+  service);
 - a session would read, print or copy `.env` or any credential (G9);
 - every remaining step is blocked by an unanswered decision.
 
@@ -263,6 +265,8 @@ Lock: L1, L2 request digests and request.json of the quality stage
    the checkout.
 8. **Models and routing**: `qwen2.5:7b` for Chinese, `llama3.1:latest` for
    English, `qwen3-embedding:8b` for embeddings; temperature 0 and seed 42.
+   This holds for the package. Under UP-D19 the live sessions reach a
+   hosted model through a bridge that answers these names (5.4).
 9. **Earlier runs stay readable**: `review`, `report`, `status` and
    `evaluate` keep reading `aimediator-run-v1` runs written by earlier code.
 
@@ -706,6 +710,52 @@ full-set baseline; the U0.8 rows are the sample reference.
   Otherwise revert the step (rule 1.7) and record the result. At a review
   point the owner may decide against the rule; the reason is recorded.
 
+**Hosted API (UP-D19).** From U2-L0 on, every live run reaches a hosted
+model instead of the local Ollama service. The package, its configuration
+schema and invariant 2.1.8 stay as they are; the live sessions run against
+the one-off bridge `runs/upgrade/tools/api_bridge.py` (standard library,
+started with `api_bridge_start.sh` on `127.0.0.1:11435`), which answers
+the four Ollama endpoints the package calls and forwards to OpenRouter:
+
+- `llama3.1:latest` and `qwen2.5:7b` both go to the owner's `LLM_MODEL`
+  (`deepseek/deepseek-v4-flash` on 2026-11-05), `qwen3-embedding:8b` to
+  the owner's `EMBEDDING_MODEL` (`qwen/qwen3-embedding-8b`, the hosted
+  build of the same model). Providers are pinned without fallbacks
+  (DeepInfra for both), reasoning is off, `num_predict` becomes
+  `max_tokens`, and the `format` schema becomes a JSON-schema response
+  format without `uniqueItems` (the provider's grammar rejects it;
+  Ollama's ignores it). Messages are forwarded unchanged.
+- Answers keep Ollama's shapes. Counters come from the API usage (prompt,
+  cached and output tokens); prefill and decode times are measured at the
+  bridge (time to the first token, then the rest). Each final chunk
+  carries a `remote` object (model, provider, generation ID, cost). The
+  bridge logs counters and timings per request, never content, in
+  `runs/upgrade/logs/api-bridge.jsonl`.
+- `/api/version` answers `openrouter-bridge-<n>`, and `/api/tags`
+  answers each name with a digest of the bridge's SHA-256 and its mapping,
+  so every run identity marks an API run and changes with the bridge.
+- Configuration: `runs/upgrade/live-config-api.json`, equal to
+  `live-config.json` except `base_url` `http://127.0.0.1:11435`. No
+  session passes `--env-file`; the bridge reads `LLM_API_KEY` and
+  `EMBEDDING_API_KEY` from `.env` in its own process and never prints,
+  logs or writes them. Sessions do not open `.env` (G9).
+- Environment check of an API session (replaces the local items above):
+  the bridge answers `openrouter-bridge-1` with the SHA-256 recorded by
+  U2-L0, `doctor` passes and reports the recorded digests, the remote
+  model and provider of every response equal the record, and
+  `live-config-api.json` is unchanged. A difference is escalated.
+- References: comparisons need the same model on both sides, so U2-L0
+  reruns the reference runs through the bridge at the U0.8 code. From then
+  on a reference or baseline named U0.8 (or U0.6 for the
+  `balance-silver-v1` development split) is its U2-L0 run; the local rows
+  stay as history and are not compared with API runs.
+- Readings: verdicts and targets describe the hosted model, not the local
+  models the package routes to; they carry over only as far as the models
+  behave alike. Elapsed times measure the provider and the network, so T4
+  and T8 are reported but read as indicative. The provider's tokenizer
+  differs, so T1 and T2 keep the ratio of their targets to the U0.6
+  baselines (T1 at most 49.9 %, T2 at most 71.8 % of the U2-L0 baseline).
+
 ### 5.5 Objectives
 
 Candidate targets, not guarantees. Each is measured by the L session of its
@@ -734,7 +784,7 @@ U0.8 run of the same sample and mode.
 | ----- | ---- | ------------ | --------- | ------------ | ------------ | -------- |
 | U0 | Baseline, measurement tool, evaluation sets | N, D, L | UP-D01, UP-D02, UP-D17 | U0-L (baseline), U0-L2 (sample reference) | none | `upgrade-u0` |
 | U1 | Behavior-neutral performance, service identity | N, B | UP-D03 | none | none | `upgrade-u1` |
-| U2 | Request views | N, B, L | UP-D04 to UP-D07 | U2-L1, U2-L2 | owner | `upgrade-u2` |
+| U2 | Request views | N, B, L | UP-D04 to UP-D07, UP-D19 | U2-L0 (API reference), U2-L1, U2-L2 | owner | `upgrade-u2` |
 | U3 | Concurrency and caching | N, B, L | UP-D08, UP-D09 | U3-L | none | `upgrade-u3` |
 | U4 | Quality annotation v2 | N, B, L | UP-D10 | U4-L | owner | `upgrade-u4` |
 | U5 | Extraction precision | B, L | UP-D11 | U5-L1 to U5-L3 | owner | `upgrade-u5` |
@@ -829,6 +879,11 @@ UP-D01 and UP-D02 answered.
   trimmed `allowed_quality_points`.
 - **U2.4** B `feat` (LAT-03, UP-D07): relevance and retrieval-review views
   and prompts of 4.4.
+- **U2-L0** L (UP-D19): the API reference. The four U0.8 sample runs and
+  the U0.6 `balance-silver-v1` development run, with their commands,
+  through the bridge at `0abfe02` (the U0.8 code; `src/` unchanged since
+  `50becc2`), run from a copy of that commit's `src/` placed first on
+  `sys.path`; the bridge's environment record. Runs `u2l0-<set>-<mode>`.
 - **U2-L1** L: benchmark in `off` and `shadow`, extraction development
   split, relevance agreement on the `balance-silver-v1` development split;
   adoption rule per step (U2.2 quality metrics, U2.3 extraction metrics,
@@ -1038,6 +1093,16 @@ From U0.8 on (UP-D17), live runs read the materialized samples of 5.3,
 keeps `--labels data/evaluation/extraction-precision-v1 --split
 development`. A route scorer counts only the cases of the run's input.
 
+From U2-L0 on (UP-D19), every live session starts the bridge and uses the
+API configuration; the other commands are unchanged:
+
+```sh
+bash runs/upgrade/tools/api_bridge_start.sh   # idempotent; never opens .env in the session
+python3 -m aimediator doctor --config runs/upgrade/live-config-api.json
+python3 -m aimediator analyze --config runs/upgrade/live-config-api.json --input runs/upgrade/inputs/<set>.jsonl \
+  --out runs/upgrade/<step>-<set>-<mode> --evidence-quality <mode> --json
+```
+
 ### 8.7 Archived baseline (read-only)
 
 ```sh
@@ -1087,6 +1152,7 @@ recorded as `skipped (UP-Dnn not adopted)`.
 | UP-D16 | `RULES.md` v1.5: P4 floor raised to the final count | adopt | U7.4 |
 | UP-D17 | Smaller live samples from U0.8 on (raised by the owner after U0.6) | adopt | U0.7, U0.8, every live run of U2 to U7 |
 | UP-D18 | Time budget of 8 hours: fewer live runs in U4 to U7; closure merged into verification (raised by the owner) | adopt | U4-L, U5-L1 to U5-L3, U6-L, U7.1, the review points |
+| UP-D19 | Live runs through a hosted API instead of the local model service; API references in U2-L0 (raised by the owner) | adopt | U2-L0 and every live session of U2 to U7 |
 
 **UP-D01 New modules.** `measurement` keeps evaluation logic out of scripts
 (P3: tests use it); `cache` and `topics` give the shared cache and the
@@ -1178,6 +1244,21 @@ session runs (10.5). Consequences: `enforce` is measured only in U7.1;
 U6-L cannot separate U6.3 from the second audit in accepted-claim
 precision and recall, so U6.3 is judged on the precision of generated
 claims and loses its T5 path; U7.1 accepts on 30 comments.
+
+**UP-D19 Hosted API for live runs.** Raised by the owner on 2026-11-05 at
+02:52, after the owner's computer shut down from overload during the
+U2-L1 runs: the local machine cannot finish the live runs, so every live
+run of U2 to U7 calls the hosted API in `.env` (`LLM_API_KEY`,
+`LLM_MODEL`) instead of the local models. Implemented without a package
+change, through the bridge of 5.4, so the package, its tests, the lock
+and invariant 2.1.8 are untouched. Costs: one more live session (U2-L0)
+to rerun the references with the same model; verdicts describe the hosted
+model, not the local ones; latency targets become indicative; the local
+U2-L1 runs made before the shutdown (benchmark `off` and `shadow`
+complete, the extraction run interrupted in retrieval) are kept aside as
+`runs/upgrade/u2l1-local-*`, archived with the U2-L1 runs, and decide
+nothing. A live run takes minutes instead of an hour; the API cost is a
+few US cents per run.
 
 Owner actions: close the restructuring (entry condition); answer this
 section; provide the live environment or run the L sessions (5.4); review at
@@ -1342,6 +1423,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | Shared-cache hits are mistaken for fresh inference | Reuse provenance per request; measurement counts both |
 | The live environment drifts between L sessions | Environment record and check at every L session start (5.4) |
 | Samples make verdicts noisier (UP-D17) | Paired comparisons against the U0.8 sample references; intervals reported beside differences; the full-set U0.6 rows kept |
+| Verdicts on the hosted model do not carry over to the local models (UP-D19) | Every row names its model and service; API references from U2-L0, never mixed with local rows; the owner can rerun U7.1 locally |
 | Live sessions are unavailable | L steps are owner actions; implementation continues with independent steps; batch exits wait |
 | Credentials leak through live commands | `.env` is passed by path only and never opened (G9); configurations hold variable names only |
 | Tooling adds attribution trailers | Rule 1.2 (P6); commit-hygiene check (8.8) |

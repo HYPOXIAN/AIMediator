@@ -2,7 +2,7 @@
 
 - Type: Agent handoff
 - Status: Active
-- Updated: 2026-11-04
+- Updated: 2026-11-05
 - Applies to: [pipeline upgrade plan](../pipeline-upgrade.md) batch U7; entry tag `upgrade-u6`
 
 Work order for batch U7. The steps are defined in plan section 7 (U7). The
@@ -83,6 +83,17 @@ Runs:
   expectations) and the `extraction-precision-v1` test split, once each,
   in `off`. Compare the test split with the last accepted development
   results in the change record.
+
+**UP-D19 (owner, 2026-11-05).** The live session runs through the API
+bridge of plan 5.4 ("Hosted API") with `runs/upgrade/live-config-api.json`,
+after `bash runs/upgrade/tools/api_bridge_start.sh`. In the prompt above,
+"the local model service" reads as the bridge, and "the U0.6 record" of
+the environment check reads as the bridge record of U2-L0. References
+and baselines named U0.8 or U0.6 are their U2-L0 API runs; local rows are
+never compared with API runs. U7.1 compares with the U2-L0 benchmark rows (its
+`off` and `shadow` runs); the archived local `off` run and the local U0.6
+and U0.8 rows are reported beside, as a different model, and decide
+nothing.
 
 ### U7-1 (implementation): steps U7.3 to U7.5
 

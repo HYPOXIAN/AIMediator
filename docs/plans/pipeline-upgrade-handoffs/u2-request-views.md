@@ -2,7 +2,7 @@
 
 - Type: Agent handoff
 - Status: Active
-- Updated: 2026-11-04
+- Updated: 2026-11-05
 - Applies to: [pipeline upgrade plan](../pipeline-upgrade.md) batch U2; entry tag `upgrade-u1`
 
 Work order for batch U2. The steps are defined in plan section 7 (U2) and
@@ -26,7 +26,8 @@ owner review.
 
 - Tag `upgrade-u1` exists. Clean tree, no `WIP Step` stash, the gates pass.
 - UP-D04, UP-D05 and UP-D07 are answered; UP-D06 is needed for U2.5 only.
-- The U0.6 and U0.8 reference rows exist in the change record.
+- The U0.6 and U0.8 reference rows exist in the change record; under
+  UP-D19 the U2-L0 API rows are written before U2-L1 is measured.
 
 ## 3. Responsibility boundary
 
@@ -186,6 +187,24 @@ Inputs (UP-D17): every run uses the sample of plan 5.3 for its set
 keeps its run name; `u2l1-silver-development-relevance` runs the full
 `balance-silver-v1` development split. The reference of U2-L1 is the U0.8
 row of the same sample and mode, and the U0.6 row for the silver split.
+
+**UP-D19 (owner, 2026-11-05).** The live session runs through the API
+bridge of plan 5.4 ("Hosted API") with `runs/upgrade/live-config-api.json`,
+after `bash runs/upgrade/tools/api_bridge_start.sh`. In the prompt above,
+"the local model service" reads as the bridge, and "the U0.6 record" of
+the environment check reads as the bridge record of U2-L0. References
+and baselines named U0.8 or U0.6 are their U2-L0 API runs; local rows are
+never compared with API runs. Session U2-L0 comes first: it records the bridge
+(version, SHA-256, digests, remote model and provider) and measures the
+five reference runs `u2l0-benchmark-off`, `u2l0-benchmark-shadow`,
+`u2l0-extraction-development-off`, `u2l0-silver-development-relevance`
+and `u2l0-quality-synthetic-shadow`, run through the bridge at `0abfe02`
+(plan 7, U2-L0), into the "Live evaluations" table and
+`reports/<YYYYMMDD>-upgrade-api-reference/`, committed with
+"Session: U2-L0". It may run in the same agent as U2-L1, with separate
+commits. The local runs `runs/upgrade/u2l1-local-*` made before the
+shutdown are archived with the U2-L1 runs and decide nothing. Every
+reading of D-8 holds with the U2-L0 runs as the reference.
 
 ### U2-V (verification)
 

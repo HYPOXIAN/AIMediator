@@ -30,6 +30,7 @@ the progress table in its own commit. Frozen when the plan is finished (D3).
 | UP-D16 | adopt | 2026-11-04 | plan section 9 |
 | UP-D17 | adopt (raised by the owner) | 2026-11-04 | plan section 9; smaller live samples from U0.8 on (`upgrade-samples-v1`, steps U0.7 and U0.8); given after U0.6 |
 | UP-D18 | adopt (raised by the owner) | 2026-11-05 | plan section 9; time budget of 8 hours from 00:17 (no batch starts that cannot finish by about 08:20); fewer live runs in U4-L, U5-L1 to U5-L3, U6-L and U7.1; at a review point without fix-up steps the verification session also does the closure |
+| UP-D19 | adopt (raised by the owner) | 2026-11-05 | plan section 9 and 5.4 ("Hosted API"); given at 02:52, after the owner's computer shut down from overload during the U2-L1 runs: every live run of U2 to U7 calls the hosted API of `.env` (`LLM_MODEL` `deepseek/deepseek-v4-flash`) through the bridge `runs/upgrade/tools/api_bridge.py`, with no package change; the references are rerun through it in U2-L0; the local U2-L1 runs are kept aside and decide nothing |
 
 **Standing instruction (owner, 2026-11-04, after U0.6).** The remaining
 sessions of U0 to U7 run unattended, one after another. Where a step, a
