@@ -32,13 +32,14 @@ after the owner's final review, freezes the record and archives the plan.
 Allowed paths:
 
 ```text
-^(README\.md$|RULES\.md$|docs/|reports/[0-9]{8}-upgrade-acceptance/|scripts/maintenance/check_rules\.py$|tests/test_check_rules\.py$)
+^(README\.md$|RULES\.md$|CLAUDE\.md$|docs/|reports/[0-9]{8}-upgrade-acceptance/|scripts/maintenance/check_rules\.py$|tests/test_check_rules\.py$)
 ```
 
 - **Allowed**: documents under `docs/`, including the new validation record,
   the index, and in U7.6 the moves into `docs/archive/`; the root README;
-  `RULES.md` in U7.4 only; the rule check and its test only if the P4
-  baseline parser needs the new wording; one curated report.
+  `CLAUDE.md` in U7.4 (its `Applies to` line) and U7.6 (its pointer to the
+  plan); `RULES.md` in U7.4 only; the rule check and its test only if the
+  P4 baseline parser needs the new wording; one curated report.
 - **Not allowed**: package code, tests other than the rule-check test,
   assets, data, earlier reports, frozen records. A defect found here becomes
   an escalation, not a fix in U7.
@@ -118,8 +119,9 @@ Step notes:
     with measured values, and the limitations (agent silver labels,
     same-model audit unless the second audit is adopted, sample sizes).
 - **U7.4** (UP-D16): `RULES.md` v1.5: the P4 baseline sentence names the
-  final count and date; a revision-log entry states the reason. Run the
-  rule check: it must parse the new baseline.
+  final count and date; a revision-log entry states the reason; the
+  `Applies to` line of `CLAUDE.md` names v1.5. Run the rule check: it must
+  parse the new baseline.
 - **U7.5**: under "Batch results" in the change record, a table with every
   completion criterion of plan section 13 and every target of 5.5 with its
   measured value; open items go to "Deferred".
@@ -165,8 +167,8 @@ fix-up steps and stop. Otherwise freeze the change record (Status stays
 Active only until this commit; the file is final afterwards, D3), move
 docs/plans/pipeline-upgrade.md and docs/plans/pipeline-upgrade-handoffs/
 into docs/archive/ with their names kept, set their Status to Archived,
-update every inbound link (D5), the index and the README, and tag
-upgrade-done. Commit with "Step: U7.6". Never add attribution.
+update every inbound link (D5), the index, the README and CLAUDE.md, and
+tag upgrade-done. Commit with "Step: U7.6". Never add attribution.
 Finish with a session-log entry; your final message repeats it.
 ```
 
