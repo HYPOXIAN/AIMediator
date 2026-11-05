@@ -106,6 +106,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | U4.7 | N | done | 316 | green | ADR `docs/decisions/0005-program-segmentation-of-quality-annotations.md` (context with the U2-L1 and U0.6 failure classes, the five decisions of U4.1 to U4.5, the U4-L measurements against U2-L1 and the E-4 outcome, consequences: no offset errors, clause granularity, schema growth (D-11), policy v2 in the run identity, fixture batches, the legacy identity hash) with its index row in `docs/README.md`; evidence-quality.md (header; sections 3.1 and 3.2 marked as v1, new section 3.3 with the v2 contract: segmentation, request, schema, validation and routing, records and readers, granularity, fixtures; section 4 holds for both versions on the derived annotation); emotion-quantification-and-evidence-isolation.md (header; section 3 on v2 labeling and the program's offsets); design/cli.md section 5 (`evidence.clause_segments`, the v2 quality view, `quality_request` context, v2 `schema_for` and `normalize`, `qualify_v2`, the readers of both versions). Lock unchanged |
 | U4.F1 | B | done | 316 | updated by UP-D10 | Fix-up step of E-4, option (c), adopted under the owner authorization of 2026-11-05 03:11. Prompt pair `evidence-quality.{en,zh}`: one addition to the labeling paragraph aimed at the remaining U4-L failure class (a concrete point selecting a clause labeled `general_opinion`, 7 of 9 benchmark attempt errors) and at a literal outside the selected clauses (2 of 9); see "Behavior changes". The authored examples are unchanged and still valid under `validate_annotation_v2`. No code, schema, policy or routing change. Lock regenerated: exactly the 25 keys under "Behavior changes" (the keys of the U2.2 prompt change). Measured by U4-L2 |
 | U4-L2 | L | done | 316 | green | E-4 option (c), UP-D19, UP-D20, D-12. The two U4-L runs repeated at the U4.F1 commit `385f744` (`u4f1-benchmark-shadow`, `u4f1-quality-synthetic-shadow`) through bridge version 2, environment and identity equal to the record. Verdict: rule 2 still fails (benchmark quality-failed comments 5 against 2), T5 78.3 % unchanged, T4 11.0 s per comment (59.5 %), rule 4 holds (synthetic 15/16, routes 14/16 against 13/16 and 11/16); the fallback (a) of E-4 applies and passes to U4-V (revert U4.F1, U4.5, U4.4). See "U4-L2" under "Live evaluations". No `reports/` directory (D-12); full runs, measurements and comparison archived with `SHA256SUMS` (726 files). Spend 0.0186 USD (0.1665 to 0.1851 USD) |
+| U2-R | L | done | 316 | green | E-3 option (c), UP-D19, UP-D20, D-8; run by session U5 (UP-D20, chain session 4) before U5.1. `u2r-extraction-development-off`: the extraction-development sample in `off` at the code of `39a1efd` (the U2.3 commit; U2.2 sends no request in `off`, U2.4 not applied), extracted with `git archive` into `runs/upgrade/code-39a1efd/src` and first on `sys.path`, through bridge `openrouter-bridge-2` (SHA-256, digests and `live-config-api.json` equal to the record; `doctor` passed; 30 module hashes equal to `39a1efd`; input equal to the reference; all 176 chat attempts from `deepseek/deepseek-v4-flash` on DeepInfra). Against `u2l0-extraction-development-off` as D-8 reads rule 4 for U2.3: precision of accepted claims 60/79 (75.9 %) against 61/80 (76.2 %), −0.3 points (Newcombe −13.5 to +12.9); recall 59/123 (48.0 %) against 60/123 (48.8 %), −0.8 points (−13.1 to +11.5); rule 2 0 against 0 technical failures, coverage complete. U2.3 alone holds rule 4; E-3 decided as (b) on the evidence of (c): U2.3 kept, adopted under the owner authorization of 2026-11-05 03:11. See "U2-R" under "Live evaluations". Spend 0.0255 USD (0.1851 to 0.2105 USD) |
 
 ## Baseline measurements (U0.4)
 
@@ -935,6 +936,42 @@ Findings of U4-L2:
 - **Largest prompt plus output** 13,339 on the benchmark and 14,482 on
   the synthetic sample; U4.6 stays skipped.
 
+### U2-R (E-3; API, UP-D19)
+
+Run by the U5 session on 2026-11-05 from 04:59 to 05:06, before U5.1, to
+settle E-3 with option (c): U2.3 measured without U2.4. The code of
+`39a1efd` (the U2.3 commit) was extracted with `git archive` into
+`runs/upgrade/code-39a1efd/src` and put first on `sys.path`, as
+`u2l0_api_runs.sh` did for `0abfe02`; the U2-L1 commands for the
+extraction-development sample in `off` (`runs/upgrade/tools/u5_api_run.sh`).
+In `off` no quality request is sent, so the run differs from the U2-L0 run
+only by U2.3. Identity (`runs/upgrade/tools/u5_identity.py`): 30 module
+hashes equal to `39a1efd`; service `openrouter-bridge-2`, bridge SHA-256,
+digests and `live-config-api.json` equal to the record; `doctor` passed;
+input and source hashes equal to the reference; all 176 chat attempts from
+`deepseek/deepseek-v4-flash` on DeepInfra. Compared with
+`runs/upgrade/tools/u5_compare.py` (D-8 reading; the tool reproduces the
+U2-L1 values of E-3 exactly when pointed at the U2-L1 run).
+
+| Run | Precision accepted | Precision generated | Recall | Recall admitted | T6 rejected | Extraction prompt (uncached) | Output | Failures |
+| --- | ------------------ | ------------------- | ------ | --------------- | ----------- | ---------------------------- | ------ | -------- |
+| `u2l0-extraction-development-off` (reference, `0abfe02`) | 61/80 (76.2 %) | 85/131 (64.9 %) | 60/123 (48.8 %) | 60/123 | 52/134 (38.8 %) | 4,437 (3,955) | 373 | 0 |
+| `u2r-extraction-development-off` (U2.3 alone, `39a1efd`) | 60/79 (75.9 %) | 76/112 (67.9 %) | 59/123 (48.0 %) | 59/123 | 37/117 (31.6 %) | 3,369 (2,959) | 332 | 0 |
+| `u2l1-extraction-development-off` (U2.2 to U2.4, `b7d1cc5`) | 55/74 (74.3 %) | 74/120 (61.7 %) | 54/123 (43.9 %) | 54/121 | 53/129 (41.1 %) | 3,353 (2,841) | 362 | 0 |
+
+Verdict for U2.3 alone (D-8): rule 2 holds (0 against 0 technical
+failures, coverage complete); rule 3 holds (T1 extraction uncached prompt
+tokens 2,959 against 3,955, −25.2 %); rule 4 holds: precision of accepted
+claims −0.3 points (Newcombe −13.5 to +12.9), recall −0.8 points (−13.1 to
++11.5), English recall 30/46 in both, Chinese 29/77 against 30/77. Against
+the U2.3-only run, the U2-L1 run (which adds U2.4) loses 4.1 points of
+recall (−16.2 to +8.3) and 3.3 over admitted comments; its admission
+differs on 4 comments. The loss of E-3 therefore arises with U2.4 and
+run-to-run variation of the hosted model, not with U2.3; every interval
+includes 0. Finding for U2-V and the U2 review: U2.4 was judged on
+relevance agreement (D-8) and kept; its effect on extraction recall
+(through admission) is not a D-8 metric of U2.4 and is recorded here only.
+
 ## Behavior changes (P7)
 
 | Step | Decision | Asset or request part | Old SHA-256 | New SHA-256 | Lock paths |
@@ -1316,6 +1353,20 @@ Findings of U4-L2:
   the owner's review and forbids a revert in the live session; it is
   recorded for U2-V and the review recorded under the owner's standing
   instruction. Blocked: nothing in this session; U2.6 proceeds on HEAD.
+
+  Outcome (session U5, 2026-11-05, before U5.1): settled under the owner
+  authorization of 2026-11-05 03:11, because U5 builds on U2.3 (plan 6)
+  and the verification of U2 runs only after U6 (UP-D20). Option (c) was
+  measured first (`u2r-extraction-development-off`, the code of `39a1efd`
+  through bridge version 2; see "U2-R" under "Live evaluations"): against
+  the U2-L0 reference, precision of accepted claims −0.3 points and recall
+  −0.8 points, within the 3-point margin; rules 2 and 3 hold. Adopted:
+  (b) on the evidence of (c), U2.3 kept; no revert and no fix-up step
+  U2.F1; the extraction budget of the U2.6 payload test stays. The U5
+  reference is `u2l1-extraction-development-off`, the state of HEAD's
+  extraction and relevance code (U2.2 to U2.4; later steps before U5 are
+  behavior-neutral in `off` or change only quality requests). U2-V
+  carries the finding of "U2-R" on U2.4. Blocked: nothing.
 
 - **E-4 (U4-L) U4.4 and U4.5 fail adoption rules 2 and 3.** Raised on
   2026-11-05 by session U4-L. On the benchmark 4 comments fail quality
