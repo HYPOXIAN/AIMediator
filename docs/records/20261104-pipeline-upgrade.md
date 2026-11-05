@@ -383,7 +383,7 @@ For every API session it replaces the local items of the record above
 | U2-L1 (`u2l1-quality-synthetic-shadow`) | `b7d1cc5` | `upgrade-samples-v1/quality-synthetic` (19) | `shadow`, `--stop-after quality` | 112.2 s | relevance 1,313 (1,185); retrieval_review 958 (617); quality 1,799 (1,233) | relevance 16; retrieval_review 11; quality 418 | 6 quality requests with validation errors; 0 transport; 3 quality-failed comments; 0 generation-failed comments; 2 pending | — | — | first attempt 13/16 (81.2 %, Wilson 57.0–93.4 %); 19 attempts; route agreement 11/16 (68.8 %, Wilson 44.4–85.8 %), English 5/7, Chinese 6/9; 16 of 19 cases reach quality | U2.2 rule 4 holds: validity and route agreement equal |
 | U4-L (`u4-benchmark-shadow`) | `2614453` | `upgrade-samples-v1/latency-benchmark` (30) | `shadow` | 321.1 s | relevance 1,474 (1,090); retrieval_review 1,353 (1,046); quality 3,673 (2,630); extract 2,788 (2,495); verify 742 (571) | relevance 15; retrieval_review 14; quality 501; extract 200; verify 7 | 9 quality requests with validation errors; 0 transport; 4 quality-failed comments; 0 generation-failed comments; 3 pending | 12 / 8 (0 quarantined; 4 of 12 audited rejected, 33.3 %) | 4/6 (66.7 %) / 4/10 (40.0 %), the 11 scored sample comments of the development split | first attempt 18/23 (78.3 %, Wilson 58.1–90.3 %); 28 attempts; final 19/23 | U4.4 and U4.5: rules 2 and 3 (T5) fail; see the verdicts |
 | U4-L (`u4-quality-synthetic-shadow`) | `2614453` | `upgrade-samples-v1/quality-synthetic` (19) | `shadow`, `--stop-after quality` | 127.7 s | relevance 1,312 (928); retrieval_review 958 (446); quality 2,865 (1,745) | relevance 16; retrieval_review 11; quality 311 | 0 quality requests with validation errors; 0 transport; 0 quality-failed comments; 2 pending | — | — | first attempt 16/16 (100 %, Wilson 80.6–100 %); 16 attempts; route agreement 14/16 (87.5 %, Wilson 64.0–96.5 %), English 5/7, Chinese 9/9; 16 of 19 cases reach quality | rule 4 holds: validity and route agreement up |
-| U4-L2 (`u4f1-benchmark-shadow`) | `385f744` | `upgrade-samples-v1/latency-benchmark` (30) | `shadow` | 313.3 s | quality 3,951 (2,589); other stages as in the U4-L row within run-to-run variation | quality 530 | 10 quality attempt errors in 10 failed attempts; 0 transport; 5 quality-failed comments; 0 generation-failed comments; 3 pending | 8 accepted of the generated (4 of 8 accepted scored positions correct) | 4/8 (50.0 %) / 4/10 (40.0 %), the 11 scored sample comments | first attempt 18/23 (78.3 %, Wilson 58.1–90.3 %); 28 attempts; final 18/23 | U4.F1: rule 2 still fails; see the verdicts |
+| U4-L2 (`u4f1-benchmark-shadow`) | `385f744` | `upgrade-samples-v1/latency-benchmark` (30) | `shadow` | 313.3 s | relevance 1,474 (1,090); retrieval_review 1,353 (1,148); quality 3,951 (2,589); extract 2,788 (2,422); verify 742 (508) | relevance 15; retrieval_review 14; quality 530; extract 201; verify 7 | 10 quality requests with validation errors (5 comments, both attempts); 0 transport; 5 quality-failed comments; 0 generation-failed comments; 3 pending | 12 / 10 (0 quarantined; 2 of 12 audited rejected, 16.7 %) | 4/8 (50.0 %) / 4/10 (40.0 %), the 11 scored sample comments of the development split | first attempt 18/23 (78.3 %, Wilson 58.1–90.3 %); 28 attempts; final 18/23 | U4.F1: rule 2 still fails; see the verdicts |
 | U4-L2 (`u4f1-quality-synthetic-shadow`) | `385f744` | `upgrade-samples-v1/quality-synthetic` (19) | `shadow`, `--stop-after quality` | 108.7 s | quality 2,971 (1,978) | quality 307 | 2 quality requests with validation errors; 0 transport; 1 quality-failed comment; 2 pending | — | — | first attempt 15/16 (93.8 %, Wilson 71.7–98.9 %); 17 attempts; route agreement 14/16 (87.5 %), English 7/7, Chinese 7/9 | rule 4 holds against U2-L1 |
 
 Rows of U0.6 (2026-11-04, session U0-L): the five reference runs of plan
@@ -927,8 +927,9 @@ Findings of U4-L2:
 - **Synthetic sample.** One case (`Point/segment detail conflict`, both
   attempts) fails, against none in U4-L; route agreement 14/16 in both
   (English 7/7 against 5/7, Chinese 7/9 against 9/9).
-- **Benchmark claims.** Accepted claims score 4 of 8 scored positions
-  (U4-L and U2-L1: 4 of 6); recall 4/10 in all three runs. The extraction
+- **Benchmark claims.** 12 generated and 10 accepted (U4-L: 12 and 8);
+  accepted claims score 4 of 8 scored positions (U4-L and U2-L1: 4 of 6);
+  recall 4/10 in all three runs. The extraction
   sample was not run (UP-D18), so rule 4's extraction margin is not
   measured for U4.
 - **Largest prompt plus output** 13,339 on the benchmark and 14,482 on
@@ -1810,6 +1811,49 @@ Findings of U4-L2:
   code stopped inside the request. Nothing bypassed.
 - Next: U4 (work order U4, sessions U4-1 and U4-L in one agent, UP-D20);
   U3-V runs in the verification session after U6; blockers: none.
+
+### 2026-11-05 U4-1, U4-2, U4-L, U4-3 and U4-L2 (implementation and live)
+
+- Steps: U4.1, U4.2, U4.3, U4.4, U4.5, U4-L, U4.7, U4.F1 and U4-L2 done;
+  U4.6 skipped (measured context size: largest prompt plus output 14,346
+  tokens, at least 6,000 in 5 requests); none started and stashed.
+- State: HEAD is this entry's commit (parent `81ccfd8`); tests 316; lock
+  updated by UP-D10 (U4.4, 100 keys; U4.F1, 25 keys; 771 keys), green
+  after every step; U4.1 to U4.3, U4.5 and U4.7 left it unchanged; rule
+  check 0. Foreign working directory: 316 pass. Installed-wheel
+  acceptance at `81ccfd8`: `"passed": true`, 18 commands.
+- Findings: entry without the tags `upgrade-u2` and `upgrade-u3`
+  (UP-D20); resume procedure: clean tree, no `WIP Step` stash, gates
+  passed; the owner authorization of 03:11 was already in the record. U4.2
+  found that all 38 fixture cases map (124 v1 segments onto 138 clauses),
+  so no escalation and no fallback fixture. D-11 (the per-clause label
+  schema kept as the plan specifies; design briefs accept both versions
+  in U4.4 so that its gates pass; the legacy identity hash deferred) and
+  D-12 (the U4-L2 summary in the record and the archive, since the U4
+  report directory is frozen) adopted under the owner authorization.
+  U4-L: reference the U2-L1 rows (U2.2 kept; named in the U4-L section);
+  bridge `openrouter-bridge-2`, digests and configuration equal to the
+  record, `doctor` passed; T4 11.2 s per comment (60.4 % of the reference,
+  indicative, target not met); T5 78.3 % on the benchmark, not met; no
+  offset, quote or coverage error; synthetic validity 16/16 and route
+  agreement 14/16 against 13/16 and 11/16; U4.4 and U4.5 fail adoption
+  rules 2 (4 quality-failed benchmark comments against 2) and 3 (T5):
+  escalation E-4, whose recommendation (c), a prompt fix-up U4.F1 with the
+  revert as fallback, was adopted under the authorization. U4-L2 measured
+  U4.F1: rule 2 still fails (5 against 2), so the fallback applies and
+  passes to U4-V (revert U4.F1, U4.5 and U4.4, then a documentation fix-up
+  for U4.7); this session did not revert (plan 10.1). Spend of this
+  session 0.0365 USD (U4-L 0.0179, U4-L2 0.0186; bridge total 0.1851 USD,
+  2.79 USD below the refusal point). Boundary check of plan 8.8 from the
+  U4 entry commit `d9b2de9` (no `upgrade-u3` tag) and the commit hygiene
+  check print nothing; `cases.json` and `data/evaluation` have no diff;
+  `qualify` has no diff. The identity tool `check_api_identity.py` pins
+  bridge version 1, so it reports `passed: false` for version-2 runs while
+  every item holds. Nothing bypassed.
+- Next: U5 (work order U5, sessions U5-1 to U5-L3 in one agent, UP-D20);
+  U4-V runs in the verification session after U6 and carries E-4 (the
+  reverts of U4.F1, U4.5 and U4.4) to the review of batch U4; blockers:
+  none.
 
 ## Deferred
 
