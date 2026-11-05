@@ -61,6 +61,7 @@ RULES.md D1. Records, decisions and meeting notes are frozen once final
 | [20261103-reorganization.md](records/20261103-reorganization.md) | Record | Active | Change record of the 2026-11 reorganization, batch by batch, with decisions, archives and results. |
 | [20261103-dead-file-cleanup.md](records/20261103-dead-file-cleanup.md) | Record | Active | Workspace review for dead files after the reorganization: findings, the archived `runs/` output and what was kept. |
 | [20261103-code-restructuring.md](records/20261103-code-restructuring.md) | Record | Active | Change record of the code restructuring: decisions, progress, session log, verification notes and archives; final 2026-11-04 (tag `restructure-done`). |
+| [20261104-pipeline-upgrade.md](records/20261104-pipeline-upgrade.md) | Record | Active | Change record of the pipeline upgrade: owner decisions UP-D01 to UP-D16, progress, baselines, live evaluations, session log and verification notes. |
 
 ## Reference
 
