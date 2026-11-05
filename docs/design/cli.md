@@ -530,7 +530,8 @@ every path keeps the exception type it raises.
   `BOOL`, and the validator `schema_errors(value, schema, path='$')`.
 - `evidence`: `evidence_units`, `numeric_tokens`, `PARAMETER`, `CLAIM`,
   `character_reference(text='')` (new objects on every call, built from
-  `resources.glossary()`), `character_terms(entry)` (canonical name, Chinese
+  `resources.glossary()` and memoized by `text`; each call returns a new
+  copy of the cached value, pipeline upgrade step U1.2), `character_terms(entry)` (canonical name, Chinese
   label, then the alias texts, unfiltered; callers filter),
   `character_candidates(text, reference)` and `ground_claim(claim, row,
   characters) -> (errors, enriched or None)`, whose span invariant raises
@@ -664,7 +665,9 @@ every path keeps the exception type it raises.
   validator from `schema`, and its character terms and numeric tokens from
   `evidence`; `balance_policy` builds the same term list inline, because
   `evidence` imports it; `demo` imports `FixtureTransport`;
-  `glossary_vectors.ROOT` is `workspace_root()`; `operations`, `review`,
+  `glossary_vectors.ROOT` is `workspace_root()`; `balance_policy.term_matches`
+  compiles each term's pattern once (`functools.lru_cache`, same matching
+  rules; step U1.2); `operations`, `review`,
   `legacy_review`, `reporting`, `evaluation` and `demo` import the split
   modules instead of `engine`.
 

@@ -17,11 +17,20 @@ def load_policy():
     return json.loads(POLICY_PATH.read_text(encoding='utf-8'))
 
 
+@lru_cache(maxsize=8192)
+def _term_pattern(term):
+    """Return the compiled whole-word, case-insensitive pattern of a term with a Latin letter, or None."""
+    if re.search('[A-Za-z]', term):
+        return re.compile(r'(?<![A-Za-z])' + re.escape(term) + r'(?![A-Za-z])', re.I)
+    return None
+
+
 def term_matches(term, text):
     if not term:
         return False
-    if re.search('[A-Za-z]', term):
-        return re.search(r'(?<![A-Za-z])' + re.escape(term) + r'(?![A-Za-z])', text, re.I) is not None
+    pattern = _term_pattern(term)
+    if pattern is not None:
+        return pattern.search(text) is not None
     return term in text
 
 

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import copy
+from functools import lru_cache
 import re
 from typing import Any
 
@@ -37,6 +38,22 @@ def evidence_units(text: str) -> list[dict[str, Any]]:
 
 def character_reference(text: str = '') -> list[dict[str, Any]]:
     """Return new character reference entries, keeping only the aliases that occur in text."""
+    # Memoized by text; every call returns its own copy, so callers may mutate it.
+    return _json_copy(_character_reference(text))
+
+
+def _json_copy(value: Any) -> Any:
+    """Return a copy of JSON-shaped data with a new dict or list at every level (deepcopy without its memo)."""
+    if isinstance(value, dict):
+        return {key: _json_copy(item) if isinstance(item, (dict, list)) else item for key, item in value.items()}
+    if isinstance(value, list):
+        return [_json_copy(item) if isinstance(item, (dict, list)) else item for item in value]
+    return value
+
+
+@lru_cache(maxsize=1024)
+def _character_reference(text: str) -> list[dict[str, Any]]:
+    """Build the character reference of text; the cached value is never handed out."""
     reference = [{'canonical_name': e['canonical_name'], 'chinese_label': e.get('chinese_label'),
              'aliases': [{k: a[k] for k in ('text', 'candidate_only', 'requires_context', 'context_note') if k in a}
                          for a in e['aliases'] if term_matches(a['text'], text) and identity_alias_allowed(a['text'])]}
