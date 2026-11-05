@@ -1,4 +1,5 @@
 """Ollama HTTP calls and injected production transports with durable finite attempt budgets."""
+import bisect
 import json
 import re
 import urllib.request
@@ -36,17 +37,78 @@ def repeated_claim(output, allowed_ids):
     return False
 
 
+_KEY = re.compile(r'(?<!\\)"([^"]+)"\s*:')
+_COMMENT_ID = re.compile(r'(?<!\\)"comment_id"\s*:\s*"([^"]+)"')
+_CLAIM = re.compile(r'\{\s*"character"\s*:')
+
+
+class _LoopGuard:
+    """Duplicate-comment and duplicate-claim checks over a growing output, scanning only what is new.
+
+    A match of each pattern, once complete, does not change when the output grows,
+    and an attempt that reaches the end of the output leaves no complete match after
+    it. Resuming each scan at the end of its last match therefore finds the matches
+    of a full scan, and the results equal ``re.findall`` and ``repeated_claim`` over
+    the whole output.
+    """
+
+    def __init__(self, assessment_schema):
+        self.keyed = assessment_schema.get('type') == 'object'
+        self.allowed = set(assessment_schema['properties']) if self.keyed else None
+        self.identities, self.position = set(), 0
+        self.scope_starts, self.scope_keys = [], []
+        self.claim_position, self.pending, self.signatures = 0, [], set()
+        self.decoder = json.JSONDecoder()
+
+    def duplicate_identity(self, output):
+        """Return whether the comment identities seen so far hold a duplicate."""
+        duplicate = False
+        for match in (_KEY if self.keyed else _COMMENT_ID).finditer(output, self.position):
+            self.position = match.end()
+            identity = match.group(1)
+            if self.keyed:
+                if identity not in self.allowed:
+                    continue
+                self.scope_starts.append(match.start())
+                self.scope_keys.append(identity)
+            duplicate = duplicate or identity in self.identities
+            self.identities.add(identity)
+        return duplicate
+
+    def repeated_claim(self, output):
+        """Return whether two complete claims under the same comment key are equal; call after duplicate_identity."""
+        for match in _CLAIM.finditer(output, self.claim_position):
+            self.claim_position = match.end()
+            self.pending.append(match.start())
+        pending, repeated = [], False
+        for start in self.pending:
+            try:
+                claim, _ = self.decoder.raw_decode(output, start)
+            except ValueError:
+                pending.append(start)
+                continue
+            # Every key match before a complete claim is complete, so its parents are final.
+            parents = bisect.bisect_left(self.scope_starts, start)
+            if not parents:
+                continue
+            signature = (self.scope_keys[parents - 1], json.dumps(claim, sort_keys=True, ensure_ascii=False))
+            repeated = repeated or signature in self.signatures
+            self.signatures.add(signature)
+        self.pending = pending
+        return repeated
+
+
 def streamed_chat(base, payload, partial_path, timeout=1800):
     request = urllib.request.Request(base + '/api/chat',
         data=json.dumps(payload, ensure_ascii=False).encode(), headers={'Content-Type': 'application/json'})
-    parts, last, whitespace = [], {}, 0
+    output, last, whitespace, guard = '', {}, 0, None
     with partial_path.open('w', encoding='utf-8') as log, urllib.request.urlopen(request, timeout=timeout) as response:
         for line in response:
             if not line.strip():
                 continue
             chunk = json.loads(line)
             fragment = chunk.get('message', {}).get('content', '')
-            parts.append(fragment)
+            output += fragment
             log.write(fragment)
             log.flush()
             whitespace = whitespace + len(fragment) if fragment and fragment.isspace() else 0
@@ -55,21 +117,17 @@ def streamed_chat(base, payload, partial_path, timeout=1800):
                 last = {**chunk, 'done': False, 'done_reason': 'whitespace_loop'}
                 break
             if 'assessments' in payload['format']['properties']:
-                assessment_schema = payload['format']['properties']['assessments']
-                if assessment_schema.get('type') == 'object':
-                    allowed = set(assessment_schema['properties'])
-                    identities = [key for key in re.findall(r'(?<!\\)"([^"]+)"\s*:', ''.join(parts)) if key in allowed]
-                else:
-                    identities = re.findall(r'(?<!\\)"comment_id"\s*:\s*"([^"]+)"', ''.join(parts))
-                if len(identities) != len(set(identities)):
+                if guard is None:
+                    guard = _LoopGuard(payload['format']['properties']['assessments'])
+                if guard.duplicate_identity(output):
                     last = {**chunk, 'done': False, 'done_reason': 'duplicate_comment_loop'}
                     break
-                if assessment_schema.get('type') == 'object' and repeated_claim(''.join(parts), allowed):
+                if guard.keyed and guard.repeated_claim(output):
                     last = {**chunk, 'done': False, 'done_reason': 'duplicate_claim_loop'}
                     break
             if chunk.get('done'):
                 break
-    return {**last, 'message': {'role': 'assistant', 'content': ''.join(parts)}}
+    return {**last, 'message': {'role': 'assistant', 'content': output}}
 
 
 

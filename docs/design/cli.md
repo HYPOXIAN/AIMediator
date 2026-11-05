@@ -543,7 +543,10 @@ every path keeps the exception type it raises.
   `extract` and 256 otherwise; `quality` takes `num_predict` and `num_ctx`
   from the policy) and `normalize(stage, parsed, ids, data) -> (parsed or
   None, errors)`, which `Runner` calls only after the schema check passed.
-- `inference`: `api`, `streamed_chat`, `repeated_claim`, the production
+- `inference`: `api`, `streamed_chat` (its loop guards scan only the output
+  added since their last match and decide as `re.findall` and
+  `repeated_claim` over the whole output would; pipeline upgrade step
+  U1.3), `repeated_claim`, the production
   `Transport(cfg, key=None, folder=None)` with `tags`, `api`, `embed` and
   `chat`, and `probe(cfg, transport, require_embedding=True)`, which checks
   availability only.
