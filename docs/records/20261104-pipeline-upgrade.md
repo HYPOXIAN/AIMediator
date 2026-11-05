@@ -110,6 +110,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | U5.1 | B | done | 318 | updated by UP-D11 | PRM-02, plan 4.3. `evidence.CLAIM` in the evidence-first order `evidence_ids`, `character`, `target`, `direction`, `recommendation`, `specificity`, `parameters`, `uncertain`; `stages.schema_for('extract', ...)` keeps it when it narrows properties (reassigned keys keep their place) and appends `quality_point_ids` last. `inference.claim_key(assessment_schema)` returns the first property of the claim items under `properties[<comment ID>].properties.claims.items.properties` of the request's `format` (None without claim items), and the loop guard of `streamed_chat` and `repeated_claim(output, allowed_ids, first_key)` find claim objects by that key instead of the literal `"character"`; `inference` does not import `evidence`. `proposal_hash` sorts keys: review export and import of the demo runs pass (`test_quality_readers`, `test_cli_product`). Tests (+2, `tests/test_stream_guards.py`): the U1.3 equivalence streams carry a schema whose claims start with `character` and still equal the copies of `a1c034e`; `claim_key` on the U5.1 schema, the old order, comments without claim items and array schemas; evidence-first streams (normal, a duplicate claim, late and early loops of 8 claims, the same claim under two comments) at chunk sizes 1, 4, 9 and whole: the new guard stops every claim loop (`duplicate_claim_loop`, on a prefix of the same output) where the old copy, keyed on `character`, does not. Lock regenerated (771 keys): exactly the 18 extraction request keys under "Behavior changes"; no artifact changed (fixture claims keep their own key order). Design documents follow in U5.4 (work order) |
 | U5-L1 | L | done | 318 | green | UP-D11, UP-D18, UP-D19, UP-D20, D-13. `u5l1-extraction-development-off`: the extraction-development sample in `off` at the U5.1 commit `e64701d` (a `git archive` copy first on `sys.path`) through bridge `openrouter-bridge-2` (identity check passed: 30 module hashes, digests, bridge and configuration hashes equal to the record, `doctor` passed, all 182 chat attempts from `deepseek/deepseek-v4-flash` on DeepInfra). Reference `u2l1-extraction-development-off` (E-3 kept U2.3). Verdict (D-13): U5.1 passes and is kept: 0 technical failures against 0, coverage complete; precision of accepted claims 58/77 (75.3 %) against 55/74 (74.3 %), +1.0 points (Newcombe −12.7 to +14.7); recall 58/123 (47.2 %) against 54/123 (43.9 %), +3.3 points; T6 40/119 (33.6 %) against 53/129 (41.1 %). The entry rerun `u5r-extraction-development-off` (code of `e34e08d`, decides nothing) gives 55/73 and 54/123: against it U5.1 adds 0.0 points of precision and +3.3 of recall. See "U5-L1" under "Live evaluations". Spend of both runs 0.0482 USD (0.2105 to 0.2587 USD); the report follows with U5-L3 (D-13) |
 | U5.2 | B | done | 324 | updated by UP-D11 | PRM-03, plan 4.3. Each comment's extraction schema is `{subjects, claims}`, `subjects` first: an array of the comment's allowed characters (the enum of the claim `character`) with `uniqueItems` and `maxItems` the number of allowed characters (beyond the work order: a bound that holds where a provider drops `uniqueItems`, as the bridge does), `maxItems` 0 when no character is allowed; without request data an array of strings with `uniqueItems`. `stages.normalize` keeps `subjects` in each assessment; `pipeline.extract_claims` adds the source-binding error `Claim character not declared as subject` to a claim whose character is not in its comment's `subjects` (after the grounding errors; nothing removed or relaxed). `FixtureTransport` fills `subjects` with the characters of its claims in first-occurrence order. Prompt pair `summarize-balance.{en,zh}`: every comment carries subjects and claims, and two sentences define `subjects` (the supplied fighters whose balance the author takes a position on, each claim's character among them; a mention, comparison, victim or cosmetic remark does not make a subject); see "Behavior changes". `quality-extract` unchanged. New `tests/test_subjects.py` (+6): schema order, enum, bounds and the bare schema; repeated, unknown, missing and forbidden subjects refused; `normalize` keeps them; the loop guards inside `{subjects, claims}` (duplicate claim, duplicate comment key, the same claim under two comments); fixture runs in `off` and `enforce` whose subjects equal their claims' characters and trip no gate; a fixture answer with one subject removed quarantines exactly that comment's claims of that character at source binding. Mock transports of five test files answer with `subjects`. Lock regenerated (771 keys): exactly the 50 keys under "Behavior changes". Design documents follow in U5.4 |
+| U5-L2 | L | done | 324 | green | UP-D11, UP-D18, UP-D19, UP-D20, D-13. `u5l2-extraction-development-off` at the U5.2 commit `30d41be` (a `git archive` copy first on `sys.path`) through bridge version 2 (identity check passed; all 191 chat attempts from `deepseek/deepseek-v4-flash` on DeepInfra). Reference `u5l1-extraction-development-off` (U5.1 passed). Verdict (D-13): U5.2 **fails rule 3**: precision of accepted claims 61/81 (75.3 %) against 58/77 (75.3 %), −0.02 points (Newcombe −13.3 to +13.4), not above the reference; rules 2 (0 against 0 technical failures, coverage complete) and 4 (precision −0.0, recall 60/123 against 58/123, +1.6 points) hold. The subjects gate quarantined no claim. Escalation E-5; not reverted (the session's instruction: a failed step stays for the review). See "U5-L2" under "Live evaluations". Spend 0.0253 USD (0.2587 to 0.2841 USD) |
 
 ## Baseline measurements (U0.4)
 
@@ -1021,6 +1022,41 @@ on long comments (0.97 against 1.24 per comment) with more of them
 accepted (0.52 against 0.39). T6 target (at most 35 %) met by the U5.1
 run; T7 target (+10 points) not met.
 
+### U5-L2 (UP-D11; API, UP-D19)
+
+Run of 2026-11-05 from 05:28 to 05:35, started by the U5 session in its
+own process session: `u5l2-extraction-development-off` at the U5.2 commit
+`30d41be` from a `git archive` copy first on `sys.path`. Identity check
+passed as in U5-L1 (module hashes equal to `30d41be`, bridge version 2
+with the recorded SHA-256 and digests, configuration unchanged, `doctor`
+passed, input equal to the reference, all 191 chat attempts from
+`deepseek/deepseek-v4-flash` on DeepInfra). Reference:
+`u5l1-extraction-development-off` (D-13).
+
+| Run | Precision accepted | Precision generated | Recall | Recall admitted | T6 rejected | Claims per long comment (generated, accepted) | Extraction prompt (uncached) | Output | Failures |
+| --- | ------------------ | ------------------- | ------ | --------------- | ----------- | --------------------------------------------- | ---------------------------- | ------ | -------- |
+| `u5l1-extraction-development-off` (reference, U5.1) | 58/77 (75.3 %) | 74/113 (65.5 %) | 58/123 (47.2 %) | 58/121 | 40/119 (33.6 %) | 0.97, 0.52 (31 comments) | 3,389 (2,939) | 369 | 0 |
+| `u5l2-extraction-development-off` (U5.2) | 61/81 (75.3 %) | 72/118 (61.0 %) | 60/123 (48.8 %) | 60/121 | 44/126 (34.9 %) | 1.06, 0.58 (31) | 3,567 (3,117) | 408 | 0 |
+
+By language: English precision of accepted claims 31/32 against 30/33,
+recall 31/46 against 30/46; Chinese 30/49 against 28/44 and 29/77 against
+28/77. The subjects gate (`Claim character not declared as subject`)
+quarantined no claim, so it removed no claim that a label counts as
+correct (work order section 6, second trigger: not raised).
+
+Verdict of U5-L2 (D-13):
+
+| Step | Rule 1 gates | Rule 2 failures and coverage | Rule 3 T7 precision of accepted claims | Rule 4 no inferiority | Verdict |
+| ---- | ------------ | ---------------------------- | -------------------------------------- | --------------------- | ------- |
+| U5.2 (UP-D11) | pass (324 tests, rule check 0, lock 771 keys) | 0 against 0; coverage complete | 75.3 % against 75.3 %, −0.02 points (−13.3 to +13.4): not above | precision −0.0, recall +1.6 points (−10.7 to +13.9) | **fails rule 3**; recorded for the review (E-5), not reverted |
+
+Findings of U5-L2: the model declared subjects consistent with its claims
+on all 114 comments, so the gate has not yet acted on this sample; the
+step's measured effect is a cost of 178 prompt and 39 output tokens per
+extraction request (+5.3 % and +10.6 %) and more Chinese claims generated
+(precision of generated claims 61.0 % against 65.5 %) with accepted
+precision unchanged. T6 34.9 %, still within the T6 target of 35 %.
+
 ## Behavior changes (P7)
 
 | Step | Decision | Asset or request part | Old SHA-256 | New SHA-256 | Lock paths |
@@ -1484,6 +1520,28 @@ run; T7 target (+10 points) not met.
   the reasons for keeping are the synthetic gains (validity 15/16 and
   16/16 against 13/16, routes 14/16 against 11/16), T4 at 60 % and no
   offset errors, against 4 to 5 failed benchmark comments instead of 2.
+
+- **E-5 (U5-L2) U5.2 fails adoption rule 3.** Raised on 2026-11-05 by
+  the U5 session at U5-L2. Precision of accepted claims, the metric the
+  step targets (D-13), is 61/81 (75.3 %) against 58/77 (75.3 %) for the
+  U5.1 run, −0.02 points; rules 2 and 4 hold (recall +1.6 points); the
+  subjects gate quarantined no claim (see the U5-L2 verdicts). Options:
+  (a) revert U5.2 as fix-up step U5.F1 of the U5 review (plan 1.7, 5.4),
+  which also removes `subjects` from the expected entries of the U5.3
+  examples and from `tests/test_prompt_examples.py` when U5.3 is kept;
+  (b) keep U5.2 against the rule, with the reason recorded (a fail-closed
+  gate that costs no recall, precision equal within 0.02 points, the
+  examples of U5.3 built on it); (c) rerun U5-L2 to separate the step
+  from run-to-run variation (the entry rerun of U5-L1 moved precision by
+  1.0 points with unchanged code). Recommendation: (a), the plan's rule:
+  the step adds 5 % prompt and 11 % output tokens per extraction request
+  and has no measured effect on precision or on the gate. Adopted under
+  the owner authorization of 2026-11-05 03:11 as far as this session may:
+  the session's instruction keeps a failed step for the review and
+  forbids a revert here, so U5.2 stays, U5.3 and U5-L3 proceed on top of
+  it (U5-L3 keeps the U5.1 run as its reference, D-13), and the review of
+  batch U5 (the verification session, UP-D20) applies (a) as U5.F1, after
+  any revert that U5-L3 calls for. Blocked: nothing in this session.
 
 ## Verification notes
 
