@@ -184,7 +184,14 @@ audit the precision and recall change and the added time.
 
 Inputs (UP-D17): the benchmark and the extraction development split are
 the `latency-benchmark` and `extraction-development` samples of plan 5.3;
-the PRM-06 spot check is unchanged.
+the PRM-06 spot check is unchanged. Cut by UP-D18: `u6-benchmark-enforce`
+and the extraction run with `second_audit` false are not run. The second
+audit changes accepted claims only, so U6.3 is judged on the precision of
+generated claims and the extraction tokens against the latest accepted
+reference, and its T5 path is dropped (U6-L runs no quality stage). The
+second audit is reported as the change in accepted-claim precision and
+recall against the same reference, which also contains the effect of
+U6.3.
 
 ### U6-V (verification)
 

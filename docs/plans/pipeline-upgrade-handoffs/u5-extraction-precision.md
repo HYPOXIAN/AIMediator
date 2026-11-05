@@ -159,7 +159,10 @@ comments over 400 characters; extraction prompt and output tokens; failures.
 Inputs (UP-D17): `extraction-precision-v1` development means its
 `extraction-development` sample of plan 5.3 (114 comments) and the
 benchmark its `latency-benchmark` sample (30); scoring keeps the labels of
-`extraction-precision-v1` and the development split.
+`extraction-precision-v1` and the development split. Cut by UP-D18: the
+benchmark run is dropped; each U5-L session runs only the
+`extraction-development` sample, and rule 2 of plan 5.4 counts the
+technical failures of that run against its reference.
 
 ### U5-V (verification)
 
@@ -192,6 +195,11 @@ Checklist:
 
 - Review tag `upgrade-u5-review` (U5-V); after the owner's review a closure
   session records it and tags `upgrade-u5`.
+- UP-D18: when the review recorded under the owner's standing instruction
+  yields no fix-up step, U5-V records it in its own commit
+  (`docs: record the owner review of batch U5`, "Session: U5-V") and sets
+  `upgrade-u5` after `upgrade-u5-review`; otherwise the closure session
+  runs as above.
 - The next work order is [U6](u6-module-linkage.md).
 
 ## 6. Escalation triggers

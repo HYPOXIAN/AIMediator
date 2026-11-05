@@ -55,10 +55,11 @@ Allowed paths:
   - one curated report directory from U0.6 and one from U0.8.
 - **Not allowed**: any other package module, any asset, any request byte,
   any existing evaluation set or report, the archive (read only), `.env`.
-- **Owner amendment**: the `docs` commit with `Decision: UP-D17` changes
-  the plan and the work orders outside this pattern, by the owner's
-  decision of 2026-11-04. Checklist item 1 names it and does not count it
-  as a boundary violation.
+- **Owner amendments**: the `docs` commits with `Decision: UP-D17` and
+  `Decision: UP-D18` change the plan and the work orders outside this
+  pattern, by the owner's decisions of 2026-11-04 and 2026-11-05.
+  Checklist item 1 names them and does not count them as boundary
+  violations.
 - **Decisions in force**: UP-D01 (U0.2), UP-D02 (U0.3, U0.5), UP-D17
   (U0.7, U0.8).
 - **Owner actions**: answer UP-D01 and UP-D02; provide the live environment

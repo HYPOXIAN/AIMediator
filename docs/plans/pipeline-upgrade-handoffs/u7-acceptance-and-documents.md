@@ -6,15 +6,15 @@
 - Applies to: [pipeline upgrade plan](../pipeline-upgrade.md) batch U7; entry tag `upgrade-u6`
 
 Work order for batch U7. The steps are defined in plan section 7 (U7). The
-batch runs the `full-balanced` sample of the 600-comment set (120 comments,
-UP-D17) and the holdout checks once, brings the
+batch runs the 30-comment benchmark sample in two modes (UP-D18) and the
+holdout checks once, brings the
 documents and `RULES.md` up to date, records the final acceptance and,
 after the owner's final review, freezes the record and archives the plan.
 
 ## 1. Mission
 
-- Live runs of the `full-balanced` sample in the three quality modes with
-  the adopted configuration (U7.1, UP-D17).
+- Live runs of the `latency-benchmark` sample in `off` and `enforce` with
+  the adopted configuration (U7.1, UP-D18).
 - The single holdout and test runs of the project (U7.2).
 - Documents that describe the code (U7.3).
 - `RULES.md` v1.5 with the new test floor (U7.4, UP-D16).
@@ -70,14 +70,15 @@ Finish with a session-log entry; your final message repeats it.
 
 Runs:
 
-- **U7.1**: `u7-full-off`, `u7-full-shadow`, `u7-full-enforce` on the
-  `full-balanced` sample of plan 5.3 (120 comments of
-  `data/raw/feedback/20261027-balanced/screened/records.jsonl`, UP-D17;
-  input `runs/upgrade/inputs/upgrade-sample-full-balanced.jsonl`). Compare
-  `u7-full-off` with the archived `off` run per comment and per request
-  (stages, tokens, time, claim outcomes, coverage; the archive holds 600
-  comments) and all three with the U0.6 and U0.8 benchmark baselines
-  scaled per comment. Every input row must have one coverage record.
+- **U7.1** (UP-D18): `u7-benchmark-off` and `u7-benchmark-enforce` on the
+  `latency-benchmark` sample of plan 5.3 (30 comments; input
+  `runs/upgrade/inputs/upgrade-sample-benchmark.jsonl`); no `shadow` run,
+  and the `full-balanced` sample is not run. Compare `u7-benchmark-off`
+  with the U0.8 and U0.6 benchmark `off` rows and with the archived `off`
+  run per comment and per request (stages, tokens, time, claim outcomes,
+  coverage; the archive holds 600 comments), and `u7-benchmark-enforce`
+  with the U0.8 benchmark `shadow` row. Every input row must have one
+  coverage record.
 - **U7.2**: the `balance-silver-v1` holdout (relevance and character
   expectations) and the `extraction-precision-v1` test split, once each,
   in `off`. Compare the test split with the last accepted development
@@ -151,8 +152,8 @@ Checklist:
    code changed in U7.
 2. Gates, foreign directory and wheel acceptance pass; the test count is at
    least the new P4 floor.
-3. The U7.1 coverage accounts for all 120 inputs of the `full-balanced`
-   sample in each mode (UP-D17).
+3. The U7.1 coverage accounts for all 30 inputs of the `latency-benchmark`
+   sample in both modes (UP-D18).
 4. The holdout and the test split appear exactly once each, both in U7.2,
    and in no earlier run directory or change-record entry.
 5. Every completion criterion of plan section 13 except item 9 is met or
@@ -182,6 +183,10 @@ Finish with a session-log entry; your final message repeats it.
 
 - Review tag `upgrade-u7-review` (U7-V); after the final review U7-2 sets
   `upgrade-done`.
+- UP-D18: when the final review recorded under the owner's standing
+  instruction yields no fix-up step, U7-V records it and also executes
+  step U7.6 in its own commits, setting `upgrade-done`; otherwise U7-2
+  runs as above.
 - The upgrade is finished; later work starts a new plan.
 
 ## 6. Escalation triggers

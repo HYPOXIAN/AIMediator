@@ -173,8 +173,10 @@ largest prompt plus output token count (for the `num_ctx` follow-up), and
 the extraction and audit counts of the `enforce` run.
 
 Inputs (UP-D17): the benchmark and the synthetic cases are the
-`latency-benchmark` and `quality-synthetic` samples of plan 5.3; the
-archived quality development sources run in full.
+`latency-benchmark` and `quality-synthetic` samples of plan 5.3. Cut by
+UP-D18: `u4-benchmark-enforce` and the archived quality development
+sources are not run, and the report leaves out the extraction and audit
+counts of the `enforce` run.
 
 ### U4-V (verification)
 
@@ -210,6 +212,11 @@ Checklist:
 
 - Review tag `upgrade-u4-review` (U4-V); after the owner's review a closure
   session records it and tags `upgrade-u4`.
+- UP-D18: when the review recorded under the owner's standing instruction
+  yields no fix-up step, U4-V records it in its own commit
+  (`docs: record the owner review of batch U4`, "Session: U4-V") and sets
+  `upgrade-u4` after `upgrade-u4-review`; otherwise the closure session
+  runs as above.
 - The next work order is [U5](u5-extraction-precision.md).
 
 ## 6. Escalation triggers

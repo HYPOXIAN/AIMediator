@@ -658,7 +658,7 @@ is a set that `materialize` reads; its manifest states the rule in full.
 | `latency-benchmark` | 30 | `latency-benchmark-v1` (60) | the first 5 per language and tercile in the set's own order (SHA-256 of `latency-benchmark-v1:<record_id>`); every ID is in the set |
 | `extraction-development` | 114 | `extraction-precision-v1` development (227) | per language, the first half by SHA-256 of `upgrade-samples-v1:<comment_id>` (45 English, 69 Chinese); scored with the labels of `extraction-precision-v1`, which skip labeled comments absent from the run |
 | `quality-synthetic` | 19 | `evidence-quality-synthetic-v1` (38) | one case per category, Chinese and English alternating in category order |
-| `full-balanced` | 120 | the 600-comment dataset of U7.1 | 20 per language and tercile (the cut points of `latency-benchmark-v1`) by SHA-256 of `upgrade-samples-v1:<record_id>` |
+| `full-balanced` | 120 | the 600-comment dataset of U7.1 (not run after UP-D18) | 20 per language and tercile (the cut points of `latency-benchmark-v1`) by SHA-256 of `upgrade-samples-v1:<record_id>` |
 
 Kept in full: the `balance-silver-v1` development split (about 3 minutes
 per run), the U7.2 holdout and test runs, the archived quality development
@@ -873,8 +873,9 @@ UP-D01 and UP-D02 answered.
   v2; bilingual prompts v2; `FixtureTransport` answers v2.
 - **U4.5** B `feat` (UP-D10): every reader of 4.2 accepts both schema
   versions.
-- **U4-L** L: benchmark `shadow` and `enforce`, the 38 synthetic cases and
-  the archived quality development sources; T4 and T5; adoption rule.
+- **U4-L** L: benchmark `shadow` and the synthetic cases (UP-D18: no
+  benchmark `enforce` and no archived quality development sources); T4 and
+  T5; adoption rule.
 - **U4.6** B `feat` (LAT-07, UP-D10, conditional): the quality `num_ctx`
   becomes 8192 in the policy, only if U4-L shows that prompt plus output
   stayed below 6,000 tokens in every quality request; otherwise skipped.
@@ -888,7 +889,8 @@ UP-D01 and UP-D02 answered.
 
 Each B step is followed by its L session, which compares it with the
 previous accepted state on the `extraction-precision-v1` development split
-and the benchmark in `off`.
+(UP-D18: without the benchmark run; rule 2 of 5.4 counts the technical
+failures of the extraction run).
 
 - **U5.1** B `feat` (PRM-02, UP-D11): evidence-first property order of 4.3.
   Then U5-L1.
@@ -919,16 +921,17 @@ and the benchmark in `off`.
   default off.
 - **U6.7** N `refactor` (LNK-05): a `RunOptions` dataclass replaces the
   namespace argument of `pipeline.process`; lock unchanged.
-- **U6-L** L: benchmark `off` and `enforce`; extraction development split
-  with `second_audit` false and true; the archived recovery case of PRM-06
-  as a spot check.
+- **U6-L** L: benchmark `off`; extraction development split with
+  `second_audit` true (UP-D18: no benchmark `enforce` and no run with
+  `second_audit` false); the archived recovery case of PRM-06 as a spot
+  check.
 
 ### U7 Acceptance and documents
 
-- **U7.1** L: the `full-balanced` sample (120 of the 600 comments, UP-D17)
-  in `off`, `shadow` and `enforce`, with the adopted configuration;
-  compared per comment and per request with the archived `off` run and
-  with the U0.6 and U0.8 baselines.
+- **U7.1** L: the `latency-benchmark` sample (30 comments, UP-D18) in `off`
+  and `enforce`, with the adopted configuration; compared per comment and
+  per request with the archived `off` run and with the U0.6 and U0.8
+  baselines.
 - **U7.2** L: the `balance-silver-v1` holdout and the
   `extraction-precision-v1` test split, once each.
 - **U7.3** N `docs`: design documents, the CLI guide, the README, and a
@@ -1083,6 +1086,7 @@ recorded as `skipped (UP-Dnn not adopted)`.
 | UP-D15 | Optional second audit by the other routed model | trial, default off | U6.6 |
 | UP-D16 | `RULES.md` v1.5: P4 floor raised to the final count | adopt | U7.4 |
 | UP-D17 | Smaller live samples from U0.8 on (raised by the owner after U0.6) | adopt | U0.7, U0.8, every live run of U2 to U7 |
+| UP-D18 | Time budget of 8 hours: fewer live runs in U4 to U7; closure merged into verification (raised by the owner) | adopt | U4-L, U5-L1 to U5-L3, U6-L, U7.1, the review points |
 
 **UP-D01 New modules.** `measurement` keeps evaluation logic out of scripts
 (P3: tests use it); `cache` and `topics` give the shared cache and the
@@ -1157,6 +1161,23 @@ included. Costs: one more live session (U0.8, about an hour), so that
 every comparison stays paired on the same comments; wider intervals, so a
 verdict near a margin of rule 4 is less certain; U7.1 accepts on 120
 comments instead of 600.
+
+**UP-D18 Time budget.** Raised by the owner on 2026-11-05 at 00:17: the
+unattended sessions have 8 hours, and no batch starts unless it is
+expected to finish by about 08:20; later batches wait for the owner. Live
+runs dropped: in U4-L `u4-benchmark-enforce` and the archived quality
+development sources; in U5-L1 to U5-L3 the benchmark run (rule 2 of 5.4
+then counts the technical failures of the extraction run); in U6-L
+`u6-benchmark-enforce` and the run with `second_audit` false; in U7.1 the
+`shadow` run, and the two remaining U7.1 runs use the `latency-benchmark`
+sample instead of `full-balanced`, which stays frozen and unused. Process:
+at a review point, when the review recorded under the owner's standing
+instruction yields no fix-up step, the verification session records it
+and sets the batch tag (in U7 it also executes U7.6); otherwise a closure
+session runs (10.5). Consequences: `enforce` is measured only in U7.1;
+U6-L cannot separate U6.3 from the second audit in accepted-claim
+precision and recall, so U6.3 is judged on the precision of generated
+claims and loses its T5 path; U7.1 accepts on 30 comments.
 
 Owner actions: close the restructuring (entry condition); answer this
 section; provide the live environment or run the L sessions (5.4); review at
@@ -1235,7 +1256,10 @@ is discarded and started again in a new directory.
   stops; the owner reviews; a closure session records the outcome in a
   `docs` commit (`docs: record the owner review of batch U<n>`), turns
   rejected items into fix-up steps, and sets `upgrade-u<n>` (for U7,
-  `upgrade-done` after U7.6).
+  `upgrade-done` after U7.6). Under UP-D18, when the review recorded under
+  the owner's standing instruction yields no fix-up step, the verification
+  session records it and sets the batch tag itself (in U7 it also executes
+  U7.6); otherwise a closure session runs.
 - Escalation: add an entry `E-<n>` under "Escalations" in the change record
   (step, question, options, recommendation, what is blocked), commit it,
   name it in the final message, and continue with unblocked steps or end the
@@ -1337,8 +1361,8 @@ The upgrade is complete when all of the following hold:
 4. Every live evaluation is in the change record, with a curated report for
    each batch that had one.
 5. The targets of 5.5 are reported with their measured values, met or not.
-6. The U7.1 runs (the `full-balanced` sample, UP-D17) account for every
-   input row.
+6. The U7.1 runs (the `latency-benchmark` sample, UP-D18) account for
+   every input row.
 7. The design documents, the guide and the README describe the code (U7.3).
 8. `RULES.md` matches the tree (U7.4).
 9. The change record is final and frozen; this plan and its handoffs are

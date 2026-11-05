@@ -220,6 +220,11 @@ Checklist:
 - Review tag `upgrade-u2-review` (U2-V); after the owner's review a closure
   session records it, reverts rejected steps as fix-up steps and tags
   `upgrade-u2`.
+- UP-D18: when the review recorded under the owner's standing instruction
+  yields no fix-up step, U2-V records it in its own commit
+  (`docs: record the owner review of batch U2`, "Session: U2-V") and sets
+  `upgrade-u2` after `upgrade-u2-review`; otherwise the closure session
+  runs as above.
 - The next work order is [U3](u3-concurrency-and-caching.md).
 
 ## 6. Escalation triggers
