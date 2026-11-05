@@ -763,6 +763,124 @@ Findings of U0.8:
 - Result: accepted, tag `upgrade-u0`. Nothing was adopted or bypassed
   under the owner's standing instruction; no escalation.
 
+### 2026-11-05 U1-V
+
+- Range: `upgrade-u0..2303f99`; 9 commits, all by session U1-1: U1.1
+  `43ec4cb`, `678307e`, `1c238ca`; U1.2 `a1c034e`; U1.3 `974b956`; U1.4
+  `63145f4`; U1.5 `517194d`; U1.6 `a34ad48`; session log `2303f99`. All
+  checks ran on `2303f99` with Python 3.14.8 and NumPy 2.4.6. Temporary
+  output went to a scratch directory outside the checkout; the wheel build
+  refreshed the ignored `build/`. `runs/`, `reports/`, `data/` and the
+  archive were not written, and nothing used the network.
+- Checks:
+  1. Boundary and commit hygiene (plan 8.8): pass. The boundary check with
+     the pattern of work order section 3 prints nothing. The 20 changed
+     files are 8 package modules, the two scripts, tests, design/cli.md,
+     the guide and this record. Nothing under `src/aimediator/assets/`,
+     `data/` or `reports/` changed. The hygiene check prints nothing.
+     Subjects use P5 types; U1.4 and U1.5 name UP-D03 and list their lock
+     paths; the test-only `1c238ca` is `chore`. No commit message or
+     changed file holds attribution or a `/home/` path. Deviation,
+     accepted: `1c238ca` (Step U1.1, test only: the runner journal test
+     answers the relevance request validly) came after U1.4, so the last
+     U1.1 commit does not carry the U1.1 row; the U1.5 row records it.
+  2. Lock fixture: pass. Only `63145f4` (U1.4) changes
+     `tests/fixtures/behavior-lock.json`. Its diff changes exactly the
+     eight keys of work order section 3: `L1:<off|shadow|enforce>/manifest.json`,
+     `L2:<off|shadow|enforce>/manifest.json`, `L1:example-report/report.json`
+     and `L3:reviewed-report/report.json`. It still has 468 keys, none
+     added or removed. Checked independently: at `974b956` (U1.3 done) the
+     suite (260) and the lock pass with the U0 fixture, so U1.1 to U1.3 are
+     neutral without regeneration. Normalized as the lock does, the demo
+     output of `974b956` and HEAD differs only in the four L1 keys. The
+     cause is the new identity key `service` (`run_identity.service` in the
+     report).
+  3. Gates, foreign directory and wheel: pass. 270 tests pass (floor 241;
+     20 more than U0: run store 4, character matching 3, stream guards 3,
+     service identity 6, context guard 4), and again from a foreign working
+     directory. Rule check `Total: 0`; lock green. Installed-wheel
+     acceptance: `"passed": true`, `"commands": 18` (as in U0). Every
+     module in the wheel equals `src/`, and the wheel holds no `.env` and
+     no `data/raw`.
+  4. T9, T10 and equivalence tests: pass. Both targets are recorded with
+     before and after values (U1.1 and U1.2 rows, U1-1 session log), and
+     the U1.2 row states the measurement order of T10. Reproduced here:
+     - T9, `run_synthetic_fixture_scale.py --comments 600 --mode shadow`
+       (one run per process, 1,236 requests). At `43ec4cb`: 30.9 s plain;
+       `run_store.state` 27.97 s of 47.2 s profiled (59.2 %). At HEAD:
+       13.8 s plain; 1.01 s of 16.4 s (6.1 %). Target below 5 %: not met.
+     - T10, plan 8.4 order. At `678307e`: 0.89 to 0.92 s plain;
+       `character_reference` 40.7 to 41.1 %. At HEAD: 0.63 to 0.65 s
+       plain; 8.1 to 8.2 %. A profiled demo in a fresh process takes
+       1.04 s, with a 14.5 % share (record: 14.8 %). So the share target
+       is met in the plan 8.4 order only.
+     - The equivalence tests are in the suite and pass:
+       `RunStateHarnessTests` (the reduced U1.1 harness) and the listing
+       tests in `tests/test_run_store.py`, `tests/test_character_matching.py`
+       (U1.2) and `tests/test_stream_guards.py` (U1.3). Their old copies
+       equal the functions at `678307e` and `a1c034e` by AST comparison;
+       `character_candidates` differs only by calling the unchanged
+       `evidence.character_terms` through the module.
+     - Beyond the item: the 600-comment runs of `43ec4cb` and HEAD,
+       normalized as the lock does, differ only in `manifest.json` (the
+       `service` key). The other 89 keys are equal, including every
+       request digest and `run-state.json`.
+     - Also beyond the item: the U1.6 check was rerun by hand on a
+       relevance-only legacy fixture run. The script at HEAD exits 0
+       (`verified_requests` 6, 38 admission decisions unchanged, no
+       inference). The script at `upgrade-u0` stops with `RuntimeError:
+       Replay cannot run inference`.
+  5. Resume with another service version: pass.
+     `test_resume_refuses_a_changed_service_version` in
+     `tests/test_service_identity.py` resumes with `0.35.0` and with
+     `null`. Each time it asserts `Failure(4, 'Service version differs
+     from saved run; start a new run')`, no transport call and no changed
+     file; a resume with the saved version then completes. Manual check
+     through `cli.main` after `aimediator demo`: `analyze --resume
+     <demo>/shadow --json`, with `FixtureTransport.version` patched to
+     `0.35.0` and to `None`, exits 4 (`identity_or_output_conflict`) and
+     leaves every file unchanged. Unpatched, it exits 0.
+- Points U1-1 raised, judged against the step notes and plan 4.6 and 4.7.
+  All four are accepted with no fix-up step:
+  - U1.1 differs from its step note in three places. (1) A new run
+    starts with an empty index: its folder is new, so a listing would find
+    nothing. (2) `load_resume` drops the folder's index, so a resume reads
+    the disk even within one process. (3) A `state` write with status
+    `interrupted` or `failed` lists again, because an interruption can
+    fall between a `validation.json` write and its journal call. Each one
+    serves the contract on `run-state.json` content, which the note puts
+    first. They change only when listings happen, never the content
+    written, so plan 4.6 holds. `Runner._generate` is the only writer of
+    `validation.json`, and the only `Runner` that `operations.analyze`
+    builds passes the journal. The deviations are documented in
+    design/cli.md section 5.
+  - U1.3 resumes each scan at the end of its last match, not at the tail
+    plus an overlap of the longest allowed key. The docstring's argument
+    holds for all three patterns: a match attempt that reaches the end of
+    the output leaves no later complete match, and a lookbehind still sees
+    text before the scan position. An overlap of the longest key would not
+    bound `\s*` or a `comment_id` value. The equivalence tests pass.
+  - D-6 (a structural copy instead of `copy.deepcopy`). The cached value
+    is built from `json.loads` data by comprehensions. Its leaves are
+    immutable and no container is shared, so both copies give equal
+    values and new containers at every level. It is N-class and within
+    plan rule 1.8.
+  - T9 and T10. The plan 5.5 targets are not gates. Both are recorded
+    with before and after values, and the measurement order of T10 is
+    stated. T9 stays above target (6.1 %). The rest of its share is the
+    read and write of `run-state.json`, which the N-class contract keeps
+    unchanged.
+- Other findings, none blocking. `tests/test_service_identity.py` leaves
+  two `HTTPError` objects unclosed, which adds two `ResourceWarning` lines
+  (HTTP 404 and 500) to the test output. `/api/version` was not called on
+  the owner's service, since U1 has no live session; the U0.6 record holds
+  Ollama 0.34.2, read from that endpoint.
+- Measurements: tests 270 in 12.3 s (wall 12.6 s); demo 0.65 s plain,
+  1.0 s under cProfile (`evidence.character_reference` 688 calls,
+  0.079 s); lock green.
+- Result: accepted, tag `upgrade-u1`. Nothing was adopted or bypassed
+  under the owner's standing instruction; no escalation.
+
 ## Session log
 
 ### 2026-11-04 U0-1 (implementation)
@@ -879,6 +997,19 @@ Findings of U0.8:
   guards at 7,495 chunks: 8.55 s before, 0.097 s after. The scratch
   harness and the measurement and check scripts are not committed.
 - Next: U1-V (verification, fresh session, work order U1 section 4);
+  blockers: none.
+
+### 2026-11-05 U1-V (verification)
+
+- Steps: none (verification); none started and stashed.
+- State: HEAD is this entry's commit (parent `2303f99`), tagged
+  `upgrade-u1`; tests 270; lock green; rule check 0.
+- Findings: every checklist item passes (see "Verification notes"). The
+  four points U1-1 raised are accepted: the U1.1 index deviations, the
+  U1.3 scan resumption, D-6, and T9 missed (6.1 %) while T10 is met in
+  the plan 8.4 order. No decision found during execution; nothing adopted
+  or bypassed under the owner's standing instruction; no escalation.
+- Next: U2-1 (implementation, work order U2, steps U2.1 to U2.4);
   blockers: none.
 
 ## Deferred
