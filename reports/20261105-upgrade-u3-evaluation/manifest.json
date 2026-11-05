@@ -1,0 +1,92 @@
+{
+ "schema": "aimediator-report-manifest-v1",
+ "name": "20261105-upgrade-u3-evaluation",
+ "record": "docs/records/20261104-pipeline-upgrade.md",
+ "session": "U3-L",
+ "decisions": [
+  "UP-D08",
+  "UP-D09",
+  "UP-D17",
+  "UP-D19",
+  "UP-D20",
+  "D-9"
+ ],
+ "reason": "U3-L measurements of bounded concurrency (T8, indicative under UP-D19), the warm shared-cache replay and the embedding batch size check; cited by the change record and ADR 0004",
+ "archive": {
+  "path": "~/Archives/AIMediator/reports/20261105-upgrade-u3-evaluation/",
+  "checksums": "SHA256SUMS",
+  "files": 2257,
+  "bytes": 81254355,
+  "archived_on": "2026-11-05",
+  "contents": "runs/ (the four runs), caches/ (the shared caches cache-1 to cache-3), measurements/, logs/ (run logs; the bridge log, counters and timings only), config/ (API configuration), inputs/ (the materialized benchmark sample, source text), provenance/"
+ },
+ "run_manifests": {
+  "u3-benchmark-shadow-p1": "runs/u3-benchmark-shadow-p1/manifest.json",
+  "u3-benchmark-shadow-warm": "runs/u3-benchmark-shadow-warm/manifest.json",
+  "u3-benchmark-shadow-p2": "runs/u3-benchmark-shadow-p2/manifest.json",
+  "u3-benchmark-shadow-p4": "runs/u3-benchmark-shadow-p4/manifest.json"
+ },
+ "datasets": {
+  "upgrade-samples-v1/latency-benchmark": "data/evaluation/upgrade-samples-v1/latency-benchmark, 30 (all four runs)",
+  "extraction-precision-v1": "data/evaluation/extraction-precision-v1, development split (scores)",
+  "inputs_sha256": {
+   "upgrade-sample-benchmark.jsonl": "ce7ee3df8efc73d36840b96dff00407e42cea9f29de2369ccb64aa4abac28f4a"
+  }
+ },
+ "references": {
+  "retrieval": "u2l0-benchmark-shadow of reports/20261105-upgrade-api-reference (U2-L0; embedding batch 8)"
+ },
+ "environment": {
+  "service": "API bridge runs/upgrade/tools/api_bridge.py, version openrouter-bridge-2, sha256 f42e0087ebcde0b193eaaa1d60cd2c735b7630fa7735ccda14acd7403e1137e9",
+  "configuration": "runs/upgrade/live-config-api.json, sha256 b44df0f2f8d7d0d6e295d7daa1314a729e2c285ec345596beff56a71fc1c4530; options --max-parallel-requests and --cache-dir only"
+ },
+ "wall_seconds": {
+  "u3-benchmark-shadow-p1": 322.7,
+  "u3-benchmark-shadow-warm": 5.2,
+  "u3-benchmark-shadow-p2": 245.7,
+  "u3-benchmark-shadow-p4": 263.8
+ },
+ "code_version": {
+  "git_commit": "1a5d520",
+  "head_when_built": "1a5d520",
+  "note": "The runs ran at the U3.4 commit (1a5d520); the report is built before U3.5."
+ },
+ "summary": [
+  "summary/u3-benchmark-shadow-p1-metrics.json",
+  "summary/u3-benchmark-shadow-p1-scores.json",
+  "summary/u3-benchmark-shadow-warm-metrics.json",
+  "summary/u3-benchmark-shadow-warm-scores.json",
+  "summary/u3-benchmark-shadow-p2-metrics.json",
+  "summary/u3-benchmark-shadow-p2-scores.json",
+  "summary/u3-benchmark-shadow-p4-metrics.json",
+  "summary/u3-benchmark-shadow-p4-scores.json",
+  "summary/u3l-analysis.json",
+  "summary/u3l-doctor.json"
+ ],
+ "provenance": [
+  {
+   "path": "provenance/u3l_api_runs.sh",
+   "sha256": "dff38b91c3fbb17011647a9e2b152b3043dbcd772df7d8245acc22b06566af39"
+  },
+  {
+   "path": "provenance/u3l_measure.sh",
+   "sha256": "0a8075bacef310ebe0e4c919072cb017dae957b416ddcc4c2485558e421454cd"
+  },
+  {
+   "path": "provenance/u3l_analyze.py",
+   "sha256": "d4ad85ff60d3e0a4797c505119e0c137afc027a9b619dd54267cb63bf100d2a8"
+  },
+  {
+   "path": "provenance/build_u3l_report.py",
+   "sha256": "d8efc30669eb7ccabea98062de79f10ce0f8b4347aeab194dde41f432c20c3a1"
+  },
+  {
+   "path": "provenance/api_bridge.py",
+   "sha256": "f42e0087ebcde0b193eaaa1d60cd2c735b7630fa7735ccda14acd7403e1137e9"
+  },
+  {
+   "path": "provenance/api_bridge_start.sh",
+   "sha256": "02cbce21e8ed78f79099a526ebd70c55c95c236a1db53e101ab7da97141ac1fc"
+  }
+ ]
+}

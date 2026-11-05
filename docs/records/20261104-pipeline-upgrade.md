@@ -94,6 +94,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | U3.2 | B | done | 291 | updated by UP-D08 | UP-D08, plan 4.5. Configuration key `max_parallel_requests` (integer 1 to 8, default 1; booleans, floats and `null` refused with exit 2), validated in `config.validate`, after `num_gpu` in the defaults; `aimediator analyze --max-parallel-requests`; a configuration file without the key resolves to 1. `operations.analyze` passes it to `pipeline.process` (`RunState.max_parallel_requests`; the legacy `engine` passes none and keeps 1) and serializes the journal callback, `run-state.json` updates and progress lines with one lock. `Runner` holds a lock per request identity around the response, `validation.json` write and journal call (`_validate`). Tests (+2, `tests/test_concurrency.py`): fixture runs in three modes at limits 1, 2 and 4 with a transport that sleeps and records the requests in flight (at most N, more than 1 above 1, the same call count) give the top-level artifacts of the N = 1 run with digests and elapsed times masked (the trace order included) and complete; the key's validation, the defaults for a file without it, the override, and the CLI refusal of 9 before any run directory exists. Lock regenerated: exactly the 8 keys `L1:<off|shadow|enforce>/manifest.json`, `L1:<off|shadow|enforce>/resolved-config.json`, `L1:example-report/report.json`, `L3:reviewed-report/report.json` (configuration and run identity); no request digest or other artifact changed. Guide (configuration section) and design/cli.md sections 4.2 and 6 |
 | U3.3 | B | done | 295 | updated by UP-D09 | LAT-06, UP-D09, plan 4.6. New module `cache` (infrastructure; imports `common`): `chat_key(payload, model_digest, service_version, request_context=None)`, `SharedCache(root)` with `lookup(key, request)` and `store(key, request, response)` under `chat/<key[:2]>/<key>/request.json` and `response.json` (written with `common.write`), and `lookup_embedding`/`store_embedding` under `embedding/` for U3.4. The key is the SHA-256 of the payload with `stream` false, the model digest and the service version, plus the request context when given (D-9); the run identity is not part of it. Only finished responses (`done` true, `done_reason` `stop`, no `error`, a message) are stored, and a lookup returns a response only when the stored request equals the request. `Runner(..., shared_cache, model_digests, service_version)`: lookup order run journal, shared cache, transport; a hit writes `request.json`, `reuse-provenance.json` (`source` `shared_cache`, `key`, `original_elapsed_seconds`) and `response.json` with `elapsed_seconds` 0; a miss stores the response after the run's `response.json`. Configuration key `cache_dir` (default `null`), validated (a nonempty string or `null`); `aimediator analyze --cache-dir`; a relative path in a configuration file resolves against the file's directory, a CLI path against the invocation directory. `operations.analyze` builds the cache and passes the digests and service version of the run identity. `measurement` already counted `reuse-provenance.json` as reuse (U0.2): unchanged. Layering (UP-D01, plan 4.11): row `cache` → `common`; `runner` adds `cache`; `operations` adds `cache` (D-9). New `tests/test_shared_cache.py` (+4): two `enforce` fixture runs with one cache directory, the second makes no chat call and writes every JSON file of the first (manifest and requests included) apart from `run-state.json`, the provenance files, elapsed times and timestamps; one provenance file per response; `request_metrics` counts every request as reused; a third run at limit 3 makes no call; the runner's lookup order, unfinished answers not stored, a run with another run identity hits, another digest, service version or request context misses; the key and `storable`; the configuration key. Lock regenerated: exactly the 11 keys of the configuration and identity (as in U3.2) and the three existence-only keys `L2:<off|shadow|enforce>/code-snapshot/cache.py` (471 keys); no request digest changed. design/cli.md sections 5, 6 and 7; guide |
 | U3.4 | B | done | 296 | updated by UP-D09 | LAT-06, UP-D09, plan 4.6. `retrieval.retrieve` writes one record per text, `embeddings/<SHA-256 of model, endpoint and text>.json` (`text_identity`; the endpoint is the configured embedding URL or the service base) with `model`, `text` and `vector`; it embeds only texts without a record, each distinct text once, in batches of 32 (`BATCH`, was 8 texts per file) in input order, then scores as before; `retrieval.json` keeps its schema and, in the fixture runs, its bytes. The shared cache (`retrieve(..., shared_cache, model_digest)`, passed by `operations.analyze` with the run identity's embedding digest) supplies records under `embedding/<key[:2]>/<key>.json`, `embedding_key` = SHA-256 of model, endpoint, text and model digest, before the service is asked, and keeps new ones. The availability probe of `analyze` (one text) is unchanged. Tests: `tests/test_shared_cache.py` (+1): 50 comments with 40 distinct texts and the 20 anchors give two calls of 32 and 28 texts in input order and 60 records; a rerun in the same folder and a run in a new folder with the shared cache make no call and return the same decisions; another digest misses; the warm fixture run of U3.3 makes no retrieval embedding call. `test_console_output` expects `Embedding 32/58` and `58/58`; `test_balanced_collection` one configured-embedding call for 21 texts. Lock regenerated: only `embeddings/` keys of `L1` and `L2` in three modes, 8 batch files out and 58 text records in per run (771 keys); no request, retrieval or other artifact changed. design/cli.md sections 5 and 7 |
+| U3-L | L | done | 296 | green | UP-D08, UP-D09, UP-D19, UP-D20. The four runs of the work order at the U3.4 commit `1a5d520` on the `latency-benchmark` sample in `shadow` through bridge `openrouter-bridge-2` (SHA-256, digests and `live-config-api.json` equal to the record; `doctor` passed; every request `ok` from `deepseek/deepseek-v4-flash` and `qwen/qwen3-embedding-8b` on DeepInfra), started by this session in its own process session, one after another: `u3-benchmark-shadow-p1` (N 1, cold `cache-1`), `-warm` (N 1, `cache-1`), `-p2` (N 2, cold `cache-2`), `-p4` (N 4, cold `cache-3`; it runs under UP-D19). The warm run made no chat and no retrieval embedding request and reproduced run 1 exactly; retrieval at batch 32 against `u2l0-benchmark-shadow` (batch 8): no decision changed. T8 (indicative): 1.25 times, not met. See "U3-L" under "Live evaluations"; the owner action on the value for later live runs is D-10. Curated report `reports/20261105-upgrade-u3-evaluation/`; full runs with their caches archived with `SHA256SUMS` (2,257 files). Spend of the doctor call and the four runs 0.0288 USD (0.1198 to 0.1486 USD) |
 
 ## Baseline measurements (U0.4)
 
@@ -726,6 +727,82 @@ Findings of U2-L1:
   before the budgets were computed. The other readings of D-8 are
   unchanged.
 
+### U3-L (UP-D08, UP-D09; API, UP-D19)
+
+Session U3-L on 2026-11-05, at the U3.4 commit `1a5d520`, on
+`upgrade-samples-v1/latency-benchmark` (30 comments, input SHA-256 equal to
+the U2-L0 and U2-L1 runs) in `shadow`, through bridge
+`openrouter-bridge-2`, with `runs/upgrade/live-config-api.json` and only
+the options `--max-parallel-requests` and `--cache-dir`. Measured with the
+committed tools and the one-off `runs/upgrade/tools/u3l_analyze.py` (kept
+under `provenance/` of the report). Stage windows are summed per routed
+model (first `request.json` to last `response.json`), because the stages of
+the two models run one after the other. Overlap comes from the bridge log
+(each request's logged end minus its elapsed time), which replaces the
+`/api/ps` record (UP-D19).
+
+| Run | N | Cache | Wall | Chat / embed requests (bridge) | Peak in flight | Technical failure units | Claims accepted / quarantined | Precision / recall (dev, 11 comments) | Quality first attempt | Cost |
+| --- | - | ----- | ---- | ------------------------------ | -------------- | ----------------------- | ----------------------------- | ------------------------------------- | --------------------- | ---- |
+| `u3-benchmark-shadow-p1` | 1 | `cache-1`, cold | 322.7 s | 59 / 3 (51 texts: the probe, then 32 and 18) | 1 | 3 | 9 / 3 | 5/7 / 5/10 | 19/23 | 0.0109 USD |
+| `u3-benchmark-shadow-warm` | 1 | `cache-1` | 5.2 s | 0 / 1 (the availability probe) | 1 | 3 | 9 / 3 | 5/7 / 5/10 | 19/23 | 0.0000 USD |
+| `u3-benchmark-shadow-p2` | 2 | `cache-2`, cold | 245.7 s | 58 / 3 | 2 (50 of 61 requests overlap another) | 3 | 9 / 3 | 4/7 / 4/10 | 20/23 | 0.0079 USD |
+| `u3-benchmark-shadow-p4` | 4 | `cache-3`, cold | 263.8 s | 61 / 3 | 4 (53 of 64 overlap) | 2 | 8 / 5 | 3/6 / 3/10 | 20/24 | 0.0100 USD |
+
+Throughput by stage (requests per second, output tokens per second; ratio
+to p1 in brackets):
+
+| Stage | p1 | p2 | p4 |
+| ----- | -- | -- | -- |
+| retrieval review (5 requests) | 1.03, 14.9 | 1.40, 19.7 (1.36, 1.32) | 0.95, 14.0 (0.92, 0.94) |
+| relevance (8) | 0.83, 12.8 | 0.41, 6.3 (0.49, 0.49) | 1.71, 26.8 (2.06, 2.09) |
+| quality (26 to 28) | 0.107, 84.2 | 0.133, 105.4 (1.25, 1.25) | 0.125, 99.2 (1.17, 1.18) |
+| extract (7) | 0.38, 74.6 | 0.44, 86.3 (1.16, 1.16) | 0.48, 102.5 (1.27, 1.38) |
+| verify (12 or 13) | 1.41, 9.3 | 1.90, 12.7 (1.35, 1.37) | 1.24, 8.3 (0.88, 0.90) |
+
+- **T8** (quality stage with N 2 against N 1, target at least 1.4 times;
+  indicative under UP-D19): 1.25 times in requests and in output tokens per
+  second; **not met**. The whole run is 1.31 times faster at N 2 and 1.22
+  times at N 4. The provider shares throughput between parallel requests:
+  the mean elapsed time of a quality request rises from 9.3 s (median 5.3,
+  maximum 45.5) at N 1 to 12.5 s (7.8, 50.7) at N 2 and 16.1 s (10.1, 65.5)
+  at N 4, while the output per request stays at about 790 tokens. With 11
+  to 13 quality comments per model, the slowest comment also bounds each
+  model's window. The stages with 5 to 13 requests swing both ways (relevance
+  0.49 and 2.06 times) and say little.
+- **Warm cache** (run 4): 0 chat requests and no retrieval embedding request
+  reached the bridge; the one embedding request is the availability probe
+  of `analyze` (one text), which runs before the run folder exists. Every
+  one of the 59 chat responses has a `reuse-provenance.json` (source
+  `shared_cache`) and `elapsed_seconds` 0, the run has no
+  `requests/embedding/` and its 50 embedding records came from the shared
+  cache. All 259 JSON files of run 1 (manifest, configuration, artifacts,
+  `request.json`, `response.json` and `validation.json` of every request;
+  without `run-state.json`, the provenance files, the transport attempts and
+  `requests/embedding/`) are byte-identical to run 4 apart from elapsed
+  times and timestamps; the run identity is the same. Escalation trigger of
+  work order section 6: not raised.
+- **Retrieval, batch 8 against 32** (run 5 of the work order, run 1 against
+  `u2l0-benchmark-shadow`, the same 30 comments and the same remote
+  embedding model through bridge versions 1 and 2): largest absolute
+  difference 0.00348 of the positive scores and 0.0 of the negative
+  scores; **0** `retrieval_related` decisions changed (the reference's
+  smallest margin is 0.00071). Escalation trigger: not raised. The same
+  comparison of fresh embeddings at the same batch size shows the hosted
+  model's own variation: p2 against p1 differs by at most 9e-8, but p4
+  against p1 by 0.00202 in a positive score and changes **1** decision (a
+  comment whose p1 margin is about 0.0001), which admits one more comment to
+  quality in p4. On the API the batch-size effect is of the size of this
+  variation; the comparison cannot separate them.
+- **Failures and coverage**: coverage complete in every run (30 of 30);
+  technical failure units 3, 3, 3 and 2 (U2-L1 `shadow` 3, U2-L0 1): the
+  three comments of U2-L1 `shadow` whose relevance stays
+  `technical_failure_or_pending` (`steam:230206787`, `steam:234299803`,
+  `steam:235458828`; p4 has the first and the last). Rule 2 of 5.4 would
+  hold (at most one unit above the reference); U3 changes no
+  model-visible content, so no adoption rule applies.
+- **Spend**: 0.0288 USD for the doctor call and the four runs (bridge total
+  0.1198 to 0.1486 USD; 2.83 USD remain below the refusal point).
+
 ## Behavior changes (P7)
 
 | Step | Decision | Asset or request part | Old SHA-256 | New SHA-256 | Lock paths |
@@ -983,6 +1060,22 @@ Findings of U2-L1:
   Recommendation and action for both: (a), adopted under the owner
   authorization of 2026-11-05 03:11; a revert undoes both, no request byte
   and no `RULES.md` rule changes.
+
+- **D-10 (U3-L) Values of `max_parallel_requests` and `cache_dir` for later
+  live runs.** Registered by session U3-L on 2026-11-05; the work order
+  (section 3) assigns this choice to the owner after U3-L. Options: (a)
+  keep `max_parallel_requests` 1 and no `cache_dir` in the later live runs;
+  (b) N 2 (1.31 times faster runs on the benchmark); (c) N 4 (1.22 times);
+  (d) a shared cache across the later live runs. Recommendation and action:
+  (a), adopted under the owner authorization of 2026-11-05 03:11. The gain
+  on the API is small (a benchmark run takes 4 to 5 minutes), parallel
+  requests raise each request's elapsed time by a third to three quarters,
+  which would bias T4 (quality elapsed per comment, U4) against its serial
+  baseline, and every later comparison is paired with a serial reference
+  run; a shared cache would answer repeated requests of a later batch from
+  an earlier batch, so the measured run would partly measure the cache.
+  Nothing changes in `live-config-api.json` or the package defaults; a
+  later session may still pass the options for a run that is not compared.
 
 ## Escalations
 
