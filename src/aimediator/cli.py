@@ -41,6 +41,7 @@ def parser():
     analyze.add_argument('--embedding-model')
     analyze.add_argument('--base-url')
     analyze.add_argument('--num-gpu',type=int)
+    analyze.add_argument('--max-parallel-requests',type=int)
     status = leaf(sub,'status')
     status.add_argument('--run',type=Path,required=True)
     review = sub.add_parser('review')
@@ -83,7 +84,8 @@ def dispatch(args):
             counts={'input_comments':details['input_comments']}
     elif command == 'analyze':
         from .operations import analyze
-        keys=('evidence_quality','stop_after','embedding_provider','embedding_model','base_url','num_gpu')
+        keys=('evidence_quality','stop_after','embedding_provider','embedding_model','base_url','num_gpu',
+              'max_parallel_requests')
         overrides={k:getattr(args,k) for k in keys}
         if args.resume:
             if args.input or args.out or args.config or any(v is not None for v in overrides.values()):

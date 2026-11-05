@@ -529,7 +529,8 @@ def process(args: Any, rows: list[dict[str, Any]], routing: dict[str, Any], mode
             log: Callable[[str], None] | None = None) -> dict[str, Any]:
     """Shared orchestration with explicit inputs and injected inference boundaries; log receives the summary text."""
     state = RunState(args, rows, models, quality_identity, quality_policy, identity,
-                     folder=args.out.resolve(), routes=routing['models'], quality_mode=args.evidence_quality)
+                     folder=args.out.resolve(), routes=routing['models'], quality_mode=args.evidence_quality,
+                     max_parallel_requests=getattr(args, 'max_parallel_requests', 1))
     state.by_id = {r['record_id']: r for r in state.rows}
     state.eligible = [r for r in state.rows if any(state.routes[m]['language'] == r['language'] for m in state.models)]
     retrieval = retrieval_service(state.eligible, state.args.base_url, state.folder, state.args.embedding_model,

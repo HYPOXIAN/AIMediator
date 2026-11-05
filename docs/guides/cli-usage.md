@@ -98,6 +98,14 @@ general opinions and system feedback remain separate. Emotion does not affect
 the weight of substantive evidence. Use `--stop-after quality` with shadow or
 enforce, or `--stop-after relevance` with off; `full` is the default.
 
+`max_parallel_requests` (default 1, at most 8; `--max-parallel-requests`)
+sets how many model requests a run keeps in flight. Artifacts, the request
+trace and progress files keep the order of a serial run. The model service
+must serve that many requests at once (for Ollama, `OLLAMA_NUM_PARALLEL` of
+at least the value, and memory for each slot). With a value above 1, fresh
+answers are not bitwise reproducible, because the service batches parallel
+requests; a resumed or replayed run reuses its journaled answers exactly.
+
 To use a configured embedding service, explicitly set `embedding.provider` to
 `configured`, `embedding.endpoint` to your HTTP(S) embedding endpoint,
 `embedding.model` to your existing embedding model, and `embedding.credential_env`

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import threading
 import time
 from typing import Any, Callable
 
@@ -29,6 +30,12 @@ class Runner:
         self.log = log
         self.chat_transport = chat_transport
         self.journal = journal
+        self._locks, self._locks_guard = {}, threading.Lock()
+
+    def _identity_lock(self, identity: str) -> threading.Lock:
+        """Return the lock of one request identity: requests with the same identity run one at a time."""
+        with self._locks_guard:
+            return self._locks.setdefault(identity, threading.Lock())
 
     def cached_single_ids(self, model: str, language: str, stage: str) -> set[str]:
         """Return the comment IDs with a valid single-comment response from this model and prompt."""
@@ -91,6 +98,13 @@ class Runner:
         # cache identities from non-streaming runs.
         identity = digest(json.dumps(cache_payload, sort_keys=True, ensure_ascii=False).encode())
         folder = self.folder / 'requests' / stage / identity
+        with self._identity_lock(identity):
+            return self._validate(model, stage, ids, data, visible, schema, payload, identity, folder)
+
+    def _validate(self, model: str, stage: str, ids: list[str], data: dict[str, Any], visible: dict[str, Any],
+                  schema: dict[str, Any], payload: dict[str, Any], identity: str,
+                  folder: Path) -> tuple[dict[str, Any] | None, dict[str, Any]]:
+        """Return the parsed result and metadata of one request, writing validation.json and calling the journal."""
         response = self._response(model, stage, ids, folder, payload)
         if stage == 'quality' and (not isinstance(response, dict) or
                 not isinstance(response.get('response'), dict)):

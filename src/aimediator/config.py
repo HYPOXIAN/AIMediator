@@ -17,6 +17,7 @@ def defaults():
             'embedding': {'provider': 'ollama', 'model': 'qwen3-embedding:8b',
                           'endpoint': None, 'credential_env': 'EMBEDDING_API_KEY'},
             'evidence_quality': 'off', 'stop_after': 'full', 'num_gpu': None,
+            'max_parallel_requests': 1,
             'report_scope': 'collection_sample'}
 
 
@@ -91,6 +92,8 @@ def validate(cfg):
             raise Failure(2, 'Timeouts must be finite, positive and at most 3600 seconds')
     if cfg['num_gpu'] is not None and (type(cfg['num_gpu']) is not int or cfg['num_gpu'] < 0):
         raise Failure(2, 'num_gpu must be a nonnegative integer or null')
+    if type(cfg['max_parallel_requests']) is not int or not 1 <= cfg['max_parallel_requests'] <= 8:
+        raise Failure(2, 'max_parallel_requests must be an integer from 1 to 8')
     if cfg['report_scope'] != 'collection_sample':
         raise Failure(2, 'Only collection_sample report scope is supported')
     if cfg['evidence_quality'] not in ('off', 'shadow', 'enforce') or cfg['stop_after'] not in ('relevance', 'quality', 'full'):

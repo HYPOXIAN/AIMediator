@@ -1,6 +1,7 @@
 """Operational services; new product runs never implicitly resume."""
 from pathlib import Path
 import sys
+import threading
 from types import SimpleNamespace
 from . import balance_policy, evidence_quality, pipeline, resources, retrieval, runner
 from .common import Failure, canonical, input_rows, new_path, read, sha, write
@@ -99,21 +100,30 @@ def analyze(input_path=None, out=None, cfg=None, resume=None, env_file=None, tra
             write(folder / 'quality-policy-snapshot.json', policy)
             manifest = read(folder / 'manifest.json')
             args = SimpleNamespace(out=folder, base_url=cfg['base_url'], embedding_model=cfg['embedding']['model'],
-                evidence_quality=mode, relevance_only=cfg['stop_after'] == 'relevance', quality_only=cfg['stop_after'] == 'quality')
+                evidence_quality=mode, relevance_only=cfg['stop_after'] == 'relevance', quality_only=cfg['stop_after'] == 'quality',
+                max_parallel_requests=cfg['max_parallel_requests'])
             quality_identity = {'mode': mode, 'policy': policy, 'run_identity': manifest['run_id']}
             engine_identity = {'mode': 'relevance_only' if args.relevance_only else 'quality_only' if args.quality_only else 'full_pipeline',
                                'runtime_options': {'num_gpu': cfg['num_gpu']} if cfg['num_gpu'] is not None else {}}
+            # Requests run on worker threads when max_parallel_requests is above 1;
+            # run-state.json, the request index and progress lines change under one lock.
+            serial = threading.Lock()
+
             def progress(stage, ids, succeeded):
-                if succeeded is None:
-                    store.state(folder, 'running', stage)
-                elif not quiet:
-                    unit = 'claims' if stage == 'verify' else 'comments'
-                    print(f'{stage}: {len(ids) if succeeded else 0}/{len(ids)} {unit} in request',
-                          file=sys.stderr, flush=True)
+                with serial:
+                    if succeeded is None:
+                        store.state(folder, 'running', stage)
+                    elif not quiet:
+                        unit = 'claims' if stage == 'verify' else 'comments'
+                        print(f'{stage}: {len(ids) if succeeded else 0}/{len(ids)} {unit} in request',
+                              file=sys.stderr, flush=True)
+
+            def journal(relative, completed):
+                with serial:
+                    store.record_request(folder, relative, completed)
 
             def runner_factory(*values):
-                return runner.Runner(*values, chat_transport=transport.chat, progress=progress,
-                                     journal=lambda relative, completed: store.record_request(folder, relative, completed))
+                return runner.Runner(*values, chat_transport=transport.chat, progress=progress, journal=journal)
 
             def retrieve(*values):
                 if not quiet:

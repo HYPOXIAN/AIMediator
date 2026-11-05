@@ -238,7 +238,8 @@ aimediator status --run ./runs/sample-001
 Required for a new analysis: `--input` and `--out`. Optional overrides:
 `--config`, `--evidence-quality off|shadow|enforce`,
 `--stop-after relevance|quality|full`, `--embedding-provider ollama|configured`,
-`--embedding-model`, `--env-file`, `--base-url`, and `--num-gpu`.
+`--embedding-model`, `--env-file`, `--base-url`, `--num-gpu`, and
+`--max-parallel-requests` (section 6).
 Language routing stays in configuration, retaining the existing bilingual defaults.
 Do not add arbitrary model selection or prompt tuning as part of packaging.
 
@@ -843,6 +844,21 @@ The generated config uses a versioned schema, rejects unknown keys, and contains
 - Quality mode, stop stage, and default policies/resources. Effective values
   resolve as packaged defaults < explicit config < explicit CLI overrides.
 - Report scope `collection_sample`; glossary target-patch metadata is separate.
+- `max_parallel_requests`, an integer from 1 to 8 (default 1), with the
+  option `analyze --max-parallel-requests` (pipeline upgrade U3.2, UP-D08).
+  `pipeline.ordered` runs independent units on a thread pool with at most
+  that many in flight and commits their results in input order on the
+  calling thread, so the trace, progress files and artifacts keep the serial
+  order: one quality comment with its attempts, one audited claim, one
+  relevance or retrieval-review batch (a retrieval-review batch with the
+  single rechecks of its items), one relevance recheck, and one extraction
+  batch with its split retries in serial order. `Runner` runs requests with
+  the same identity one at a time; `operations.analyze` serializes the
+  journal callback, `run-state.json` updates and progress lines with one
+  lock. With 1, requests and writes are those of the serial code; above 1,
+  fresh inference is not bitwise reproducible (the service batches parallel
+  requests), while replay from the run journal stays exact. A configuration
+  file without the key stays valid: resolution starts from the defaults.
 
 Keep secrets out of JSON configuration, snapshots, request identities, and logs.
 Configured embedding credentials come from named environment variables or an
