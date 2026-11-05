@@ -41,7 +41,9 @@ def main():
     original=strict_json((args.from_run/'relevance.json').read_text(encoding='utf-8'))
     decisions={r['comment_id']:{**r,'model_related':None,'model_uncertain':True,'agreement':False,'retrieval_review_related':None,'retrieval_review_uncertain':True} for r in original}
     trace=strict_json((args.from_run/'request-trace.json').read_text(encoding='utf-8'))
-    runner=Runner('http://no-network.invalid',args.out,prompts,chat_transport=no_inference,log=lambda text:print(text,flush=True))
+    # Runs made with a quality identity journaled their requests under it (open item B2-1 of the restructuring).
+    quality_identity=old['identity'].get('evidence_quality')
+    runner=Runner('http://no-network.invalid',args.out,prompts,quality_identity,chat_transport=no_inference,log=lambda text:print(text,flush=True))
     verified=[]
     for entry in trace:
         stage='relevance' if entry['stage']=='relevance_refinement' else entry['stage']
