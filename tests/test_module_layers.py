@@ -46,13 +46,14 @@ TABLE = [
     (('runner',), ('common', 'stages', 'inference', 'evidence', 'evidence_quality', 'cache')),
     (('retrieval',), ('common', 'resources', 'inference', 'glossary_vectors')),
     (('pipeline',), ('common', 'resources', 'balance_policy', 'evidence', 'evidence_quality', 'runner',
-                     'retrieval')),
+                     'retrieval', 'topics')),
     (('run_store',), ('common', 'resources')),
     (('fixture_transport',), ('common', 'resources', 'inference', 'evidence')),
     (('operations',), ('common', 'config', 'resources', 'inference', 'run_store', 'pipeline', 'runner',
                        'retrieval', 'evidence_quality', 'balance_policy', 'fixture_transport', 'cache')),
     (('legacy_review',), ('common', 'schema', 'evidence', 'evidence_quality', 'pipeline')),
-    (('review',), ('common', 'schema', 'evidence', 'evidence_quality', 'balance_policy', 'legacy_review')),
+    (('review',), ('common', 'schema', 'evidence', 'evidence_quality', 'balance_policy', 'legacy_review',
+                   'topics')),
     (('reporting',), ('common', 'evidence', 'evidence_quality', 'review')),
     (('quality_scoring',), ('common', 'evidence_quality')),
     (('evaluation',), ('common', 'schema', 'evidence', 'evidence_quality', 'quality_scoring', 'review')),
@@ -66,6 +67,7 @@ TABLE = [
     (('collection.*',), ('common', 'resources', 'collection.*')),
     # Pipeline upgrade plan 4.11 (UP-D01).
     (('measurement',), ('common', 'quality_scoring')),
+    (('topics',), ('resources', 'balance_policy')),
 ]
 ALLOWED = {module: frozenset(imports) for modules, imports in TABLE for module in modules}
 # Every module may import aimediator.__version__ (plan 4.2).

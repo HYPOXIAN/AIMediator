@@ -429,7 +429,8 @@ and sdist and record the tested dependency versions in the release validation.
 
 Layout of the package on 2026-11-04, at the end of the code restructuring,
 with the modules the pipeline upgrade has added since (`measurement`, step
-U0.2), grouped by layer from top to bottom:
+U0.2; `cache`, step U3.3; `topics`, step U6.1), grouped by layer from top
+to bottom:
 
 ```text
 src/aimediator/
@@ -460,6 +461,7 @@ src/aimediator/
   evidence.py              # source units, numeric tokens, characters, grounding
   evidence_quality.py      # span validation, v2 conversion and information-point routing
   stages.py                # per-stage request data, options, schemas, normalization
+  topics.py                # glossary references of claim targets
   # foundation
   common.py                # strict JSON, canonical bytes, hashing, atomic writes
   schema.py                # JSON-schema builders, constants and validator
@@ -528,6 +530,26 @@ every path keeps the exception type it raises.
   an alias. `workspace_root()` returns the checkout root when the package is
   imported from a checkout holding `RULES.md` and `pyproject.toml`, and the
   working directory otherwise, evaluated at call time.
+- `topics` (domain; imports `resources` and `balance_policy` only;
+  pipeline upgrade step U6.1, plan 4.8, UP-D12): `target_reference(target,
+  character)` returns `{glossary_ids, status, matched_alias}` for a claim's
+  target literal. The index, built once per process from
+  `resources.glossary()` and never mutated, holds every entry except the
+  `character` category with its canonical name, Chinese label and aliases;
+  a term matches when `balance_policy.term_matches` finds it in the
+  literal, and an entry whose `scope` names a character matches only claims
+  about that character. Terms inside a longer matched term are dropped. The
+  status is `resolved` when the remaining unflagged terms name exactly one
+  entry, `candidate` when they name several or only `candidate_only` or
+  `requires_context` aliases match, and `unmatched` otherwise (empty IDs,
+  `matched_alias` null). No fuzzy or semantic rule applies.
+  `pipeline.extract_claims` adds `target_reference` to each grounded claim
+  right after `ground_claim`, before the quality qualification; the verify
+  view does not carry it. `review.load_run` recomputes it for every saved
+  claim that has one and adds the error `Saved target reference differs
+  from the glossary`, which fails an automatic claim closed, like the saved
+  evidence check; claims of earlier runs without the key load unchanged,
+  and reviewed claims are rebuilt without it.
 - `schema`: `obj(properties)` (keys `type`, `additionalProperties`,
   `properties`, `required`) and `quality_obj(properties)` (keys `type`,
   `properties`, `required`, `additionalProperties`). They differ only in key

@@ -2,7 +2,7 @@
 import copy
 import csv
 from pathlib import Path
-from . import balance_policy, evidence, evidence_quality
+from . import balance_policy, evidence, evidence_quality, topics
 from .common import Failure, canonical, new_path, read, sha, write
 from .legacy_review import apply_review, proposal_hash
 
@@ -118,6 +118,8 @@ def load_run(folder):
         errors, enriched = evidence.ground_claim(core, sources[cid], {r['canonical_name'] for r in evidence.character_reference()})
         if c.get('evidence') is not None and enriched is not None and c['evidence'] != enriched['evidence']:
             errors.append('Saved evidence differs from immutable original source')
+        if 'target_reference' in c and c['target_reference'] != topics.target_reference(core['target'], core['character']):
+            errors.append('Saved target reference differs from the glossary')
         if raw['evidence_quality_mode'] == 'enforce':
             record = qrecords.get(cid)
             if not record:

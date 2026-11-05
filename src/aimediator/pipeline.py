@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any, Callable, Iterable, Iterator
 
 from . import evidence_quality as quality
+from . import topics
 from .balance_policy import load_policy, retrieval_review_agrees, triage_retrieval
 from .common import write as write_json
 from .evidence import character_reference, evidence_units, ground_claim
@@ -397,6 +398,9 @@ def extract_claims(state: RunState, model: str, language: str, selected: list[di
             subjects = set(assessment.get('subjects', ()))
             for i, claim in enumerate(assessment['claims']):
                 errors, enriched = ground_claim(claim, state.by_id[record_id], state.characters)
+                if enriched is not None:
+                    # Glossary reference of the target literal (plan 4.8, U6.1, UP-D12); review recomputes it.
+                    enriched['target_reference'] = topics.target_reference(claim['target'], claim['character'])
                 if claim['character'] not in subjects:
                     # Program gate of plan 4.3 (U5.2, UP-D11): a claim needs its fighter declared as a subject.
                     errors.append('Claim character not declared as subject')
