@@ -601,11 +601,8 @@ every path keeps the exception type it raises.
   None, errors)`, which `Runner` calls only after the schema check passed.
   For `extract`, `schema_for` keeps the claim order of `CLAIM` when it
   narrows properties and appends `quality_point_ids` last (step U5.1);
-  each comment's schema is `{subjects, claims}`, `subjects` a unique array
-  of the comment's allowed characters with `maxItems` their number (0 when
-  none is allowed), and `normalize` keeps `subjects` in each assessment;
-  `pipeline.extract_claims` adds the source-binding error `Claim character
-  not declared as subject` (step U5.2, UP-D11).
+  each comment's schema is `{claims}`. The `subjects` array and its
+  source-binding gate of step U5.2 were reverted by fix-up step U5.F2.
   For `quality` (step U4.4) `schema_for` builds
   `evidence_quality.annotation_schema_v2` from the context's `segments` and
   `character_literals`, and `normalize` applies `validate_annotation_v2`;

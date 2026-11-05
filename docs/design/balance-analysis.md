@@ -16,17 +16,11 @@ direction experiment.
 
 - `src/aimediator/assets/prompts/summarize-balance.zh.txt`: Chinese instructions for `qwen2.5:7b`.
 - `src/aimediator/assets/prompts/summarize-balance.en.txt`: equivalent English instructions for `llama3.1:latest`.
-  Both define `subjects` in two sentences (pipeline upgrade step U5.2) and
-  end with authored synthetic examples, labeled as not real comments, each
-  with its input units and the expected entry of `assessments` (step U5.3,
-  UP-D11): in both languages a long review that only mentions fighters
-  (empty `subjects` and `claims`), a conditional threat (`nerf`) and a
-  system complaint next to a fighter's name (no claim for that fighter);
-  in Chinese also an ironic remark whose direction is `unclear` with
-  `uncertain` true, and a general complaint that gives a qualitative
-  claim. Each example stays under 400 characters, and none is drawn from
-  an evaluation set; `tests/test_prompt_examples.py` checks that every
-  expected entry is valid under the schema built for its own text.
+  The `subjects` definition (pipeline upgrade step U5.2) and the authored
+  synthetic examples (step U5.3) were reverted after the review of batch
+  U5 (fix-up steps U5.F2 and U5.F1 of the
+  [change record](../records/20261104-pipeline-upgrade.md)); the pair
+  holds neither.
 - `src/aimediator/assets/prompts/relevance.{zh,en}.txt` and `retrieval-review.{zh,en}.txt`: topic-agreement review before extraction. Each ends with a line that introduces the topic list; `resources.prompts` appends the twenty anchors of `retrieval-anchors.json` after it, `P1: <text>` to `N10: <text>`, so the anchors keep one source (pipeline upgrade step U2.4, UP-D07).
 - `src/aimediator/assets/prompts/verify-balance.{zh,en}.txt`: claim entailment audit after extraction.
 - `src/aimediator/assets/configs/local-language-routing.json`: model, language, and prompt assignments.
@@ -127,16 +121,9 @@ Each numerical parameter contains `metric`, `current`, `proposed`, `delta`,
 `unit`, and its own `evidence_id`. Unknown quantities are JSON null. All non-null
 value strings retain exact source spelling, including number words.
 At the model boundary, `assessments` is an object whose unique required keys are
-the exact input comment IDs; each value is `{subjects, claims}` (step U5.2,
-UP-D11). `subjects` comes first: a unique array of the comment's allowed
-characters, the fighters whose balance the author takes a position on (a
-mention, comparison, victim or cosmetic remark does not make a subject),
-bounded by the number of allowed characters and empty when none is
-allowed. A claim whose character is not among its comment's subjects is
-quarantined at source binding with `Claim character not declared as
-subject`; the gate adds a check and relaxes none. Its live evaluation
-(U5-L2) found no precision gain and no claim gated, so the review of
-batch U5 decides whether it stays (escalation E-5 of the
+the exact input comment IDs; each value contains only a claims array. The
+`subjects` array and its source-binding gate of step U5.2 were reverted
+after the review of batch U5 (fix-up step U5.F2; escalation E-5 of the
 [change record](../records/20261104-pipeline-upgrade.md)). The runner
 derives coverage status and normalizes the output into coverage records.
 This schema prevents repeated comment IDs from replacing other input records.
