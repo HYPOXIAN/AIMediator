@@ -17,12 +17,35 @@ def api(base, endpoint, payload=None):
         return json.load(response)
 
 
-def repeated_claim(output, allowed_ids):
+def claim_pattern(claim_key):
+    """Return the pattern of the start of a claim object whose first property is ``claim_key``."""
+    return re.compile(r'\{\s*"' + re.escape(claim_key) + r'"\s*:')
+
+
+def claim_key(assessment_schema):
+    """Return the first property of the claim items of a keyed assessments schema, or None.
+
+    The path is ``properties[<comment ID>].properties.claims.items.properties`` (plan 4.3,
+    U5.1): claim objects are recognized by the first property the schema asks for, so
+    the guard follows the claim order of the request without importing ``evidence``.
+    """
+    if assessment_schema.get('type') != 'object':
+        return None
+    for comment in assessment_schema.get('properties', {}).values():
+        claims = comment.get('properties', {}).get('claims', {}) if isinstance(comment, dict) else {}
+        properties = claims.get('items', {}).get('properties') if isinstance(claims, dict) else None
+        if properties:
+            return next(iter(properties))
+    return None
+
+
+def repeated_claim(output, allowed_ids, first_key):
+    """Return whether two complete claims (objects starting with ``first_key``) under the same comment key are equal."""
     scopes = [(match.start(), match.group(1)) for match in
               re.finditer(r'(?<!\\)"([^"]+)"\s*:', output) if match.group(1) in allowed_ids]
     seen = set()
     decoder = json.JSONDecoder()
-    for match in re.finditer(r'\{\s*"character"\s*:', output):
+    for match in claim_pattern(first_key).finditer(output):
         try:
             claim, _ = decoder.raw_decode(output, match.start())
         except ValueError:
@@ -39,7 +62,6 @@ def repeated_claim(output, allowed_ids):
 
 _KEY = re.compile(r'(?<!\\)"([^"]+)"\s*:')
 _COMMENT_ID = re.compile(r'(?<!\\)"comment_id"\s*:\s*"([^"]+)"')
-_CLAIM = re.compile(r'\{\s*"character"\s*:')
 
 
 class _LoopGuard:
@@ -55,6 +77,8 @@ class _LoopGuard:
     def __init__(self, assessment_schema):
         self.keyed = assessment_schema.get('type') == 'object'
         self.allowed = set(assessment_schema['properties']) if self.keyed else None
+        key = claim_key(assessment_schema)
+        self.claim_pattern = None if key is None else claim_pattern(key)
         self.identities, self.position = set(), 0
         self.scope_starts, self.scope_keys = [], []
         self.claim_position, self.pending, self.signatures = 0, [], set()
@@ -76,8 +100,14 @@ class _LoopGuard:
         return duplicate
 
     def repeated_claim(self, output):
-        """Return whether two complete claims under the same comment key are equal; call after duplicate_identity."""
-        for match in _CLAIM.finditer(output, self.claim_position):
+        """Return whether two complete claims under the same comment key are equal; call after duplicate_identity.
+
+        Claims are the objects that start with the first claim property of the request's
+        schema (``claim_key``); a schema without claim items has no claims to compare.
+        """
+        if self.claim_pattern is None:
+            return False
+        for match in self.claim_pattern.finditer(output, self.claim_position):
             self.claim_position = match.end()
             self.pending.append(match.start())
         pending, repeated = [], False

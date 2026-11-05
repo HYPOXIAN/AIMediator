@@ -15,10 +15,14 @@ from .schema import BOOL, NULLABLE_STRING, STRING, arr, obj
 PARAMETER = obj({k: v for k, v in [
     ('metric', STRING), ('current', NULLABLE_STRING), ('proposed', NULLABLE_STRING),
     ('delta', NULLABLE_STRING), ('unit', NULLABLE_STRING), ('evidence_id', STRING)]})
-CLAIM = obj({'character': STRING, 'target': NULLABLE_STRING,
+# Evidence-first property order (pipeline upgrade plan 4.3, U5.1, UP-D11): the model
+# selects the source units before it names the subject. The order reaches the model
+# through the response schema; inference derives the claim key of its loop guard
+# from that schema.
+CLAIM = obj({'evidence_ids': arr(STRING), 'character': STRING, 'target': NULLABLE_STRING,
              'direction': {'enum': ['buff', 'nerf', 'keep', 'unclear']},
              'recommendation': STRING, 'specificity': {'enum': ['qualitative_only', 'source_numeric']},
-             'parameters': arr(PARAMETER), 'evidence_ids': arr(STRING), 'uncertain': BOOL})
+             'parameters': arr(PARAMETER), 'uncertain': BOOL})
 
 
 def evidence_units(text: str) -> list[dict[str, Any]]:

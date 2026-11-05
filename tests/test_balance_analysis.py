@@ -149,8 +149,8 @@ class BalanceEvidenceTests(unittest.TestCase):
     def test_claim_loop_detection_is_scoped_to_one_original_comment(self):
         same = {'assessments': {'a': {'claims': [claim(), claim()]}}}
         separate = {'assessments': {'a': {'claims': [claim()]}, 'b': {'claims': [claim()]}}}
-        self.assertTrue(inference.repeated_claim(json.dumps(same), {'a', 'b'}))
-        self.assertFalse(inference.repeated_claim(json.dumps(separate), {'a', 'b'}))
+        self.assertTrue(inference.repeated_claim(json.dumps(same), {'a', 'b'}, 'character'))
+        self.assertFalse(inference.repeated_claim(json.dumps(separate), {'a', 'b'}, 'character'))
 
     def test_extraction_schema_requires_exact_number_of_assessments(self):
         schema = stages.schema_for('extract', ['a', 'b'])

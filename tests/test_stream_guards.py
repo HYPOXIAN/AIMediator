@@ -3,7 +3,11 @@
 ``old_streamed_chat`` and ``old_repeated_claim`` are copies of
 ``inference.streamed_chat`` and ``inference.repeated_claim`` before U1.3
 (commit ``a1c034e``). Both run on the same synthetic streams through a fake
-response object instead of the network.
+response object instead of the network. The old copies find claims by the
+literal ``"character"`` key; since U5.1 the guard takes the first claim
+property of the request's schema, so the old-order streams carry a schema
+whose claims start with ``character`` and the evidence-first streams of U5.1
+differ from the old copy by design (the old copy misses their claim loops).
 """
 import json
 from pathlib import Path
@@ -15,7 +19,7 @@ import urllib.request
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
-from aimediator import inference
+from aimediator import inference, stages
 
 
 def old_repeated_claim(output, allowed_ids):
@@ -91,8 +95,15 @@ class FakeResponse:
         return False
 
 
-def keyed_format(ids):
-    return {'type': 'object', 'properties': {'assessments': {'type': 'object', 'properties': {i: {} for i in ids}}}}
+OLD_ORDER = ('character', 'target', 'direction', 'recommendation', 'specificity', 'parameters', 'evidence_ids',
+             'uncertain')
+
+
+def keyed_format(ids, order=OLD_ORDER):
+    """A keyed extraction format whose claim items have the given property order (before U5.1: ``character`` first)."""
+    claims = {'type': 'array', 'items': {'type': 'object', 'properties': {key: {} for key in order}}}
+    return {'type': 'object', 'properties': {'assessments': {'type': 'object', 'properties': {
+        i: {'type': 'object', 'properties': {'claims': claims}} for i in ids}}}}
 
 
 def claim(number, character='Ryu'):
@@ -101,11 +112,16 @@ def claim(number, character='Ryu'):
             'specificity': 'qualitative_only', 'parameters': [], 'evidence_ids': ['E%d' % number], 'uncertain': False}
 
 
-def extraction_output(ids, claims_per_comment, repeat=None):
+def evidence_first(value):
+    """The claim with the property order of ``evidence.CLAIM`` since U5.1."""
+    return {key: value[key] for key in stages.CLAIM['properties']}
+
+
+def extraction_output(ids, claims_per_comment, repeat=None, order=None):
     """The text of an extraction answer; ``repeat`` = (comment index, claim index) repeats one claim."""
     assessments = {}
     for index, cid in enumerate(ids):
-        claims = [claim(index * 100 + n) for n in range(claims_per_comment)]
+        claims = [(order or (lambda c: c))(claim(index * 100 + n)) for n in range(claims_per_comment)]
         if repeat and repeat[0] == index:
             claims.insert(repeat[1] + 1, dict(claims[repeat[1]]))
         assessments[cid] = {'claims': claims}
@@ -188,7 +204,43 @@ class StreamGuardTests(unittest.TestCase):
         for repeat in (None, (0, 0), (2, 3)):
             output = extraction_output(sorted(ids), 5, repeat)
             for end in range(0, len(output), 13):
-                self.assertEqual(inference.repeated_claim(output[:end], ids), old_repeated_claim(output[:end], ids))
+                self.assertEqual(inference.repeated_claim(output[:end], ids, 'character'),
+                                 old_repeated_claim(output[:end], ids))
+
+    def test_claim_key_follows_the_request_schema(self):
+        ids = ['steam:1', 'bili:2']
+        schema = stages.schema_for('extract', ids)
+        self.assertEqual(list(stages.CLAIM['properties'])[0], 'evidence_ids')
+        self.assertEqual(inference.claim_key(schema['properties']['assessments']), 'evidence_ids')
+        self.assertEqual(inference.claim_key(keyed_format(ids)['properties']['assessments']), 'character')
+        self.assertIsNone(inference.claim_key({'type': 'object', 'properties': {i: {} for i in ids}}))
+        self.assertIsNone(inference.claim_key({'type': 'array'}))
+
+    def test_evidence_first_streams_detect_claim_loops_the_old_copy_misses(self):
+        """U5.1: with the evidence-first schema the guard stops a claim loop; the old copy, keyed on character, does not."""
+        ids = ['steam:1', 'steam:2', 'bili:3', 'bili:4']
+        payload = {'model': 'fake', 'messages': [], 'format': stages.schema_for('extract', ids), 'stream': True}
+        cases = [
+            ('normal', extraction_output(ids, 2, order=evidence_first), 'stop', 'stop'),
+            ('duplicate-claim', extraction_output(ids, 2, (1, 0), evidence_first), 'duplicate_claim_loop', 'stop'),
+            ('late-loop', extraction_output(ids, 8, (3, 6), evidence_first), 'duplicate_claim_loop', 'stop'),
+            ('early-loop', extraction_output(ids, 8, (0, 0), evidence_first), 'duplicate_claim_loop', 'stop'),
+            ('same-claim-other-comment', json.dumps({'assessments': {
+                'steam:1': {'claims': [evidence_first(claim(1))]},
+                'steam:2': {'claims': [evidence_first(claim(1))]}}}), 'stop', 'stop'),
+        ]
+        for name, output, new_reason, old_reason in cases:
+            for size in (1, 4, 9, len(output)):
+                old, new = self.run_both(payload, chunks_of(output, size))
+                self.assertEqual(new[0]['done_reason'], new_reason, (name, size))
+                self.assertEqual(old[0]['done_reason'], old_reason, (name, size))
+                if new_reason == old_reason:
+                    self.assertEqual(new, old, (name, size))
+                else:  # the new guard stops earlier, on a prefix of the same output
+                    self.assertTrue(old[0]['message']['content'].startswith(new[0]['message']['content']))
+                    self.assertEqual(new[1], new[0]['message']['content'])
+        self.assertTrue(inference.repeated_claim(cases[1][1], set(ids), 'evidence_ids'))
+        self.assertFalse(inference.repeated_claim(cases[1][1], set(ids), 'character'))
 
 
 if __name__ == '__main__':
