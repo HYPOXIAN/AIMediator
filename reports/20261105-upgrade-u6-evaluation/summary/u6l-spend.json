@@ -1,0 +1,10 @@
+{
+ "bridge": "openrouter-bridge-2",
+ "limit_usd": 3.0,
+ "refuses_from_usd": 2.98,
+ "before_usd": 0.309676,
+ "after_usd": 0.338001,
+ "session_usd": 0.028325,
+ "requests_before": 2135,
+ "requests_after": 2359
+}

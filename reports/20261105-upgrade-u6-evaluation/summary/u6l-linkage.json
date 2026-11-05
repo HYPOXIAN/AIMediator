@@ -1,0 +1,121 @@
+{
+ "u6-benchmark-off": {
+  "report_byte_identical_twice": true,
+  "grounded_claims": 14,
+  "grounded_status": {
+   "unmatched": 14
+  },
+  "accepted_claims": 8,
+  "accepted_status": {
+   "unmatched": 8
+  },
+  "resolved_share_grounded": 0.0,
+  "resolved_share_accepted": 0.0,
+  "topic_grouping": {
+   "rule": "glossary_id_then_literal",
+   "target_reference_status_counts": {
+    "resolved": 0,
+    "candidate": 0,
+    "unmatched": 0
+   },
+   "groups": 0,
+   "glossary_groups": 0,
+   "literal_groups": 0,
+   "groups_by_literal_only": 0
+  },
+  "glossary_groups": [],
+  "merged_groups": [],
+  "near_duplicates": {
+   "comments": 30,
+   "threshold": 0.9,
+   "clusters": 0,
+   "clustered_comments": 0,
+   "cluster_sizes": [],
+   "clusters_detail": []
+  },
+  "report_near_duplicate_clusters_equal_file": true,
+  "grounded_with_target": 0,
+  "accepted_with_target": 0,
+  "note": "grounded claims: claims-before-audit.json plus the source-binding quarantine (each claim once)"
+ },
+ "u6-extraction-development-off": {
+  "report_byte_identical_twice": true,
+  "grounded_claims": 117,
+  "grounded_status": {
+   "unmatched": 107,
+   "candidate": 5,
+   "resolved": 5
+  },
+  "accepted_claims": 77,
+  "accepted_status": {
+   "unmatched": 71,
+   "candidate": 5,
+   "resolved": 1
+  },
+  "resolved_share_grounded": 0.0427,
+  "resolved_share_accepted": 0.013,
+  "topic_grouping": {
+   "rule": "glossary_id_then_literal",
+   "target_reference_status_counts": {
+    "resolved": 1,
+    "candidate": 2,
+    "unmatched": 5
+   },
+   "groups": 8,
+   "glossary_groups": 1,
+   "literal_groups": 7,
+   "groups_by_literal_only": 8
+  },
+  "glossary_groups": [
+   {
+    "character": "Jamie",
+    "glossary_id": "normal.crouching.hk",
+    "literals": 1,
+    "comments": 1
+   }
+  ],
+  "merged_groups": [],
+  "near_duplicates": {
+   "comments": 114,
+   "threshold": 0.9,
+   "clusters": 3,
+   "clustered_comments": 7,
+   "cluster_sizes": [
+    2,
+    2,
+    3
+   ],
+   "clusters_detail": [
+    {
+     "cluster_id": "D1",
+     "comment_ids": [
+      "steam:217921519",
+      "steam:237542068"
+     ],
+     "max_cosine": 0.936073
+    },
+    {
+     "cluster_id": "D2",
+     "comment_ids": [
+      "steam:231977697",
+      "steam:234081804"
+     ],
+     "max_cosine": 0.905987
+    },
+    {
+     "cluster_id": "D3",
+     "comment_ids": [
+      "steam:232046316",
+      "steam:233342104",
+      "steam:235013670"
+     ],
+     "max_cosine": 0.959
+    }
+   ]
+  },
+  "report_near_duplicate_clusters_equal_file": true,
+  "grounded_with_target": 17,
+  "accepted_with_target": 12,
+  "note": "grounded claims: claims-before-audit.json plus the source-binding quarantine (each claim once)"
+ }
+}

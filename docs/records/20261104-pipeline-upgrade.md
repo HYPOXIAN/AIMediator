@@ -123,6 +123,9 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | U6.2 | B | done | 333 | updated by UP-D12 | LNK-02, plan 4.8. `reporting.groups_for` groups a formal claim whose target reference is `resolved` by (character, glossary ID) and every other claim, candidates included, by (character, normalized literal), so candidates never merge; each group adds `grouping`, `glossary_id`, `glossary_entry` (canonical name, Chinese label, category), every literal in `topic_original_literals` and `target_reference_statuses`; `topic_literal_normalized` stays (the normalized canonical name for a glossary group; `presentation` reads it and is outside the boundary). The reference is the saved one (checked by `load_run`) or computed for claims without one (`review.target_reference`; earlier runs and reviewed claims); `review.glossary_entry` reads `topics.entry`, so `reporting` keeps its layering row. `report.json`: `schema_version` `aimediator-report-v2` and `topic_grouping` (status counts of formal claims, groups, glossary and literal groups, `groups_by_literal_only`); the Markdown heading of a glossary group names the entry and lists its literals; the limitation on literal grouping is rewritten, not removed. Demo `enforce` report: 18 formal claims, all resolved; 3 groups against 6 by literal alone. Tests (+2, `tests/test_topics.py`): grouping across English and Chinese literals, a candidate (`CA`, and `shoryuken startup`, which also names the mechanic Startup) kept apart, a move of another character in its own group; the report v2 keys, two byte-identical exports, and an export of a run stripped of `target_reference` giving the same groups. Lock regenerated (774 keys): exactly `L1:example-report/report.json`, `L1:example-report/report.md`, `L3:reviewed-report/report.json`, `L3:reviewed-report/report.md`. design/cli.md section 8 (report contract), guide (reports) |
 | U6.5 | B | done | 337 | updated by UP-D14 | ALG-05, plan 4.9. `retrieval.near_duplicate_clusters(ids, vectors, threshold)` (single linkage over the comment unit vectors that `retrieve` already has, blockwise; clusters `D<n>` with sorted `comment_ids`, `max_cosine`, each member's highest cosine, the linking pairs) and `retrieve` writes `near-duplicates.json` after `retrieval.json` (threshold and version read from the policy asset; `retrieval` keeps its layering row). `balance-review-policy.json`: `near_duplicate_cosine` 0.9, version `balance-review-policy-v3`, `calibration` unchanged. Threshold chosen on development comments only: the 114 comments of the extraction-development sample (all in the development split; vectors from the embedding records of `u5l3-extraction-development-off`, no new request); 6,441 pairs, 5 at or above 0.90, all the same request, position or complaint (`buff jp` and `加强JP` at 0.936 among them); of the 20 pairs just below (0.833 to 0.889), 8 the same and 7 opposite, the highest opposite pair at 0.872; recorded in `reports/20261105-upgrade-u6-evaluation/summary/near-duplicate-threshold.json` (5 pairs above instead of 20: no more exist; no escalation, work order section 6, third trigger). Report export adds `near_duplicate_clusters` with the note that counts are unchanged (null without the file); `quality_scoring.prepare_dataset(..., near_duplicates=None)` and `prepare --near-duplicates` merge exact-duplicate clusters that share a near-duplicate cluster into one split. New `tests/test_near_duplicates.py` (+4). Lock regenerated (780 keys): exactly the 23 keys under "Behavior changes" (6 `near-duplicates.json` keys added); no request digest changed. design/cli.md section 5 (`retrieval`) |
 | U6.4 | B | done | 341 | updated by UP-D13 | LNK-03, plan 4.8. `collection/screening.py` version `coarse-v2` (`VERSION`): `CHAR_ZH` and `MECH` replaced by `_char_zh()` and `_mech()`, built on first use as `_char_en`: Chinese labels and every Chinese alias of `character` entries plus the 18 coarse-v1 names the glossary lacks (traditional spellings, community names); canonical names, Chinese labels and unflagged aliases of `system` and `mechanic` entries plus the 92 coarse-v1 patterns no unflagged alias covers, without the reviewed exclusions (D-15). New collection configuration `configs/feedback-screening-terms.json` (P7; every entry with a reason). Decisions and summary carry `coarse-v2`; the summary adds `terms_sha256`. Comparison before the commit (offline, rules, all raw records): first pass, the plain generator: 264 of 6,376 decisions changed on `20261027-balanced` (4.14 %), 150 of 3,752 on `20261015-expanded` (4.00 %); agent review of 40: 11 better, 3 neutral, 26 worse (control-type entries and `PC`); committed, with the exclusions: 24 (0.38 %; exclude to review 20, to keep 4) and 7 (0.19 %; 6 and 1); agent review of all 24 changed IDs: 4 better (Drive Rush and Drive Impact complaints, a fighter's pressure), 5 neutral, 15 worse (two-letter aliases in other languages, technical `startup`, a controller), net +5 kept and +26 for review. Below the 5 % trigger (work order section 6). The owner's review of the comparison (UP-D13) is recorded as adopted under the owner authorization of 2026-11-05 03:11, after the agent's review of the changed decisions: the change removes the copy of glossary content (G2) at a cost of a few more review-queue records. Recorded datasets keep their decisions; nothing is screened again. Tests (+4, `tests/test_screen_feedback.py`): version and terms file, the glossary Chinese labels, glossary mechanics with spelling variants and the exclusions, a glossary mechanic with a claim kept. Lock regenerated (780 keys): exactly `L4:classify_rules`. design/cli.md section 5 (`collection`). Decisions found during execution D-14 (bypassed) and D-15. Files: `reports/20261105-upgrade-u6-evaluation/summary/screening-comparison.json` |
+| U6.3 | B | skipped (UP-D20) | — | — | Mechanic terms in the quality and extraction views (UP-D12, conditional) skipped by the owner's decision UP-D20 |
+| U6.6 | B | skipped (UP-D20) | — | — | Second audit trial (UP-D15) skipped by the owner's decision UP-D20; `second_audit` does not exist, so the owner action "decide on `second_audit` after U6-L" falls away |
+| U6-L | L | done | 341 | green | UP-D12 to UP-D14, UP-D18, UP-D19, UP-D20. `u6-benchmark-off` and `u6-extraction-development-off` (default configuration, no second audit) at the U6.5 commit `a05b0ee` (module and asset hashes equal to HEAD) through bridge `openrouter-bridge-2` (identity check passed; `doctor` passed; every response from `deepseek/deepseek-v4-flash` on DeepInfra). No U6 step changes model-visible content (U6.3, U6.6 skipped), so the adoption rule applies to none; regression check against `u2l1-benchmark-off` (equal precision 4/6 and recall 4/10, 0 against 0 failures) and `u5l3-extraction-development-off` (same request code: precision of accepted claims 57/76 against 52/71, +1.8 points; recall 56/123 against 52/123, +3.3; 0 against 0 failures, coverage complete). Readings: 5 of 117 grounded claims resolve to a glossary entry (100 have no target), 5 candidates; report groups 8 with glossary grouping and 8 by literal; 3 near-duplicate clusters of 7 comments. See "U6-L" under "Live evaluations". Curated report `reports/20261105-upgrade-u6-evaluation/`; full runs archived with `SHA256SUMS` (1,606 files). Spend 0.0283 USD (0.3097 to 0.3380 USD) |
 
 ## Baseline measurements (U0.4)
 
@@ -1117,6 +1120,85 @@ outputs of `u2r`, `u5r`, `u5l1`, `u5l2` and `u5l3`, and the tools under
 `provenance/`; the full runs, logs, configuration, input and tools are in
 the archive with `SHA256SUMS`.
 
+### U6-L (UP-D12 to UP-D14; API, UP-D19)
+
+Runs of 2026-11-05 from 06:12 to 06:18, started by the U6 session in its
+own process session with `runs/upgrade/tools/u6_api_runs.sh`, one after
+another, default configuration (no second audit: U6.6 is skipped by
+UP-D20): `u6-benchmark-off` and `u6-extraction-development-off` at the
+U6.5 commit `a05b0ee` from a `git archive` copy first on `sys.path`. The
+later commits of the session (U6.4) change only `collection/`, root
+`configs/`, tests and documents, so the runs' 32 module hashes and asset
+hashes also equal HEAD's. Identity check passed for both (module hashes,
+bridge `openrouter-bridge-2` with the recorded SHA-256 and digests,
+`live-config-api.json` unchanged, `doctor` passed, inputs equal to the
+references, all 34 and 179 chat attempts from `deepseek/deepseek-v4-flash`
+on DeepInfra). U6 sends no new model-visible content (U6.3 and U6.6
+skipped; U6.1, U6.2, U6.5 and U6.7 change no request byte), so no step of
+U6 is under the adoption rule; the runs check that nothing regressed and
+give the U6 readings. References: `u2l1-benchmark-off`, the latest
+accepted benchmark `off` run; `u5l3-extraction-development-off`, the same
+extraction request code (U5.2 and U5.3 are still in HEAD; E-5, E-6), and
+`u5l1-extraction-development-off`, the latest run that passed.
+
+| Run | Precision accepted | Precision generated | Recall | Recall admitted | T6 rejected | Claims per long comment (generated, accepted) | Failures |
+| --- | ------------------ | ------------------- | ------ | --------------- | ----------- | --------------------------------------------- | -------- |
+| `u2l1-benchmark-off` (reference) | 4/6 | 5/10 | 4/10 | 4/10 | 4/12 | 0, 0 (4 comments) | 0 |
+| `u6-benchmark-off` | 4/6 | 6/12 | 4/10 | 4/10 | 6/14 | 0, 0 (4) | 0 |
+| `u5l1-extraction-development-off` (U5.1) | 58/77 (75.3 %) | 74/113 (65.5 %) | 58/123 (47.2 %) | 58/121 | 40/119 (33.6 %) | 0.97, 0.52 (31) | 0 |
+| `u5l3-extraction-development-off` (U5.3) | 52/71 (73.2 %) | 78/121 (64.5 %) | 52/123 (42.3 %) | 52/122 | 54/126 (42.9 %) | 1.03, 0.53 (32) | 0 |
+| `u6-extraction-development-off` (HEAD) | 57/76 (75.0 %) | 73/108 (67.6 %) | 56/123 (45.5 %) | 56/123 | 39/116 (33.6 %) | 0.81, 0.47 (32) | 0 |
+
+Against `u5l3` (same request code): precision of accepted claims +1.8
+points (Newcombe −12.2 to +15.8), recall +3.3 points (−9.0 to +15.4);
+against `u5l1`: −0.3 and −1.6 points; rules 2 and 4 as D-8 reads them
+hold against both, and the benchmark equals the U2-L1 reference in
+precision and recall (0 against 0 technical failures, coverage complete
+in both runs; `run_state` `partial` as in every reference, from
+relevance-pending comments). The U5.3 run and this run share their
+extraction code, so their differences (English recall 27/46 against
+23/46; 1 binding quarantine against 4) are run-to-run variation, which
+bears on E-6.
+
+U6 readings (`summary/u6l-linkage.json`):
+
+- Target references (U6.1): of 117 grounded claims of the extraction
+  run, 17 carry a target literal and 100 have `target` null; 5 resolve
+  (4.3 % of all, 29 % of those with a target: `下重脚`, `2MP` and `2MK`
+  to the crouching normals, `一气必杀` and `1气` to `system.sa1`), 5 are
+  candidates (`Raging Demon`, a flagged alias of Akuma's super;
+  `OD龙炎舞`, the move and Overdrive; `白血`, `白血机制` and `打白血设计`,
+  which match only the flagged alias `白` of Burnout, since the glossary
+  has no entry for chip damage) and 107 are unmatched; of the 77 accepted claims, 12 carry a
+  target: 1 resolved, 5 candidates, 6 unmatched (`投`, `大屁股`,
+  `高人肘击`, `整个玩法逻辑`, `拳脚`, `技能`). The benchmark run's 14
+  claims have no target.
+- Report groups (U6.2): the report of the extraction run has 8 topic
+  groups with glossary grouping and 8 by literal alone (1 glossary group,
+  7 literal groups; 69 formal claims stay unresolved for identity or
+  target, mostly null targets); no group merged on this sample. Two
+  exports of each run are byte-identical.
+- Near-duplicates (U6.5): 3 clusters of 7 comments in the extraction run
+  (the JP buff pair across languages, the general balance complaints, the
+  three Jamie buff requests; the pairs of the threshold record), none in
+  the benchmark run; the report copies them with its note; no count
+  changed.
+- U6.3 (mechanic terms) and U6.6 (second audit): skipped by UP-D20; no
+  adoption rule applied and no second-audit precision, recall or time to
+  report.
+
+Findings: the extraction model leaves `target` null for most claims about
+a fighter's overall strength, so glossary grouping acts on few claims;
+its effect on report fragmentation shows only where targets are named
+(the demo: 6 literal groups into 3). Spend of the two runs with their
+`doctor` calls 0.0283 USD (0.3097 to 0.3380 USD, 224 requests).
+
+Curated report: [`reports/20261105-upgrade-u6-evaluation/`](../../reports/20261105-upgrade-u6-evaluation/manifest.json)
+holds the metrics, scores, comparisons, identity checks, `doctor` outputs,
+linkage readings and spend of both runs, the U6.4 and U6.5 evidence, and
+the tools under `provenance/`; the full runs, logs, configuration, inputs
+and tools are in the archive with `SHA256SUMS`.
+
 ## Behavior changes (P7)
 
 | Step | Decision | Asset or request part | Old SHA-256 | New SHA-256 | Lock paths |
@@ -1238,6 +1320,7 @@ the archive with `SHA256SUMS`.
 | `runs/upgrade/` (the two U4-L runs, their measurements, route scores, identity check and comparison, the materialized benchmark and synthetic samples with the synthetic cases, run logs and the bridge log, the API configuration and doctor output, the spend before and after, the bridge and one-off scripts; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-u4-evaluation/` | `SHA256SUMS` at the archive root, 721 files, 32,688,012 bytes | full runs of the U4-L evaluation (P2); the curated report keeps the manifest, summary and provenance | U4-L |
 | `runs/upgrade/` (the two U4-L2 runs, their measurements, route scores, identity check and comparison with U2-L1 and U4-L, run logs and the bridge log, the API configuration and doctor output, the spend before and after, the bridge and one-off scripts, a manifest; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-u4-fixup-evaluation/` | `SHA256SUMS` at the archive root, 726 files, 32,827,363 bytes | full runs of the U4-L2 rerun (P2); no curated `reports/` directory (D-12) | U4-L2 |
 | `tests/test_quality_readers.py` (tracked; added by U4.5, removed by its revert) | `~/Archives/AIMediator/scripts/20261105-upgrade-u4-reverts/tests/test_quality_readers.py` | `SHA256SUMS` in that directory: `c6c232925c767c1c4f0e9014211328b7a79fed2bf75374267c7301be86f34b79` | U4.F3 reverts U4.5 (E-4, fallback (a)); git history keeps the file at `2614453`; outside this record nothing refers to it | U4.F3 |
+| `runs/upgrade/` (the two U6-L runs, their measurements, identity checks, comparisons, linkage readings and report exports, run logs and the bridge log, the API configuration and doctor outputs, the spend before and after, the materialized inputs, the run script, tools and the U6.4 and U6.5 helper scripts with the coarse-v1 module copy; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-u6-evaluation/` | `SHA256SUMS` at the archive root, 1,606 files, 61,177,205 bytes | U6-L full runs (P2); the curated summary is `reports/20261105-upgrade-u6-evaluation/` | U6-L |
 
 ## Decisions found during execution
 

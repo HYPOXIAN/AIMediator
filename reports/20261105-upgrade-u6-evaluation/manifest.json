@@ -13,17 +13,52 @@
   "UP-D20",
   "D-15"
  ],
- "reason": "U6 evidence cited by the change record: the near-duplicate threshold chosen on development comments (U6.5), the coarse-v1 and coarse-v2 screening comparison with its agent review (U6.4); the U6-L measurements follow in the same directory",
+ "reason": "U6 evidence cited by the change record: the near-duplicate threshold chosen on development comments (U6.5), the coarse-v1 and coarse-v2 screening comparison with its agent review (U6.4), and the U6-L live readings (benchmark off and extraction-development off at the U6.5 commit: identity, adoption-rule items against the latest accepted runs, glossary target references, report groups, near-duplicate clusters)",
  "datasets": {
-  "upgrade-samples-v1/extraction-development": "data/evaluation/upgrade-samples-v1/extraction-development, 114 development comments (threshold of U6.5)",
-  "raw": "data/raw/feedback/20261027-balanced and 20261015-expanded, every raw record (U6.4 comparison; record IDs and labels only, no text)"
+  "upgrade-samples-v1/extraction-development": "data/evaluation/upgrade-samples-v1/extraction-development, 114 (u6-extraction-development-off; the U6.5 threshold)",
+  "raw": "data/raw/feedback/20261027-balanced and 20261015-expanded, every raw record (U6.4 comparison; record IDs and labels only, no text)",
+  "upgrade-samples-v1/latency-benchmark": "data/evaluation/upgrade-samples-v1/latency-benchmark, 30 (u6-benchmark-off)",
+  "extraction-precision-v1": "data/evaluation/extraction-precision-v1, development split (scores); the test split is not read"
  },
  "code": {
   "U6.5": "the commit with 'Step: U6.5'",
-  "U6.4": "the commit with 'Step: U6.4'"
+  "U6.4": "the commit with 'Step: U6.4'",
+  "U6-L": "a05b0ee"
  },
  "files": {
   "summary/near-duplicate-threshold.json": "U6.5: cosine distribution of the 6,441 development pairs, the 5 pairs at or above 0.90 and the 20 just below, each with the agent's label",
-  "summary/screening-comparison.json": "U6.4: changed-decision counts of coarse-v1 against coarse-v2 on both raw datasets, both passes, with the agent review of the changed records"
+  "summary/screening-comparison.json": "U6.4: changed-decision counts of coarse-v1 against coarse-v2 on both raw datasets, both passes, with the agent review of the changed records",
+  "summary/u6-benchmark-off-{metrics,scores,doctor,identity}.json": "U6-L benchmark run: request metrics and claim outcomes, position scores, doctor output, identity and API-environment check",
+  "summary/u6-extraction-development-off-{metrics,scores,doctor,identity}.json": "U6-L extraction run, the same four files",
+  "summary/u6l-benchmark-comparison-u2l1.json": "benchmark against u2l1-benchmark-off (rules 2 and 4 as D-8 reads them)",
+  "summary/u6l-comparison-u5l3.json": "extraction run against u5l3-extraction-development-off",
+  "summary/u6l-comparison-u5l1.json": "extraction run against u5l1-extraction-development-off",
+  "summary/u6l-linkage.json": "target reference statuses of grounded and accepted claims, report topic grouping and its byte-identical re-export, near-duplicate clusters of both runs",
+  "summary/u6l-spend.json": "bridge spend before and after the two runs with their doctor calls",
+  "provenance/": "one-off scripts: u6_api_runs.sh, u5_identity.py, u5_compare.py (unchanged from U5), u6_near_duplicate_threshold.py (U6.5), u6_screening_variants.py (U6.4; imports the coarse-v1 module copy kept in the archive)"
+ },
+ "archive": {
+  "path": "~/Archives/AIMediator/reports/20261105-upgrade-u6-evaluation/",
+  "checksums": "SHA256SUMS",
+  "files": 1606,
+  "bytes": 61177205,
+  "archived_on": "2026-11-05",
+  "contents": "runs/ (the two U6-L runs), measurements/ (metrics, scores, identity, comparisons, linkage readings, report exports, spend), logs/ (run logs; the bridge log, counters and timings only), config/ (API configuration, no credential), inputs/ (the two materialized samples, source text), provenance/ (the run script, the identity and comparison tools, the bridge, the U6.4 and U6.5 helper scripts and the coarse-v1 module copy they import)"
+ },
+ "runs": {
+  "u6-benchmark-off": {
+   "code": "a05b0ee (U6.5); module and asset hashes equal to HEAD after U6.4, which changes only collection/ and configs/",
+   "why": "U6-L: benchmark off (UP-D18 cuts enforce)",
+   "manifest": "runs/u6-benchmark-off/manifest.json"
+  },
+  "u6-extraction-development-off": {
+   "code": "a05b0ee (U6.5), as above",
+   "why": "U6-L: extraction-development off, default configuration (no second audit: U6.6 skipped by UP-D20)",
+   "manifest": "runs/u6-extraction-development-off/manifest.json"
+  }
+ },
+ "references": {
+  "u6-benchmark-off": "u2l1-benchmark-off of reports/20261105-upgrade-u2-evaluation (the latest accepted benchmark off run)",
+  "u6-extraction-development-off": "u5l3-extraction-development-off (same extraction request code; U5.2 and U5.3 are still in HEAD) and u5l1-extraction-development-off (the latest run that passed), both of reports/20261105-upgrade-u5-evaluation"
  }
 }
