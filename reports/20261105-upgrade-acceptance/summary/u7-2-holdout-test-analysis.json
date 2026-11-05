@@ -1,0 +1,841 @@
+{
+ "comparisons": {
+  "u7-extraction-test-off vs u2l0-extraction-development-off": {
+   "kind": "development run; different comments, unpaired",
+   "scores": {
+    "precision_accepted": {
+     "difference_points": -16.9,
+     "difference_points_ci95": [
+      -35.8,
+      1.5
+     ],
+     "new": [
+      19,
+      32,
+      59.4
+     ],
+     "reference": [
+      61,
+      80,
+      76.2
+     ]
+    },
+    "precision_generated": {
+     "difference_points": -4.6,
+     "difference_points_ci95": [
+      -18.7,
+      9.1
+     ],
+     "new": [
+      41,
+      68,
+      60.3
+     ],
+     "reference": [
+      85,
+      131,
+      64.9
+     ]
+    },
+    "recall": {
+     "difference_points": -22.0,
+     "difference_points_ci95": [
+      -34.5,
+      -7.8
+     ],
+     "new": [
+      19,
+      71,
+      26.8
+     ],
+     "reference": [
+      60,
+      123,
+      48.8
+     ]
+    },
+    "recall_admitted": {
+     "difference_points": -22.0,
+     "difference_points_ci95": [
+      -34.5,
+      -7.8
+     ],
+     "new": [
+      19,
+      71,
+      26.8
+     ],
+     "reference": [
+      60,
+      123,
+      48.8
+     ]
+    }
+   }
+  },
+  "u7-extraction-test-off vs u5l1-extraction-development-off": {
+   "kind": "development run; different comments, unpaired",
+   "scores": {
+    "precision_accepted": {
+     "difference_points": -15.9,
+     "difference_points_ci95": [
+      -35.0,
+      2.5
+     ],
+     "new": [
+      19,
+      32,
+      59.4
+     ],
+     "reference": [
+      58,
+      77,
+      75.3
+     ]
+    },
+    "precision_generated": {
+     "difference_points": -5.2,
+     "difference_points_ci95": [
+      -19.6,
+      8.9
+     ],
+     "new": [
+      41,
+      68,
+      60.3
+     ],
+     "reference": [
+      74,
+      113,
+      65.5
+     ]
+    },
+    "recall": {
+     "difference_points": -20.4,
+     "difference_points_ci95": [
+      -32.9,
+      -6.2
+     ],
+     "new": [
+      19,
+      71,
+      26.8
+     ],
+     "reference": [
+      58,
+      123,
+      47.2
+     ]
+    },
+    "recall_admitted": {
+     "difference_points": -21.2,
+     "difference_points_ci95": [
+      -33.7,
+      -6.9
+     ],
+     "new": [
+      19,
+      71,
+      26.8
+     ],
+     "reference": [
+      58,
+      121,
+      47.9
+     ]
+    }
+   }
+  },
+  "u7-extraction-test-off vs u6-extraction-development-off": {
+   "kind": "development run; different comments, unpaired",
+   "scores": {
+    "precision_accepted": {
+     "difference_points": -15.6,
+     "difference_points_ci95": [
+      -34.7,
+      2.9
+     ],
+     "new": [
+      19,
+      32,
+      59.4
+     ],
+     "reference": [
+      57,
+      76,
+      75.0
+     ]
+    },
+    "precision_generated": {
+     "difference_points": -7.3,
+     "difference_points_ci95": [
+      -21.7,
+      6.9
+     ],
+     "new": [
+      41,
+      68,
+      60.3
+     ],
+     "reference": [
+      73,
+      108,
+      67.6
+     ]
+    },
+    "recall": {
+     "difference_points": -18.8,
+     "difference_points_ci95": [
+      -31.3,
+      -4.6
+     ],
+     "new": [
+      19,
+      71,
+      26.8
+     ],
+     "reference": [
+      56,
+      123,
+      45.5
+     ]
+    },
+    "recall_admitted": {
+     "difference_points": -18.8,
+     "difference_points_ci95": [
+      -31.3,
+      -4.6
+     ],
+     "new": [
+      19,
+      71,
+      26.8
+     ],
+     "reference": [
+      56,
+      123,
+      45.5
+     ]
+    }
+   }
+  }
+ },
+ "holdout": {
+  "character_expectations": {
+   "by_language": {
+    "en": {
+     "character_found_by_accepted": {
+      "denominator": 2,
+      "numerator": 2,
+      "value": 1.0,
+      "wilson95": [
+       0.34238022750665303,
+       1
+      ]
+     },
+     "expectations": 2,
+     "found_by_accepted": {
+      "denominator": 2,
+      "numerator": 2,
+      "value": 1.0,
+      "wilson95": [
+       0.34238022750665303,
+       1
+      ]
+     },
+     "found_by_generated": {
+      "denominator": 2,
+      "numerator": 2,
+      "value": 1.0,
+      "wilson95": [
+       0.34238022750665303,
+       1
+      ]
+     },
+     "in_admitted_comments": 2
+    },
+    "zh": {
+     "character_found_by_accepted": {
+      "denominator": 5,
+      "numerator": 3,
+      "value": 0.6,
+      "wilson95": [
+       0.2307242812760128,
+       0.882379225767352
+      ]
+     },
+     "expectations": 5,
+     "found_by_accepted": {
+      "denominator": 5,
+      "numerator": 3,
+      "value": 0.6,
+      "wilson95": [
+       0.2307242812760128,
+       0.882379225767352
+      ]
+     },
+     "found_by_generated": {
+      "denominator": 5,
+      "numerator": 3,
+      "value": 0.6,
+      "wilson95": [
+       0.2307242812760128,
+       0.882379225767352
+      ]
+     },
+     "in_admitted_comments": 5
+    }
+   },
+   "comments_with_expectations": 7,
+   "labeled_comments": 30,
+   "missed_by_accepted": [
+    "steam:237695320 source:Arjun/nerf",
+    "steam:237696056 source:Arjun/nerf"
+   ],
+   "overall": {
+    "character_found_by_accepted": {
+     "denominator": 7,
+     "numerator": 5,
+     "value": 0.7142857142857143,
+     "wilson95": [
+      0.35893445183261935,
+      0.9177810759959433
+     ]
+    },
+    "expectations": 7,
+    "found_by_accepted": {
+     "denominator": 7,
+     "numerator": 5,
+     "value": 0.7142857142857143,
+     "wilson95": [
+      0.35893445183261935,
+      0.9177810759959433
+     ]
+    },
+    "found_by_generated": {
+     "denominator": 7,
+     "numerator": 5,
+     "value": 0.7142857142857143,
+     "wilson95": [
+      0.35893445183261935,
+      0.9177810759959433
+     ]
+    },
+    "in_admitted_comments": 7
+   },
+   "rule": "selected clear expectations only (claim_label_policy): recall, no precision"
+  },
+  "development_references": {
+   "u2l0-silver-development-relevance": {
+    "agreeing": 63,
+    "agreement": {
+     "denominator": 69,
+     "numerator": 63,
+     "value": 0.9130434782608695,
+     "wilson95": [
+      0.8229850166105782,
+      0.959536378798466
+     ]
+    },
+    "errors": [
+     {
+      "actual": false,
+      "comment_id": "steam:232594571",
+      "expected": true
+     },
+     {
+      "actual": false,
+      "comment_id": "steam:232316125",
+      "expected": true
+     },
+     {
+      "actual": true,
+      "comment_id": "steam:236985001",
+      "expected": false
+     },
+     {
+      "actual": false,
+      "comment_id": "steam:236766836",
+      "expected": true
+     },
+     {
+      "actual": true,
+      "comment_id": "steam:234299803",
+      "expected": false
+     },
+     {
+      "actual": true,
+      "comment_id": "youtube:UgzJYtb-vEd9Z3T9GQh4AaABAg",
+      "expected": false
+     }
+    ],
+    "evaluated": 69,
+    "excluded_uncertain": 1,
+    "false_negative": 3,
+    "false_positive": 3,
+    "missing_predictions": 0,
+    "precision": 0.9523809523809523,
+    "recall": 0.9523809523809523,
+    "specificity": 0.5,
+    "true_negative": 3,
+    "true_positive": 60
+   },
+   "u2l1-silver-development-relevance": {
+    "agreeing": 64,
+    "agreement": {
+     "denominator": 69,
+     "numerator": 64,
+     "value": 0.927536231884058,
+     "wilson95": [
+      0.8413260579060098,
+      0.9686522285700185
+     ]
+    },
+    "errors": [
+     {
+      "actual": false,
+      "comment_id": "steam:230953591",
+      "expected": true
+     },
+     {
+      "actual": false,
+      "comment_id": "steam:232594571",
+      "expected": true
+     },
+     {
+      "actual": false,
+      "comment_id": "steam:232316125",
+      "expected": true
+     },
+     {
+      "actual": false,
+      "comment_id": "steam:235247852",
+      "expected": true
+     },
+     {
+      "actual": false,
+      "comment_id": "steam:236766836",
+      "expected": true
+     }
+    ],
+    "evaluated": 69,
+    "excluded_uncertain": 1,
+    "false_negative": 5,
+    "false_positive": 0,
+    "missing_predictions": 0,
+    "precision": 1.0,
+    "recall": 0.9206349206349206,
+    "specificity": 1.0,
+    "true_negative": 6,
+    "true_positive": 58
+   }
+  },
+  "relevance": {
+   "en": {
+    "agreeing": 15,
+    "agreement": {
+     "denominator": 15,
+     "numerator": 15,
+     "value": 1.0,
+     "wilson95": [
+      0.7961166989641515,
+      1
+     ]
+    },
+    "errors": [],
+    "evaluated": 15,
+    "excluded_uncertain": 0,
+    "false_negative": 0,
+    "false_positive": 0,
+    "missing_predictions": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "specificity": 1.0,
+    "true_negative": 2,
+    "true_positive": 13
+   },
+   "labels_sha256": "1113d14062fb16464df2a0429e3b025e0c4071b0097782a7a59d098cd3cdfe89",
+   "overall": {
+    "agreeing": 27,
+    "agreement": {
+     "denominator": 29,
+     "numerator": 27,
+     "value": 0.9310344827586207,
+     "wilson95": [
+      0.7803541984972431,
+      0.9808787338305667
+     ]
+    },
+    "errors": [
+     {
+      "actual": false,
+      "comment_id": "steam:237438503",
+      "expected": true
+     },
+     {
+      "actual": false,
+      "comment_id": "youtube:UgyFLymm__gPy5y-V4V4AaABAg",
+      "expected": true
+     }
+    ],
+    "evaluated": 29,
+    "excluded_uncertain": 1,
+    "false_negative": 2,
+    "false_positive": 0,
+    "missing_predictions": 0,
+    "precision": 1.0,
+    "recall": 0.9259259259259259,
+    "specificity": 1.0,
+    "true_negative": 2,
+    "true_positive": 25
+   },
+   "rule": "relevance_metrics of evaluate_balance_review.py; label related expects agreement true; uncertain excluded",
+   "run": "u7-silver-holdout-off",
+   "set": "balance-silver-v1",
+   "split": "holdout",
+   "zh": {
+    "agreeing": 12,
+    "agreement": {
+     "denominator": 14,
+     "numerator": 12,
+     "value": 0.8571428571428571,
+     "wilson95": [
+      0.6005862050302965,
+      0.9599060787285351
+     ]
+    },
+    "errors": [
+     {
+      "actual": false,
+      "comment_id": "steam:237438503",
+      "expected": true
+     },
+     {
+      "actual": false,
+      "comment_id": "youtube:UgyFLymm__gPy5y-V4V4AaABAg",
+      "expected": true
+     }
+    ],
+    "evaluated": 14,
+    "excluded_uncertain": 1,
+    "false_negative": 2,
+    "false_positive": 0,
+    "missing_predictions": 0,
+    "precision": 1.0,
+    "recall": 0.8571428571428571,
+    "specificity": null,
+    "true_negative": 0,
+    "true_positive": 12
+   }
+  }
+ },
+ "runs": {
+  "u7-extraction-test-off": {
+   "admitted": 70,
+   "claims": {
+    "accepted": 34,
+    "audit_rejected": 35,
+    "audit_rejection": {
+     "denominator": 69,
+     "numerator": 35,
+     "value": 0.5072463768115942,
+     "wilson95": [
+      0.39205267562636525,
+      0.6216757699071268
+     ]
+    },
+    "audited": 69,
+    "binding_quarantined": 1,
+    "generated": 70
+   },
+   "coverage": {
+    "complete": true,
+    "input_comments": 74,
+    "with_coverage_status": 74
+   },
+   "coverage_status": {
+    "extraction_completed": 70,
+    "relevance_pending_or_failed": 2,
+    "relevance_rejected": 2
+   },
+   "failures": {
+    "generation_failed_comments": 0,
+    "pending_units": 2,
+    "quality_failed_comments": 0,
+    "requests_with_validation_errors": {},
+    "transport_failures": 0
+   },
+   "identity_passed": true,
+   "quality": null,
+   "run_state": "partial",
+   "spend": {
+    "after_usd": 0.367605,
+    "before_usd": 0.353786,
+    "requests": 118,
+    "run_usd": 0.013819
+   },
+   "stages": {
+    "extract": {
+     "elapsed_seconds": 4.9,
+     "fresh": 20,
+     "output_tokens": 360.8,
+     "prompt_tokens": 3189.2,
+     "requests": 20,
+     "uncached_tokens": 2702.8
+    },
+    "relevance": {
+     "elapsed_seconds": 1.3,
+     "fresh": 19,
+     "output_tokens": 16.1,
+     "prompt_tokens": 1885.2,
+     "requests": 19,
+     "uncached_tokens": 1359.7
+    },
+    "retrieval_review": {
+     "elapsed_seconds": 1.0,
+     "fresh": 6,
+     "output_tokens": 16.3,
+     "prompt_tokens": 2295.8,
+     "requests": 6,
+     "uncached_tokens": 1783.8
+    },
+    "verify": {
+     "elapsed_seconds": 0.8,
+     "fresh": 69,
+     "output_tokens": 6.8,
+     "prompt_tokens": 821.8,
+     "requests": 69,
+     "uncached_tokens": 536.2
+    }
+   },
+   "technical_failure_units": 0,
+   "wall_seconds": 124.800527
+  },
+  "u7-silver-holdout-off": {
+   "admitted": 25,
+   "claims": {
+    "accepted": 9,
+    "audit_rejected": 6,
+    "audit_rejection": {
+     "denominator": 15,
+     "numerator": 6,
+     "value": 0.4,
+     "wilson95": [
+      0.1982449614134158,
+      0.6425316987937539
+     ]
+    },
+    "audited": 15,
+    "binding_quarantined": 0,
+    "generated": 15
+   },
+   "coverage": {
+    "complete": true,
+    "input_comments": 30,
+    "with_coverage_status": 30
+   },
+   "coverage_status": {
+    "extraction_completed": 25,
+    "relevance_pending_or_failed": 1,
+    "relevance_rejected": 4
+   },
+   "failures": {
+    "generation_failed_comments": 0,
+    "pending_units": 1,
+    "quality_failed_comments": 0,
+    "requests_with_validation_errors": {},
+    "transport_failures": 0
+   },
+   "identity_passed": true,
+   "quality": null,
+   "run_state": "partial",
+   "spend": {
+    "after_usd": 0.353786,
+    "before_usd": 0.349406,
+    "requests": 38,
+    "run_usd": 0.00438
+   },
+   "stages": {
+    "extract": {
+     "elapsed_seconds": 3.0,
+     "fresh": 7,
+     "output_tokens": 235.0,
+     "prompt_tokens": 3023.0,
+     "requests": 7,
+     "uncached_tokens": 2584.1
+    },
+    "relevance": {
+     "elapsed_seconds": 0.7,
+     "fresh": 8,
+     "output_tokens": 15.9,
+     "prompt_tokens": 1543.0,
+     "requests": 8,
+     "uncached_tokens": 1095.0
+    },
+    "retrieval_review": {
+     "elapsed_seconds": 0.8,
+     "fresh": 5,
+     "output_tokens": 16.2,
+     "prompt_tokens": 1696.2,
+     "requests": 5,
+     "uncached_tokens": 1491.4
+    },
+    "verify": {
+     "elapsed_seconds": 0.7,
+     "fresh": 15,
+     "output_tokens": 6.6,
+     "prompt_tokens": 741.6,
+     "requests": 15,
+     "uncached_tokens": 519.7
+    }
+   },
+   "technical_failure_units": 0,
+   "wall_seconds": 37.292293
+  }
+ },
+ "test_scores": {
+  "absent_from_run": 0,
+  "by_language": {
+   "en": {
+    "admitted_comments": 27,
+    "comments": 29,
+    "precision_accepted": {
+     "denominator": 12,
+     "numerator": 10,
+     "value": 0.8333333333333334,
+     "wilson95": [
+      0.5519691377470266,
+      0.9530348578161463
+     ]
+    },
+    "precision_generated": {
+     "denominator": 18,
+     "numerator": 13,
+     "value": 0.7222222222222222,
+     "wilson95": [
+      0.4912734343970254,
+      0.8750024662044601
+     ]
+    },
+    "recall": {
+     "denominator": 17,
+     "numerator": 10,
+     "value": 0.5882352941176471,
+     "wilson95": [
+      0.3600544264299978,
+      0.7838894320978518
+     ]
+    },
+    "recall_admitted": {
+     "denominator": 17,
+     "numerator": 10,
+     "value": 0.5882352941176471,
+     "wilson95": [
+      0.3600544264299978,
+      0.7838894320978518
+     ]
+    },
+    "uncertain": {
+     "accepted_claims": 1,
+     "comments": 1,
+     "generated_claims": 1
+    }
+   },
+   "zh": {
+    "admitted_comments": 41,
+    "comments": 43,
+    "precision_accepted": {
+     "denominator": 20,
+     "numerator": 9,
+     "value": 0.45,
+     "wilson95": [
+      0.2581978582556243,
+      0.6579146575496577
+     ]
+    },
+    "precision_generated": {
+     "denominator": 50,
+     "numerator": 28,
+     "value": 0.56,
+     "wilson95": [
+      0.4230602802165686,
+      0.6883780078874284
+     ]
+    },
+    "recall": {
+     "denominator": 54,
+     "numerator": 9,
+     "value": 0.16666666666666666,
+     "wilson95": [
+      0.09024391642997268,
+      0.2873651422972916
+     ]
+    },
+    "recall_admitted": {
+     "denominator": 54,
+     "numerator": 9,
+     "value": 0.16666666666666666,
+     "wilson95": [
+      0.09024391642997268,
+      0.2873651422972916
+     ]
+    },
+    "uncertain": {
+     "accepted_claims": 1,
+     "comments": 1,
+     "generated_claims": 1
+    }
+   }
+  },
+  "labeled_comments": 74,
+  "labels": "extraction-precision-v1",
+  "overall": {
+   "admitted_comments": 68,
+   "comments": 72,
+   "precision_accepted": {
+    "denominator": 32,
+    "numerator": 19,
+    "value": 0.59375,
+    "wilson95": [
+     0.42260024875382873,
+     0.7448036515733456
+    ]
+   },
+   "precision_generated": {
+    "denominator": 68,
+    "numerator": 41,
+    "value": 0.6029411764705882,
+    "wilson95": [
+     0.48416055016632126,
+     0.7107129981971936
+    ]
+   },
+   "recall": {
+    "denominator": 71,
+    "numerator": 19,
+    "value": 0.2676056338028169,
+    "wilson95": [
+     0.17852803486507762,
+     0.3805398865785474
+    ]
+   },
+   "recall_admitted": {
+    "denominator": 71,
+    "numerator": 19,
+    "value": 0.2676056338028169,
+    "wilson95": [
+     0.17852803486507762,
+     0.3805398865785474
+    ]
+   },
+   "uncertain": {
+    "accepted_claims": 2,
+    "comments": 2,
+    "generated_claims": 2
+   }
+  },
+  "run": "u7-extraction-test-off",
+  "schema_version": "aimediator-position-scores-v1",
+  "split": "test"
+ }
+}

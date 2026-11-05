@@ -10,20 +10,25 @@
   "UP-D20",
   "D-16"
  ],
- "reason": "U7.1 acceptance evidence cited by the change record and the validation record: the latency-benchmark sample in off and enforce at the final code with the adopted configuration (max_parallel_requests 2, a new empty cache_dir per run), through the API bridge, compared per request and per comment with the U2-L0 API references and, beside them as a different model, with the local U0.8 and U0.6 rows and the archived 600-comment off run",
+ "reason": "U7.1 acceptance evidence cited by the change record and the validation record: the latency-benchmark sample in off and enforce at the final code with the adopted configuration (max_parallel_requests 2, a new empty cache_dir per run), through the API bridge, compared per request and per comment with the U2-L0 API references and, beside them as a different model, with the local U0.8 and U0.6 rows and the archived 600-comment off run; and the U7.2 single runs of the balance-silver-v1 holdout (relevance agreement, selected character expectations) and the extraction-precision-v1 test split (position precision and recall), each run once, compared with the development results",
  "datasets": {
   "upgrade-samples-v1/latency-benchmark": "data/evaluation/upgrade-samples-v1/latency-benchmark, 30 (u7-benchmark-off, u7-benchmark-enforce); input SHA-256 ce7ee3df8efc73d36840b96dff00407e42cea9f29de2369ccb64aa4abac28f4a, equal to the U2-L0 runs",
-  "extraction-precision-v1": "data/evaluation/extraction-precision-v1, development split labels of the 11 benchmark comments it holds (scores)"
+  "extraction-precision-v1": "data/evaluation/extraction-precision-v1: development labels of the 11 benchmark comments (U7.1 scores); test split, 74 (u7-extraction-test-off; run once, U7.2); input SHA-256 ac6747f8fcbc1297d5fb2f4291be68e12f7c639d8b90be9f230ec10e5e6b55ea",
+  "balance-silver-v1": "data/evaluation/balance-silver-v1, holdout split, 30 (u7-silver-holdout-off; run once, U7.2); input SHA-256 e4a8c600c94bbd381e7b6933ca65aa779cf056da13d07c136e32e314e1cffb7f"
  },
  "code": {
-  "U7.1": "b73f0e9 (tag upgrade-u6, the adopted configuration; a git archive copy first on sys.path)"
+  "U7.1": "b73f0e9 (tag upgrade-u6, the adopted configuration; a git archive copy first on sys.path)",
+  "U7.2": "b73f0e9, as U7.1"
  },
  "files": {
   "summary/u7-benchmark-off-{metrics,scores,doctor,identity}.json": "U7.1 off run: request metrics and claim outcomes, position scores, doctor output, identity and API-environment check",
   "summary/u7-benchmark-enforce-{metrics,scores,doctor,identity}.json": "U7.1 enforce run, the same four files",
   "summary/u7-1-benchmark-analysis.json": "run values, coverage, technical failure units and the comparisons: per request (stage means with intervals) and per comment (admission, coverage status, accepted positions) against u2l0-benchmark-off, u6-benchmark-off, u0s-benchmark-off, u0-benchmark-off (the 30 sample comments) and the archived 600-comment off run; enforce against u2l0-benchmark-shadow",
   "summary/u7l-spend.json": "bridge spend before and after the four U7-L runs, per run with its doctor call",
-  "provenance/": "one-off scripts: u7_api_runs.sh (runs), u5_identity.py (identity check, unchanged from U5), u7l_analyze.py (comparisons; imports rows_api.py, compare_u0s.py, compare_u2l1.py and score_u0_extra.py, kept in the provenance of earlier upgrade reports and in the archive), u7l_archive.sh (archive)"
+  "provenance/": "one-off scripts: u7_api_runs.sh (runs), u5_identity.py (identity check, unchanged from U5), u7l_analyze.py (comparisons; imports rows_api.py, compare_u0s.py, compare_u2l1.py and score_u0_extra.py, kept in the provenance of earlier upgrade reports and in the archive), u7l_archive.sh (archive)",
+  "summary/u7-silver-holdout-off-{metrics,doctor,identity,agreement}.json": "U7.2 holdout run: request metrics and claim outcomes, doctor output, identity check (no reference run: the input is new), relevance agreement with the holdout labels (D-4 scorer)",
+  "summary/u7-extraction-test-off-{metrics,scores,doctor,identity}.json": "U7.2 test-split run: request metrics and claim outcomes, position scores of the test split, doctor output, identity check (no reference run)",
+  "summary/u7-2-holdout-test-analysis.json": "U7.2 run values, the test-split scores against the development runs u5l1, u6 and u2l0 (unpaired, Newcombe intervals), the holdout relevance agreement beside the U2-L0 and U2-L1 development rows, and the recall of the selected character expectations"
  },
  "archive": {
   "path": "~/Archives/AIMediator/reports/20261105-upgrade-acceptance/",
@@ -43,10 +48,22 @@
    "code": "b73f0e9",
    "why": "U7.1 (UP-D18): benchmark enforce with the adopted configuration; enforce is measured only here",
    "manifest": "runs/u7-benchmark-enforce/manifest.json"
+  },
+  "u7-silver-holdout-off": {
+   "code": "b73f0e9",
+   "why": "U7.2: balance-silver-v1 holdout, off, full pipeline (relevance and character expectations); the only holdout run of the project",
+   "manifest": "runs/u7-silver-holdout-off/manifest.json"
+  },
+  "u7-extraction-test-off": {
+   "code": "b73f0e9",
+   "why": "U7.2: extraction-precision-v1 test split, off; the only test-split run of the project",
+   "manifest": "runs/u7-extraction-test-off/manifest.json"
   }
  },
  "references": {
   "u7-benchmark-off": "u2l0-benchmark-off of reports/20261105-upgrade-api-reference (API reference) and u6-benchmark-off of reports/20261105-upgrade-u6-evaluation (latest accepted API run); local u0s-benchmark-off, u0-benchmark-off and the archived 600-comment run beside, deciding nothing (UP-D19)",
-  "u7-benchmark-enforce": "u2l0-benchmark-shadow of reports/20261105-upgrade-api-reference (UP-D18, UP-D19)"
+  "u7-benchmark-enforce": "u2l0-benchmark-shadow of reports/20261105-upgrade-api-reference (UP-D18, UP-D19)",
+  "u7-silver-holdout-off": "development rows u2l0-silver-development-relevance and u2l1-silver-development-relevance (relevance agreement); no development reference for the character expectations",
+  "u7-extraction-test-off": "last accepted development results: u5l1-extraction-development-off (U5.1, the extraction request of the adopted configuration), u6-extraction-development-off and the API reference u2l0-extraction-development-off; different comments, unpaired"
  }
 }
