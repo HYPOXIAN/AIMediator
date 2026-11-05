@@ -197,8 +197,14 @@ revalidation command is outside V1. Import/report make no model calls.
 Reports show automatic versus agent/human-reviewed provenance, sample/language/
 platform denominators, unknown patch applicability, processing failures,
 uncertainty, review queues, evidence IDs/offsets and safe links. Buff, nerf, keep
-and unclear coexist per character and normalized literal target. Unknown targets
-stay unresolved; no semantic/cross-language topic merging occurs. Counts use
+and unclear coexist per character and topic. Since report schema
+`aimediator-report-v2`, a target that names exactly one glossary entry (an
+exact alias, canonical name or Chinese label, scoped to the claim's
+character where the entry is a move) is grouped by that entry across wording
+and language, and the heading names the entry and lists the literals; other
+targets, ambiguous or context-dependent aliases included, are grouped by
+normalized literal. Unknown targets stay unresolved; no fuzzy or semantic
+topic merging occurs. Counts use
 unique comment IDs, with union/overlap information; they are not people counts
 and are not additive across topics. Missing concerns are never invented by
 formatting. Off is unassessed; shadow diagnostics are separate; enforce retains

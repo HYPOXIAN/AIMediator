@@ -1102,8 +1102,9 @@ Invariants:
 - `status` and reports disclose unresolved technical work, genuine ambiguity,
   and unreviewed sources separately.
 
-`report` writes `report.md` and `report.json` with a new export schema
-`aimediator-report-v1`; it does not silently relabel the engine's `balance-report-v3`.
+`report` writes `report.md` and `report.json` with the export schema
+`aimediator-report-v2` (`aimediator-report-v1` before pipeline upgrade step
+U6.2, UP-D12); it does not silently relabel the engine's `balance-report-v3`.
 It includes run identity, mode, scope, source/publication ranges, language/platform
 denominators, processing failures, unresolved cases, review provenance, evidence
 links, and limitations. Missing source URLs fall back to local comment/evidence IDs.
@@ -1115,6 +1116,27 @@ group only identical normalized literal targets within the same character;
 unknown targets stay unresolved. Do not add semantic clustering or merge
 synonyms across languages by similarity during packaging. Explain that literal
 grouping can fragment equivalent topics.
+
+Since step U6.2 (`aimediator-report-v2`), `reporting.groups_for` groups a
+claim whose glossary target reference (`review.target_reference`: the
+saved `target_reference` of step U6.1, or one computed by `topics` for
+claims of earlier runs and reviewed claims) is `resolved` by
+(character, glossary ID), across wording and language, and every other
+claim, glossary candidates included, by (character, normalized literal),
+so candidates never merge groups. Each group holds `character`,
+`topic_literal_normalized` (for a glossary group the normalized canonical
+name), `grouping` (`glossary_id` or `literal`), `glossary_id`,
+`glossary_entry` (canonical name, Chinese label and category, or null),
+`topic_original_literals` (every literal of the group),
+`target_reference_statuses` and the direction blocks; groups are sorted by
+character, normalized topic, grouping and ID. `report.json` adds
+`topic_grouping`: the rule, the counts of formal claims by reference
+status, the numbers of groups, glossary groups and literal groups, and
+`groups_by_literal_only`, the group count that literal grouping alone would
+give. The Markdown heading of a glossary group names the entry (canonical
+name, Chinese label, ID) and lists its literals. The limitation text says
+which targets merge and that the rest can still fragment. Two exports of
+one run stay byte-identical.
 
 Quality mode determines what can appear:
 

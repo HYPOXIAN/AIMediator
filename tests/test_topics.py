@@ -127,5 +127,70 @@ class PipelineAndReviewTest(unittest.TestCase):
                     write(folder / name, strip(read(folder / name)))
             self.assertEqual(sorted(load_run(folder)['automatic']), sorted(c['claim_id'] for c in claims))
 
+
+class ReportGroupingTest(unittest.TestCase):
+    def claim(self, cid, target, character='Ken', direction='nerf'):
+        return {'claim_id': cid + ':1', 'comment_id': cid, 'character': character, 'target': target,
+                'direction': direction, 'recommendation': 'r', 'evidence': [],
+                'character_identity': {'normalization_status': 'glossary_reference'}}
+
+    def test_groups_by_glossary_id_then_literal(self):
+        from aimediator.reporting import groups_for
+        sources = {c: {'record_id': c, 'language': lang} for c, lang in
+                   (('a', 'en'), ('b', 'zh'), ('c', 'en'), ('d', 'en'), ('e', 'zh'), ('f', 'en'))}
+        claims = [self.claim('a', 'Shoryuken'), self.claim('b', '升龙拳'), self.claim('c', 'shoryuken startup'),
+                  self.claim('d', 'CA'), self.claim('e', 'CA damage'), self.claim('f', 'walk speed'),
+                  self.claim('a', 'Shoryuken', character='Ryu')]
+        groups, unresolved = groups_for(claims, sources)
+        self.assertEqual(unresolved, [])
+        view = [(g['character'], g['grouping'], g['glossary_id'], g['topic_literal_normalized'],
+                 g['topic_original_literals'], g['union_comment_ids']) for g in groups]
+        self.assertEqual(view, [
+            ('Ken', 'literal', None, 'ca', ['CA'], ['d']),
+            ('Ken', 'literal', None, 'ca damage', ['CA damage'], ['e']),
+            ('Ken', 'glossary_id', 'ken.special.shoryuken', 'shoryuken', ['Shoryuken', '升龙拳'], ['a', 'b']),
+            # Startup is a glossary mechanic too: two entries make a candidate, kept apart.
+            ('Ken', 'literal', None, 'shoryuken startup', ['shoryuken startup'], ['c']),
+            ('Ken', 'literal', None, 'walk speed', ['walk speed'], ['f']),
+            ('Ryu', 'glossary_id', 'ryu.shoryuken', 'shoryuken', ['Shoryuken'], ['a'])])
+        self.assertEqual(groups[2]['glossary_entry'], {'canonical_name': 'Shoryuken', 'chinese_label': '升龙拳',
+                                                       'category': 'special_move'})
+        # Candidates never merge: both CA groups keep the candidate status.
+        self.assertEqual(groups[0]['target_reference_statuses'], ['candidate'])
+
+    def test_report_v2_and_earlier_runs(self):
+        import shutil
+        from aimediator.reporting import export_report
+        root = demo_run()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            first, _ = export_report(root / 'enforce', tmp / 'r1')
+            second, _ = export_report(root / 'enforce', tmp / 'r2')
+            report = read(first / 'report.json')
+            self.assertEqual(report['schema_version'], 'aimediator-report-v2')
+            self.assertEqual((first / 'report.json').read_bytes(), (second / 'report.json').read_bytes())
+            self.assertEqual((first / 'report.md').read_bytes(), (second / 'report.md').read_bytes())
+            grouping = report['topic_grouping']
+            self.assertEqual(grouping['groups'], len(report['topics']))
+            self.assertLess(grouping['groups'], grouping['groups_by_literal_only'])
+            self.assertIn('(glossary ', (first / 'report.md').read_text(encoding='utf-8'))
+
+            # A run written before U6.1 has no target_reference: the export recomputes the same groups.
+            def strip(value):
+                if isinstance(value, dict):
+                    return {k: strip(v) for k, v in value.items() if k != 'target_reference'}
+                if isinstance(value, list):
+                    return [strip(v) for v in value]
+                return value
+            old = tmp / 'old-run'
+            shutil.copytree(root / 'enforce', old)
+            for name in ('validated-claims.json', 'quarantined-claims.json', 'claims-before-audit.json',
+                         'audit-progress.json'):
+                if (old / name).exists():
+                    write(old / name, strip(read(old / name)))
+            old_report = read(export_report(old, tmp / 'r3')[0] / 'report.json')
+            self.assertEqual(strip(old_report['topics']), strip(report['topics']))
+            self.assertEqual(old_report['topic_grouping'], grouping)
+
 if __name__ == '__main__':
     unittest.main()

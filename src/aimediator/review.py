@@ -9,6 +9,22 @@ from .legacy_review import apply_review, proposal_hash
 REQUIRED = ('source-snapshot.json', 'relevance.json', 'validated-claims.json', 'quarantined-claims.json')
 
 
+def target_reference(claim):
+    """Return a claim's glossary target reference: the saved one, which load_run has checked, or a new one.
+
+    Claims of runs written before pipeline upgrade step U6.1 and reviewed claims carry none, so the
+    reference is computed from their target and character (report v2, U6.2).
+    """
+    if isinstance(claim.get('target_reference'), dict):
+        return claim['target_reference']
+    return topics.target_reference(claim.get('target'), claim.get('character'))
+
+
+def glossary_entry(entry_id):
+    """Return the ID, canonical name, Chinese label and category of a glossary entry that topics indexes."""
+    return topics.entry(entry_id)
+
+
 def load_run(folder):
     folder = Path(folder).resolve()
     manifest = read(folder / 'manifest.json') if (folder / 'manifest.json').exists() else {}

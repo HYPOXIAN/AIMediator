@@ -6,7 +6,7 @@ import re
 from urllib.parse import urlsplit, quote
 from . import evidence, evidence_quality
 from .common import canonical, new_path, read, sha, write
-from .review import load_run, load_overlay
+from .review import glossary_entry, load_run, load_overlay, target_reference
 
 
 def normalized(text):
@@ -29,21 +29,40 @@ def source_link(row, evidence_id=None):
 
 
 def groups_for(claims, sources):
+    """Group formal claims by character and topic (report v2, pipeline upgrade U6.2, UP-D12).
+
+    A target whose glossary reference is resolved groups by (character, glossary ID) across wording and
+    language; every other target, candidates included, groups by (character, normalized literal), so
+    candidates never merge groups. Each group lists its original literals. The reference is the claim's
+    saved one, or recomputed for claims without one (earlier runs, reviewed claims).
+    """
     groups, unresolved = {}, []
     for claim in claims:
         identity = claim.get('character_identity') or {}
         if not claim.get('character') or identity.get('normalization_status') != 'glossary_reference' or not claim.get('target'):
             unresolved.append(claim)
             continue
-        key = (claim['character'], normalized(claim['target']))
-        group = groups.setdefault(key, {'character': key[0], 'topic_literal_normalized': key[1],
-            'topic_original_literals': set(), 'directions': {d: [] for d in ('buff','nerf','keep','unclear')}})
+        reference = target_reference(claim)
+        if reference['status'] == 'resolved':
+            entry = glossary_entry(reference['glossary_ids'][0])
+            key = (claim['character'], normalized(entry['canonical_name']), 'glossary', entry['id'])
+            topic = {'grouping': 'glossary_id', 'glossary_id': entry['id'],
+                     'glossary_entry': {'canonical_name': entry['canonical_name'],
+                                        'chinese_label': entry['chinese_label'], 'category': entry['category']}}
+        else:
+            key = (claim['character'], normalized(claim['target']), 'literal', '')
+            topic = {'grouping': 'literal', 'glossary_id': None, 'glossary_entry': None}
+        group = groups.setdefault(key, {'character': key[0], 'topic_literal_normalized': key[1], **topic,
+            'topic_original_literals': set(), 'target_reference_statuses': set(),
+            'directions': {d: [] for d in ('buff','nerf','keep','unclear')}})
         group['topic_original_literals'].add(claim['target'])
+        group['target_reference_statuses'].add(reference['status'])
         group['directions'][claim['direction']].append(claim)
     result = []
     for key in sorted(groups):
         group = groups[key]
         group['topic_original_literals'] = sorted(group['topic_original_literals'])
+        group['target_reference_statuses'] = sorted(group['target_reference_statuses'])
         all_ids, direction_sets = set(), []
         for direction, entries in group['directions'].items():
             ids = {c['comment_id'] for c in entries}
@@ -92,7 +111,11 @@ def export_report(run, out, review=None):
     partial = data['run_state'] != 'completed'
     quality_ids = {r['route']: sorted({x['comment_id'] for x in routed if x['route'] == r['route']}) for r in routed}
     all_topic_ids = {c['comment_id'] for c in claims}
-    report = {'schema_version': 'aimediator-report-v1', 'view': view, 'reviewer_provenance': reviewer,
+    statuses = Counter(target_reference(c)['status'] for g in groups for d in g['directions'].values()
+                       for c in d['recommendations'])
+    literal_groups = {(g['character'], normalized(literal)) for g in groups for d in g['directions'].values()
+                      for c in d['recommendations'] for literal in [c['target']]}
+    report = {'schema_version': 'aimediator-report-v2', 'view': view, 'reviewer_provenance': reviewer,
         'run_fingerprints': data['fingerprints'], 'run_identity': data['run_identity'],
         'execution_provenance': data['provenance'], 'legacy_adapter': data['legacy'],
         'engine_report_schema': data['raw'].get('report_schema_version'), 'run_state': data['run_state'],
@@ -104,6 +127,11 @@ def export_report(run, out, review=None):
             'by_platform': dict(sorted(Counter(r.get('platform') or 'unknown' for r in sources.values()).items()))},
         'counts': {'formal_claims': len(claims), 'formal_unique_comment_ids': sorted(all_topic_ids),
                    'formal_unique_comments': len(all_topic_ids), 'review_appendix_claims': len(appendix)},
+        'topic_grouping': {'rule': 'glossary_id_then_literal',
+            'target_reference_status_counts': {k: statuses.get(k, 0) for k in ('resolved', 'candidate', 'unmatched')},
+            'groups': len(groups), 'glossary_groups': sum(g['grouping'] == 'glossary_id' for g in groups),
+            'literal_groups': sum(g['grouping'] == 'literal' for g in groups),
+            'groups_by_literal_only': len(literal_groups)},
         'topics': groups, 'unresolved_identity_or_target_claims': unresolved,
         'source_review_appendix': appendix, 'source_review_queue': review_queue,
         'coverage': ledger, 'processing_summary': data['raw'].get('summary', {}),
@@ -116,7 +144,7 @@ def export_report(run, out, review=None):
         'semantic_accuracy': None,
         'limitations': ['Collected sample comments, not independent players or community-wide consensus.',
             'Comment IDs can overlap across directions/topics/routes; these counts are not additive.',
-            'Literal target grouping can fragment equivalent topics; no semantic or cross-language merging.',
+            'Targets that resolve to exactly one glossary entry are grouped by that entry across wording and language; other targets, glossary candidates included, are grouped by normalized literal and can fragment equivalent topics; no fuzzy or semantic merging.',
             'Emotional intensity never changes the evidence weight of substantive feedback.',
             'Automatic semantic audits use the same routed model and can have correlated attribution errors.',
             'Source review is separate from automatic audit success and verification of game mechanics.',
@@ -131,11 +159,17 @@ def export_report(run, out, review=None):
         'Language denominators: ' + escape(report['denominators']['by_language']),
         'Platform denominators: ' + escape(report['denominators']['by_platform']),
         'Technical failure/pending comments: %d.' % len(report['processing_failures']), '',
-        '## Character and literal topic evidence', '']
+        '## Character and topic evidence (glossary entries and literals)', '']
     if reviewer:
         lines += ['Reviewer: ' + escape(reviewer['reviewer_type']) + ' / ' + escape(reviewer['reviewer_id']), '']
     for group in groups:
-        lines += ['### ' + escape(group['character']) + ' — ' + escape(group['topic_literal_normalized']), '']
+        if group['grouping'] == 'glossary_id':
+            entry = group['glossary_entry']
+            lines += ['### ' + escape(group['character']) + ' — ' + escape(entry['canonical_name']) + ' / ' +
+                      escape(entry['chinese_label']) + ' (glossary ' + escape(group['glossary_id']) + ')', '',
+                      'Literals: ' + '; '.join(escape(t) for t in group['topic_original_literals']), '']
+        else:
+            lines += ['### ' + escape(group['character']) + ' — ' + escape(group['topic_literal_normalized']), '']
         for direction, entry in group['directions'].items():
             lines += ['**%s**: %d distinct comments' % (direction, entry['supporting_comment_count']), '']
             for claim in entry['recommendations']:

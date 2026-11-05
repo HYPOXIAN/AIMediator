@@ -493,8 +493,8 @@
   "L1:enforce/summary.json": "85389a7cc7972c45e4137f9b3bbb8c953a7b58fcd7d8795ea6736ffbad2846e6",
   "L1:enforce/system-feedback.json": "5433aba36bb40eec1f10b843c1994ee8a2e1d3672909aa9821227791193645d2",
   "L1:enforce/validated-claims.json": "247655fbe798a29a6b65a2e3145cce0bd9124ba3b7a70f63c4f14a24686e3d21",
-  "L1:example-report/report.json": "efab41467ba0c49d3d13cf32b1650004f42fbaeeeef250fdc4efe90dede375a0",
-  "L1:example-report/report.md": "bad862740491704c98d0ba15e4eed52b3174a6ecedc611268118e00d4b7dc21a",
+  "L1:example-report/report.json": "9577f37491730d4cc8e1945258adf0faeab7daaa5ca6dd8d5b0aba3e581bc40b",
+  "L1:example-report/report.md": "374e703948bae172190bd1e5ad7313098f69dca8e8103d40be2ac46b825744a0",
   "L1:off/.writer.lock": "<exempt: existence only>",
   "L1:off/audit-progress.json": "3de90e13e6356e813f005c560c0bb5442694fe038c24491f6efd57a21c71a785",
   "L1:off/balance-report.json": "4c01661f76addfe541093f374cf4afd96f714328e313050158fe3cd752819d87",
@@ -2784,7 +2784,7 @@
   "L3:overlay/review-manifest.json": "ed4e409a5325e936f49894eea5c0ae715ca4352cbab942fc05dfe80ff901b4dd",
   "L3:overlay/source-review-exclusions.json": "bb1bc534db55a39aec692dfcfe11a148ce2107fe505b3cf5f5ad14839c88f5f7",
   "L3:overlay/source-reviewed-claims.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
-  "L3:reviewed-report/report.json": "46538dba5d3a075a0a830b00ccd2768a6236b40bdc60615b25fb39c93ca27a02",
-  "L3:reviewed-report/report.md": "c3d329e94a39b7de9140842ad1e29a96afac4c8ce13e7f173fd8baae10b97bc7",
+  "L3:reviewed-report/report.json": "5bff72e5e50467fd6095a034971c2d3374c9e66dd31eacd2ab2e327f0124514d",
+  "L3:reviewed-report/report.md": "3eadb4345c8fa35fa3ca99303efed049ee439374d5e3c225e17d708dc72fbaf1",
   "L4:classify_rules": "e1f7b0994d8d55adf0bd8856b1a87f300d5dafc9f8d171ebd6fcfc67b593ef7c"
 }

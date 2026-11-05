@@ -37,6 +37,19 @@ def _index() -> tuple[tuple[str, str, tuple[tuple[str, bool], ...]], ...]:
     return tuple(entries)
 
 
+@functools.lru_cache(maxsize=1)
+def _entries() -> dict[str, tuple[str, str, str]]:
+    """Return (canonical name, Chinese label, category) per non-character entry ID, built once per process."""
+    return {e['id']: (e['canonical_name'], e['chinese_label'], e['category'])
+            for e in glossary()['entries'] if e['category'] != 'character'}
+
+
+def entry(entry_id: str) -> dict[str, str]:
+    """Return a new dict with the ID, canonical name, Chinese label and category of an indexed entry."""
+    canonical_name, chinese_label, category = _entries()[entry_id]
+    return {'id': entry_id, 'canonical_name': canonical_name, 'chinese_label': chinese_label, 'category': category}
+
+
 def _shadowed(term: str, others: list[str]) -> bool:
     """Return whether term is a proper part of a longer matched term, so the longer one decides."""
     folded = term.casefold()
