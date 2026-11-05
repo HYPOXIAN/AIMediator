@@ -105,6 +105,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | U4.6 | B | skipped | 316 | green | LAT-07, UP-D10, conditional on every U4-L quality request having prompt plus output below 6,000 tokens. Measured from the API counters (`prompt_eval_count` plus `eval_count` of every quality `response.json`): maximum 13,520 on the benchmark (11,453 prompt, 2,067 output) and 14,346 on the synthetic sample (12,260 and 2,086); 4 and 1 requests reach 6,000 or more. The policy's `num_ctx` stays 16384; no lock change. The prompt growth is the per-clause label schema (D-11) |
 | U4.7 | N | done | 316 | green | ADR `docs/decisions/0005-program-segmentation-of-quality-annotations.md` (context with the U2-L1 and U0.6 failure classes, the five decisions of U4.1 to U4.5, the U4-L measurements against U2-L1 and the E-4 outcome, consequences: no offset errors, clause granularity, schema growth (D-11), policy v2 in the run identity, fixture batches, the legacy identity hash) with its index row in `docs/README.md`; evidence-quality.md (header; sections 3.1 and 3.2 marked as v1, new section 3.3 with the v2 contract: segmentation, request, schema, validation and routing, records and readers, granularity, fixtures; section 4 holds for both versions on the derived annotation); emotion-quantification-and-evidence-isolation.md (header; section 3 on v2 labeling and the program's offsets); design/cli.md section 5 (`evidence.clause_segments`, the v2 quality view, `quality_request` context, v2 `schema_for` and `normalize`, `qualify_v2`, the readers of both versions). Lock unchanged |
 | U4.F1 | B | done | 316 | updated by UP-D10 | Fix-up step of E-4, option (c), adopted under the owner authorization of 2026-11-05 03:11. Prompt pair `evidence-quality.{en,zh}`: one addition to the labeling paragraph aimed at the remaining U4-L failure class (a concrete point selecting a clause labeled `general_opinion`, 7 of 9 benchmark attempt errors) and at a literal outside the selected clauses (2 of 9); see "Behavior changes". The authored examples are unchanged and still valid under `validate_annotation_v2`. No code, schema, policy or routing change. Lock regenerated: exactly the 25 keys under "Behavior changes" (the keys of the U2.2 prompt change). Measured by U4-L2 |
+| U4-L2 | L | done | 316 | green | E-4 option (c), UP-D19, UP-D20, D-12. The two U4-L runs repeated at the U4.F1 commit `385f744` (`u4f1-benchmark-shadow`, `u4f1-quality-synthetic-shadow`) through bridge version 2, environment and identity equal to the record. Verdict: rule 2 still fails (benchmark quality-failed comments 5 against 2), T5 78.3 % unchanged, T4 11.0 s per comment (59.5 %), rule 4 holds (synthetic 15/16, routes 14/16 against 13/16 and 11/16); the fallback (a) of E-4 applies and passes to U4-V (revert U4.F1, U4.5, U4.4). See "U4-L2" under "Live evaluations". No `reports/` directory (D-12); full runs, measurements and comparison archived with `SHA256SUMS` (726 files). Spend 0.0186 USD (0.1665 to 0.1851 USD) |
 
 ## Baseline measurements (U0.4)
 
@@ -382,6 +383,8 @@ For every API session it replaces the local items of the record above
 | U2-L1 (`u2l1-quality-synthetic-shadow`) | `b7d1cc5` | `upgrade-samples-v1/quality-synthetic` (19) | `shadow`, `--stop-after quality` | 112.2 s | relevance 1,313 (1,185); retrieval_review 958 (617); quality 1,799 (1,233) | relevance 16; retrieval_review 11; quality 418 | 6 quality requests with validation errors; 0 transport; 3 quality-failed comments; 0 generation-failed comments; 2 pending | — | — | first attempt 13/16 (81.2 %, Wilson 57.0–93.4 %); 19 attempts; route agreement 11/16 (68.8 %, Wilson 44.4–85.8 %), English 5/7, Chinese 6/9; 16 of 19 cases reach quality | U2.2 rule 4 holds: validity and route agreement equal |
 | U4-L (`u4-benchmark-shadow`) | `2614453` | `upgrade-samples-v1/latency-benchmark` (30) | `shadow` | 321.1 s | relevance 1,474 (1,090); retrieval_review 1,353 (1,046); quality 3,673 (2,630); extract 2,788 (2,495); verify 742 (571) | relevance 15; retrieval_review 14; quality 501; extract 200; verify 7 | 9 quality requests with validation errors; 0 transport; 4 quality-failed comments; 0 generation-failed comments; 3 pending | 12 / 8 (0 quarantined; 4 of 12 audited rejected, 33.3 %) | 4/6 (66.7 %) / 4/10 (40.0 %), the 11 scored sample comments of the development split | first attempt 18/23 (78.3 %, Wilson 58.1–90.3 %); 28 attempts; final 19/23 | U4.4 and U4.5: rules 2 and 3 (T5) fail; see the verdicts |
 | U4-L (`u4-quality-synthetic-shadow`) | `2614453` | `upgrade-samples-v1/quality-synthetic` (19) | `shadow`, `--stop-after quality` | 127.7 s | relevance 1,312 (928); retrieval_review 958 (446); quality 2,865 (1,745) | relevance 16; retrieval_review 11; quality 311 | 0 quality requests with validation errors; 0 transport; 0 quality-failed comments; 2 pending | — | — | first attempt 16/16 (100 %, Wilson 80.6–100 %); 16 attempts; route agreement 14/16 (87.5 %, Wilson 64.0–96.5 %), English 5/7, Chinese 9/9; 16 of 19 cases reach quality | rule 4 holds: validity and route agreement up |
+| U4-L2 (`u4f1-benchmark-shadow`) | `385f744` | `upgrade-samples-v1/latency-benchmark` (30) | `shadow` | 313.3 s | quality 3,951 (2,589); other stages as in the U4-L row within run-to-run variation | quality 530 | 10 quality attempt errors in 10 failed attempts; 0 transport; 5 quality-failed comments; 0 generation-failed comments; 3 pending | 8 accepted of the generated (4 of 8 accepted scored positions correct) | 4/8 (50.0 %) / 4/10 (40.0 %), the 11 scored sample comments | first attempt 18/23 (78.3 %, Wilson 58.1–90.3 %); 28 attempts; final 18/23 | U4.F1: rule 2 still fails; see the verdicts |
+| U4-L2 (`u4f1-quality-synthetic-shadow`) | `385f744` | `upgrade-samples-v1/quality-synthetic` (19) | `shadow`, `--stop-after quality` | 108.7 s | quality 2,971 (1,978) | quality 307 | 2 quality requests with validation errors; 0 transport; 1 quality-failed comment; 2 pending | — | — | first attempt 15/16 (93.8 %, Wilson 71.7–98.9 %); 17 attempts; route agreement 14/16 (87.5 %), English 7/7, Chinese 7/9 | rule 4 holds against U2-L1 |
 
 Rows of U0.6 (2026-11-04, session U0-L): the five reference runs of plan
 7 U0.6, environment and configuration as in the section above. Token
@@ -891,6 +894,46 @@ Findings of U4-L:
   These relevance differences are run-to-run variation of the unchanged
   relevance stage.
 
+
+### U4-L2 (E-4; API, UP-D19)
+
+Rows of U4-L2 (2026-11-05, runs from 04:47:26 to 04:54:40, same agent):
+the two U4-L runs repeated at the U4.F1 commit `385f744` as
+`u4f1-benchmark-shadow` and `u4f1-quality-synthetic-shadow`
+(`runs/upgrade/tools/u4l2_api_runs.sh`, own process session, N 1, no
+`cache_dir`), the measurement of option (c) of E-4. Environment and
+identity as in U4-L: bridge version 2 with the recorded SHA-256 and
+digests, `doctor` passed, configuration unchanged; 31 module and 21
+resource hashes equal `385f744`; every chat response (60 and 24) from
+`deepseek/deepseek-v4-flash` on DeepInfra through version 2. Spend 0.0186
+USD (bridge total 0.1665 to 0.1851 USD). References: the U2-L1 rows, as
+for U4-L. Curated summary (D-12): this record; the runs, measurements,
+comparison (`measurements/u4l2-analysis.json`, also against the U4-L
+runs) and identity check are in
+`~/Archives/AIMediator/reports/20261105-upgrade-u4-fixup-evaluation/`
+(726 files with `SHA256SUMS` and `manifest.json`).
+
+| Step | Rule 1 gates | Rule 2 failure units and coverage | Rule 3 target metrics | Rule 4 no inferiority | Verdict |
+| ---- | ------------ | --------------------------------- | --------------------- | --------------------- | ------- |
+| U4.4, U4.5 and U4.F1 (UP-D10, E-4) | pass (316 tests, rule check 0, lock green at `385f744`) | benchmark quality-failed comments 5 against 2 (+3, beyond the margin of 1; U4-L: 4); 0 transport; coverage complete | T4: 11.0 s per comment against 18.5 s (59.5 %; indicative); T5: 18/23 (78.3 %) against 21/24, −9.2 points (−31.0 to +12.9), unchanged from U4-L | synthetic first-attempt validity 15/16 against 13/16 (+12.5 points, −12.7 to +37.3); route agreement 14/16 against 11/16 (−10.3 to +44.7) | **fails rules 2 and 3 (T5)**; the fallback (a) of E-4 applies; not reverted in this session |
+
+Findings of U4-L2:
+
+- **The prompt fix moved the failures, not their number.** Benchmark
+  attempt errors: `Point/segment detail conflict: P1` 4 (U4-L: 7),
+  `Literal absent from selected spans: mechanic_literal` 4 (U4-L: 0),
+  `character_literal` 2 (2). Of the 23 common comments 18 are valid on the
+  first attempt in both U4-L runs; 2 became valid and 2 invalid.
+- **Synthetic sample.** One case (`Point/segment detail conflict`, both
+  attempts) fails, against none in U4-L; route agreement 14/16 in both
+  (English 7/7 against 5/7, Chinese 7/9 against 9/9).
+- **Benchmark claims.** Accepted claims score 4 of 8 scored positions
+  (U4-L and U2-L1: 4 of 6); recall 4/10 in all three runs. The extraction
+  sample was not run (UP-D18), so rule 4's extraction margin is not
+  measured for U4.
+- **Largest prompt plus output** 13,339 on the benchmark and 14,482 on
+  the synthetic sample; U4.6 stays skipped.
+
 ## Behavior changes (P7)
 
 | Step | Decision | Asset or request part | Old SHA-256 | New SHA-256 | Lock paths |
@@ -996,6 +1039,7 @@ Findings of U4-L:
 | `runs/upgrade/` (the five U2-L0 runs, their measurements, identity check, environment record and comparison with the local rows, the materialized inputs, run logs and the bridge log, the API configuration and doctor output, the bridge and one-off scripts; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-api-reference/` | `SHA256SUMS` at the archive root, 2,446 files, 118,026,987 bytes | full runs of the U2-L0 API reference (P2); the curated report keeps the manifest, summary and provenance | U2-L0 |
 | `runs/upgrade/` (the five U2-L1 runs, their measurements, identity check and comparison, the materialized inputs, run logs and the bridge log, the API configuration and doctor output, the bridge and one-off scripts; the local runs `u2l1-local-benchmark-off`, `u2l1-local-benchmark-shadow` and `u2l1-local-extraction-development-off-interrupted` with their measurements and logs under `local/`; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-u2-evaluation/` | `SHA256SUMS` at the archive root, 3,244 files, 156,077,243 bytes | full runs of the U2-L1 evaluation (P2); the curated report keeps the manifest, summary and provenance | U2-L1 |
 | `runs/upgrade/` (the two U4-L runs, their measurements, route scores, identity check and comparison, the materialized benchmark and synthetic samples with the synthetic cases, run logs and the bridge log, the API configuration and doctor output, the spend before and after, the bridge and one-off scripts; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-u4-evaluation/` | `SHA256SUMS` at the archive root, 721 files, 32,688,012 bytes | full runs of the U4-L evaluation (P2); the curated report keeps the manifest, summary and provenance | U4-L |
+| `runs/upgrade/` (the two U4-L2 runs, their measurements, route scores, identity check and comparison with U2-L1 and U4-L, run logs and the bridge log, the API configuration and doctor output, the spend before and after, the bridge and one-off scripts, a manifest; ignored, not tracked) | `~/Archives/AIMediator/reports/20261105-upgrade-u4-fixup-evaluation/` | `SHA256SUMS` at the archive root, 726 files, 32,827,363 bytes | full runs of the U4-L2 rerun (P2); no curated `reports/` directory (D-12) | U4-L2 |
 
 ## Decisions found during execution
 
@@ -1202,6 +1246,23 @@ Findings of U4-L:
   the same identity mark the change, so nothing is bypassed; the stale
   hash is left for a session whose boundary lists `engine.py` (Deferred).
 
+- **D-12 (U4-L2) Where the curated summary of the fix-up rerun goes.**
+  Registered by session U4-L2 on 2026-11-05. The rerun of the two U4-L
+  runs after U4.F1 (E-4, option c) needs a curated summary, but the batch's
+  report directory `reports/20261105-upgrade-u4-evaluation/` was committed
+  by U4-L and is frozen (invariant 2.1.6), and the U4 boundary admits no
+  second report directory. Options: (a) the change record carries the
+  rows, verdicts and findings, and the full runs with their measurements,
+  comparison and identity check go to the archive
+  `~/Archives/AIMediator/reports/20261105-upgrade-u4-fixup-evaluation/`
+  with `SHA256SUMS` and a manifest, without a `reports/` directory; (b) add
+  the files to the U4 report directory (modifies frozen content); (c) a new
+  `reports/` directory outside the boundary. Recommendation and action:
+  (a), adopted under the owner authorization of 2026-11-05 03:11; it
+  changes no frozen content and no boundary, and a revert removes only
+  record text. A later session whose boundary allows it may curate the
+  archived measurements into a report directory.
+
 ## Escalations
 
 - **E-1 (U0.6) `aimediator doctor` fails with the local embedding
@@ -1275,6 +1336,23 @@ Findings of U4-L:
   the step, the runs and their record can be committed by 06:00; whatever
   it does not finish passes to U4-V, which applies the rest of the adopted
   recommendation. Blocked: nothing in this session.
+
+  Outcome (U4-L2, same day): U4.F1 was committed (`385f744`) and measured
+  by U4-L2; rule 2 still fails (5 quality-failed benchmark comments
+  against 2), so the fallback (a) applies. Adopted action, under the same
+  authorization: U4-V, which applies the fix-up reverts of failed steps
+  (UP-D20, session 6 of the chain), reverts U4.F1, U4.5 and U4.4 in that
+  order (plan 1.7, `fix: revert ...` with `Step:` and `Reverts:` lines, the
+  lock regenerated by each revert), records the documents of U4.7 that
+  then describe a contract no longer in effect (ADR 0005 status,
+  evidence-quality.md section 3.3, the emotion design note, design/cli.md
+  section 5) as a fix-up documentation step, and keeps U4.1 to U4.3 (N,
+  unused by the pipeline). This session does not revert: a live session
+  never reverts (plan 10.1), and the reverts are fix-up steps of the
+  review. The owner's own review may decide against the rule (plan 5.4);
+  the reasons for keeping are the synthetic gains (validity 15/16 and
+  16/16 against 13/16, routes 14/16 against 11/16), T4 at 60 % and no
+  offset errors, against 4 to 5 failed benchmark comments instead of 2.
 
 ## Verification notes
 
