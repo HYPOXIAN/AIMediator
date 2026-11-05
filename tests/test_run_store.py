@@ -118,13 +118,13 @@ class RunStateTests(unittest.TestCase):
         events = []
 
         def chat(base, payload, partial):
-            content = '{"decisions": [{"comment_id": "c1", "related": true, "uncertain": false}]}'
+            content = '{"decisions": ["related"]}'
             return {'done': True, 'done_reason': 'stop', 'message': {'content': content}}
         runner = Runner('http://fixture.invalid', self.folder, {'relevance': {'en': 'Review relevance'}},
                         chat_transport=chat, journal=lambda *event: events.append(event))
         data = {'comments': [{'comment_id': 'c1', 'text': 'Ryu is too strong', 'retrieved_topics': []}]}
         parsed, meta = runner.generate('llama3.1:latest', 'en', 'relevance', data, ['c1'])
-        self.assertEqual(events, [(Path('requests/relevance') / meta['request_id'], not meta['errors'])])
+        self.assertEqual((events, meta['errors']), ([(Path('requests/relevance') / meta['request_id'], True)], []))
         self.assertTrue((self.folder / events[0][0] / 'validation.json').is_file())
 
 
