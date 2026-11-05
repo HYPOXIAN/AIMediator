@@ -14,6 +14,10 @@ The completed 2026-11 reorganization is described in
 [docs/archive/reorganization.md](docs/archive/reorganization.md) and recorded in
 [docs/records/20261103-reorganization.md](docs/records/20261103-reorganization.md).
 
+The current engineering project is the pipeline upgrade:
+[docs/plans/pipeline-upgrade.md](docs/plans/pipeline-upgrade.md), with one
+work order per batch in `docs/plans/pipeline-upgrade-handoffs/`.
+
 ## Common commands
 
 ```sh

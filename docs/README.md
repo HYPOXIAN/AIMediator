@@ -48,6 +48,15 @@ RULES.md D1. Records, decisions and meeting notes are frozen once final
 | [b5-internals-and-performance.md](plans/code-restructuring-handoffs/b5-internals-and-performance.md) | Agent handoff | Active | Work order B5: helper unification, stage split, callbacks, incremental run state, legacy code snapshots. |
 | [b6-research-code.md](plans/code-restructuring-handoffs/b6-research-code.md) | Agent handoff | Active | Work order B6: workspace root, collection subpackage, shared research helpers. |
 | [b7-readability-and-acceptance.md](plans/code-restructuring-handoffs/b7-readability-and-acceptance.md) | Agent handoff | Active | Work order B7: style normalization, documents, `RULES.md` v1.4, final acceptance and archiving. |
+| [pipeline-upgrade.md](plans/pipeline-upgrade.md) | Plan | Active | Pipeline upgrade: measured baseline, diagnosis (latency, algorithms, prompts, module linkage), target design, evaluation protocol, batches U0–U7 and owner decisions UP-D01 to UP-D16. |
+| [u0-baseline-and-measurement.md](plans/pipeline-upgrade-handoffs/u0-baseline-and-measurement.md) | Agent handoff | Active | Work order U0: change record, measurement tool, evaluation sets, offline, archived and live baselines. |
+| [u1-neutral-performance.md](plans/pipeline-upgrade-handoffs/u1-neutral-performance.md) | Agent handoff | Active | Work order U1: request index, memoized references, incremental stream guards, service identity, context guard, replay fix. |
+| [u2-request-views.md](plans/pipeline-upgrade-handoffs/u2-request-views.md) | Agent handoff | Active | Work order U2: model-visible request views for quality, extraction and relevance, response-template trial, payload test; owner review. |
+| [u3-concurrency-and-caching.md](plans/pipeline-upgrade-handoffs/u3-concurrency-and-caching.md) | Agent handoff | Active | Work order U3: ordered bounded concurrency, shared request cache, per-text embedding cache. |
+| [u4-quality-segmentation.md](plans/pipeline-upgrade-handoffs/u4-quality-segmentation.md) | Agent handoff | Active | Work order U4: program clause segmentation and quality annotation v2, readers of both versions; owner review. |
+| [u5-extraction-precision.md](plans/pipeline-upgrade-handoffs/u5-extraction-precision.md) | Agent handoff | Active | Work order U5: evidence-first claims, declared subjects, prompt examples, single test-split run; owner review. |
+| [u6-module-linkage.md](plans/pipeline-upgrade-handoffs/u6-module-linkage.md) | Agent handoff | Active | Work order U6: glossary target references and report grouping, screening from the glossary, near-duplicates, optional second audit, `RunOptions`. |
+| [u7-acceptance-and-documents.md](plans/pipeline-upgrade-handoffs/u7-acceptance-and-documents.md) | Agent handoff | Active | Work order U7: full live runs, holdout checks, documents, `RULES.md` v1.5, final acceptance and archiving. |
 
 ## Records
 
