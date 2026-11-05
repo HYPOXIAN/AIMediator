@@ -1153,6 +1153,7 @@ recorded as `skipped (UP-Dnn not adopted)`.
 | UP-D17 | Smaller live samples from U0.8 on (raised by the owner after U0.6) | adopt | U0.7, U0.8, every live run of U2 to U7 |
 | UP-D18 | Time budget of 8 hours: fewer live runs in U4 to U7; closure merged into verification (raised by the owner) | adopt | U4-L, U5-L1 to U5-L3, U6-L, U7.1, the review points |
 | UP-D19 | Live runs through a hosted API instead of the local model service; API references in U2-L0 (raised by the owner) | adopt | U2-L0 and every live session of U2 to U7 |
+| UP-D20 | API spend limit of 3.00 USD; the remaining chain finishes within 6 hours, by 09:05; cuts (raised by the owner) | adopt | U2.5, U2-L2, U6.3, U6.6 skipped; every session from U2-L0 on |
 
 **UP-D01 New modules.** `measurement` keeps evaluation logic out of scripts
 (P3: tests use it); `cache` and `topics` give the shared cache and the
@@ -1259,6 +1260,36 @@ complete, the extraction run interrupted in retrieval) are kept aside as
 `runs/upgrade/u2l1-local-*`, archived with the U2-L1 runs, and decide
 nothing. A live run takes minutes instead of an hour; the API cost is a
 few US cents per run.
+
+**UP-D20 Spend limit and a 6-hour chain.** Raised by the owner on
+2026-11-05 at 03:05: the API spend of the live runs stays within 3.00 USD
+in total, the whole remaining chain finishes within 6 hours (by 09:05,
+replacing the 08:20 limit of UP-D18), and any process that would break
+either limit is cut; every agent session of the chain runs Opus 5.5 at
+effort xhigh. The bridge (version 2) refuses every request once the
+logged cost reaches 2.98 USD and keeps the total in
+`runs/upgrade/logs/api-bridge-spend.json`. The chain script
+`runs/upgrade/tools/chain/run-chain.sh` runs eight sessions one after
+another, each with a time box in its prompt:
+
+1. U2-L: U2-L0, U2-L1 and step U2.6;
+2. U3: U3.1 to U3.5 with U3-L;
+3. U4: U4.1 to U4.7 with U4-L;
+4. U5: U5.1 to U5.4 with U5-L1 to U5-L3;
+5. U6: U6.7, U6.1, U6.2, U6.5 and U6.4 with U6-L;
+6. V: U2-V to U6-V, with the reviews recorded under the owner's standing
+   instruction, fix-up reverts of failed steps and the batch tags;
+7. U7: U7.1 to U7.5;
+8. U7-V with U7.6.
+
+Cuts: U2.5 with U2-L2 (the UP-D06 trial) and U6.3 and U6.6 (the
+conditional mechanic terms and the second-audit trial) are skipped;
+implementation and live work of a batch share one session; the
+verifications of U2 to U6 share one session after U6, so U3 to U6 start
+without the tag of the batch before. A step that cannot be committed
+within its session's time box is not started and is recorded `skipped
+(UP-D20: time)`. A session still running 5 minutes after its time box is
+stopped; the next session stashes its work in progress (10.4).
 
 Owner actions: close the restructuring (entry condition); answer this
 section; provide the live environment or run the L sessions (5.4); review at
