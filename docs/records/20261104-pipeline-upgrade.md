@@ -854,6 +854,33 @@ Findings of U0.8:
 - Next: U1-1 (implementation, work order U1, steps U1.1 to U1.6);
   blockers: none.
 
+### 2026-11-05 U1-1 (implementation)
+
+- Steps: U1.1, U1.2, U1.3, U1.4, U1.5, U1.6 done; none started and stashed.
+- State: HEAD is this entry's commit (parent `a34ad48`); tests 270; lock
+  updated by UP-D03 (U1.4, exactly the eight keys of work order section
+  3; 468 keys), green since; rule check 0. Foreign working directory: 270
+  pass. Installed-wheel acceptance: `"passed": true`, `"commands": 18`.
+- Findings: decision found during execution D-6 (a structural copy
+  instead of `copy.deepcopy` for the memoized character reference); no
+  escalation, because no trigger of work order section 6 occurred:
+  `run-state.json` equalled a full scan at all 3,295 harness writes, the
+  equivalence tests of U1.2 and U1.3 found no difference, U1.4 changed
+  only the eight lock keys, and `/api/version` answered as plan 4.7
+  expects in the U0.6 record (no live call in this session); nothing
+  adopted or bypassed under the owner's standing instruction. T9 not met:
+  `run_store.state` takes 5.4 % of the profiled 600-comment fixture run
+  at U1.1 and 6.1 % at `a34ad48` (from 59.4 %; target below 5 %), because
+  the rest of the run got faster too; what remains is the read and
+  write of `run-state.json`, whose completed-identity list grows with
+  the run and is frozen content. The run takes 13.4 s plain at
+  `a34ad48` (31.1 s before U1.1). T10 met: demo 0.63 s plain,
+  `character_reference` 8.1 % of the profiled demo at `a34ad48`. Stream
+  guards at 7,495 chunks: 8.55 s before, 0.097 s after. The scratch
+  harness and the measurement and check scripts are not committed.
+- Next: U1-V (verification, fresh session, work order U1 section 4);
+  blockers: none.
+
 ## Deferred
 
 - **Relevance and route agreement in `measurement`** (D-4, from U0.6). Add
