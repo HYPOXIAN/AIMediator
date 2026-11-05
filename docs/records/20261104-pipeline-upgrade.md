@@ -36,6 +36,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | Step | Class | Status | Tests | Lock | Notes |
 | ---- | ----- | ------ | ----- | ---- | ----- |
 | U0.1 | N | done | 241 | green | Change record opened from plan section 11; owner decisions copied (UP-D10 pending by its own terms); index row added |
+| U0.2 | N | done | 250 | updated by UP-D01 | New module `aimediator.measurement` (`request_metrics`, `claim_outcomes`, `materialize`, `score_positions`; standard library, `common` and `quality_scoring.proportion` only) and the scripts `measure_run_requests.py` (writes both metrics and outcomes), `materialize_evaluation_input.py` and `score_extraction.py`. New `tests/test_measurement.py` (+9): synthetic runs with and without counters and both reuse formats, wall time, the three demo runs end to end (counters `None`), the three label formats, missing rows, hash mismatches, hand-computed precision and recall, the scripts. Layering row `measurement` → `common`, `quality_scoring`; design/cli.md section 5 layout and contract. Lock regenerated for exactly `L2:enforce/code-snapshot/measurement.py`, `L2:off/…` and `L2:shadow/…` (existence only); no other key differed. Beyond plan 5.2: fresh and reused statistics kept apart (reused archived responses keep their original counters with near-zero elapsed time); counts and sums beside the means; audit rejection share; extraction dispositions; quality attempt errors (IDs and key names only, no source text); `materialize` also checks `ids_sha256` or `labels_sha256` and `source_dataset_sha256` when the set's manifest records them. Nested text parts are counted without JSON quotes, which matches plan 0.2 (unit text 15.3 %, raw; 15.75 % with quotes). Decision found during execution D-1 |
 
 ## Baseline measurements (U0.4)
 
@@ -59,6 +60,17 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | ---- | ---------------- | ---------------- | ------ | ---- |
 
 ## Decisions found during execution
+
+- **D-1 (U0.2) Output of `materialize_evaluation_input.py`.** The step note
+  asks the scripts to write their output with `common.write`, which writes
+  indented JSON. The materialized input must be JSONL holding the dataset
+  rows unchanged, because `aimediator analyze --input` reads JSONL. Options:
+  (a) the script writes the bytes from `materialize` through a synced
+  temporary file and replaces the target, as `common.write` does; (b) add a
+  JSONL writer to `common` (outside the U0 boundary); (c) write a JSON array
+  (`analyze` cannot read it). Recommendation and action: (a). N-class, undone
+  by a revert, no `RULES.md` change, nothing deleted. The two other scripts
+  use `common.write`.
 
 ## Escalations
 

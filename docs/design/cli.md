@@ -427,7 +427,8 @@ experiment; a package version range is not an experiment lockfile. Build a wheel
 and sdist and record the tested dependency versions in the release validation.
 
 Layout of the package on 2026-11-04, at the end of the code restructuring,
-grouped by layer from top to bottom:
+with the modules the pipeline upgrade has added since (`measurement`, step
+U0.2), grouped by layer from top to bottom:
 
 ```text
 src/aimediator/
@@ -467,6 +468,7 @@ src/aimediator/
   # research, outside the CLI path
   design_briefs.py         # engineering-brief readiness
   diagnostics.py           # shared live extract, ground and audit loop
+  measurement.py           # request metrics, claim outcomes, evaluation inputs, position scores
   collection/              # collectors and screening: client, store, sources,
                            #   export, screening, balanced, expansion
   assets/
@@ -600,6 +602,43 @@ every path keeps the exception type it raises.
   is given, sends the `verify` request only when no error remains, and
   returns records with `index`, `claim`, `enriched`, `errors`, `audit` and
   `audit_meta`. Each script maps the records to its own output keys.
+- `measurement` (research; imports `common` and `quality_scoring` only, no
+  network and no model; pipeline upgrade decision UP-D01) reads CLI, legacy
+  and archived runs without writing to them, and returns JSON-ready values.
+  `request_metrics(folder)` walks `requests/<stage>/<id>/` for `relevance`,
+  `retrieval_review`, `quality`, `extract` and `verify` (not
+  `requests/embedding/`, not nested `transport-attempts/`) and returns, per
+  stage for all models and per model: request, fresh and reused counts,
+  `done_reason` counts, requests with validation errors, the count, sum,
+  mean, median and maximum of prompt, cached, uncached and output tokens,
+  prefill, decode and load seconds and elapsed seconds, kept apart for fresh
+  and reused requests, and the mean characters of the system prompt, of
+  `format`, of every top-level user key and of the nested parts
+  `comments[].units[].text`, `comments[].text` (text without JSON quotes)
+  and `comments[].retrieved_topics`; plus the run's wall time from
+  `manifest.json` and `run-state.json` (`None` for legacy runs). A request
+  is reused when its `transport-provenance.json` has a `kind` other than
+  `fresh_inference` or a `reuse-provenance.json` exists. A missing response
+  counter gives `None`, never zero. `claim_outcomes(folder)` counts
+  generated, binding-quarantined (by error), audit-rejected (by status) and
+  accepted claims overall, by language and by language and direction, the
+  audit rejection share, coverage statuses, extraction dispositions, and
+  quality first-attempt validity, attempts, attempt errors and routes.
+  `materialize(set_dir, dataset, split=None)` returns the input JSONL bytes
+  of an evaluation set (`ids.json` with `record_id` and `content_sha256`, or
+  `labels.jsonl` with `comment_id` and `content_sha256` or
+  `source_sha256`): the dataset rows unchanged, in the set's order; it
+  raises `ValueError` when a row is missing, when the SHA-256 of a row's
+  `text_original` differs from the stored hash, or when the set file or the
+  dataset differs from a hash in the set's manifest.
+  `score_positions(folder, labels, split=None)` scores claims against
+  comment-level (character, direction) positions: precision of accepted and
+  of generated claims, recall over all labeled positions and over those of
+  admitted comments (each position once), overall and by language, with
+  Wilson 95 % intervals (`quality_scoring.proportion`); comments labeled
+  `uncertain` are excluded and counted apart. The thin scripts
+  `scripts/experiments/measure_run_requests.py`,
+  `materialize_evaluation_input.py` and `score_extraction.py` call them.
 - `collection`: modules `client`, `store`, `sources`, `export`, `screening`,
   `balanced` and `expansion`. `sources`, `balanced`, `expansion` and
   `screening` each expose `main(argv=None)` for the matching script in

@@ -63,6 +63,8 @@ TABLE = [
                    'inference', 'runner', 'retrieval', 'pipeline')),
     (('diagnostics',), ('evidence', 'evidence_quality', 'runner')),
     (('collection.*',), ('common', 'resources', 'collection.*')),
+    # Pipeline upgrade plan 4.11 (UP-D01).
+    (('measurement',), ('common', 'quality_scoring')),
 ]
 ALLOWED = {module: frozenset(imports) for modules, imports in TABLE for module in modules}
 # Every module may import aimediator.__version__ (plan 4.2).
