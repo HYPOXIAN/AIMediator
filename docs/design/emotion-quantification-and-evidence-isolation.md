@@ -2,8 +2,8 @@
 
 - Type: Design
 - Status: Active
-- Updated: 2026-11-03
-- Applies to: evidence-quality module v1 as implemented; written 2026-10-29
+- Updated: 2026-11-05
+- Applies to: evidence-quality module v1 as implemented; written 2026-10-29; section 3 notes annotation v2 (`evidence-quality-v2`, pipeline upgrade batch U4)
 - Related: [evidence-quality.md](evidence-quality.md), the pre-implementation specification
 
 **Project:** AI Mediator  
@@ -26,6 +26,8 @@ The pipeline follows these steps:
 6. Check source binding, perform a separate semantic audit, and aggregate accepted claims using unique comment IDs.
 
 ## 3. Segment Annotation
+
+Since pipeline upgrade step U4.4 (annotation v2, [ADR 0005](../decisions/0005-program-segmentation-of-quality-annotations.md)) the program cuts each evidence unit into clause segments (`clause-v1`) and the model only labels them by segment ID and groups them into information points; it no longer writes quotes or offsets. The program converts the answer into the segment form below, with its own offsets and quotes, so the measurement of section 4 and the isolation of section 5 are unchanged. The paragraph below describes the v1 output that earlier runs keep.
 
 Each segment contains an exact source quote, an evidence-unit ID, and a half-open character interval `[start, end)`. Offsets use Unicode code points rather than bytes or UTF-16 units.
 

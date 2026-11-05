@@ -458,7 +458,7 @@ src/aimediator/
   fixture_transport.py     # authored fixture transport of the demo
   # domain
   evidence.py              # source units, numeric tokens, characters, grounding
-  evidence_quality.py      # span validation and information-point routing
+  evidence_quality.py      # span validation, v2 conversion and information-point routing
   stages.py                # per-stage request data, options, schemas, normalization
   # foundation
   common.py                # strict JSON, canonical bytes, hashing, atomic writes
@@ -542,12 +542,16 @@ every path keeps the exception type it raises.
   label, then the alias texts, unfiltered; callers filter),
   `character_candidates(text, reference)` and `ground_claim(claim, row,
   characters) -> (errors, enriched or None)`, whose span invariant raises
-  `AssertionError` explicitly, so it holds under `python -O`.
+  `AssertionError` explicitly, so it holds under `python -O`;
+  `clause_segments(units)` and `SEGMENTATION_VERSION` (`clause-v1`): clause
+  segments `E<n>.<k>` with absolute offsets for quality annotation v2
+  (pipeline upgrade step U4.1; evidence-quality.md section 3.3).
 - `stages`: `schema_for(stage, ids, data=None)`, `exact_coverage(rows, key,
   expected)`, `view(stage, data, ids)` (the model-visible view of the request
-  data: the audit view for `verify`; for `quality` the comment units,
-  `language`, the character reference entries with a candidate in the
-  comment (`evidence.character_candidates` on the source text) and, when
+  data: the audit view for `verify`; for `quality` (v2 since step U4.4,
+  UP-D10) the comment units, each with its clause segments as
+  `segment_id` and `text` (no offsets), `language`, `character_literals`
+  and, when
   the context holds `previous_attempt` (`errors`, `transport_failure`),
   `previous_attempt_errors`: at most 20 errors, each cut to 300
   characters, or the single entry `transport failure`, so that no remote
@@ -570,6 +574,15 @@ every path keeps the exception type it raises.
   `extract` and 256 otherwise; `quality` takes `num_predict` and `num_ctx`
   from the policy) and `normalize(stage, parsed, ids, data) -> (parsed or
   None, errors)`, which `Runner` calls only after the schema check passed.
+  For `quality` (step U4.4) `schema_for` builds
+  `evidence_quality.annotation_schema_v2` from the context's `segments` and
+  `character_literals`, and `normalize` applies `validate_annotation_v2`;
+  `pipeline.assess_quality` routes the answer with `qualify_v2`, so the
+  record holds the derived v1 `annotation` and the model's
+  `annotation_v2`. Readers (`review.load_run`, `evaluation`,
+  `quality_scoring`, `legacy_review`, `design_briefs`) accept both
+  `evidence-quality-v1` and `evidence-quality-v2` records, each under its
+  own rules (`evidence_quality.stored_annotation_errors`, step U4.5).
 - `inference`: `api`, `streamed_chat` (its loop guards scan only the output
   added since their last match and decide as `re.findall` and
   `repeated_claim` over the whole output would; pipeline upgrade step
@@ -647,8 +660,9 @@ every path keeps the exception type it raises.
 - `pipeline`: `VERSION` (`'balance-evidence-v2'`), `relevance_agrees`,
   `quality_request(runner, row, units, language, contract, attempts) ->
   (data, request_context)` (the context of the next quality attempt after
-  the failed `attempts`: `source`, `quality_contract`, `attempt` and, after
-  a failure, `previous_attempt`; `request_context` is `{'attempt': n}`;
+  the failed `attempts`: `source`, `segments` (the clause segments),
+  `character_literals`, `quality_contract`, `attempt` and, after a failure,
+  `previous_attempt`; `request_context` is `{'attempt': n}`;
   `assess_quality` and the quality experiment scripts call it; step U2.2),
   `batches`, `aggregate`, `quality_source_counts`, `build_full_coverage`,
   `validate_modes`, the `RunState` dataclass shared by the stage functions

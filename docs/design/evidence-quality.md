@@ -3,7 +3,7 @@
 - Type: Design
 - Status: Active
 - Updated: 2026-11-05
-- Applies to: evidence-quality module v1 (`evidence-quality-policy.json` v1); written 2026-10-26 as its pre-implementation specification
+- Applies to: evidence-quality module v1 (`evidence-quality-policy.json` v1); written 2026-10-26 as its pre-implementation specification; section 3.3 adds the v2 contract of pipeline upgrade batch U4 (`evidence-quality-policy-v2`, schema `evidence-quality-v2`, segmentation `clause-v1`)
 - Related: [emotion-quantification-and-evidence-isolation.md](emotion-quantification-and-evidence-isolation.md), a description of the implemented module
 - Translated 2026-11 from the Chinese original (commit `3ceb123`); only the language changed.
 
@@ -44,9 +44,11 @@ The following is the state observed at handoff; reread the relevant files before
 
 ## 3. Segment annotation and output contract
 
+Sections 3.1 and 3.2 describe annotation v1, where the model writes segment offsets and quotes. Since pipeline upgrade step U4.4 (UP-D10, [ADR 0005](../decisions/0005-program-segmentation-of-quality-annotations.md)) new runs use annotation v2 (section 3.3): the program segments, the model labels. Records written by v1 code stay readable and keep the v1 rules.
+
 Suggested additions: a pure-logic module `evidence_quality.py`, a policy file `evidence-quality-policy.json` and bilingual prompts `evidence-quality.{zh,en}.txt`. Follow the repository's current scripts architecture. Note (2026-11-04): implemented as `aimediator.evidence_quality`, `src/aimediator/assets/configs/evidence-quality-policy.json` and `src/aimediator/assets/prompts/evidence-quality.{zh,en}.txt`. The CLI moved them into the package, and the code restructuring removed the old script and root paths (CR-D05, CR-D07).
 
-### 3.1 The model only annotates; the program decides
+### 3.1 The model only annotates; the program decides (v1)
 
 The input is a single comment's original evidence units, comment ID, language and the allowed character-name references (since pipeline upgrade step U2.2, only the entries with a candidate in the comment; the request holds exactly the keys of `stages.MODEL_VISIBLE['quality']`, and `tests/test_request_payload.py` checks that no quality request carries the source row, the quality contract or the attempt number; [ADR 0003](../decisions/0003-model-visible-request-views.md)); if real parent-comment context exists, it may be supplied separately with its source marked. Without context, none may be invented. A parent comment only helps understanding; it cannot pass as evidence from the current author.
 
@@ -73,7 +75,7 @@ Required information_point fields:
 
 Repeated expressions of the same meaning are merged into one information_point; different characters, mechanisms or conditions stay separate information points. This semantic deduplication is proposed by the model; the program checks references and structure, and humans check it during evaluation. No claim may be made that semantic uniqueness has been proven algorithmically.
 
-### 3.2 Program validation that must run
+### 3.2 Program validation that must run (v1; items 1 to 3 hold by construction in v2)
 
 1. Comment IDs, evidence IDs, segment IDs and point IDs are complete and unique, with no references across comments.
 2. Offsets are integers within a valid range, each segment lies within its evidence unit, and `quote == text_original[start:end]`.
@@ -87,7 +89,19 @@ On failure, keep the raw response and the error, and allow one new, recorded ret
 
 Since pipeline upgrade step U2.2 (decision UP-D04), the retry holds through `previous_attempt_errors`. The request shows the model only the comment's units, its language and the character reference entries with a candidate in the comment; the source row, the quality contract and the attempt number stay program context (`stages.view`). The attempt number enters the request's cache identity as `request_context`, so attempt 2 is a new, recorded request and never a reread of attempt 1. Attempt 2 adds `previous_attempt_errors`, the validation errors of attempt 1 (at most 20, each cut to 300 characters), so it is a repair attempt instead of a repetition of attempt 1 with the same content; after a transport, service or cache failure it holds the single entry `transport failure` and no remote text. The quality prompts tell the model to repair the annotation and never to copy the error text into it. In the U2-L1 live evaluation (hosted model, UP-D19) 1 of 3 benchmark retries succeeded, against 0 of 3 in the U2-L0 reference.
 
+### 3.3 Annotation v2: program clause segments (pipeline upgrade U4)
+
+- Segmentation `clause-v1` (`evidence.clause_segments(units)`): each evidence unit splits after a run of `,` `;` `:` `，` `；` `：` `、` with the combining marks that follow it, unless the characters before and after the run are both decimal digits (`1,000`, `1:30`); punctuation stays with the clause on its left, segment edges lose their whitespace, and a unit without a split point is one segment. Segment IDs are `E<n>.<k>`; offsets are absolute code points with `text == text_original[start:end]`; the segments of a unit are ordered, disjoint and cover every non-whitespace character. Segmentation never moves an evidence-unit boundary or an E-ID.
+- Request (`stages.view`, `MODEL_VISIBLE['quality']`): `comments[comment_id, units[evidence_id, segments[segment_id, text]]]`, `language`, `character_literals` (the character names of the reference as the comment writes them, `evidence_quality.character_literals`) and, on attempt 2, `previous_attempt_errors`. No offsets, quotes or reference entries reach the model.
+- Response schema `evidence-quality-v2` (`annotation_schema_v2(comment_id, segments, literals)`, property order pinned by `tests/test_quality_v2.py`): `comment_id`; `segment_labels`, an object with one required key per segment ID, each `scope`, `content_kind`, `emotional_tone`, `reason_code`; `information_points` as in v1, with `segment_ids` limited to the segment IDs and `character_literal` limited to `null` and the literals. The label object repeats once per segment, so the schema grows with the clause count (D-11 of the change record).
+- Validation and routing: `validate_annotation_v2` checks the v2 schema, then applies the unchanged v1 rules (section 3.2 items 4 to 7 and the literal checks) to `to_v1_annotation(annotation, segments, text)`, the v1 shape with one segment per clause and program offsets and quotes. A valid v2 annotation therefore always converts into a valid v1 annotation, and `qualify` routes the conversion with the unchanged rules of section 4.2 (`qualify_v2`). The mechanic literal must occur in a selected segment's text.
+- Records: `schema_version` `evidence-quality-v2`; `annotation` holds the derived v1 annotation, so routing, reports, review and extraction read the v1 shape; `annotation_v2` (after it) holds the model's answer, `null` in failed records. Readers dispatch on each record's version (`evidence_quality.stored_annotation_errors`): v1 records keep the v1 rules; v2 records are validated by v2, and their derived v1 annotation must equal the stored one.
+- Granularity: a point cannot be finer than the program's clauses. A clause that only supplies the subject, negation or condition of the next clause's concrete statement takes that statement's labels (the prompts say so and show two authored examples per language).
+- Fixtures: `FixtureTransport` derives v2 answers from the frozen v1 fixture annotations (`fixture_transport.v2_annotation`), since every v1 fixture segment is a union of whole clauses (`tests/test_fixture_clause_mapping.py`).
+
 ## 4. Quantitative definitions and deterministic routing
+
+Sections 4.1 and 4.2 hold for both versions: in v2 they apply to the derived v1 annotation, whose segments are the program's clauses. Where they mention offsets they describe v1 annotation output; in v2 the offsets come from the program.
 
 ### 4.1 Pure-emotion ratio
 
