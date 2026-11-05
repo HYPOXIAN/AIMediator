@@ -32,6 +32,7 @@ RULES.md D1. Records, decisions and meeting notes are frozen once final
 | [0001-package-as-single-runtime.md](decisions/0001-package-as-single-runtime.md) | Decision | Active | The `aimediator` package is the single runtime implementation; scripts import it. |
 | [0002-module-boundaries-and-entry-points.md](decisions/0002-module-boundaries-and-entry-points.md) | Decision | Active | Package modules in layers with an import table the tests enforce; research commands as `python3 -m aimediator.<module>`; compatibility layers removed. |
 | [0003-model-visible-request-views.md](decisions/0003-model-visible-request-views.md) | Decision | Active | Each model request sends only the model-visible view of its stage; `stages.MODEL_VISIBLE` and a payload test with character budgets pin the contract. |
+| [0004-bounded-concurrency-and-shared-cache.md](decisions/0004-bounded-concurrency-and-shared-cache.md) | Decision | Active | Independent requests run through an ordered executor (`max_parallel_requests`, default 1) that keeps serial artifact order; an optional shared cache (`cache_dir`) reuses answers across runs with reuse provenance; embeddings per text in batches of 32. |
 
 ## Plans and status
 

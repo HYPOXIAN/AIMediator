@@ -106,6 +106,10 @@ must serve that many requests at once (for Ollama, `OLLAMA_NUM_PARALLEL` of
 at least the value, and memory for each slot). With a value above 1, fresh
 answers are not bitwise reproducible, because the service batches parallel
 requests; a resumed or replayed run reuses its journaled answers exactly.
+The gain depends on the service: through a hosted API that shares
+throughput between requests, 2 parallel requests made a benchmark run about
+1.3 times faster and 4 about 1.2 times
+([ADR 0004](../decisions/0004-bounded-concurrency-and-shared-cache.md)).
 
 `cache_dir` (default `null`, off; `--cache-dir`) names a cache shared across
 runs, for example `runs/cache`. A request that the run has not journaled yet
@@ -116,7 +120,14 @@ the cache keeps finished answers. Each reused answer is marked by a
 original elapsed time) and has an elapsed time of 0, so measurements count
 fresh and reused requests apart. A run whose requests all come from the cache
 reproduces the earlier run's answers exactly. Delete the directory to start
-cold; it holds no credentials.
+cold; it holds no credentials, but it does hold model answers that quote
+source text. Embeddings are cached per text in the same directory, so a
+rerun on the same comments asks the embedding service for nothing beyond the
+one-text availability probe of `analyze`. Reproducibility: with
+`max_parallel_requests` 1 and the same answers, a run is byte-identical to
+a serial run; fresh answers at a value above 1 are not bitwise
+reproducible, while answers replayed from the run journal or the cache are.
+Do not point two runs that run at the same time at one cache directory.
 
 To use a configured embedding service, explicitly set `embedding.provider` to
 `configured`, `embedding.endpoint` to your HTTP(S) embedding endpoint,

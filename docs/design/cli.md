@@ -889,12 +889,18 @@ The generated config uses a versioned schema, rejects unknown keys, and contains
   fresh inference is not bitwise reproducible (the service batches parallel
   requests), while replay from the run journal stays exact. A configuration
   file without the key stays valid: resolution starts from the defaults.
+  ADR [0004](../decisions/0004-bounded-concurrency-and-shared-cache.md)
+  records the decision and the U3-L measurements: on the hosted API, 2
+  parallel requests made the quality stage 1.25 times faster and 4 made it
+  1.17 times faster, because the provider shares throughput.
 - `cache_dir`, a path or `null` (default), with the option
   `analyze --cache-dir` (step U3.3, UP-D09): the shared cache of section 7.
   A relative path in a configuration file resolves against that file's
   directory, a CLI path against the invocation directory; the resolved
   absolute path is saved in `resolved-config.json` and enters the run
-  identity.
+  identity. One cache directory is not shared by concurrent runs: two
+  processes storing the same key at once can collide on the temporary file
+  of `common.write` (ADR 0004).
 
 Keep secrets out of JSON configuration, snapshots, request identities, and logs.
 Configured embedding credentials come from named environment variables or an
@@ -975,8 +981,12 @@ the shared cache of `cache_dir` (section 6; pipeline upgrade step U3.3,
 UP-D09), off by default: its key is the payload with `stream` false, the model
 digest, the service version and the request context, never the run identity;
 each reused response is marked by `requests/<stage>/<identity>/reuse-provenance.json`
-and has `elapsed_seconds` 0. Historical exact-request replay remains a separate
-research operation.
+and has `elapsed_seconds` 0. A run whose answers all come from the cache
+reproduces the earlier run's request and artifact files exactly, apart from
+elapsed times and timestamps (measured by U3-L, ADR 0004). Embedding records
+are per text and shared under the embedding model digest (section 5,
+`retrieval`). Historical exact-request replay remains a separate research
+operation.
 
 Lifecycle states: `created -> running -> completed|partial|interrupted|failed`.
 Store current stage, requested stop stage, timestamps, failure reasons, and
