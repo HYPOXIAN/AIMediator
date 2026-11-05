@@ -1,0 +1,131 @@
+{
+  "schema": "aimediator-report-manifest-v1",
+  "name": "20261105-upgrade-baseline-samples",
+  "archive": {
+    "path": "~/Archives/AIMediator/reports/20261105-upgrade-baseline-samples/",
+    "checksums": "SHA256SUMS",
+    "files": 2693,
+    "bytes": 74493575,
+    "archived_on": "2026-11-05",
+    "provenance_files": [
+      "provenance/u0s_live_runs.sh",
+      "provenance/score_u0_extra.py",
+      "provenance/compare_u0s.py",
+      "provenance/build_u0s_report.py"
+    ],
+    "contents": "runs/ (the four sample reference runs), measurements/ (metrics, scores, routes, paired U0.6 scores and routes, comparison), inputs/ (materialized samples, source text; the filtered synthetic cases and extraction labels), logs/, config/ (live configuration, doctor output, environment check), provenance/"
+  },
+  "run_manifests": {
+    "u0s-benchmark-off": "runs/u0s-benchmark-off/manifest.json",
+    "u0s-benchmark-shadow": "runs/u0s-benchmark-shadow/manifest.json",
+    "u0s-extraction-development-off": "runs/u0s-extraction-development-off/manifest.json",
+    "u0s-quality-synthetic-shadow": "runs/u0s-quality-synthetic-shadow/manifest.json"
+  },
+  "record": "docs/records/20261104-pipeline-upgrade.md",
+  "step": "U0.8",
+  "decision": "UP-D17",
+  "datasets": {
+    "upgrade-samples-v1/latency-benchmark": "data/evaluation/upgrade-samples-v1/latency-benchmark, 30 (runs u0s-benchmark-off, u0s-benchmark-shadow)",
+    "upgrade-samples-v1/extraction-development": "data/evaluation/upgrade-samples-v1/extraction-development, 114 (run u0s-extraction-development-off)",
+    "upgrade-samples-v1/quality-synthetic": "data/evaluation/upgrade-samples-v1/quality-synthetic, 19 (run u0s-quality-synthetic-shadow; route agreement over the 19 cases of evidence-quality-synthetic-v1/cases.json with these IDs)",
+    "upgrade-samples-v1/full-balanced": "data/evaluation/upgrade-samples-v1/full-balanced, 120 (materialized for U7.1; no run in U0.8)",
+    "extraction-precision-v1": "data/evaluation/extraction-precision-v1, development split (scores of the three runs on the benchmark and extraction samples)",
+    "raw_sources": [
+      "data/raw/feedback/20261027-balanced/screened/records.jsonl",
+      "data/evaluation/evidence-quality-synthetic-v1/records.jsonl"
+    ],
+    "materialized_inputs_sha256": {
+      "upgrade-sample-benchmark.jsonl": "ce7ee3df8efc73d36840b96dff00407e42cea9f29de2369ccb64aa4abac28f4a",
+      "upgrade-sample-extraction-development.jsonl": "46e5bb22d38c7b76f8521b376eaac5635ac8988007b9d3c37510315273c6b311",
+      "upgrade-sample-quality-synthetic.jsonl": "0d7a8e8adf6650ee673145d93530abfd0a2c79785712b5bfc2fa58af1590a8e4",
+      "upgrade-sample-full-balanced.jsonl": "434bf553b4b2447d336ba736c6269fa15dcbee1214601fbd67430779bfd1f3c7"
+    },
+    "derived_inputs_sha256": {
+      "upgrade-sample-quality-synthetic-cases.json": "2fb776ec245f5e0d65965e74204878bc4b65f37acbf974b044f1c92a851fa81c",
+      "upgrade-sample-latency-benchmark-labels.jsonl": "cedc4fd93cf0e40c7e20ac48f38afe0f7f8a58880789526b6a87a31ca4d03d05",
+      "upgrade-sample-extraction-development-labels.jsonl": "bada14e8b866818678f9e04eebb0d6e6480d223eb8e15adcab32c46126a1920f"
+    },
+    "derived_inputs_note": "cases.json of evidence-quality-synthetic-v1 filtered to the 19 sample IDs (route scorer input), and the extraction-precision-v1 labels filtered to the benchmark and extraction sample IDs (paired U0.6 scores; written by compare_u0s.py)"
+  },
+  "wall_seconds": {
+    "u0s-benchmark-off": 188.040946,
+    "u0s-benchmark-shadow": 1565.376976,
+    "u0s-extraction-development-off": 1372.442726,
+    "u0s-quality-synthetic-shadow": 475.754836
+  },
+  "comparison": {
+    "with": "reports/20261104-upgrade-baseline (U0.6, step U0.6), unchanged",
+    "file": "summary/u0s-comparison.json",
+    "rule": "each sample run against its U0.6 run over the full U0.6 set and over the sample comments only (paired); a U0.8 value outside the 95 % interval of the U0.6 value is a finding (work order U0, step U0.8)"
+  },
+  "code_version": {
+    "git_commit": "0abfe02",
+    "note": "Every run module hash equals the package file at this commit, the U0.7 commit (checked when the report was built). The package is unchanged since 50becc2, the commit of the U0.6 runs: the module sets are identical.",
+    "module_set_sha256": {
+      "u0s-benchmark-off": "e29c96c10b2882bd7570c1eb0c0ec963518c82bdb0d0a00dcdc6a7e2d55793fd",
+      "u0s-benchmark-shadow": "e29c96c10b2882bd7570c1eb0c0ec963518c82bdb0d0a00dcdc6a7e2d55793fd",
+      "u0s-extraction-development-off": "e29c96c10b2882bd7570c1eb0c0ec963518c82bdb0d0a00dcdc6a7e2d55793fd",
+      "u0s-quality-synthetic-shadow": "e29c96c10b2882bd7570c1eb0c0ec963518c82bdb0d0a00dcdc6a7e2d55793fd"
+    }
+  },
+  "retention_reason": "Sample reference measurement of the pipeline upgrade (step U0.8, UP-D17): the reference of U2 and later live sessions on the samples (plan 5.4, 5.5). Full runs stay in the archive.",
+  "summary": [
+    {
+      "path": "summary/environment.json",
+      "sha256": "a66345746ae01b6a679400fd48bb57ce9cc0f1ad1e30b521537fc8fd163c8769"
+    },
+    {
+      "path": "summary/u0s-benchmark-off-metrics.json",
+      "sha256": "910de7c0f924773bfda1f4cc52bb229a2fd9fd6bee7b48b538695c51bfa4dad4"
+    },
+    {
+      "path": "summary/u0s-benchmark-off-scores.json",
+      "sha256": "2a463826c5bec98dd6d30611511a855caa9ac523dab71a63a10516405ce0fe87"
+    },
+    {
+      "path": "summary/u0s-benchmark-shadow-metrics.json",
+      "sha256": "a95a815b579f97bed051f586d5af659e6280e4ebb41765bc940126b584c1c5c7"
+    },
+    {
+      "path": "summary/u0s-benchmark-shadow-scores.json",
+      "sha256": "782597939bfbcb8fa417e5d5a48e2c060dc639b4387f598829582dd974ab4711"
+    },
+    {
+      "path": "summary/u0s-extraction-development-off-metrics.json",
+      "sha256": "6b0be77e9b1d98418ef80d6215540fb65c3e11c1313c6085ae5f6ae0707529ed"
+    },
+    {
+      "path": "summary/u0s-extraction-development-off-scores.json",
+      "sha256": "abc1bb3b2b97b3e52c14da4b97c60bfecf6ba9f45e126bdeca4faa06f6e95eba"
+    },
+    {
+      "path": "summary/u0s-quality-synthetic-shadow-metrics.json",
+      "sha256": "5c8c4f23ffc4ad5692d405ca239308a32fcf187c7ca639a303f94cc5cf9a8c37"
+    },
+    {
+      "path": "summary/u0s-quality-synthetic-shadow-routes.json",
+      "sha256": "4eb8a161d5bbc9fbf8eb156c7ea3834c32f7d494e4377df7ca3d98d9a12cf0f9"
+    },
+    {
+      "path": "summary/u0s-paired-u0-benchmark-off-scores.json",
+      "sha256": "2819649f593dba0b7619e3137384ced919e080154d078fe3787b4c7609ac3f11"
+    },
+    {
+      "path": "summary/u0s-paired-u0-benchmark-shadow-scores.json",
+      "sha256": "c0e41b3eed0d8c257aa8e8643501f04f78afb5b975cf585fd35eb4fa8ebdb850"
+    },
+    {
+      "path": "summary/u0s-paired-u0-extraction-development-off-scores.json",
+      "sha256": "adcae6dfa52c34a601a6b1a9960c5c1a4b69f6281996b270b8b7b944c71ecb67"
+    },
+    {
+      "path": "summary/u0s-paired-u0-quality-synthetic-shadow-routes.json",
+      "sha256": "4f87d55d76d72ea77e4c6984e29f4c24520484a713eb7b7e3e652633e63045f8"
+    },
+    {
+      "path": "summary/u0s-comparison.json",
+      "sha256": "cf4552c90a11f68fcdb249da075d7ec7311187e325fa7a16c075a481e6f6c41f"
+    }
+  ],
+  "source_text": "none in summary/ (IDs, labels, routes, counts and metrics only)"
+}

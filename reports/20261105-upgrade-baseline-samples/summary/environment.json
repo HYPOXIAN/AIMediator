@@ -1,0 +1,76 @@
+{
+  "schema": "aimediator-upgrade-environment-check-v1",
+  "checked_on": "2026-11-04",
+  "checked_at_local": "2026-11-04T23:18-08:00",
+  "session": "U0-L2",
+  "step": "U0.8",
+  "git_commit": "0abfe02",
+  "reference": "U0.6 record (docs/records/20261104-pipeline-upgrade.md, \"Live environment and configuration (U0.6)\"); summary/environment.json of reports/20261104-upgrade-baseline",
+  "service": {
+    "version": "0.34.2",
+    "base_url": "http://127.0.0.1:11434",
+    "source": "/api/version",
+    "equal_to_u0_6": true
+  },
+  "server_settings": {
+    "OLLAMA_NUM_PARALLEL": "1",
+    "OLLAMA_FLASH_ATTENTION": "false",
+    "OLLAMA_KV_CACHE_TYPE": null,
+    "other_from_startup_log": {
+      "OLLAMA_CONTEXT_LENGTH": "0",
+      "OLLAMA_MAX_LOADED_MODELS": "0",
+      "OLLAMA_SCHED_SPREAD": "false",
+      "OLLAMA_GPU_OVERHEAD": "0"
+    },
+    "source": "service startup log (journalctl -u ollama, \"server config\" line of 2026-11-04 17:10:10); the service process (ollama serve, systemd ActiveEnterTimestamp 2026-11-04 17:10:10 PST) is the one that served the U0.6 runs and has not restarted since (no later \"server config\" line)",
+    "equal_to_u0_6": true
+  },
+  "gpu": {
+    "model": "AMD Radeon RX 6700S (Navi 23)",
+    "memory": "8.0 GiB (startup log, Vulkan0, RADV NAVI23)",
+    "backend": "Vulkan (RADV)",
+    "unused_integrated_gpu": "AMD Radeon 680M",
+    "source": "startup log, lspci",
+    "equal_to_u0_6": true
+  },
+  "host_memory_gib": 22,
+  "doctor": {
+    "checks": {
+      "dependencies": "passed",
+      "resources": "passed",
+      "configuration": "passed",
+      "input": "not_provided",
+      "output": "not_provided",
+      "service_models": "passed",
+      "embedding_probe": "passed"
+    },
+    "installed_models": {
+      "qwen3-embedding:8b": "64b933495768fbd3b87c20583d379728a07471e0c66733a9df87cd1901b3c44b",
+      "qwen2.5:7b": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+      "llama3.1:latest": "46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e"
+    },
+    "input_comments": null,
+    "remote_digest_verified": true,
+    "runtime": {
+      "package_version": "0.1.0",
+      "python": "3.14.8",
+      "numpy": "2.4.6"
+    }
+  },
+  "doctor_equal_to_u0_6": true,
+  "live_config_sha256": "03659ca91320224b2d8c772758654e30e9fa8c36ce4b81b34637a973ca781f7b",
+  "live_config_equal_to_u0_6_record": true,
+  "env_file": "not read; no --env-file passed (embedding provider ollama)",
+  "result": "no difference from the U0.6 record; comparisons with the U0.6 rows stay valid",
+  "recheck_after_runs": {
+    "checked_at_local": "2026-11-05T00:57-08:00",
+    "by": "second U0-L2 agent (the first was stopped after the runs had finished)",
+    "service_version": "0.34.2 (/api/version)",
+    "service_process": "systemd ActiveEnterTimestamp 2026-11-04 17:10:10 PST, MainPID 2903, unchanged; the last \"server config\" line of the service log is still the one of 17:10:10 (OLLAMA_NUM_PARALLEL 1, OLLAMA_FLASH_ATTENTION false, OLLAMA_KV_CACHE_TYPE empty), so the service did not restart before or during the four runs (23:19:11 to 00:19:39)",
+    "live_config_sha256": "03659ca91320224b2d8c772758654e30e9fa8c36ce4b81b34637a973ca781f7b (equal to the archived U0.6 copy)",
+    "run_identity": "each run manifest records the U0.6 model and embedding digests (digest_verified true), Python 3.14.8, NumPy 2.4.6; identity differs from its U0.6 run only by input_sha256 and sources_sha256",
+    "code": "all 30 module hashes in each run manifest equal the package files at 0abfe02; src/ is unchanged from 50becc2 to 0abfe02",
+    "inputs": "the four samples materialized again with the manifest commands into a scratch directory: byte-identical (30, 114, 19 and 120 rows); ids.json hashes equal the manifests ids_sha256",
+    "doctor": "not run again: the doctor output of 23:18 passed every check and the service has not restarted since"
+  }
+}
