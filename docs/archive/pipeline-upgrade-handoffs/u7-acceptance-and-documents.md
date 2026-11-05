@@ -1,9 +1,10 @@
 # Handoff U7: Acceptance and documents
 
 - Type: Agent handoff
-- Status: Active
+- Status: Archived
 - Updated: 2026-11-05
 - Applies to: [pipeline upgrade plan](../pipeline-upgrade.md) batch U7; entry tag `upgrade-u6`
+- Archived 2026-11-05 when the pipeline upgrade was completed (tag `upgrade-done`).
 
 Work order for batch U7. The steps are defined in plan section 7 (U7). The
 batch runs the 30-comment benchmark sample in two modes (UP-D18) and the

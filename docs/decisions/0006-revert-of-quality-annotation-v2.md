@@ -6,7 +6,7 @@
 - Applies to: `aimediator` 0.1.0 from pipeline upgrade fix-up steps U4.F2 to U4.F5; schema `evidence-quality-v1`, `evidence-quality-policy.json` v1; supersedes the pipeline decisions of [ADR 0005](0005-program-segmentation-of-quality-annotations.md); `RULES.md` v1.4
 - Escalation E-4 of the
   [change record](../records/20261104-pipeline-upgrade.md) of the
-  [pipeline upgrade plan](../plans/pipeline-upgrade.md), adopted under the
+  [pipeline upgrade plan](../archive/pipeline-upgrade.md), adopted under the
   owner's standing instruction and the owner authorization of
   2026-11-05 03:11; written by step U7.3 for the deferred item "ADR 0005
   after the E-4 reverts".

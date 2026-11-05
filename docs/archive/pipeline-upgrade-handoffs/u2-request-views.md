@@ -1,9 +1,10 @@
 # Handoff U2: Request views
 
 - Type: Agent handoff
-- Status: Active
+- Status: Archived
 - Updated: 2026-11-05
 - Applies to: [pipeline upgrade plan](../pipeline-upgrade.md) batch U2; entry tag `upgrade-u1`
+- Archived 2026-11-05 when the pipeline upgrade was completed (tag `upgrade-done`).
 
 Work order for batch U2. The steps are defined in plan section 7 (U2) and
 the target in plan 4.1, 4.3 and 4.4. This is the first batch that changes

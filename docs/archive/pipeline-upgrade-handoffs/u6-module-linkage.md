@@ -1,9 +1,10 @@
 # Handoff U6: Module linkage
 
 - Type: Agent handoff
-- Status: Active
+- Status: Archived
 - Updated: 2026-11-05
 - Applies to: [pipeline upgrade plan](../pipeline-upgrade.md) batch U6; entry tag `upgrade-u5`
+- Archived 2026-11-05 when the pipeline upgrade was completed (tag `upgrade-done`).
 
 Work order for batch U6. The steps are defined in plan section 7 (U6) and
 the targets in plan 4.8 to 4.10. The batch connects the unused glossary

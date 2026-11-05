@@ -1,9 +1,10 @@
 # Handoff U5: Extraction precision
 
 - Type: Agent handoff
-- Status: Active
+- Status: Archived
 - Updated: 2026-11-05
 - Applies to: [pipeline upgrade plan](../pipeline-upgrade.md) batch U5; entry tag `upgrade-u4`
+- Archived 2026-11-05 when the pipeline upgrade was completed (tag `upgrade-done`).
 
 Work order for batch U5. The steps are defined in plan section 7 (U5) and
 the target in plan 4.3. Three independent changes to the extraction request

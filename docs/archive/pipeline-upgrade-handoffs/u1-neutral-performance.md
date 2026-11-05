@@ -1,9 +1,10 @@
 # Handoff U1: Behavior-neutral performance and service identity
 
 - Type: Agent handoff
-- Status: Active
-- Updated: 2026-11-04
+- Status: Archived
+- Updated: 2026-11-05
 - Applies to: [pipeline upgrade plan](../pipeline-upgrade.md) batch U1; entry tag `upgrade-u0`
+- Archived 2026-11-05 when the pipeline upgrade was completed (tag `upgrade-done`).
 
 Work order for batch U1. The steps are defined in plan section 7 (U1). Four
 steps keep every request and artifact byte-identical; two (U1.4, U1.5) add

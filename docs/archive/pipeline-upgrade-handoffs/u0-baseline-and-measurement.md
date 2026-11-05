@@ -1,9 +1,10 @@
 # Handoff U0: Baseline, measurement tool and evaluation sets
 
 - Type: Agent handoff
-- Status: Active
-- Updated: 2026-11-04
+- Status: Archived
+- Updated: 2026-11-05
 - Applies to: [pipeline upgrade plan](../pipeline-upgrade.md) batch U0; entry tag `upgrade-plan`
+- Archived 2026-11-05 when the pipeline upgrade was completed (tag `upgrade-done`).
 
 Work order for batch U0. The steps are defined in plan section 7 (U0). This
 batch changes no pipeline behavior. It builds what every later batch is

@@ -5,7 +5,7 @@
 - Updated: 2026-11-05
 - Applies to: `aimediator` 0.1.0 from pipeline upgrade batch U2 (steps U2.1 to U2.4, U2.6); `RULES.md` v1.4
 - Owner decisions UP-D04, UP-D05 and UP-D07 of the
-  [pipeline upgrade plan](../plans/pipeline-upgrade.md) (section 4.1); the
+  [pipeline upgrade plan](../archive/pipeline-upgrade.md) (section 4.1); the
   execution and the live measurements are recorded in the
   [change record](../records/20261104-pipeline-upgrade.md).
 

@@ -1,9 +1,10 @@
 # Handoff U3: Concurrency and caching
 
 - Type: Agent handoff
-- Status: Active
+- Status: Archived
 - Updated: 2026-11-05
 - Applies to: [pipeline upgrade plan](../pipeline-upgrade.md) batch U3; entry tag `upgrade-u2`
+- Archived 2026-11-05 when the pipeline upgrade was completed (tag `upgrade-done`).
 
 Work order for batch U3. The steps are defined in plan section 7 (U3) and
 the target in plan 4.5 and 4.6. Defaults keep today's behavior: one request

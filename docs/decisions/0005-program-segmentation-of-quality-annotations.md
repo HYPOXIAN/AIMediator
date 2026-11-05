@@ -5,7 +5,7 @@
 - Updated: 2026-11-05
 - Applies to: `aimediator` 0.1.0 from pipeline upgrade batch U4 (steps U4.1 to U4.5, measured by U4-L); `evidence-quality-policy-v2`, schema `evidence-quality-v2`, segmentation `clause-v1`; `RULES.md` v1.4
 - Owner decision UP-D10 of the
-  [pipeline upgrade plan](../plans/pipeline-upgrade.md) (section 4.2,
+  [pipeline upgrade plan](../archive/pipeline-upgrade.md) (section 4.2,
   ALG-01 and ALG-02); the execution and the live measurements are recorded
   in the [change record](../records/20261104-pipeline-upgrade.md) and in
   [`reports/20261105-upgrade-u4-evaluation/`](../../reports/20261105-upgrade-u4-evaluation/manifest.json).

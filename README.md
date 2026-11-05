@@ -131,12 +131,14 @@ documents:
 - [Evidence-quality specification](docs/design/evidence-quality.md)
 - [Project rules](RULES.md)
 
-Current engineering work: the [pipeline upgrade](docs/plans/pipeline-upgrade.md),
-which lowers live-analysis run time, replaces fragile algorithms and data
-structures, improves the prompts and model-visible requests, and links
-modules that work in isolation. It runs in batches U0 to U7, each with a
-work order in `docs/plans/pipeline-upgrade-handoffs/`, and starts from tag
-`upgrade-plan`, set after `restructure-done` closed the code restructuring.
+The pipeline upgrade (batches U0 to U7, completed 2026-11-05, tag
+`upgrade-done`) shortened the model-visible requests, added bounded
+concurrency and a shared request cache, and linked claim targets to the
+glossary. Its acceptance measurements and limits are in the
+[validation record](docs/records/20261105-pipeline-upgrade-validation.md);
+the [plan](docs/archive/pipeline-upgrade.md) is archived, and the
+[change record](docs/records/20261104-pipeline-upgrade.md) lists the
+items left open for a later plan.
 
 ## Development
 

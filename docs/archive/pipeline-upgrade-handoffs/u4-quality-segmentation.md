@@ -1,9 +1,10 @@
 # Handoff U4: Quality annotation v2
 
 - Type: Agent handoff
-- Status: Active
+- Status: Archived
 - Updated: 2026-11-05
 - Applies to: [pipeline upgrade plan](../pipeline-upgrade.md) batch U4; entry tag `upgrade-u3`
+- Archived 2026-11-05 when the pipeline upgrade was completed (tag `upgrade-done`).
 
 Work order for batch U4. The steps are defined in plan section 7 (U4) and
 the target in plan 4.2. The program segments every evidence unit into

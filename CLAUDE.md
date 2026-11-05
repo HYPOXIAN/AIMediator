@@ -18,9 +18,13 @@ The completed 2026-11 code restructuring is described in
 recorded in
 [docs/records/20261103-code-restructuring.md](docs/records/20261103-code-restructuring.md).
 
-The current engineering project is the pipeline upgrade:
-[docs/plans/pipeline-upgrade.md](docs/plans/pipeline-upgrade.md), with one
-work order per batch in `docs/plans/pipeline-upgrade-handoffs/`.
+The completed 2026-11 pipeline upgrade is described in
+[docs/archive/pipeline-upgrade.md](docs/archive/pipeline-upgrade.md) and
+recorded in
+[docs/records/20261104-pipeline-upgrade.md](docs/records/20261104-pipeline-upgrade.md),
+with its acceptance measurements in
+[docs/records/20261105-pipeline-upgrade-validation.md](docs/records/20261105-pipeline-upgrade-validation.md).
+No engineering project is open; new work starts a new plan.
 
 ## Common commands
 

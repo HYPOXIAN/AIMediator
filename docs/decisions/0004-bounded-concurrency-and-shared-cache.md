@@ -5,7 +5,7 @@
 - Updated: 2026-11-05
 - Applies to: `aimediator` 0.1.0 from pipeline upgrade batch U3 (steps U3.1 to U3.4, measured by U3-L); `RULES.md` v1.4
 - Owner decisions UP-D08 and UP-D09 of the
-  [pipeline upgrade plan](../plans/pipeline-upgrade.md) (sections 4.5 and
+  [pipeline upgrade plan](../archive/pipeline-upgrade.md) (sections 4.5 and
   4.6); the execution and the live measurements are recorded in the
   [change record](../records/20261104-pipeline-upgrade.md) and in
   [`reports/20261105-upgrade-u3-evaluation/`](../../reports/20261105-upgrade-u3-evaluation/manifest.json).

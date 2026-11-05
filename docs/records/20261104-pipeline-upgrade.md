@@ -3,7 +3,7 @@
 - Type: Record
 - Status: Active
 - Updated: 2026-11-05
-- Applies to: the [pipeline upgrade plan](../plans/pipeline-upgrade.md); commit `31d00f8` (tag `upgrade-plan`) and later
+- Applies to: the [pipeline upgrade plan](../archive/pipeline-upgrade.md); commit `31d00f8` (tag `upgrade-plan`) and later
 
 The single change record of the pipeline upgrade. Every step adds its row to
 the progress table in its own commit. Frozen when the plan is finished (D3).

@@ -1,9 +1,10 @@
 # Pipeline Upgrade Plan
 
 - Type: Plan
-- Status: Active
+- Status: Archived
 - Updated: 2026-11-05
 - Applies to: commit `d0aed08` and later; `RULES.md` v1.4; `aimediator` 0.1.0
+- Archived 2026-11-05 when the pipeline upgrade was completed (tag `upgrade-done`).
 
 The owner commissioned this project on 2026-11-04. It follows the code
 restructuring and upgrades the analysis pipeline in four directions: run
