@@ -2272,6 +2272,62 @@ the step it reverts (32 and 50 keys), and the suite passes after both
 `upgrade-u5` is set after U5.F3. The owner may still keep U5.2 or U5.3
 against the rule with `git revert` of the fix-up commits.
 
+### 2026-11-05 U6-V
+
+- Range: `294c5b2..6a77e5b`; 8 commits: U6.7 `6af0d31`; U6.1 `884e4e6`;
+  U6.2 `40c77b4`; U6.5 `a05b0ee`; U6.4 `f7b8745` (comparison and review)
+  and `4555fa4`; U6-L `c008cef`; session log `6a77e5b`. U6.3 and U6.6
+  are skipped (UP-D20). `294c5b2` stands in for `upgrade-u5`: it is the
+  last commit before U6, while the tag `upgrade-u5` now marks the U5
+  fix-ups, made after U6. The checklist was shortened as in the U2-V
+  note. The gates, the foreign directory and the wheel ran twice: at
+  `6a77e5b` (HEAD at session start) and at `5ab20d0` (after U5.F1 to
+  U5.F3).
+- Checks:
+  1. Boundary and commit hygiene (plan 8.8): pass. The boundary check
+     prints nothing and so does the hygiene check.
+  2. Glossary and data:
+     `git diff 294c5b2..HEAD -- src/aimediator/assets/data/glossary.json data/`
+     prints nothing, and the same diff from `dc05a37` prints nothing.
+  3. Earlier runs and report determinism: pass. A demo made with the code
+     of `294c5b2` (a `git archive` copy) passes, at `6a77e5b` and again
+     at `5ab20d0`, `review export`, `review import`, `report --review`
+     and `report` twice, in `enforce` and `shadow`. The run's claims hold
+     no `target_reference`, yet the export is `aimediator-report-v2` with
+     recomputed references (`topic_grouping` counts 18 resolved), and the
+     two automatic exports are byte-identical. The U5.2-era run `u5l3-extraction-development-off`
+     and the U6-L run `u6-extraction-development-off` still pass
+     `status`, `report` and `review export` at `5ab20d0`.
+  4. U6.4: pass. The comparison and its review (agent review, adopted
+     under the owner authorization; D-14, D-15) are committed in
+     `f7b8745`, before the code in `4555fa4`. The committed version
+     changes 24 of 6,376 decisions (0.38 %) and 7 of 3,752 (0.19 %), below
+     the 5 % trigger. Of every lock commit since `upgrade-u1`, only
+     `4555fa4` changes an L4 key (`L4:classify_rules`).
+  5. Request digests: U6.6 is skipped and `second_audit` does not exist,
+     so the item applies as "U6 changes no request digest". The lock diff
+     `294c5b2..6a77e5b` touches no `requests/` key; U6.1, U6.2 and U6.5
+     (UP-D12, UP-D14) and U6.4 (UP-D13) name their decisions and keys,
+     and U6.7 records `Lock: unchanged`.
+  6. Gates, foreign directory, wheel and layering: pass. At `6a77e5b`:
+     341 tests in 33.7 s, rule check 0, lock green, the foreign directory
+     341 OK, wheel `"passed": true` with 18 commands. At `5ab20d0`: 333
+     tests in 32.9 s (floor 241; −8 from the two test files that U5.F1
+     and U5.F2 removed), rule check 0, lock green, the foreign directory
+     333 OK, wheel `"passed": true` with 18 commands. The layering test
+     holds `topics` → `resources`, `balance_policy`.
+- Behavior changes: the SHA-256 values of `balance-review-policy.json`
+  (U6.5) and the new `configs/feedback-screening-terms.json` (U6.4)
+  recompute.
+- Live readings: U6 sends no new model-visible content, so no adoption
+  rule applies. U6-L's runs match their references within run-to-run
+  variation.
+- Measurements: at `5ab20d0`, tests 333 in 32.9 s, demo 1.01 s plain and
+  1.2 s under cProfile, lock green. API spend: this session made no live
+  run; the bridge total stays 0.338001 USD of 3.00
+  (`api-bridge-spend.json`, 2,359 requests).
+- Result: accepted, tag `upgrade-u6`.
+
 ## Session log
 
 ### 2026-11-04 U0-1 (implementation)
