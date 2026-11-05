@@ -684,6 +684,36 @@ Findings of U0.8:
   are still refused (plan 2.3), runs made after it replay. Checked by
   hand (U2.4 row). Undone by a revert of the script lines, no `RULES.md`
   change, nothing deleted; no package request byte changes.
+- **D-8 (U2-L1) How the adoption rule reads for three B steps measured
+  together.** The U2-L1 runs measure U2.2, U2.3 and U2.4 at once, and the
+  work order names the metrics of each verdict. Plan 5.4 does not say how
+  rule 2 (technical-failure units) is attributed to a step, which
+  precision rule 4 means, or how "do not fall" reads for proportions whose
+  denominators move with admission. Options: (a) per step, the metrics the
+  work order names, read on the stage the step changes: rule 1 the gates
+  at HEAD; rule 2 on both benchmark runs, the step's failure units within
+  one of the reference (U2.2 quality-failed comments, U2.3
+  generation-failed comments, every step transport failures; D-2 reading,
+  pending units compared apart) and every input comment with a coverage
+  status, the whole-run total reported beside it; rule 3 the step's target
+  mean (T2 quality on the benchmark `shadow`, T1 extraction and T3
+  relevance on the benchmark `off`) below the reference; rule 4 for U2.2
+  first-attempt validity and route agreement on the synthetic sample not
+  below the reference value, for U2.3 precision of accepted claims and
+  recall over all labeled positions on the extraction sample not more than
+  3 points below, for U2.4 agreeing comments on the silver split not more
+  than one below with the same evaluated count. The reference is the
+  whole U0.8 run of the same sample and mode (the same input; U0.6 for the
+  silver split), the deciding values are the run values of the "Live
+  evaluations" row, and paired per-comment values, Wilson intervals and
+  Newcombe intervals of the differences are reported beside them without
+  deciding; (b) every rule-4 metric for every step, so that any failure
+  fails all three; (c) decide on the comments common to both runs only.
+  Recommendation and action: (a), fixed before the runs were measured
+  (`runs/upgrade/tools/compare_u2l1.py`, archived under `provenance/`): a
+  step can only move the metrics of the stages it changes (in `off` runs
+  no quality request is sent), and (c) would drop the comments whose
+  admission the steps change. N-class (record and run output only).
 
 ## Escalations
 
