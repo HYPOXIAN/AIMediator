@@ -133,6 +133,7 @@ The commit of a step is found with `git log --grep 'Step: <ID>'`.
 | U7.2 | L | done | 333 | green | UP-D18, UP-D19, UP-D20, D-16; rule 1.11. Session U7-L: `u7-silver-holdout-off` (`balance-silver-v1` holdout, 30) and `u7-extraction-test-off` (`extraction-precision-v1` test split, 74), each run once, in `off`, at `b73f0e9` with the U7.1 configuration; identity checks passed; coverage complete. Holdout relevance agreement 27/29 (93.1 %; development U2-L1 64/69); selected character expectations 5/7 (the 2 misses are the source literal `source:Arjun`). Test split: precision of accepted claims 19/32 (59.4 %), recall 19/71 (26.8 %), audit rejection 50.7 %, against 75.3 %, 47.2 % and 33.6 % in development (U5-L1); E-8 (much worse than development) recorded, not tuned, (a) adopted. See "U7-L"; spend 0.0182 USD for the two runs |
 | U7.3 | N | done | 333 | green | Documents checked against the code at `b73f0e9` (no package change since). Started by chain session `s7-u7`, which the usage limit stopped; its work was stashed as `WIP Step U7.3: session s7-u7 stopped by the usage limit`, popped by the next session, checked and finished (plan 10.4). New: validation record `docs/records/20261105-pipeline-upgrade-validation.md` (U7.1 and U7.2 with denominators and intervals, the plan 5.5 targets with measured values, limitations) and ADR `docs/decisions/0006-revert-of-quality-annotation-v2.md`, which supersedes ADR 0005 (header only, D3), with index rows (`defb029`). Updated (`af5272e`): design/cli.md sections 5 to 8 (ADR 0006 link, table of every configuration key with default, accepted values and CLI override, no `second_audit`, `near-duplicates.json`, `near_duplicate_clusters`); evidence-quality.md, emotion-quantification-and-evidence-isolation.md (revert, U7.1 quality readings and the `enforce` limit); balance-analysis.md (U7.2 extraction limits); guides/cli-usage.md (`--base-url`, `--num-gpu`, key table, no second audit, near-duplicate clusters). The root README keeps its plan links until U7.6 (work order) |
 | U7.4 | N | done | 333 | green | UP-D16 (`a3b0310`). `RULES.md` v1.5, effective 2026-11-05: the P4 baseline sentence names 333 on 2026-11-05 (was 241 on 2026-11-04), the final test count of the upgrade; a revision-log entry gives the reason. The owner's approval of the wording (plan U7.4, work order section 3) is adopted under the owner's standing instruction and the owner authorization of 2026-11-05 03:11, not given in person. `CLAUDE.md` applies to v1.5. The rule check parses the new baseline (`baseline count (333 on`; P4 0, total 0); `scripts/maintenance/check_rules.py` and its test unchanged |
+| U7.5 | N | done | 333 | green | Final acceptance under "Batch results": every completion criterion of plan section 13 with its measured value (1 to 8 met; 9, the frozen record and the archived plan, open for U7.6), every target of plan 5.5 with its measured value (met T2, T6 on development, T10; not met T1, T3, T4, T5, T7, T8, T9), and every step skipped (U2.5 with U2-L2, U6.3, U6.6 by UP-D20; U4.6 by its condition), reverted (U4.F1, U4.5, U4.4 by U4.F2 to U4.F4; U5.3, U5.2 by U5.F1, U5.F2) or bypassed (no step; three items) with its reason. Gates, foreign directory (333 OK) and wheel acceptance (passed, 18 commands) at `2ac04b6`. New under "Deferred": D-14, the targets not met, E-8; the U2.4 item gains its U7.1 reading. No tag set |
 
 ## Baseline measurements (U0.4)
 
@@ -1982,6 +1983,74 @@ Coverage is complete in both (30 of 30, 74 of 74).
   Adopted under the owner authorization of 2026-11-05 03:11. Blocked:
   nothing.
 
+## Batch results
+
+### Final acceptance (U7.5, 2026-11-05)
+
+Checked at `2ac04b6` (the U7.4 record commit); the code is that of
+`b73f0e9` (tag `upgrade-u6`), since no file under `src/`, `tests/` or
+`scripts/` changed in U7. The measured values of the targets are those of
+the [validation record](20261105-pipeline-upgrade-validation.md)
+(section 4), where the denominators and intervals are. The owner's final
+review, the U7-V verification and the closure U7.6 follow; this step sets
+no tag.
+
+Completion criteria of plan section 13:
+
+| # | Criterion | Measured value | Result |
+| - | --------- | -------------- | ------ |
+| 1 | Every step `done`, `reverted`, `skipped` or `bypassed`, with its reason | 49 plan steps: U0.1 to U7.4 have rows (U7.5 this entry, U7.6 open); with the 19 live, rerun and fix-up rows, 66 rows before U7.5. Reverted 5 steps, skipped 5 rows (4 steps and U2-L2), bypassed 0 steps (list below) | met for U0.1 to U7.5; U7.6 open (criterion 9) |
+| 2 | Gates pass, also from a foreign directory (8.5); wheel acceptance (8.2) | 333 tests OK in 33.0 s; rule check 0; lock green; foreign directory 333 OK; wheel acceptance `passed: true`, 18 commands (Python 3.14.8, NumPy 2.4.6) | met |
+| 3 | Behavior lock passes; every regeneration belongs to a B step with its decision | Lock green. Regenerations: U0.2 (N, UP-D01, the module exception of plan 1.3), U1.4 (UP-D03), U2.2 (UP-D04), U2.3 (UP-D05), U2.4 (UP-D07), U3.2 (UP-D08), U3.3 and U3.4 (UP-D09), U4.4, U4.F1, U4.F2 and U4.F4 (UP-D10), U5.1, U5.2, U5.3, U5.F1 and U5.F2 (UP-D11), U6.1 and U6.2 (UP-D12), U6.4 (UP-D13), U6.5 (UP-D14); every one a B step with its decision except U0.2, the recorded exception | met |
+| 4 | Every live evaluation in this record, a curated report for each batch that had one | "Live evaluations" holds U0.6, U0.8, U2-L0, U2-L1, U3-L, U4-L, U4-L2, U2-R, U5-L1 to U5-L3, U6-L and U7-L. Reports: U0 `20261104-upgrade-baseline`, `20261105-upgrade-baseline-samples`; U2 `20261105-upgrade-api-reference`, `20261105-upgrade-u2-evaluation`; U3, U4, U5 (with U2-R) and U6 `20261105-upgrade-u<n>-evaluation`; U7 `20261105-upgrade-acceptance`. U4-L2 has its summary in this record and its runs in the archive (D-12) | met |
+| 5 | Targets of 5.5 reported with measured values, met or not | Table below: met T2, T6 (development), T10; not met T1, T3, T4, T5, T7, T8, T9 | met (reported) |
+| 6 | The U7.1 runs account for every input row | `u7-benchmark-off` and `u7-benchmark-enforce`: 30 of 30 inputs, each with exactly one coverage record | met |
+| 7 | Design documents, guide and README describe the code | U7.3 (`defb029`, `af5272e`, `dee3c74`): design/cli.md sections 5 to 8, the evidence-quality documents, balance-analysis.md, guides/cli-usage.md, ADR 0006, the validation record; the README keeps its plan links until U7.6 | met; U7-V spot-checks it |
+| 8 | `RULES.md` matches the tree | v1.5 (U7.4, `a3b0310`): P4 floor 333 = the test count; rule check 0 with the new baseline parsed | met |
+| 9 | Change record final and frozen; plan and handoffs archived | Not yet: U7.6, after the owner's final review (U7-V, then U7.6) | open |
+
+Targets of plan 5.5 (through the API, ratios of plan 5.4; baselines are
+the U2-L0 runs; T4 and T8 indicative under UP-D19):
+
+| ID | Baseline | Target | Measured | Met |
+| -- | -------- | ------ | -------- | --- |
+| T1 | 3,771 uncached extraction prompt tokens per request | at most 1,882 | 2,642 (70.1 %), `u7-benchmark-off` | no |
+| T2 | 2,692 uncached quality prompt tokens per request | at most 1,933 (and the plan's 1,500) | 1,263 (46.9 %), `u7-benchmark-enforce` | yes |
+| T3 | 1,539 uncached relevance prompt tokens per request | at most 1,000 (65 %) | 1,154 (75.0 %), `u7-benchmark-off` | no |
+| T4 | 18.3 s quality elapsed per comment | at most 9.2 s (50 %) | 9.7 s (53.1 %), `u7-benchmark-enforce`, 2 parallel requests | no (indicative) |
+| T5 | 88.5 % (23/26) first-attempt quality validity | at least 95 % | 87.5 % (21/24, Wilson 69.0–95.7 %) | no |
+| T6 | 38.8 % (52/134) audited claims rejected, development | at most 35 % | 33.6 % (40/119), U5-L1, development; test split 50.7 % (35/69) | yes on development |
+| T7 | 76.2 % precision, 48.8 % recall, development | precision at least 86.2 %, recall at least 45.8 % | 75.3 % and 47.2 %, U5-L1; test split 59.4 % and 26.8 % | no (precision); recall held |
+| T8 | U3-L quality stage with 1 parallel request | at least 1.4 times | 1.25 times (U3-L, 2 parallel requests) | no (indicative) |
+| T9 | 54 % share of `run_store.state`, 600-comment fixture replay | below 5 % | 7.7 % (1.40 s of 18.2 s profiled), at `b73f0e9` | no |
+| T10 | 1.07 s offline demo; 35 % `character_reference` | at most 1.0 s; below 10 % | 0.98 to 0.99 s; 7.5 to 7.6 %, at `b73f0e9` | yes |
+
+Steps skipped, bypassed or reverted:
+
+- **Skipped**: U2.5 (response-template trial, UP-D06) with its live
+  session U2-L2, U6.3 (mechanic terms in the views, UP-D12) and U6.6
+  (second audit trial, UP-D15), each by the owner's decision UP-D20
+  (time and budget of the chain); U4.6 (quality output budget, LAT-07)
+  by its own condition: 4 benchmark and 1 synthetic quality requests of
+  U4-L reached 6,000 tokens or more (maximum 13,520 and 14,346).
+- **Reverted** (plan rule 1.7, `git revert` with `Reverts:`): U4.F1
+  (`385f744`) by U4.F2 (`a834abe`), U4.5 (`2614453`) by U4.F3
+  (`e03122c`) and U4.4 (`09a79e3`) by U4.F4 (`d8ee25d`), the fallback of
+  E-4: U4.4 and U4.5 failed adoption rules 2 and 3 in U4-L and again
+  after U4.F1 in U4-L2 (ADR 0006); U5.3 (`476d502`) by U5.F1
+  (`b437949`) and U5.2 (`30d41be`) by U5.F2 (`3ee4612`), E-6 and E-5
+  option (a) of the U5 review: rule 3 failed in every measurement. Their
+  rows above keep `done`, the state they reached before the revert.
+- **Bypassed**: no step. Items within steps: the move of the D-4
+  scorers into `measurement` (U2-1; the U2 boundary did not list it,
+  still under "Deferred"); the "not in effect" sentence in ADR 0005
+  (U4.F5; D3), now carried by ADR 0006; D-14 (U6.4; `balanced` and
+  `expansion` outside the U6 boundary), now under "Deferred".
+
+Open items are under "Deferred": the D-4 scorers, D-14, the targets not
+met, E-7 (pending relevance units, quality failures), E-8 (the test
+split), `enforce` on short comments, and the U2.4 recall question.
+
 ## Verification notes
 
 ### 2026-11-05 U0-V
@@ -3071,7 +3140,11 @@ against the rule with `git revert` of the fix-up commits.
   recall loss of E-3 arises with U2.4 (through admission) and run-to-run
   variation, with every interval including 0. U7.1 and U7.2 measure the
   adopted configuration with U2.4 and can read this against the U2-L0
-  reference.
+  reference. Read in U7.1 (U7.5): `u7-benchmark-off` accepts the same
+  (character, direction) positions as `u2l0-benchmark-off` on all 30
+  comments (recall 4/10 in both) and admits 3 comments fewer; the test
+  split of U7.2 cannot separate U2.4 from the other causes (E-8). Still
+  open for a later plan.
 - **Pending relevance units and quality failures** (E-7, U7-L,
   2026-11-05). Every U7 run keeps 1 to 3 comments relevance-pending
   (`technical_failure_or_pending`) and ends `partial`; U2-L0 kept 1, the
@@ -3084,3 +3157,18 @@ against the rule with `git revert` of the fix-up commits.
   `shadow` report 8 accepted claims. The labeled positions sit in
   comments routed `opinion_only`. Whether such comments should reach
   extraction is a product question for the owner, not a defect.
+- **`balanced` and `expansion` write `coarse-v1`** (D-14, U6.4,
+  bypassed; passed on by U7.5). `collection/balanced.py` and
+  `collection/expansion.py` should read `screening.VERSION`, a one-line
+  change each, for a session whose boundary lists them; U7 changes no
+  package code.
+- **Targets not met** (U7.5, 2026-11-05). T1 (2,642 against at most
+  1,882 uncached extraction prompt tokens), T3 (75.0 % against 65 %), T4
+  (53.1 % against 50 %, indicative), T5 (87.5 % against 95 %), T7
+  (precision 75.3 % against 86.2 %), T8 (1.25 against 1.4 times,
+  indicative) and T9 (7.7 % against below 5 %); see "Batch results" and
+  the validation record. A later plan decides which to pursue.
+- **Extraction on the test split** (E-8, U7.2). Precision 59.4 % and
+  recall 26.8 % against 75.3 % and 47.2 % in development, mostly in
+  Chinese; not tuned. E-8 recommends a fresh labeled set for a later
+  plan before any change aimed at it.
