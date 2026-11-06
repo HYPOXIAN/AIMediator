@@ -1,9 +1,11 @@
 # Publish Preparation Change Record
 
 - Type: Record
-- Status: Draft
+- Status: Active
 - Updated: 2026-11-05
 - Applies to: commit `75f4286` and later; `RULES.md` v1.5 and v1.6; evaluation sets `balance-regressions-v1`, `balance-regressions-v2`, `evidence-quality-real-v1` and `evidence-quality-real-v2`
+- Final 2026-11-05; frozen from then on (D3). Repository:
+  <https://github.com/HYPOXIAN/AIMediator>
 
 ## Purpose
 
@@ -17,8 +19,9 @@ The preparation removes links to commenters' accounts from the tracked
 evaluation sets, adds a license, completes the package metadata, rewrites
 the root README for public readers, and rewrites the git history so that
 no commit holds the removed links or the owner's home directory path. It
-then pushes the repository to a private GitHub repository for the owner's
-review. Making it public and the release follow that review.
+then pushes the repository to a private GitHub repository,
+<https://github.com/HYPOXIAN/AIMediator>, for the owner's review. The owner
+makes it public after that review; no release is made (PP-D08).
 
 Commit hashes written in this record before the "History rewrite" section
 are hashes from before the rewrite; they resolve through the commit map
@@ -33,11 +36,11 @@ All answers were given by the owner in person on 2026-11-05.
 | PP-D01 | How to handle the two real-comment evaluation sets | A: `-v2` successors without the link fields; comment text and labels unchanged | Option B (withholding the text too) would break the regression test and the behavior lock |
 | PP-D02 | The code license and the copyright holder's name | MIT; "Wanlin Young (Camille Yang)" | The name is used in `LICENSE` and in the `pyproject.toml` authors, without an email |
 | PP-D03 | Approval of the `RULES.md` v1.6 wording | Approved as shown | The exact diff was shown before the commit |
-| PP-D04 | Repository name, path to public visibility, About text, topics | `HYPOXIAN/AIMediator`, created private; About text as proposed | The owner asked to push to "my current private repo"; no such repository existed and the checkout had no remote, so the owner confirmed creating it. The owner asked to keep it private until their review: the visibility change and the topics wait for that review |
+| PP-D04 | Repository name, path to public visibility, About text, topics | `HYPOXIAN/AIMediator`, created private; About text as proposed | The owner asked to push to "my current private repo"; no such repository existed and the checkout had no remote, so the owner confirmed creating it. The owner asked to keep it private until their review and changes the visibility and the topics themselves |
 | PP-D05 | A corrected report PDF | Not now: the committed PDF is kept | `~/Downloads/AI-Mediator-Project-Report.pdf` was still byte-identical to the committed file. Both defects stay open (see "Open items") |
 | PP-D06 | How to clean the history | `git filter-repo` in place, after the S1 backup | Keeps every commit and tag; the commit map resolves old hashes |
 | PP-D07 | The commit email | Rewrite to the GitHub no-reply address `180716825+HYPOXIAN@users.noreply.github.com` | Built from the account ID of `HYPOXIAN`; the repository's `user.email` is set to it as well |
-| PP-D08 | Whether to release | Not decided | The release follows the visibility change (S10), which the owner deferred to their review |
+| PP-D08 | Whether to release | No release for now | No GitHub release and no `v0.1.0` tag; no PyPI publication |
 
 ## Withheld and removed content
 
@@ -77,6 +80,7 @@ not. The frozen documents listed above keep their references unchanged
 | S7 | done | 333 | 0 | Tree clean. `scripts/maintenance/verify_cli_install.py` passed (18 commands, network denied) against a wheel built from HEAD with the setuptools backend and installed into a fresh virtual environment outside the checkout. PP-D06 and PP-D07 answered |
 | S8 | done | 333 | 0 | See "History rewrite" |
 | S9 | done | — | 0 | The packages of 2026-11-03 05:24 moved to `~/Archives/AIMediator/dist/20261103-0.1.0/` and entered in that archive's `SHA256SUMS` (`sha256sum -c` OK). Built from the rewritten `621422a` with the setuptools backend command of the CLI guide: wheel sha256 `a4f48b85ba5a2389f7027f202a0d36e44fef2915a54b4f8f2af85255cfa725b3`, sdist `aeefe71ba1fbb69c4991076a9ce18e117f4c13b878e36be06d661a9eeb3f4a5f`. Listings: no project `data/`, `reports/` or `.env` (the only `data` path is the package asset `assets/data/glossary.json`); the sdist holds `LICENSE`. `verify_cli_install.py` passed (18 commands) against the new wheel |
+| S10 | done (private push) | — | — | Repository `HYPOXIAN/AIMediator` created private with the proposed About text; `main` and the 31 tags pushed on 2026-11-05. All 32 refs on the remote equal the local ones; GitHub reports the visibility as private and detects the MIT license. The owner reviews the repository and changes the visibility and the topics themselves; no release (PP-D08) |
 
 ### S4 metadata build
 
@@ -281,8 +285,8 @@ same trees and differ only in the commit email.
   escapes apostrophes twice, so the rendered report shows `&#x27;` where
   an apostrophe belongs (for example "Ryu&#x27;s Hadoken"). The README
   excerpt shows the source as written.
-- S10: on 2026-11-05 the owner asked for a push to a private repository
-  only. The visibility change to public, the topics, the release `v0.1.0`
-  (PP-D08) and the final status of this record wait for the owner's review
-  of the private repository.
+- The owner's review of the private repository (README rendering, the
+  PDF, the file list against `git ls-files`, no raw data), then the
+  visibility change to public and the topics, done by the owner.
+- A release `v0.1.0` (PP-D08: not for now).
 - No PyPI publication is planned.
