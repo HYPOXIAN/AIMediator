@@ -71,8 +71,8 @@ not. The frozen documents listed above keep their references unchanged
 | S2 | done | 333 | 0 | See "S2 successor sets" |
 | S3 | done | 333 | 0 | `LICENSE` (MIT, unmodified text, "Copyright (c) 2026 Wanlin Young (Camille Yang)"); `RULES.md` v1.6 in the approved wording (G3, D2, P5, revision log); `LICENSE` added to `G3_ALLOWED` and to the G3 allowlist test; `license = "MIT"` and `license-files` in `pyproject.toml`; README Layout and License section; `CLAUDE.md` "Applies to" line |
 | S4 | done | 333 | 0 | `pyproject.toml`: description, authors (name only), keywords, classifiers (no `License ::` classifier), `[project.urls]` for `HYPOXIAN/AIMediator`. `.env.example` adds `GOOGLE_API_KEY` and `BLUESKY_ACCESS_TOKEN` (names only). The collection keys are described in the README, section "Collection keys", which links the embedding keys to the glossary vector index reference. See "S4 metadata build" |
-
 | S5 | done | 333 | 0 | See "S5 README" |
+| S6 | skipped | — | — | PP-D05: the owner kept the committed report; `docs/records/20261105-project-report.pdf` is unchanged (sha256 `337951c983ced930e8596214badf1e14cbb77a6bbf8c1be446bdc71d422f1427`). Both defects are listed under "Open items" |
 
 ### S4 metadata build
 
