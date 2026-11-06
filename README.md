@@ -1,14 +1,35 @@
 # AI Mediator
 
-A local LLM research prototype for analyzing Street Fighter 6 community feedback and producing evidence-linked community consensus reports.
+AI Mediator is a command-line research tool. It reads English and Chinese
+player comments about a Street Fighter 6 balance patch and writes a
+community consensus report. For each character and move, the report counts
+the distinct comments that ask for a buff, a nerf or no change, and links
+every entry to the exact sentence a player wrote. It is meant for
+researchers and game designers who want to see what a sample of players
+asked for, and on what evidence. The language models run locally through
+Ollama.
 
-The installable Linux `aimediator` CLI provides explicit input analysis, bounded
-resume, offline status, immutable source review, deterministic report exports,
-quality evaluation and a packaged bilingual offline demo. It runs the research
-analysis pipeline in-process. Default evidence quality remains `off`; examples
-recommend `shadow` while independent semantic validation is outstanding.
+The tool keeps only on-topic comments, separates venting from concrete
+gameplay points, checks every extracted claim against the source text, and
+reports a numerical change only when a comment asks for one. The counts
+describe the collected sample, not the whole player community or a correct
+balance adjustment. Emotional language does not by itself invalidate a
+concrete gameplay concern.
 
-Consensus describes the collected sample, not the entire player community or an objectively correct balance adjustment. Emotional language must not automatically invalidate a concrete gameplay concern.
+The [project report](docs/records/20261105-project-report.pdf) (PDF, 8
+pages) describes the goals, the design, the experiments and the results.
+
+## Status and limits
+
+- AI Mediator 0.1.0 is a research prototype, not a production tool.
+- On the held-out test split, 59.4% of the accepted claims were correct and
+  the tool found 26.8% of the labeled positions. Chinese results trail
+  English ones.
+- The evaluation labels were written by an AI agent, not by people, so
+  these figures are bounds, not proof.
+- The final evaluation used a hosted model (`deepseek-v4-flash` through an
+  API), because local 7–8B models were too slow and unreliable on an 8 GiB
+  GPU. The package still defaults to local Ollama models.
 
 ## Install
 
@@ -40,21 +61,70 @@ the `off`, `shadow` and `enforce` modes with fixture responses. Live analysis
 (`aimediator analyze`) needs a local Ollama service; configuration, review,
 reports and evaluation are in [the CLI guide](docs/guides/cli-usage.md).
 
+The modes control the evidence-quality filter. `off`, the default, runs no
+filter. `shadow` records the quality annotations without changing the
+result. `enforce` turns only concrete gameplay points into formal claims
+and lists general opinions and system feedback separately.
+
+## Example output
+
+An excerpt of `example-report-001/report.md`, the report of the `enforce`
+run in the quick start. The content is synthetic: the demo's comments were
+written for testing, and fixture responses stand in for the models. The
+file is Markdown source; `[...]` marks omitted lines.
+
+```text
+# SF6 collected-sample feedback
+
+Processing completed.
+
+View: automatic; quality: enforced.
+Execution: agent_authored_synthetic_fixture_transports. Semantic accuracy: not established.
+Scope: collection_sample. Patch applicability: unknown.
+Input comments: 38. Formal unique comments: 18.
+[...]
+### Ryu — Hadoken / 波动拳 (glossary ryu\.hadoken)
+[...]
+**nerf**: 4 distinct comments
+
+- Please reduce Ryu&\#x27;s Hadoken damage from 600 to 500\. ([synthetic:numeric\_request:en](https://example.test/synthetic))
+  - [synthetic:numeric\_request:en/E1](https://example.test/synthetic) source Unicode [0,51): Please reduce Ryu&\#x27;s Hadoken damage from 600 to 500\.
+- 请将隆的波动拳伤害从600降低到500。 ([synthetic:numeric\_request:zh](https://example.test/synthetic))
+  - [synthetic:numeric\_request:zh/E1](https://example.test/synthetic) source Unicode [0,20): 请将隆的波动拳伤害从600降低到500。
+```
+
+## Live analysis
+
+`aimediator analyze` needs a running [Ollama](https://ollama.com) service
+with three models: `llama3.1:latest` for English comments, `qwen2.5:7b` for
+Chinese comments, and the embedding model `qwen3-embedding:8b`. Pull each
+one with `ollama pull` and the model name. The configuration written by
+`aimediator init` names these models, and the tool does not substitute
+another model. Configuration, recovery, review, reports and evaluation are
+in [the CLI guide](docs/guides/cli-usage.md).
+
 ## Scope
 
-- Game: Street Fighter 6.
-- Runtime: locally deployed Ollama.
-- Models: `qwen2.5:7b` and `llama3.1:latest`; model identities are recorded per test run.
-- Patch: `08.03.2026 Update`, dated August 3, 2026.
+- Game: Street Fighter 6, the
+  [08.03.2026 Update](https://www.streetfighter.com/6/buckler/battle_change/20260803)
+  of August 3, 2026.
 - Languages: English and Mandarin Chinese feedback.
-- Current validation dataset: 600 retained comments, 300 English and 300 simplified Chinese; publication dates span multiple versions and target-patch applicability remains unverified. The earlier expanded dataset remains available.
-- Deliverable: a runnable command-line tool, sample reports, and a small evaluation record.
-- Development budget: six weeks at five hours per week.
-- Outside the prototype scope: large-scale or recurring scraping, a web interface, fine-tuning, complex retrieval, multiple games, and automatic numerical balance changes.
+- Validation data: 600 retained comments, 300 English and 300 simplified
+  Chinese. Their publication dates span several game versions, and whether
+  each comment applies to the target patch is not verified.
+- Outside the scope: large-scale or recurring scraping, a web interface,
+  fine-tuning, complex retrieval, multiple games, and automatic numerical
+  balance changes.
 
-Documentation is in English (RULES.md D8). Chinese appears only as corpus
-content: source feedback, quoted evidence, glossary terms and aliases, and
-model inputs and outputs. Original evidence must retain its meaning.
+## Data
+
+The repository contains the manifests of the collected datasets (source,
+record count, hashes), the versioned evaluation sets in `data/evaluation/`,
+and curated result summaries in `reports/`. It does not contain the raw
+collected comments: `data/raw/` holds only their manifests. The evaluation
+sets keep the text of real public comments, without links to their
+authors' accounts. To analyze new feedback, collect your own with
+`scripts/collect/` and your own API keys (see "Collection keys" below).
 
 ## Research commands
 
@@ -155,24 +225,6 @@ documents:
 - [Evidence-quality specification](docs/design/evidence-quality.md)
 - [Project rules](RULES.md)
 
-The pipeline upgrade (batches U0 to U7, completed 2026-11-05, tag
-`upgrade-done`) shortened the model-visible requests, added bounded
-concurrency and a shared request cache, and linked claim targets to the
-glossary. Its acceptance measurements and limits are in the
-[validation record](docs/records/20261105-pipeline-upgrade-validation.md);
-the [plan](docs/archive/pipeline-upgrade.md) is archived, and the
-[change record](docs/records/20261104-pipeline-upgrade.md) lists the
-items left open for a later plan.
-
-## License
-
-The code is released under the [MIT License](LICENSE).
-
-The comment text in `data/evaluation/` belongs to its authors. It is
-included only for research evaluation and is not covered by the license.
-The glossary content comes from the sources listed in its `sources` field:
-Capcom's official pages and community references.
-
 ## Development
 
 ```sh
@@ -185,4 +237,14 @@ The first command runs the offline test suite; live-model checks are separate
 scripts. The second runs the rule check; the third enables its pre-commit
 hook.
 
-Official patch source: <https://www.streetfighter.com/6/buckler/battle_change/20260803>
+## License
+
+The code is released under the [MIT License](LICENSE).
+
+The comment text in `data/evaluation/` belongs to its authors. It is
+included only for research evaluation and is not covered by the license.
+The glossary content comes from the sources listed in its `sources` field:
+Capcom's official pages and community references.
+
+Not affiliated with or endorsed by Capcom. Street Fighter is a trademark of
+Capcom.

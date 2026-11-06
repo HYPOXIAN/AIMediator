@@ -72,6 +72,8 @@ not. The frozen documents listed above keep their references unchanged
 | S3 | done | 333 | 0 | `LICENSE` (MIT, unmodified text, "Copyright (c) 2026 Wanlin Young (Camille Yang)"); `RULES.md` v1.6 in the approved wording (G3, D2, P5, revision log); `LICENSE` added to `G3_ALLOWED` and to the G3 allowlist test; `license = "MIT"` and `license-files` in `pyproject.toml`; README Layout and License section; `CLAUDE.md` "Applies to" line |
 | S4 | done | 333 | 0 | `pyproject.toml`: description, authors (name only), keywords, classifiers (no `License ::` classifier), `[project.urls]` for `HYPOXIAN/AIMediator`. `.env.example` adds `GOOGLE_API_KEY` and `BLUESKY_ACCESS_TOKEN` (names only). The collection keys are described in the README, section "Collection keys", which links the embedding keys to the glossary vector index reference. See "S4 metadata build" |
 
+| S5 | done | 333 | 0 | See "S5 README" |
+
 ### S4 metadata build
 
 The work order assumed that the `build` module was installed. It is not
@@ -86,6 +88,33 @@ The sdist holds `LICENSE` and the wheel holds
 `aimediator-0.1.0.dist-info/licenses/LICENSE`. Neither package holds the
 project's `data/` or `reports/` directories or a `.env`; the only `data`
 path is the package asset `src/aimediator/assets/data/glossary.json`.
+
+### S5 README
+
+- Added: a plain opening (what the tool does and for whom, with `off`,
+  `shadow` and `enforce` moved out of it and defined after the quick
+  start), a link to the project report near the top, "Status and limits"
+  (figures from report sections 3.4 and 5: 19 of 32 accepted claims
+  correct, 59.4%; 19 of 71 labeled positions found, 26.8%), "Example
+  output", "Live analysis" (Ollama and the three model names from the CLI
+  guide), "Data" and the trademark disclaimer in "License".
+- Removed: the development budget, the documentation-language paragraph
+  and the pipeline-upgrade paragraph (F5). The official patch link moved
+  from the last line into "Scope"; the sentence "The earlier expanded
+  dataset remains available" was dropped, because raw data is not
+  distributed.
+- The example is a verbatim 17-line excerpt of `report.md` from the
+  `enforce` report of the quick start, run in a scratch directory; it is
+  identical to the demo's own `example-report/report.md`.
+- Commands run as written: the Install commands in a scratch copy of the
+  tracked files (fresh `.venv`, `pip install .`, `aimediator --version`
+  prints `aimediator 0.1.0`); the four quick-start commands in a scratch
+  directory with a link to `.venv` (all exit 0); the Development commands
+  (333 tests, rule check 0, hook path already set). `ollama pull` is named
+  in prose and was not run: the Ollama service was not running and the
+  order allows no live calls.
+- Fences are balanced and none sits inside a list item; no code span holds
+  `*`; every relative link resolves (D5).
 
 ### S2 successor sets
 
@@ -133,6 +162,10 @@ Filled in at S8.
   website. The owner can fix the Google Docs source and replace the PDF
   in a later commit.
 - Withholding the comment text as well (PP-D01 option B), if wanted later.
+- Found in S5, not fixed (package code is outside this order): `report.md`
+  escapes apostrophes twice, so the rendered report shows `&#x27;` where
+  an apostrophe belongs (for example "Ryu&#x27;s Hadoken"). The README
+  excerpt shows the source as written.
 - The visibility change to public, the topics, the release `v0.1.0`
   (PP-D08) and the final status of this record, after the owner's review
   of the private repository.
