@@ -76,6 +76,7 @@ not. The frozen documents listed above keep their references unchanged
 | S6 | skipped | — | — | PP-D05: the owner kept the committed report; `docs/records/20261105-project-report.pdf` is unchanged (sha256 `337951c983ced930e8596214badf1e14cbb77a6bbf8c1be446bdc71d422f1427`). Both defects are listed under "Open items" |
 | S7 | done | 333 | 0 | Tree clean. `scripts/maintenance/verify_cli_install.py` passed (18 commands, network denied) against a wheel built from HEAD with the setuptools backend and installed into a fresh virtual environment outside the checkout. PP-D06 and PP-D07 answered |
 | S8 | done | 333 | 0 | See "History rewrite" |
+| S9 | done | — | 0 | The packages of 2026-11-03 05:24 moved to `~/Archives/AIMediator/dist/20261103-0.1.0/` and entered in that archive's `SHA256SUMS` (`sha256sum -c` OK). Built from the rewritten `621422a` with the setuptools backend command of the CLI guide: wheel sha256 `a4f48b85ba5a2389f7027f202a0d36e44fef2915a54b4f8f2af85255cfa725b3`, sdist `aeefe71ba1fbb69c4991076a9ce18e117f4c13b878e36be06d661a9eeb3f4a5f`. Listings: no project `data/`, `reports/` or `.env` (the only `data` path is the package asset `assets/data/glossary.json`); the sdist holds `LICENSE`. `verify_cli_install.py` passed (18 commands) against the new wheel |
 
 ### S4 metadata build
 
@@ -280,7 +281,8 @@ same trees and differ only in the commit email.
   escapes apostrophes twice, so the rendered report shows `&#x27;` where
   an apostrophe belongs (for example "Ryu&#x27;s Hadoken"). The README
   excerpt shows the source as written.
-- The visibility change to public, the topics, the release `v0.1.0`
-  (PP-D08) and the final status of this record, after the owner's review
+- S10: on 2026-11-05 the owner asked for a push to a private repository
+  only. The visibility change to public, the topics, the release `v0.1.0`
+  (PP-D08) and the final status of this record wait for the owner's review
   of the private repository.
 - No PyPI publication is planned.
