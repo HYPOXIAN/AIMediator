@@ -1,6 +1,6 @@
 # AIMediator Project Rules
 
-Version 1.5 · Effective 2026-11-05 · Approved by the project owner.
+Version 1.6 · Effective 2026-11-05 · Approved by the project owner.
 
 This file is the highest-level convention for the project's structure. Every
 rule has a **Check**: the way compliance is verified. Rule IDs are stable; cite
@@ -24,12 +24,13 @@ allowed only when listed in the compatibility register
 the register.
 
 **G3 Top-level allowlist.** The project root may contain only: `README.md`,
-`RULES.md`, `pyproject.toml`, `MANIFEST.in`, `.gitignore`, `.env.example`,
-`.env` (local only), agent entry files (`CLAUDE.md`, `AGENTS.md`), `src/`,
-`tests/`, `scripts/`, `configs/`, `data/`, `docs/`, `examples/`, `reports/`,
-`runs/`, plus the ignored `build/`, `dist/` and `.venv/`. `.claude/` is also
-allowed as ignored local state of the coding-agent harness; it holds no
-project content. Adding a top-level entry requires amending this rule first.
+`RULES.md`, `LICENSE`, `pyproject.toml`, `MANIFEST.in`, `.gitignore`,
+`.env.example`, `.env` (local only), agent entry files (`CLAUDE.md`,
+`AGENTS.md`), `src/`, `tests/`, `scripts/`, `configs/`, `data/`, `docs/`,
+`examples/`, `reports/`, `runs/`, plus the ignored `build/`, `dist/` and
+`.venv/`. `.claude/` is also allowed as ignored local state of the
+coding-agent harness; it holds no project content. Adding a top-level entry
+requires amending this rule first.
 *Check:* `ls -A` matches the allowlist.
 
 **G4 Sources and generated output are separate.** Anything reproducible from
@@ -104,7 +105,10 @@ Updated / Applies to (version or dataset)`. Status is one of `Draft`,
 `Active`, `Superseded by <document>`, `Archived`. Exempt: the root
 `README.md` (it is the package long description), `RULES.md` (it carries its
 own version line and revision log), agent entry files, and README files
-inside `data/` (dataset descriptions belong to manifests).
+inside `data/` (dataset descriptions belong to manifests). Documents that
+are not Markdown, such as the project report PDF in `docs/records/`, cannot
+carry the header and are exempt; their entry in `docs/README.md` carries the
+type, status and description.
 *Check:* script verifies every document under `docs/` has the header.
 
 **D3 Lifecycle.** Living documents (guides, design, plans) are updated with the
@@ -196,6 +200,10 @@ README "Layout" section.
 ## 7. Version control and backup rules (P5)
 
 - Baseline commit: `0d390c4` (2026-11-03), taken before reorganization.
+- The history was rewritten before publication on 2026-11-05 (change record
+  `docs/records/20261105-publish-preparation.md`). Commit hashes cited before
+  then, including the baseline above, resolve through
+  `reports/20261105-history-rewrite/summary/commit-map.txt`.
 - `.gitignore` follows G4. Large data and retained results are not committed;
   they are backed up to `~/Archives/AIMediator/` with a checksum list
   (`SHA256SUMS`).
@@ -269,3 +277,12 @@ README "Layout" section.
   approval of this wording was recorded as adopted under the owner's
   standing instruction of 2026-11-04 and the authorization of 2026-11-05,
   not given in person.
+- 2026-11-05 v1.6 — Owner decisions PP-D02 and PP-D03 of the publish
+  preparation (change record `docs/records/20261105-publish-preparation.md`).
+  G3: `LICENSE` added to the allowlist, because the code is published under
+  an open-source license whose text belongs at the root. D2: documents that
+  are not Markdown are exempt from the header, because a PDF such as the
+  project report cannot carry one; their index entry carries the type,
+  status and description. P5: the history was rewritten before publication
+  to remove links to commenters' accounts and the owner's home path; commit
+  hashes cited before the rewrite resolve through the published commit map.

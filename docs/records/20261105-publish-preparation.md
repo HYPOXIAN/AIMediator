@@ -69,6 +69,7 @@ not. The frozen documents listed above keep their references unchanged
 | S0 | done | 333 | 0 | HEAD `75f4286`, tree clean, hook path `scripts/maintenance/hooks`, 31 tags, no remote, 309 commits |
 | S1 | done | — | — | Bundle verified ("complete history"); `git bundle list-heads` shows `main` and 31 tags. `SHA256SUMS` covers the bundle and the two v1 directories |
 | S2 | done | 333 | 0 | See "S2 successor sets" |
+| S3 | done | 333 | 0 | `LICENSE` (MIT, unmodified text, "Copyright (c) 2026 Wanlin Young (Camille Yang)"); `RULES.md` v1.6 in the approved wording (G3, D2, P5, revision log); `LICENSE` added to `G3_ALLOWED` and to the G3 allowlist test; `license = "MIT"` and `license-files` in `pyproject.toml`; README Layout and License section; `CLAUDE.md` "Applies to" line |
 
 ### S2 successor sets
 

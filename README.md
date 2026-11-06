@@ -83,6 +83,7 @@ New run output goes to `runs/` by default. The pipeline is described in
 AIMediator/
 ├── README.md            # This entry point
 ├── RULES.md             # Project rules
+├── LICENSE              # MIT License
 ├── CLAUDE.md            # Agent entry file
 ├── pyproject.toml       # Package metadata
 ├── MANIFEST.in          # Extra sdist files
@@ -141,6 +142,15 @@ glossary. Its acceptance measurements and limits are in the
 the [plan](docs/archive/pipeline-upgrade.md) is archived, and the
 [change record](docs/records/20261104-pipeline-upgrade.md) lists the
 items left open for a later plan.
+
+## License
+
+The code is released under the [MIT License](LICENSE).
+
+The comment text in `data/evaluation/` belongs to its authors. It is
+included only for research evaluation and is not covered by the license.
+The glossary content comes from the sources listed in its `sources` field:
+Capcom's official pages and community references.
 
 ## Development
 

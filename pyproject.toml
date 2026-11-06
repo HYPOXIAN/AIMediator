@@ -7,6 +7,8 @@ name = "aimediator"
 version = "0.1.0"
 description = "Evidence-linked bilingual SF6 sample-feedback analysis CLI"
 requires-python = ">=3.9"
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = ["numpy>=1.23.5,<3"]
 readme = "README.md"
 

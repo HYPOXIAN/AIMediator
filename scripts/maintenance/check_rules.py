@@ -48,6 +48,8 @@ G3_ALLOWED = frozenset({
     'build', 'dist', '.venv',
     # RULES.md v1.2: ignored local state of the coding-agent harness.
     '.claude',
+    # RULES.md v1.6: the license text.
+    'LICENSE',
     # The repository itself; required by G5.
     '.git',
 })

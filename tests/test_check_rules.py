@@ -58,6 +58,7 @@ class TestGlobalRules(CheckRulesTestCase):
                 self.write(name)
             else:
                 (self.root / name).mkdir()
+        self.write('LICENSE')  # allowed since RULES.md v1.6
         self.assertEqual(self.paths('G3'), ['notes', 'prompts', 'stray.txt'])
 
     def test_g7_flags_home_paths_but_not_prose_placeholders(self):
