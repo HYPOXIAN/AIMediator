@@ -53,6 +53,7 @@ has a `SHA256SUMS`.
 | `data/evaluation/balance-regressions-v1/cases.json` | Each of the 12 cases holds `source.source_url`, a link to the commenter's Steam profile (G9). Successor: `balance-regressions-v2` | `data-evaluation/balance-regressions-v1/cases.json`, sha256 `69b5c34c1c5f1c77866fd6a485f4beebf92377e921392ab4bdcb5f66604878ff` | `docs/records/20261022-balance-review-v2.md`, `docs/records/20261103-code-restructuring.md`, `docs/archive/pipeline-upgrade.md`, `docs/archive/code-restructuring-handoffs/b0-safety-net.md` |
 | `data/evaluation/evidence-quality-real-v1/annotation-template.json` | Each of the 300 items holds `source_url`, a link to the commenter's Steam profile (237 items) or to the YouTube comment itself (63 items) (G9). Successor: `evidence-quality-real-v2` | `data-evaluation/evidence-quality-real-v1/annotation-template.json`, sha256 `37813fa9124e8f13af464e1ddfd24939d02cbe1b4807853788a002d580260490` | `docs/records/20261026-evidence-quality-implementation.md`, `docs/records/20261103-reorganization.md`, `docs/records/20261103-code-restructuring.md`, `docs/archive/reorganization.md`, `docs/archive/code-restructuring-handoffs/b0-safety-net.md`, `reports/evidence-quality-verification-v1/summary/verification.json` |
 | `cli-demo/input.jsonl` (history only) | 50 real reviews with links to the commenters' Steam profiles; deleted from the tree in `bec7512`, removed from the history in S8 | The bundle | None in living documents |
+| `data/evaluation/evidence-quality-real-v1-pending/annotation-template.json` (history only) | The same 300-item file as `evidence-quality-real-v1/annotation-template.json`, under the directory name it had until 2026-11-03; missing from the work order, found by the S8 scan (see "History rewrite"), removed from the history in S8 | The bundle | None in living documents |
 | `cli-demo/labels/annotation-template.json` (history only) | Links to the commenters' Steam profiles; deleted from the tree in `bec7512`, removed from the history in S8 | The bundle | None in living documents |
 | The owner's home directory path in old versions of 12 files (history only) | G7; removed from the tree in `9c6587e`. S8 replaces it in every old version | The bundle | None |
 
@@ -73,6 +74,8 @@ not. The frozen documents listed above keep their references unchanged
 | S4 | done | 333 | 0 | `pyproject.toml`: description, authors (name only), keywords, classifiers (no `License ::` classifier), `[project.urls]` for `HYPOXIAN/AIMediator`. `.env.example` adds `GOOGLE_API_KEY` and `BLUESKY_ACCESS_TOKEN` (names only). The collection keys are described in the README, section "Collection keys", which links the embedding keys to the glossary vector index reference. See "S4 metadata build" |
 | S5 | done | 333 | 0 | See "S5 README" |
 | S6 | skipped | — | — | PP-D05: the owner kept the committed report; `docs/records/20261105-project-report.pdf` is unchanged (sha256 `337951c983ced930e8596214badf1e14cbb77a6bbf8c1be446bdc71d422f1427`). Both defects are listed under "Open items" |
+| S7 | done | 333 | 0 | Tree clean. `scripts/maintenance/verify_cli_install.py` passed (18 commands, network denied) against a wheel built from HEAD with the setuptools backend and installed into a fresh virtual environment outside the checkout. PP-D06 and PP-D07 answered |
+| S8 | done | 333 | 0 | See "History rewrite" |
 
 ### S4 metadata build
 
@@ -151,7 +154,118 @@ set, and no added lines.
 
 ## History rewrite
 
-Filled in at S8.
+Done in S8 on 2026-11-05 with `git filter-repo` 2.47.0 (`a40bce548d2c`),
+installed for the user outside the project's virtual environment.
+
+### State before
+
+- HEAD `24fda0af8b1380ebec96d0f489be9dc3a01913f7`, tree
+  `90510d395be31a88ea6727a37bb4f334d80431c3`.
+- 314 commits (`git rev-list --all --count`) and 31 tags: 20 annotated,
+  11 lightweight.
+- Every commit and every annotated tag carried the owner's personal email
+  address.
+- The scan of the work order (section 7) reported `steam_profile` in
+  `cli-demo/input.jsonl`, `cli-demo/labels/annotation-template.json`,
+  `data/evaluation/balance-regressions-v1/cases.json` and
+  `data/evaluation/evidence-quality-real-v1/annotation-template.json`;
+  `youtube_comment` in the last of these; `home_path` in the 12 paths of
+  the work order (finding F2).
+- A bundle of every ref at this state was kept in the session's scratch
+  directory, outside the project, for the redo described below.
+
+### Command
+
+Run from the project root; `<scratch>` stands for a directory outside the
+project.
+
+```sh
+git filter-repo --force \
+  --invert-paths \
+  --path cli-demo/input.jsonl \
+  --path cli-demo/labels/annotation-template.json \
+  --path data/evaluation/balance-regressions-v1/cases.json \
+  --path data/evaluation/evidence-quality-real-v1/annotation-template.json \
+  --path data/evaluation/evidence-quality-real-v1-pending/annotation-template.json \
+  --replace-text <scratch>/expressions.txt \
+  --mailmap <scratch>/mailmap \
+  --prune-empty never \
+  --prune-degenerate never
+```
+
+`expressions.txt` holds two `literal:` expressions: the project directory
+under the owner's home directory becomes `<project root>`, then the owner's
+home directory becomes `~`. The paths themselves are not written here, so
+that this record does not bring them back. `mailmap` maps the owner's
+previous address to `HYPOXIAN <180716825+HYPOXIAN@users.noreply.github.com>`
+(PP-D07); it applies to authors, committers and taggers.
+
+### Escalation: a path missing from the work order
+
+The first run used the four paths of the work order. Its scan still
+reported `steam_profile` and `youtube_comment` in
+`data/evaluation/evidence-quality-real-v1-pending/annotation-template.json`:
+the same 300-item file under the directory name it had until 2026-11-03.
+The scan before the rewrite had not shown that path, because
+`git rev-list --objects` names each blob under one path only. A second scan
+over every path of every commit (`git ls-tree -r` per commit) confirmed it
+as the only missing path; all other checks of the first run had passed.
+
+The owner chose to redo the rewrite once (2026-11-05). Every ref was
+restored from the bundle of the state before, and the restored refs matched
+the recorded list exactly. The command above, with the fifth path, then ran
+on the original history, so the commit map relates the original hashes
+directly to the published ones.
+
+### Verification
+
+| Check | Before | After |
+| ----- | ------ | ----- |
+| Tree of HEAD | `90510d395be31a88ea6727a37bb4f334d80431c3` | `90510d395be31a88ea6727a37bb4f334d80431c3` (equal) |
+| Commits | 314 | 314 |
+| Tags | 31 | 31 |
+| `steam_profile` (scan of every path) | 5 paths | none |
+| `youtube_comment` (scan of every path) | 2 paths | none |
+| `home_path` (scan of every path) | 12 paths | none |
+| Author and committer addresses | the owner's personal address | `180716825+HYPOXIAN@users.noreply.github.com` only |
+| Tagger of the 20 annotated tags | the owner's personal address | `HYPOXIAN <180716825+HYPOXIAN@users.noreply.github.com>` |
+
+- The scan of the work order (section 7) reports `none` in all three
+  categories, and so does the scan of every path.
+- No object of the rewritten repository contains the owner's personal
+  address.
+- The old commits are gone from this repository: `git cat-file` no longer
+  finds the old HEAD or `75f4286`; no loose or unreachable objects remain.
+- The commit map has 314 rows. Its first column equals the commit list of
+  the original history and its second column the commit list of the
+  rewritten one, one to one.
+- After the rewrite: 333 tests pass and the rule check reports 0.
+- `git config user.email` of this repository is the no-reply address.
+
+### Commit map
+
+`reports/20261105-history-rewrite/summary/commit-map.txt`, with its
+manifest beside it, holds the full old and new hash of every commit. An
+abbreviated hash cited before the rewrite resolves by prefix match on the
+first column. Tags kept their names. Selected entries:
+
+| Old | New | Commit |
+| --- | --- | ------ |
+| `0d390c4` | `f88e907` | Baseline of `RULES.md` P5 |
+| `75f4286` | `51f668b` | `docs: add the final project report` (start of this work) |
+| `4420dca` | `fe4995a` | S2 |
+| `eb2379c` | `0c21cb5` | S3 |
+| `df9c43d` | `6eb0cdc` | S4 |
+| `27a6007` | `423ece8` | S5 |
+| `24fda0a` | `8c41163` | S6 note; HEAD at the rewrite |
+
+### Backups
+
+The old history up to `75f4286` is kept only in the S1 bundle
+(`~/Archives/AIMediator/20261105-pre-publish/aimediator-all.bundle`). The
+five commits made after S1 existed only in this repository and in the
+session bundle, which is not archived; their rewritten versions have the
+same trees and differ only in the commit email.
 
 ## Open items
 

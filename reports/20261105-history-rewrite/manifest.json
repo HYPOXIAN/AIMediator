@@ -1,0 +1,25 @@
+{
+ "schema": "aimediator-report-manifest-v1",
+ "name": "20261105-history-rewrite",
+ "record": "docs/records/20261105-publish-preparation.md",
+ "session": "S8",
+ "decisions": [
+  "PP-D06",
+  "PP-D07"
+ ],
+ "reason": "Resolves the commit hashes cited in documents written before the history rewrite of 2026-11-05: every commit of the old history maps to exactly one commit of the rewritten history (RULES.md P5)",
+ "datasets": {},
+ "code": {
+  "rewritten HEAD": "8c41163e7dc0702d6c044a1de1aff46c6ae06bcf",
+  "old HEAD": "24fda0af8b1380ebec96d0f489be9dc3a01913f7",
+  "tool": "git filter-repo 2.47.0 (a40bce548d2c)"
+ },
+ "files": {
+  "summary/commit-map.txt": "the commit-map written by git filter-repo: a header line, then one line per commit, old full hash and new full hash; 314 commits. Abbreviated hashes in documents resolve by prefix match on the first column. Tags kept their names"
+ },
+ "archive": {
+  "path": "~/Archives/AIMediator/20261105-pre-publish/",
+  "checksums": "SHA256SUMS",
+  "contents": "aimediator-all.bundle: every ref of the old history at 75f4286 (31 tags and main), taken in S1 before any change; data-evaluation/: the two withheld v1 evaluation files. The five commits made after S1 and before the rewrite differ from their rewritten versions only in the commit email; their trees are the same"
+ }
+}
