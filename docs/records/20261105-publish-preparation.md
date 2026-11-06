@@ -70,6 +70,22 @@ not. The frozen documents listed above keep their references unchanged
 | S1 | done | — | — | Bundle verified ("complete history"); `git bundle list-heads` shows `main` and 31 tags. `SHA256SUMS` covers the bundle and the two v1 directories |
 | S2 | done | 333 | 0 | See "S2 successor sets" |
 | S3 | done | 333 | 0 | `LICENSE` (MIT, unmodified text, "Copyright (c) 2026 Wanlin Young (Camille Yang)"); `RULES.md` v1.6 in the approved wording (G3, D2, P5, revision log); `LICENSE` added to `G3_ALLOWED` and to the G3 allowlist test; `license = "MIT"` and `license-files` in `pyproject.toml`; README Layout and License section; `CLAUDE.md` "Applies to" line |
+| S4 | done | 333 | 0 | `pyproject.toml`: description, authors (name only), keywords, classifiers (no `License ::` classifier), `[project.urls]` for `HYPOXIAN/AIMediator`. `.env.example` adds `GOOGLE_API_KEY` and `BLUESKY_ACCESS_TOKEN` (names only). The collection keys are described in the README, section "Collection keys", which links the embedding keys to the glossary vector index reference. See "S4 metadata build" |
+
+### S4 metadata build
+
+The work order assumed that the `build` module was installed. It is not
+installed for the system Python or in `.venv`, and from the project root
+`python3 -m build` resolves to the ignored `build/` directory instead. The
+packages were therefore built with the setuptools backend command that
+[the CLI guide](../guides/cli-usage.md) gives as the alternative
+(setuptools 80.10.2), into a scratch directory outside the project. The
+`PKG-INFO` of the sdist shows `License-Expression: MIT`, `License-File:
+LICENSE`, the author, the three project URLs and the eight classifiers.
+The sdist holds `LICENSE` and the wheel holds
+`aimediator-0.1.0.dist-info/licenses/LICENSE`. Neither package holds the
+project's `data/` or `reports/` directories or a `.env`; the only `data`
+path is the package asset `src/aimediator/assets/data/glossary.json`.
 
 ### S2 successor sets
 

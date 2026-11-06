@@ -68,6 +68,7 @@ package on the import path: install it with `pip install -e .`, or put
   and `python3 -m aimediator.glossary_vectors`: source review of a runner
   output, quality annotation and scoring, and the glossary vector index.
 - `scripts/collect/`: bounded public-feedback collection and screening.
+  See "Collection keys" below.
 - `scripts/experiments/`: evaluation, regression, diagnostic and live-model
   experiments.
 - `scripts/maintenance/`: the rule check, its pre-commit hook and the
@@ -76,6 +77,26 @@ package on the import path: install it with `pip install -e .`, or put
 New run output goes to `runs/` by default. The pipeline is described in
 [balance analysis](docs/design/balance-analysis.md) and
 [evidence quality](docs/design/evidence-quality.md).
+
+### Collection keys
+
+The collectors in `scripts/collect/` call the official Steam, Bluesky and
+YouTube endpoints. Steam needs no key. The other keys are read from the
+environment; `.env.example` lists their names.
+
+- `YOUTUBE_API_KEY`: a YouTube Data API v3 key, needed to collect YouTube
+  comments. `collect_feedback.py --env-file <file>` and
+  `collect_balanced_feedback.py` (default file `.env`) load it from a local
+  file.
+- `GOOGLE_API_KEY`: a fallback for `YOUTUBE_API_KEY`, read from the
+  environment by `collect_feedback.py` only.
+- `BLUESKY_ACCESS_TOKEN`: optional. With it, Bluesky search goes to
+  `bsky.social` with the token; without it, to the public endpoint
+  `public.api.bsky.app`.
+
+The embedding keys (`EMBEDDING_MODEL`, `EMBEDDING_API_KEY`,
+`EMBEDDING_API_URL`) are described in the
+[glossary vector index reference](docs/reference/glossary-vector-index.md).
 
 ## Layout
 
