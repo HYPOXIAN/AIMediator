@@ -1,0 +1,19 @@
+{
+  "changes_frozen_labels": false,
+  "reviewer_type": "agent",
+  "entries": [
+    {
+      "file": "annotation-template.json",
+      "field": "source_url",
+      "issue": "Each of the 300 items links to the commenter's Steam profile (SteamID64) or to the YouTube comment itself. RULES.md G9: data holding public authors' URLs is not distributed.",
+      "decision": "Content withheld from the public repository on 2026-11-05 under RULES.md G9 and removed from the git history; manifest.json stays frozen. Successor set: evidence-quality-real-v2, with the same comment text and labels and without source_url. The original is archived in ~/Archives/AIMediator/20261105-pre-publish/data-evaluation/evidence-quality-real-v1/ with a SHA256SUMS.",
+      "withheld_on": "2026-11-05",
+      "successor": "evidence-quality-real-v2",
+      "archive": "~/Archives/AIMediator/20261105-pre-publish/data-evaluation/",
+      "original_sha256": "37813fa9124e8f13af464e1ddfd24939d02cbe1b4807853788a002d580260490",
+      "record": "docs/records/20261105-publish-preparation.md",
+      "relevance_label_affected": false,
+      "label_changed": false
+    }
+  ]
+}

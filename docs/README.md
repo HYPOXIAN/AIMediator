@@ -59,6 +59,7 @@ RULES.md D1. Records, decisions and meeting notes are frozen once final
 | [20261104-pipeline-upgrade.md](records/20261104-pipeline-upgrade.md) | Record | Active | Change record of the pipeline upgrade: owner decisions UP-D01 to UP-D20, progress, baselines, live evaluations, session log, verification notes, the final review and the items left open; final 2026-11-05 (tag `upgrade-done`). |
 | [20261105-pipeline-upgrade-validation.md](records/20261105-pipeline-upgrade-validation.md) | Record | Active | Acceptance measurements of the pipeline upgrade (U7.1 and U7.2): benchmark runs in `off` and `enforce`, the holdout and the test split once each, the plan 5.5 targets with measured values, limitations; final 2026-11-05 (tag `upgrade-done`). |
 | [20261105-project-report.pdf](records/20261105-project-report.pdf) | Record (PDF) | Active | Final project report (8 pages): objectives and plan changes, program structure and pipeline stages, experiments and acceptance results, the move from local models to a hosted API, conclusions and references. |
+| [20261105-publish-preparation.md](records/20261105-publish-preparation.md) | Record | Draft | Change record of the preparation for the first GitHub push: owner decisions PP-D01 to PP-D08, the link-free successors of the two real-comment evaluation sets, the license, the README revision, the history rewrite and the items left open. |
 
 ## Reference
 

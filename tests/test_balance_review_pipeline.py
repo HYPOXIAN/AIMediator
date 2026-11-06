@@ -138,7 +138,7 @@ class ReviewPipelineTests(unittest.TestCase):
         self.assertFalse(manifest['independent_human_gold'])
 
     def test_regression_fixtures_keep_exact_original_hash_bindings(self):
-        folder=ROOT/'data/evaluation/balance-regressions-v1'
+        folder=ROOT/'data/evaluation/balance-regressions-v2'
         raw=(folder/'cases.json').read_bytes();cases=json.loads(raw)
         manifest=json.loads((folder/'manifest.json').read_text(encoding='utf-8'))
         self.assertEqual(digest(raw),manifest['cases_sha256'])

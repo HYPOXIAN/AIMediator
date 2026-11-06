@@ -44,7 +44,7 @@ def main():
     p.add_argument('--baseline',type=Path,required=True)
     p.add_argument('--out',type=Path,required=True)
     args=p.parse_args()
-    fixture=ROOT/'data/evaluation/balance-regressions-v1/cases.json'
+    fixture=ROOT/'data/evaluation/balance-regressions-v2/cases.json'
     cases=strict_json(fixture.read_text(encoding='utf-8'))
     audit={r['claim_id']:r.get('audit') for r in strict_json((args.baseline/'audit-progress.json').read_text(encoding='utf-8'))}
     output=replay(cases,audit)

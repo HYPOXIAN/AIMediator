@@ -34,8 +34,8 @@ SRC = ROOT / 'src'
 FIXTURE = ROOT / 'tests/fixtures/behavior-lock.json'
 MODES = ('off', 'shadow', 'enforce')
 SCREENING_SETS = (  # (path, expected number of text_original values)
-    ('data/evaluation/balance-regressions-v1/cases.json', 12),
-    ('data/evaluation/evidence-quality-real-v1/annotation-template.json', 300),
+    ('data/evaluation/balance-regressions-v2/cases.json', 12),
+    ('data/evaluation/evidence-quality-real-v2/annotation-template.json', 300),
     ('data/evaluation/evidence-quality-synthetic-v1/records.jsonl', 38),
 )
 

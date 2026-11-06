@@ -1,0 +1,19 @@
+{
+  "changes_frozen_labels": false,
+  "reviewer_type": "agent",
+  "entries": [
+    {
+      "file": "cases.json",
+      "field": "source.source_url",
+      "issue": "Each of the 12 cases links to the commenter's Steam profile (SteamID64). RULES.md G9: data holding public authors' URLs is not distributed.",
+      "decision": "Content withheld from the public repository on 2026-11-05 under RULES.md G9 and removed from the git history; manifest.json stays frozen. Successor set: balance-regressions-v2, with the same comment text and labels and without source.source_url. The original is archived in ~/Archives/AIMediator/20261105-pre-publish/data-evaluation/balance-regressions-v1/ with a SHA256SUMS.",
+      "withheld_on": "2026-11-05",
+      "successor": "balance-regressions-v2",
+      "archive": "~/Archives/AIMediator/20261105-pre-publish/data-evaluation/",
+      "original_sha256": "69b5c34c1c5f1c77866fd6a485f4beebf92377e921392ab4bdcb5f66604878ff",
+      "record": "docs/records/20261105-publish-preparation.md",
+      "relevance_label_affected": false,
+      "label_changed": false
+    }
+  ]
+}

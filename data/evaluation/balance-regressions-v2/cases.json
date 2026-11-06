@@ -1,0 +1,782 @@
+[
+  {
+    "case_id": "steam:236856267:1",
+    "category": "numeric_example_leak",
+    "source": {
+      "record_id": "steam:236856267",
+      "platform": "steam",
+      "source_id": "236856267",
+      "text_original": "Drive impact is the bane of my existence, Ryu needs to be locked up for war crimes.\nMai is cute tho",
+      "language": "en",
+      "retrieved_at_utc": "2026-10-15T07:14:12.706767+00:00",
+      "target_patch_context": "2026-08-03 (context only; applicability not verified)",
+      "patch_relevance": "unreviewed",
+      "content_review": "not_performed",
+      "reviewer": "",
+      "decision": "",
+      "notes": "",
+      "content_type": "user_review",
+      "language_method": "platform_label_unverified",
+      "language_original": "english",
+      "created_at_utc": "2026-10-04T07:36:14+00:00",
+      "updated_at_utc": "2026-10-04T07:36:14+00:00",
+      "voted_up": true,
+      "votes_up": 0,
+      "playtime_at_review_minutes": 5526,
+      "query_language": "en",
+      "access_method": "official_public_api",
+      "source_type": "observed",
+      "retrieval_order": "recent",
+      "context": {
+        "app_id": 1364780,
+        "title": "Street Fighter 6"
+      },
+      "coarse_screening": {
+        "version": "coarse-v1",
+        "decision": "keep",
+        "reason": "A specific Drive-system, pressure, throw-loop, input-parser, or character-spam complaint is present, even when phrased emotionally or sarcastically.",
+        "signals": [],
+        "method": "agent_boundary_review",
+        "text_sha256": "5a54e2edfd1a0758c410e78b2e5f4015f815b9aa2619dd7af1a406b6ef36ba2f",
+        "human_review": "pending"
+      }
+    },
+    "proposed_claim": {
+      "character": "Ryu",
+      "target": null,
+      "direction": "nerf",
+      "recommendation": "Reduce Drive Impact startup from 8 to 6 frames.",
+      "specificity": "source_numeric",
+      "parameters": [
+        {
+          "metric": "startup",
+          "current": "8",
+          "proposed": "6",
+          "delta": null,
+          "unit": "frames",
+          "evidence_id": "E1"
+        }
+      ],
+      "evidence_ids": [
+        "E1"
+      ],
+      "uncertain": false
+    },
+    "expected_original_supported": false,
+    "review_reason": "Drive Impact startup and 8/6 frame values are not in the original; reducing startup also conflicts with the nerf label.",
+    "source_provenance": "existing_full_original_comment",
+    "reviewer_type": "agent"
+  },
+  {
+    "case_id": "steam:233481207:1",
+    "category": "numeric_example_leak",
+    "source": {
+      "record_id": "steam:233481207",
+      "platform": "steam",
+      "source_id": "233481207",
+      "text_original": "Shoto Fighter 6, get fucked if you want to use anyone remotely fun even in casual matches by characters that have every tool in the game. Thanks Capcom for another year of Ryu buffs.",
+      "language": "en",
+      "retrieved_at_utc": "2026-10-15T07:14:27.750778+00:00",
+      "target_patch_context": "2026-08-03 (context only; applicability not verified)",
+      "patch_relevance": "unreviewed",
+      "content_review": "not_performed",
+      "reviewer": "",
+      "decision": "",
+      "notes": "",
+      "content_type": "user_review",
+      "language_method": "platform_label_unverified",
+      "language_original": "english",
+      "created_at_utc": "2026-08-23T04:02:19+00:00",
+      "updated_at_utc": "2026-08-23T04:02:19+00:00",
+      "voted_up": false,
+      "votes_up": 25,
+      "playtime_at_review_minutes": 6598,
+      "query_language": "en",
+      "access_method": "official_public_api",
+      "source_type": "observed",
+      "retrieval_order": "recent",
+      "context": {
+        "app_id": 1364780,
+        "title": "Street Fighter 6"
+      },
+      "coarse_screening": {
+        "version": "coarse-v1",
+        "decision": "keep",
+        "reason": "explicit_balance_or_strength_claim",
+        "signals": [
+          "buffs"
+        ],
+        "method": "rules",
+        "text_sha256": "18dd65d1a1ce64258390fc34e21feca1f895723e6e1e898d9e297e4fc96443aa",
+        "human_review": "pending"
+      }
+    },
+    "proposed_claim": {
+      "character": "Ryu",
+      "target": null,
+      "direction": "buff",
+      "recommendation": "Reduce uppercut startup from 8 to 6 frames",
+      "specificity": "source_numeric",
+      "parameters": [
+        {
+          "metric": "startup",
+          "current": "8",
+          "proposed": "6",
+          "delta": null,
+          "unit": "frames",
+          "evidence_id": "E1"
+        }
+      ],
+      "evidence_ids": [
+        "E1"
+      ],
+      "uncertain": false
+    },
+    "expected_original_supported": false,
+    "review_reason": "No uppercut, startup value, or 8-to-6-frame request appears in this review. These are unsupported example-shaped numbers.",
+    "source_provenance": "existing_full_original_comment",
+    "reviewer_type": "agent"
+  },
+  {
+    "case_id": "steam:232777804:2",
+    "category": "numeric_example_leak",
+    "source": {
+      "record_id": "steam:232777804",
+      "platform": "steam",
+      "source_id": "232777804",
+      "text_original": "The Good \n-Casual Friendly with easy controls for people to pick up and play\n-Tons of players\n-A decent roster size at this point\n-Easy to swap characters if your in a rough drought \n-Game runs well and has the best netcode\n-Animations look great\n\nThe Bad\n-Modern controls hurts the balance and design of the game which leaves characters in awkward states \n-Game does no changes because they are scared to do antyhing\n-Raw drive rush, drive rush fireball, throw loops,  Brainless offense needs to be removed/toned down \n-Defensive mechanics do not exist - all the defense mechanics are directly used for generating offense - drive reversal is unreliable and if your playing a character with no dp or reversal level 1.....  your going to hate your life.\n-People can rage quit at the end of a match in masters to avoid giving you points even though the games over\n-People will turn on the lag switch randomly with no bans\n-People are actually caught for cheats and all they get is a rank reset\n-Nobody plays footsies in this game because of all the neutral skip garbage slop\n-Character balance on the surface level seems very good until you realize its trash\n-Balance changes like doubling down on throw loops, ryu apparently having issues generating offense and somehow zangief players being confused at when russian suplex will come out .....? who wrote these patch notes - clearly someone with 0 iq.\n-S4 pass is TERRIBLE outside tifa\n-Yasmine is by far the worst character i've ever seen in a fighting game period.\n\nYou can blame the balance team, you can blame the planning team - but really if you ask players how they feel about the game state that play ranked..... they will tell you its stale and boring and this is NAKAYAMAS fault, terrible director and should be fired immediately - i do not sympathize with developers that ask for 80 dollar base game -> 40 CAD season passes. Charging this much, you better deliver  or prepare to be critiqued.",
+      "language": "en",
+      "retrieved_at_utc": "2026-10-15T07:14:32.757772+00:00",
+      "target_patch_context": "2026-08-03 (context only; applicability not verified)",
+      "patch_relevance": "unreviewed",
+      "content_review": "not_performed",
+      "reviewer": "",
+      "decision": "",
+      "notes": "",
+      "content_type": "user_review",
+      "language_method": "platform_label_unverified",
+      "language_original": "english",
+      "created_at_utc": "2026-08-14T03:01:12+00:00",
+      "updated_at_utc": "2026-08-14T03:01:24+00:00",
+      "voted_up": false,
+      "votes_up": 9,
+      "playtime_at_review_minutes": 75023,
+      "query_language": "en",
+      "access_method": "official_public_api",
+      "source_type": "observed",
+      "retrieval_order": "recent",
+      "context": {
+        "app_id": 1364780,
+        "title": "Street Fighter 6"
+      },
+      "coarse_screening": {
+        "version": "coarse-v1",
+        "decision": "keep",
+        "reason": "explicit_balance_or_strength_claim",
+        "signals": [
+          "balance"
+        ],
+        "method": "rules",
+        "text_sha256": "0c9dd8bf21a0de4a23690ed7530e32baf554f0fadd5de83d96c9252edc959fb5",
+        "human_review": "pending"
+      }
+    },
+    "proposed_claim": {
+      "character": "Ryu",
+      "target": "uppercut startup",
+      "direction": "buff",
+      "recommendation": "Reduce uppercut startup from 8 to 6 frames",
+      "specificity": "source_numeric",
+      "parameters": [
+        {
+          "metric": "startup",
+          "current": "8",
+          "proposed": "6",
+          "delta": null,
+          "unit": "frames",
+          "evidence_id": "E1"
+        }
+      ],
+      "evidence_ids": [
+        "E1"
+      ],
+      "uncertain": false
+    },
+    "expected_original_supported": false,
+    "review_reason": "Uppercut startup and the 8-to-6-frame request are absent from the original. The values match the synthetic prompt example, not this source.",
+    "source_provenance": "existing_full_original_comment",
+    "reviewer_type": "agent"
+  },
+  {
+    "case_id": "steam:237696056:1",
+    "category": "nationality_alias_wrong_subject",
+    "source": {
+      "record_id": "steam:237696056",
+      "platform": "steam",
+      "source_id": "237696056",
+      "text_original": "什么叫阿俊的做辅助连一套和三气伤害大差不差\n打到一次倒地或者远距离不压起身先给你塞个雷霆大柱子然后超级口气发波，接一套辅助连打完还又飞雷神回去了，接着雷打不动的防御塔，漏一点破绽直接给我血管子清空，防御打给我白血，你还得猜他后来是拳脚还是投，猜错又惩罚，猜对了更有惩罚，纯纯坐大牢来的\n把这阿三重做吧真的，匹到了是给人打的吗",
+      "language": "zh",
+      "retrieved_at_utc": "2026-10-15T07:14:42.843175+00:00",
+      "target_patch_context": "2026-08-03 (context only; applicability not verified)",
+      "patch_relevance": "unreviewed",
+      "content_review": "not_performed",
+      "reviewer": "",
+      "decision": "",
+      "notes": "",
+      "content_type": "user_review",
+      "language_method": "platform_label_unverified",
+      "language_original": "schinese",
+      "created_at_utc": "2026-10-14T12:38:43+00:00",
+      "updated_at_utc": "2026-10-14T12:52:32+00:00",
+      "voted_up": false,
+      "votes_up": 0,
+      "playtime_at_review_minutes": 8257,
+      "query_language": "zh",
+      "access_method": "official_public_api",
+      "source_type": "observed",
+      "retrieval_order": "recent",
+      "context": {
+        "app_id": 1364780,
+        "title": "Street Fighter 6"
+      },
+      "coarse_screening": {
+        "version": "coarse-v1",
+        "decision": "keep",
+        "reason": "specific_competitive_mechanic",
+        "signals": [
+          "白血"
+        ],
+        "method": "rules",
+        "text_sha256": "8d498616fbaeb407b50fb9f73352631e85746f20caa6ec7af03fb6e6fc079066",
+        "human_review": "pending"
+      }
+    },
+    "proposed_claim": {
+      "character": "Dhalsim",
+      "target": null,
+      "direction": "nerf",
+      "recommendation": "调整达尔西姆的技能，使其不再过于强势。",
+      "specificity": "qualitative_only",
+      "parameters": [],
+      "evidence_ids": [
+        "E1",
+        "E2",
+        "E3"
+      ],
+      "uncertain": false
+    },
+    "expected_original_supported": false,
+    "review_reason": "原文没有达尔西姆的明确姓名；国籍或贬称不足以确认角色身份，不得把未命名新角色或阿俊映射为 Dhalsim。",
+    "source_provenance": "existing_full_original_comment",
+    "reviewer_type": "agent"
+  },
+  {
+    "case_id": "steam:237689306:2",
+    "category": "duplicate_evidence_and_wrong_identity",
+    "source": {
+      "record_id": "steam:237689306",
+      "platform": "steam",
+      "source_id": "237689306",
+      "text_original": "钢丝这样街霸也这样，我没有任何种族歧视的兴趣，阿俊也符合我对印度人的文化风俗，而且做的又有风味又帅，角色设计上我是满意的，但就按这强度来看，逆天完了，其他方面我给9.3分，强度把控我给6.4分",
+      "language": "zh",
+      "retrieved_at_utc": "2026-10-15T07:14:42.843261+00:00",
+      "target_patch_context": "2026-08-03 (context only; applicability not verified)",
+      "patch_relevance": "unreviewed",
+      "content_review": "not_performed",
+      "reviewer": "",
+      "decision": "",
+      "notes": "",
+      "content_type": "user_review",
+      "language_method": "platform_label_unverified",
+      "language_original": "schinese",
+      "created_at_utc": "2026-10-14T10:17:48+00:00",
+      "updated_at_utc": "2026-10-14T10:17:48+00:00",
+      "voted_up": false,
+      "votes_up": 2,
+      "playtime_at_review_minutes": 9869,
+      "query_language": "zh",
+      "access_method": "official_public_api",
+      "source_type": "observed",
+      "retrieval_order": "recent",
+      "context": {
+        "app_id": 1364780,
+        "title": "Street Fighter 6"
+      },
+      "coarse_screening": {
+        "version": "coarse-v1",
+        "decision": "keep",
+        "reason": "explicit_balance_or_strength_claim",
+        "signals": [
+          "强度"
+        ],
+        "method": "rules",
+        "text_sha256": "a9ebf2cee63ed1d8373079668c3e31916e87b0c34bc11b9c8f5774a46abcfeb6",
+        "human_review": "pending"
+      }
+    },
+    "proposed_claim": {
+      "character": "Dhalsim",
+      "target": null,
+      "direction": "unclear",
+      "recommendation": "达尔西姆的白血机制过于强势，需要调整。",
+      "specificity": "qualitative_only",
+      "parameters": [],
+      "evidence_ids": [
+        "E1",
+        "E1",
+        "E1"
+      ],
+      "uncertain": true
+    },
+    "expected_original_supported": false,
+    "review_reason": "原文没有达尔西姆的明确姓名；国籍或贬称不足以确认角色身份，不得把未命名新角色或阿俊映射为 Dhalsim。",
+    "source_provenance": "existing_full_original_comment",
+    "reviewer_type": "agent"
+  },
+  {
+    "case_id": "steam:237710193:1",
+    "category": "comparison_subject",
+    "source": {
+      "record_id": "steam:237710193",
+      "platform": "steam",
+      "source_id": "237710193",
+      "text_original": "阿俊，一个让我玩着会笑出声的角色，气笑的。\n卡普空你们真的神完了，其游戏体验不亚于你拿着p90RUshB的时候突然发现b门守着一台毁灭模式独角兽，怎么玩啊。\n将军的炸弹和阿鬼的毒好歹还要放弃伤害打中人，被打中后还会解除，你阿俊的白血是个什么东西，草莓塔，铁山靠，本田同款推掌，全是加帧就不谈了，摸到人两割白血，再摸到就是四割，被对面抢个反手也无所谓，反正伤害已经打出来了。街霸6又跟街霸5不一样，被打了白血半天才能回过来，跑过去偷个中段就提现成功，这是什么狗屁玩法。\n格斗游戏，拉防能保证一定程度的安全，寻找机会化解对方的攻势，在这个过程里与对方形成猜拳的博弈，这个玩法应该是底层逻辑，什么叫现在这个底层逻辑变成放狗屁了？\n对上阿俊真就是强健现场啊。。。要么强健我的血条，把我的角色当套使。要么强健我的角色，把我的血条当套使。反正我和血条总有一个要当飞机杯，我真没招了。",
+      "language": "zh",
+      "retrieved_at_utc": "2026-10-15T07:14:42.842957+00:00",
+      "target_patch_context": "2026-08-03 (context only; applicability not verified)",
+      "patch_relevance": "unreviewed",
+      "content_review": "not_performed",
+      "reviewer": "",
+      "decision": "",
+      "notes": "",
+      "content_type": "user_review",
+      "language_method": "platform_label_unverified",
+      "language_original": "schinese",
+      "created_at_utc": "2026-10-14T16:22:21+00:00",
+      "updated_at_utc": "2026-10-14T16:22:21+00:00",
+      "voted_up": false,
+      "votes_up": 4,
+      "playtime_at_review_minutes": 49594,
+      "query_language": "zh",
+      "access_method": "official_public_api",
+      "source_type": "observed",
+      "retrieval_order": "recent",
+      "context": {
+        "app_id": 1364780,
+        "title": "Street Fighter 6"
+      },
+      "coarse_screening": {
+        "version": "coarse-v1",
+        "decision": "keep",
+        "reason": "character_strength_or_matchup_claim",
+        "signals": [
+          "角色当套使。要么强"
+        ],
+        "method": "rules",
+        "text_sha256": "e2d784efb8b24134b675cef821dc147acd4cdc555e10fa5d7005e07ec5d5cfc3",
+        "human_review": "pending"
+      }
+    },
+    "proposed_claim": {
+      "character": "E. Honda",
+      "target": null,
+      "direction": "nerf",
+      "recommendation": "降低本田的整体强度；原文未提供具体调整方式。",
+      "specificity": "qualitative_only",
+      "parameters": [],
+      "evidence_ids": [
+        "E3",
+        "E6",
+        "E7",
+        "E8",
+        "E9"
+      ],
+      "uncertain": false
+    },
+    "expected_original_supported": false,
+    "review_reason": "该角色仅为旧机制、招式或强度的比较对象；原文主要针对另一角色，不支持此条所写加强/削弱意见。",
+    "source_provenance": "existing_full_original_comment",
+    "reviewer_type": "agent"
+  },
+  {
+    "case_id": "steam:237619085:1",
+    "category": "attacker_victim_reversal",
+    "source": {
+      "record_id": "steam:237619085",
+      "platform": "steam",
+      "source_id": "237619085",
+      "text_original": "做角色你给我做好了啊，你阿俊一招给我老桑打半管白血那我说啥了兄弟，我给你了",
+      "language": "zh",
+      "retrieved_at_utc": "2026-10-15T07:14:47.729287+00:00",
+      "target_patch_context": "2026-08-03 (context only; applicability not verified)",
+      "patch_relevance": "unreviewed",
+      "content_review": "not_performed",
+      "reviewer": "",
+      "decision": "",
+      "notes": "",
+      "content_type": "user_review",
+      "language_method": "platform_label_unverified",
+      "language_original": "schinese",
+      "created_at_utc": "2026-10-13T11:17:58+00:00",
+      "updated_at_utc": "2026-10-13T11:17:58+00:00",
+      "voted_up": false,
+      "votes_up": 1,
+      "playtime_at_review_minutes": 10443,
+      "query_language": "zh",
+      "access_method": "official_public_api",
+      "source_type": "observed",
+      "retrieval_order": "recent",
+      "context": {
+        "app_id": 1364780,
+        "title": "Street Fighter 6"
+      },
+      "coarse_screening": {
+        "version": "coarse-v1",
+        "decision": "keep",
+        "reason": "specific_competitive_mechanic",
+        "signals": [
+          "白血"
+        ],
+        "method": "rules",
+        "text_sha256": "f89d0f4bf5ab779c695e2a49d2eda4facf2629b50988c111226cf50de309fd98",
+        "human_review": "pending"
+      }
+    },
+    "proposed_claim": {
+      "character": "Zangief",
+      "target": null,
+      "direction": "nerf",
+      "recommendation": "降低老桑的伤害；原文未提供具体调整方式。",
+      "specificity": "qualitative_only",
+      "parameters": [],
+      "evidence_ids": [
+        "E1"
+      ],
+      "uncertain": false
+    },
+    "expected_original_supported": false,
+    "review_reason": "原文说阿俊一招让老桑承受半管白血；老桑是受击方，不能反过来削弱老桑伤害。",
+    "source_provenance": "existing_full_original_comment",
+    "reviewer_type": "agent"
+  },
+  {
+    "case_id": "steam:237633927:1",
+    "category": "reactable_comparator",
+    "source": {
+      "record_id": "steam:237633927",
+      "platform": "steam",
+      "source_id": "237633927",
+      "text_original": "感觉新角色机动性一个比一个强至少像肯，特瑞，沙加特这样的仔细盯都能反应。这新出的英格丽德，阿利克斯，阿俊都能直接四处乱飞上蹿下跳，一下直接飞我脸上，我这老年人反应根本反应不过来至少给我感觉是这样的。",
+      "language": "zh",
+      "retrieved_at_utc": "2026-10-15T07:14:47.729005+00:00",
+      "target_patch_context": "2026-08-03 (context only; applicability not verified)",
+      "patch_relevance": "unreviewed",
+      "content_review": "not_performed",
+      "reviewer": "",
+      "decision": "",
+      "notes": "",
+      "content_type": "user_review",
+      "language_method": "platform_label_unverified",
+      "language_original": "schinese",
+      "created_at_utc": "2026-10-13T15:39:26+00:00",
+      "updated_at_utc": "2026-10-13T15:39:26+00:00",
+      "voted_up": true,
+      "votes_up": 1,
+      "playtime_at_review_minutes": 28003,
+      "query_language": "zh",
+      "access_method": "official_public_api",
+      "source_type": "observed",
+      "retrieval_order": "recent",
+      "context": {
+        "app_id": 1364780,
+        "title": "Street Fighter 6"
+      },
+      "coarse_screening": {
+        "version": "coarse-v1",
+        "decision": "keep",
+        "reason": "character_strength_or_matchup_claim",
+        "signals": [
+          "角色机动性一个比一个强"
+        ],
+        "method": "rules",
+        "text_sha256": "44ebefd6210e702f707c1a8b23a7360ccd7cd0ec95ee70f30db0c52379cdbe74",
+        "human_review": "pending"
+      }
+    },
+    "proposed_claim": {
+      "character": "Ken",
+      "target": null,
+      "direction": "unclear",
+      "recommendation": "肯的机动性过高，需要调整。",
+      "specificity": "qualitative_only",
+      "parameters": [],
+      "evidence_ids": [
+        "E1",
+        "E2"
+      ],
+      "uncertain": true
+    },
+    "expected_original_supported": false,
+    "review_reason": "肯、特瑞、沙加特是可反应的比较对象，原文批评的是随后提到的新角色机动性；不能把批评转给比较对象。",
+    "source_provenance": "existing_full_original_comment",
+    "reviewer_type": "agent"
+  },
+  {
+    "case_id": "steam:235001445:2",
+    "category": "direction_action_contradiction",
+    "source": {
+      "record_id": "steam:235001445",
+      "platform": "steam",
+      "source_id": "235001445",
+      "text_original": "设计师用全家四万为束缚换取下次加强杰米\r\n",
+      "language": "zh",
+      "retrieved_at_utc": "2026-10-15T08:09:49.540589+00:00",
+      "target_patch_context": "2026-08-03 (context only; applicability not verified)",
+      "patch_relevance": "unreviewed",
+      "content_review": "not_performed",
+      "reviewer": "",
+      "decision": "",
+      "notes": "",
+      "content_type": "user_review",
+      "language_method": "platform_label_unverified",
+      "language_original": "schinese",
+      "created_at_utc": "2026-09-11T11:10:55+00:00",
+      "updated_at_utc": "2026-09-11T11:10:55+00:00",
+      "voted_up": false,
+      "votes_up": 0,
+      "playtime_at_review_minutes": 22875,
+      "query_language": "zh",
+      "access_method": "official_public_api",
+      "source_type": "observed",
+      "retrieval_order": "recent",
+      "context": {
+        "app_id": 1364780,
+        "title": "Street Fighter 6"
+      },
+      "coarse_screening": {
+        "version": "coarse-v1",
+        "decision": "keep",
+        "reason": "explicit_balance_or_strength_claim",
+        "signals": [
+          "加强"
+        ],
+        "method": "rules",
+        "text_sha256": "eb788407cad4884874f740d0b035d951f3b195853a746926f00508b957e24d69",
+        "human_review": "pending"
+      }
+    },
+    "proposed_claim": {
+      "character": "Jamie",
+      "target": null,
+      "direction": "nerf",
+      "recommendation": "杰米需要被加强。",
+      "specificity": "qualitative_only",
+      "parameters": [],
+      "evidence_ids": [
+        "E1"
+      ],
+      "uncertain": false
+    },
+    "expected_original_supported": false,
+    "review_reason": "原文明确写下次加强杰米；模型文字写加强但 direction 错写 nerf，明确修正为 buff。",
+    "source_provenance": "existing_full_original_comment",
+    "reviewer_type": "agent"
+  },
+  {
+    "case_id": "steam:236320005:1",
+    "category": "sarcastic_weakness_direction",
+    "source": {
+      "record_id": "steam:236320005",
+      "platform": "steam",
+      "source_id": "236320005",
+      "text_original": "你桑吉尔夫牢完了\n投是对不过别人打击的，加帧加太多是不利的\n移速，绿冲，跳跃，前前后后全是倒数两名的\n起身是有一帧对投无敌的，受击是有两帧对投无敌的，跳起来第一帧就有对投无敌的\n发生是巨慢的，后摇是故意拉长的，拳脚是不能取消的\n面对波升龟是没办法的，择别人也择自己的，面对凹比是会零资源给自己压力的，打白是等死的\n伤害是别人一套连段就能打出来的，碰撞箱是比沙加特和本田大的，压制和伤害是只能有一个的，立回是对不过道服的，指令投是不能代入连段的，防空是没有逆向的，精防是要挨打的，过波是为了给下一个波送确反的\n沙加特的虎膝是正常招，肘击是正常招，杰米站重脚是正常招，维嘉滑铲28剪刀脚都是正常招，唯独桑吉尔夫头槌要25%修正，膝踢是要绿冲才能加帧的，一个快车占两个技能槽的，一个360占两个技能槽的，pp不能逆向的，摊手只能摊地面中上脚的，SA1不能凹用不出来判定差的，SA2发生慢不能真当凹用的，SA3无敌差故意拉长后摇的，tc打中不能接上的，9个必杀8个肉眼可见的恶意给大确反，tc能取消的是fw不能取消的随便迸，完事一看街霸5绿冲走路被加强送给dlc角色了，街霸4碎金掌没了\n太会设计了策划，为了卖nm的dlc真是不要脸，14个dlc角色有11个发波的，常见角色除了jp就桑吉尔夫没升龙，全游戏最烂摊手，最烂性能，假装强的垃圾拳脚，假装长实则发生一万帧收招一亿帧还被碰撞箱膨胀砍距离的，太会做游戏了",
+      "language": "zh",
+      "retrieved_at_utc": "2026-10-15T07:14:12.707058+00:00",
+      "target_patch_context": "2026-08-03 (context only; applicability not verified)",
+      "patch_relevance": "unreviewed",
+      "content_review": "not_performed",
+      "reviewer": "",
+      "decision": "",
+      "notes": "",
+      "content_type": "user_review",
+      "language_method": "platform_label_unverified",
+      "language_original": "english",
+      "created_at_utc": "2026-09-27T12:30:39+00:00",
+      "updated_at_utc": "2026-09-29T13:35:00+00:00",
+      "voted_up": false,
+      "votes_up": 1,
+      "playtime_at_review_minutes": 8619,
+      "query_language": "en",
+      "access_method": "official_public_api",
+      "source_type": "observed",
+      "retrieval_order": "recent",
+      "context": {
+        "app_id": 1364780,
+        "title": "Street Fighter 6"
+      },
+      "coarse_screening": {
+        "version": "coarse-v1",
+        "decision": "keep",
+        "reason": "explicit_balance_or_strength_claim",
+        "signals": [
+          "加强"
+        ],
+        "method": "rules",
+        "text_sha256": "b5bcd29b941714d2b41fd509f6205f399e8a59125cf367d8a91e25cb610a9678",
+        "human_review": "pending",
+        "language_correction": {
+          "original_label": "en",
+          "corrected_label": "zh",
+          "reason": "The original text is Chinese despite the Steam English label.",
+          "method": "agent_text_inspection"
+        }
+      }
+    },
+    "proposed_claim": {
+      "character": "Zangief",
+      "target": null,
+      "direction": "nerf",
+      "recommendation": "降低桑吉尔夫的整体强度；原文未提供具体调整方式。",
+      "specificity": "qualitative_only",
+      "parameters": [],
+      "evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6",
+        "E7",
+        "E8",
+        "E9"
+      ],
+      "uncertain": false
+    },
+    "expected_original_supported": false,
+    "review_reason": "整条列举桑吉尔夫性能弱点；末尾是讽刺设计者，不能解读为要求削弱。明确修正为加强；夸张帧数和现有25%修正不是新目标。",
+    "source_provenance": "existing_full_original_comment",
+    "reviewer_type": "agent"
+  },
+  {
+    "case_id": "steam:229292137:2",
+    "category": "universal_system_scope",
+    "source": {
+      "record_id": "steam:229292137",
+      "platform": "steam",
+      "source_id": "229292137",
+      "text_original": "Its fun casually but the drive system is pretty flawed in terms of incentivizing fun gameplay. Drive Impact alone dominates low rank, and for how easy it is to use but how careful you need to be around it, it shouldn't give you the reward it does. I say this having abused it myself, its just boring and actually teaches some bad habits ive had to actively fight against. \r\n\r\nIn general the Drive system seems to conflict with SF's entire identity as a footsies fighter, or at the very least invalidates a lot of neutral gameplay.\r\n\r\nUnderneath the Drive hood, theres a fun game, and its not like it isnt fun generally. Capcom should be more attentive given how expensive the DLC is though, and hopefully a new version of the game releases that heavily tweaks, if not removes, the drive system. Akin to whats happened with GG STRIVE's Wild Assault move. But im a scrub ig so take this with a grain of salt idk.\r\n\r\nCapcom gets points for Elena at least, but wheres Makoto? lol",
+      "language": "en",
+      "retrieved_at_utc": "2026-10-15T08:08:39.558696+00:00",
+      "target_patch_context": "2026-08-03 (context only; applicability not verified)",
+      "patch_relevance": "unreviewed",
+      "content_review": "not_performed",
+      "reviewer": "",
+      "decision": "",
+      "notes": "",
+      "content_type": "user_review",
+      "language_method": "platform_label_unverified",
+      "language_original": "english",
+      "created_at_utc": "2026-07-01T01:43:44+00:00",
+      "updated_at_utc": "2026-07-01T01:43:44+00:00",
+      "voted_up": false,
+      "votes_up": 11,
+      "playtime_at_review_minutes": 1475,
+      "query_language": "en",
+      "access_method": "official_public_api",
+      "source_type": "observed",
+      "retrieval_order": "recent",
+      "context": {
+        "app_id": 1364780,
+        "title": "Street Fighter 6"
+      },
+      "coarse_screening": {
+        "version": "coarse-v1",
+        "decision": "keep",
+        "reason": "character_strength_or_matchup_claim",
+        "signals": [
+          "dominates"
+        ],
+        "method": "rules",
+        "text_sha256": "18a19fc1c751ff9aa0d55599b651ea6ca4df84d848d6dc317271a7a7eb141b18",
+        "human_review": "pending"
+      }
+    },
+    "proposed_claim": {
+      "character": "Elena",
+      "target": "Drive Impact",
+      "direction": "nerf",
+      "recommendation": "Drive Impact alone dominates low rank, and for how easy it is to use but how careful you need to be around it, it shouldn't give you the reward it does.",
+      "specificity": "qualitative_only",
+      "parameters": [],
+      "evidence_ids": [
+        "E2"
+      ],
+      "uncertain": false
+    },
+    "expected_original_supported": false,
+    "review_reason": "The Drive Impact complaint is universal. Elena appears only in a roster-preference sentence and is not its subject.",
+    "source_provenance": "existing_full_original_comment",
+    "reviewer_type": "agent"
+  },
+  {
+    "case_id": "steam:232527507:1",
+    "category": "past_patch_not_request",
+    "source": {
+      "record_id": "steam:232527507",
+      "platform": "steam",
+      "source_id": "232527507",
+      "text_original": "\"... we've reduced the pushback on block so that when Ryu does connect with the attack, it's slightly easier for him to continue his offense, and making the move more balanced.\"",
+      "language": "en",
+      "retrieved_at_utc": "2026-10-15T07:14:32.758083+00:00",
+      "target_patch_context": "2026-08-03 (context only; applicability not verified)",
+      "patch_relevance": "unreviewed",
+      "content_review": "not_performed",
+      "reviewer": "",
+      "decision": "",
+      "notes": "",
+      "content_type": "user_review",
+      "language_method": "platform_label_unverified",
+      "language_original": "english",
+      "created_at_utc": "2026-08-10T19:24:09+00:00",
+      "updated_at_utc": "2026-08-10T19:24:09+00:00",
+      "voted_up": false,
+      "votes_up": 13,
+      "playtime_at_review_minutes": 24004,
+      "query_language": "en",
+      "access_method": "official_public_api",
+      "source_type": "observed",
+      "retrieval_order": "recent",
+      "context": {
+        "app_id": 1364780,
+        "title": "Street Fighter 6"
+      },
+      "coarse_screening": {
+        "version": "coarse-v1",
+        "decision": "keep",
+        "reason": "explicit_balance_or_strength_claim",
+        "signals": [
+          "balanced"
+        ],
+        "method": "rules",
+        "text_sha256": "d177598d8957430f193830fb706501a15be00dc0135c70edaf87969ae0983242",
+        "human_review": "pending"
+      }
+    },
+    "proposed_claim": {
+      "character": "Ryu",
+      "target": null,
+      "direction": "buff",
+      "recommendation": "Reducing pushback on block makes the move more balanced.",
+      "specificity": "qualitative_only",
+      "parameters": [],
+      "evidence_ids": [
+        "E2"
+      ],
+      "uncertain": false
+    },
+    "expected_original_supported": false,
+    "review_reason": "This is a quotation describing a completed pushback change; it is not a new buff request or an unambiguous stance on balance.",
+    "source_provenance": "existing_full_original_comment",
+    "reviewer_type": "agent"
+  }
+]
